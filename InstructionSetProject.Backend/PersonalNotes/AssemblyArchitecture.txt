@@ -1,0 +1,86 @@
+﻿
+
+0000 0000 | 0000 0000 | 0000 0000
+[ op ][r]   [----- operand -----]
+
+load 00aa arrr
+push 01aa arrr
+
+
+
+
+
+0000 0000 | 0000 0000 | 0000 0000 | 0000 0000
+[ op  ][ addr][r1][r]   [      operand      ]
+
+
+8 registers:
+	r0 = 0
+	r1 = general purpose
+	r2 = general purpose
+	r3 = general purpose
+	r4 = general purpose
+	r5 = general purpose
+	r6 = general purpose, counter for loop instruction
+	r7 = stack pointer
+
+// flags: carry:			set if
+			 parity?:		set if the result of the last operation contained an odd number of 1's in binary
+			 overflow:		set if
+			 zero:			set if the result of last operation was a zero
+			 sign:			set if the result of last operation was negative (as if it was interpreted as signed)
+
+
+Example				Op code													Binary									Hex
+--------------------------------------------------------------------------------------------------------------
+HALT					00000 000 -> halt execution						0000 0000 0000 0000 0000 0000		00 00 00
+NOP					00000 001 -> no operation 							0000 0001 0000 0000 0000 0000		01 00 00
+CALL 					00000 010 -> call procedure 						0000 0010 0000 0000 0000 0000		02 00 00
+RET 					00000 011 -> return from procedure 				0000 0011 0000 0000 0000 0000		03 00 00
+
+// move flags to r1, move r1 to flags
+
+add r1, r2, r3
+
+LOAD r2, 0xAD13  	00001 rrr -> set register from immediate			0000 1010 1010 1101 0001 0011  	0A AD 13
+LOAD r2, r3			00010 rrr -> set register from register			0001 0010 0000 0000 0000 0011		12 00 03
+LOAD r2, [r3] 		00011 rrr -> set register from memory				0011 0010 0000 0000 0000 0011
+
+PUSH r2, [[sp + imm] + r1]
+PUSH r2
+
+LOAD r1, 2
+LOAD r2, 4, sfx
+
+; r1 = imm
+; r1 = r2
+; r1 = [r2]
+; r1 = [[r2]]
+; r1 = [rS + imm]
+; r1 = [rS + rC + imm]
+; r1 = [[rS + imm] + rC]
+
+
+
+MOV r2, 0xABCD   	; r2 = 0xABCD
+AND r2, 0x00FF		; r2 = 0x00CD
+PSH r2 				; r2 = 0x00CD
+POP r6 				; r6 = 0x00CD
+
+LOAD r3, 5
+label:		// 0030d
+	NOP
+	loop 0030
+
+
+// add, sub, and, or, nor, xor, not, neg, asl, asr, lsr, rotl, rotr, rtcl, rtcr,
+// inc, dec
+
+// cmp
+// jmp, jlt, jgt, jle, jge, jeq, jne --- jump parity? jump carry? jump overflow? jnz = jeq, jump sign?
+// loop: auto decrement designated counter register, jump if not zero
+
+// ???
+// lea, mul, div,
+
+// manually set flag bits? setc clrc
