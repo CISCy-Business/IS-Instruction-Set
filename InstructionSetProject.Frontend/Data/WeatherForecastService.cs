@@ -1,4 +1,4 @@
-namespace InstructionSetProject.Data
+namespace InstructionSetProject.Frontend.Data
 {
     public class WeatherForecastService
     {
