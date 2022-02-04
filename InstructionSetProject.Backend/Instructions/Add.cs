@@ -7,19 +7,20 @@ using System.Threading.Tasks;
 
 namespace InstructionSetProject.Backend.Instructions
 {
-    public class Add
+    public class Add : IInstruction
     {
-        public const byte OpCode = 0;
-        public const string Label = "ADD";
+        public const string Mnemonic = "ADD";
 
-        public static BitArray Assemble(string assemblyLine)
+        public const byte OpCode = 0;
+
+        public List<byte> Assemble(string assemblyLine)
         {
-            return new BitArray(1);
+            throw new NotImplementedException();
         }
 
-        public static string Disassemble(IEnumerable<bool> machineLine)
+        public string Disassemble(List<byte> machineLine)
         {
-            return "";
+            throw new NotImplementedException();
         }
     }
 }
