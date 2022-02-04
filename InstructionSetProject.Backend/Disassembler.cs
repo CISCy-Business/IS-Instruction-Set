@@ -10,45 +10,27 @@ namespace InstructionSetProject.Backend
 {
     internal static class Disassembler
     {
-        public static string Disassemble(BitArray machineCode)
+        public static string Disassemble(List<byte> machineCode)
         {
             var instructionCode = "";
-            var boolArr = machineCode.Cast<bool>();
-            for (int i = 0; i < machineCode.Count; i += 24)
-            {
-                var machineLine = ConvertLineToAssemblyCode(boolArr.Skip(i).Take(24));
-                
-            }
-            return instructionCode;
+            
+            // Implement logic for dynamic instruction length
+
+            return instructionCode.TrimEnd();
         }
 
-        public static string ConvertLineToAssemblyCode(IEnumerable<bool> machineLine)
+        public static string ConvertLineToAssemblyCode(List<byte> machineLine)
         {
             var opCode = GetOpCode(machineLine);
 
-            switch (opCode)
-            {
-                case Add.OpCode:
-                    return Add.Disassemble(machineLine);
-                default:
-                    throw new Exception("Unable to parse instruction line.");
-            }
+            var instr = GetInstruction.FromOpCode(opCode);
+
+            return instr.Disassemble(machineLine);
         }
 
-        private static byte GetOpCode(IEnumerable<bool> machineLine)
+        private static byte GetOpCode(List<byte> machineLine)
         {
-            byte result = 0;
-            int index = 8 - machineLine.Count();
-
-            foreach (var b in machineLine)
-            {
-                if (b)
-                    result |= (byte) (1 << (7 - index));
-
-                index++;
-            }
-
-            return result;
+            throw new NotImplementedException();
         }
     }
 }

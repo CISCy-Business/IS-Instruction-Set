@@ -10,29 +10,25 @@ namespace InstructionSetProject.Backend
 {
     public static class Assembler
     {
-        public static BitArray Assemble(string assemblyCode)
+        public static List<byte> Assemble(string assemblyCode)
         {
             var assemblyLines = assemblyCode.Split("\n");
-            var machineCode = new BitArray(0);
+            var machineCode = new List<byte>();
             foreach (var line in assemblyLines)
             {
                 var machineLine = ConvertLineToMachineCode(line);
-                machineCode = BitArrayTools.Append(machineCode, machineLine);
+                machineCode = machineCode.Concat(machineLine).ToList();
             }
             return machineCode;
         }
 
-        public static BitArray ConvertLineToMachineCode(string instructionLine)
+        public static List<byte> ConvertLineToMachineCode(string instructionLine)
         {
-            var instructionName = instructionLine.Substring(0, instructionLine.IndexOf(' '));
+            var mnemonic = instructionLine.Substring(0, instructionLine.IndexOf(' '));
 
-            switch (instructionName)
-            {
-                case Add.Label:
-                    return Add.Assemble(instructionLine);
-                default:
-                    throw new Exception("Unable to parse instruction line.");
-            }
+            var instr = GetInstruction.FromMnemonic(mnemonic);
+
+            return instr.Assemble(instructionLine);
         }
     }
 }
