@@ -1,39 +1,51 @@
 ﻿@page "/"
 
-<PageTitle>CISCy Business</PageTitle>
+<style>
+    .cont-parent {
+        align-content: center;
+        text-align: center;
+    }
 
-<h1>Instruction Set Instruction Set</h1>
+    .container {
+        border: solid 2px rgb(100, 100, 100);
+        background-color: #20639B;
+    }
 
-<div class="main">
-    <div class="row">
-        <div class="col-sm-5">
-            <label for="Disassemble">Disassembler</label>
-        </div>
-    
-        <div class="col-sm-2"></div>
+    p {
+        font-size: 20px; 
+    }
+</style>
 
+<div class="cont-parent">
+    <div class="container">
+        <br />
+        <h1>Come try out our instruction set!</h1><br /><hr /><br />
 
-        <div class="col-sm-5">
-            <label for="Assemble">Assembler</label>
-        </div>
-    </div>
+        <p>We currently offer two options for this architecture:</p>
+        <p>Disassembly<br />Assembly</p><br />
 
-    <div class="row">
-        <div class="col-sm-5">
-            <textarea id="Disassemble" name="Disassemble" rows="50"></textarea>
-        </div>
-    
-        <div class="col-sm-2">
-            <div>
-                <button class="buttons">DIS</button><br/>
-                <button class="buttons">ASS</button>
-            </div>
-        </div>
-    
-        <div class="col-sm-5">
-            <textarea id="Assemble" name="Assemble" rows="50"></textarea>
-        </div>
+        <p>Both of these options are available in the top navigation menu.</p><br /><hr /><br />
+
+        <h3>Disassembler</h3>
+
+        <p>
+            Our disassembler allows you to type in your machine (hex) code into the left hand text box and
+            by clicking the arrow button in the middle it will disassemble your code into a clean table 
+            organizing the instruction types, totals, summaries, etc.
+        </p><br />
+
+        <h3>Assembler (work in progress)</h3>
+
+        <p>
+            Our assembler allows you to type in the assembly (IS Instruction Set) code into the left hand text
+            box and by clicking the arrow button in the middle it will assemble your code into its machine code
+            variant ready for compilation and execution (possible future iterations).
+        </p>
+        <br />
     </div>
 </div>
 
 
+@code {
+
+}
