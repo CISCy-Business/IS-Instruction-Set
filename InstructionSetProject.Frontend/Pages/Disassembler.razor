@@ -1,0 +1,86 @@
+﻿@page "/disassembler"
+
+<div class="code_input">
+    <div class="code_input_wrapper">
+        <div class="row">
+            <div class="col-sm-5">
+                <label for="disassemble">Disassembler</label>
+            </div>
+    
+            <div class="col-sm-2"></div>
+
+
+            <div class="col-sm-5">
+                <label for="outputDis">Output</label>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-5">
+                <textarea @bind="currentCodeDis" id="disassemble" name="disassemble"></textarea>
+            </div>
+    
+            <div class="col-sm-2">
+                <div>
+                    <button @onclick="Disassemble" type="button" name="dis_btn" class="btn btn-primary btn-lg">
+                        <img src="chevron-double-right.svg"/>
+                    </button>
+                </div>
+            </div>
+    
+            <div class="col-sm-5">
+                <textarea @bind="currentCodeOutDis" id="outputDis" name="outputDis"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    private string currentCodeDis { get; set; }
+    private string currentCodeOutDis { get; set; }
+
+    private List<byte> machineCode = new List<byte>();
+
+    private int totalInstructions { get; set; }
+    private int unaryInstructions { get; set; }
+    private int nonunaryInstructions { get; set; }
+    private int logicInstructions { get; set; }
+    private int memoryInstructions { get; set; }
+
+    private int immediateInstructions { get; set; }
+    private int directInstructions { get; set; }
+
+    private void Disassemble()
+    {
+        OutputFromDis(machineCode);
+    }
+
+    private void OutputFromDis(List<byte> machineCode)
+    {
+        // Should do some stuff instead of just printing it back and forth
+        string returnStr = "";
+        returnStr += "   Name: Dante, Lucas, Preston\n" +
+                     "Project: Project 1 - Custom ISA\n\n" +
+                     "Prog Count  Inst Spec   Inst Mnem   Type    Reg    Addr Mode   Operand\n" +
+                     "----------  ---------   ---------   ----    ---    ---------   -------\n";
+
+        // Print the instruction list here
+
+        returnStr += "\n\nSummary Statistics\n" +
+                     "------------------\n" +
+                     "Total Instructions:           " + totalInstructions + "\n" +
+                     "Unary Instructions:           " + unaryInstructions + "\n" +
+                     "Non-unary Instructions:       " + nonunaryInstructions + "\n" +
+                     "Logic Instructions:           " + logicInstructions + "\n" +
+                     "Memory Instructions:          " + memoryInstructions + "\n\n";
+
+        returnStr += "Addressing Mode Uses\n" + 
+                     "--------------------\n" +
+                     "Immediate:                    " + immediateInstructions + "\n" +
+                     "Direct:                       " + directInstructions + "\n\n"; 
+
+        currentCodeOutDis = returnStr;
+    }
+
+}

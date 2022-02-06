@@ -1,0 +1,51 @@
+﻿@page "/assembler"
+
+<div class="code_input">
+    <div class="code_input_wrapper">
+        <div class="row">
+            <div class="col-sm-5">
+                <label for="assemble">Assembler</label>
+            </div>
+    
+            <div class="col-sm-2"></div>
+
+
+            <div class="col-sm-5">
+                <label for="outputAss">Output</label>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-5">
+                <textarea @bind="currentCodeAss" id="assemble" name="assemble"></textarea>
+            </div>
+    
+            <div class="col-sm-2">
+                <div>
+                    <button @onclick="Assemble" type="button" name="ass_btn" class="btn btn-primary btn-lg">
+                        <img src="chevron-double-right.svg"/>
+                    </button>
+                </div>
+            </div>
+    
+            <div class="col-sm-5">
+                <textarea @bind="currentCodeOutAss" id="outputAss" name="outputAss"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    private string currentCodeAss { get; set; }
+    private string currentCodeOutAss { get; set; }
+
+    private List<byte> machineCode = new List<byte>();
+
+    private void Assemble()
+    {
+        // Should do some stuff instead of just printing it back and forth
+        currentCodeOutAss = currentCodeAss;
+    }
+
+}

@@ -1,14 +1,101 @@
 ﻿@inherits LayoutComponentBase
 
-<PageTitle>Instruction Set</PageTitle>
+<style>
+    body {
+        background-color: #173F5F;
+        color: rgb(220, 220, 220);
+    }
 
-<div class="page">
-    <main>
-        <div class="top-row px-4">
+    label {
+        font-size: 30px;
+        padding-top: 3%;
+    }
+
+    textarea {
+        border: solid 2px rgb(100, 100, 100);
+        font-family: "Source Code Pro", monospace;
+        font-size: 15px;
+        overflow-y: scroll;
+        height: 600px;
+        resize: none;
+    }
+
+    button {
+        margin: 15px 0 15px 0;
+    }
+
+    #disassemble {
+        width: 100%;
+    }
+
+    #outputDis {
+        width: 100%;
+    }
+
+    #assemble {
+        width: 100%;
+    }
+
+    #outputAss {
+        width: 100%;
+    }
+
+    .code_input {
+        background-color: #20639B;
+        padding: 0px 20px 20px 20px;
+        margin-top: 10px;
+        border: solid 2px darkslategray;
+    }
+
+    .col-sm-2 {
+        text-align: center;
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+
+    .main {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .btn-primary {
+        background-color: white;
+        color: black;
+    }
+
+    .navbar-brand {
+        padding-left: 10px;
+    }
+
+    .navbar-nav {
+        padding-left: 15px;
+        padding-top: 3px;
+    }
+
+    .navbar {
+        margin: auto;
+    }
+</style>
+
+<PageTitle>CISCy Business</PageTitle>
+
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href=""><h2>The IS Instruction Set</h2></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link" href="/disassembler"><h3>Disassembler</h3></a>
+                <a class="nav-item nav-link" href="/assembler"><h3>Assembler</h3></a>
+            </div>
         </div>
+    </nav>
+</header>
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
+<div class="main">
+    <div class="content px-4">
+        @Body
+    </div>
 </div>
