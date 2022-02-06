@@ -1,13 +1,9 @@
-﻿body {
-    background-color: darkgreen;
-}
-
-label {
+﻿label {
     font-size: 30px;
     padding-top: 3%;
 }
 
-#Dissassemble {
+#Disassemble {
     width: 100%;
 }
 
