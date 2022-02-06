@@ -3,23 +3,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InstructionSetProject.Backend.InstructionTypes;
 
 namespace InstructionSetProject.Backend.Instructions.Jump
 {
-    public class Call : IInstruction
+    public class Call : JumpInstruction
     {
-        public const string Mnemonic = "CAL";
+        public new const string Mnemonic = "CAL";
 
-        public const ushort OpCode = 0x1C0;
+        public new const ushort OpCode = 0x1C0;
 
-        public List<byte> Assemble(string assemblyLine)
+        public Call(JumpInstruction instr)
         {
-            throw new NotImplementedException();
+            base.OpCode = instr.OpCode;
+            base.Mnemonic = instr.Mnemonic;
+            DestinationRegister = instr.DestinationRegister;
+            HighLowBit = instr.HighLowBit;
+            SourceRegister = instr.SourceRegister;
+            Immediate = instr.Immediate;
         }
 
-        public string Disassemble(List<byte> machineLine)
+        public override string GetMnemonic()
         {
-            throw new NotImplementedException();
+            return Call.Mnemonic;
+        }
+
+        public override ushort GetOpCode()
+        {
+            return Call.OpCode;
         }
     }
 }

@@ -3,23 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InstructionSetProject.Backend.InstructionTypes;
 
 namespace InstructionSetProject.Backend.Instructions.Arithmetic
 {
-    public class BitwiseNeg : IInstruction
+    public class BitwiseNeg : R2Instruction
     {
-        public const string Mnemonic = "NEG";
+        public new const string Mnemonic = "NEG";
 
-        public const ushort OpCode = 0x101;
+        public new const ushort OpCode = 0x101;
 
-        public List<byte> Assemble(string assemblyLine)
+        public BitwiseNeg(R2Instruction instr)
         {
-            throw new NotImplementedException();
+            base.OpCode = instr.OpCode;
+            base.Mnemonic = instr.Mnemonic;
+            DestinationRegister = instr.DestinationRegister;
+            SourceRegister = instr.SourceRegister;
         }
 
-        public string Disassemble(List<byte> machineLine)
+        public override string GetMnemonic()
         {
-            throw new NotImplementedException();
+            return BitwiseNeg.Mnemonic;
+        }
+
+        public override ushort GetOpCode()
+        {
+            return BitwiseNeg.OpCode;
         }
     }
 }

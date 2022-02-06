@@ -3,23 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InstructionSetProject.Backend.InstructionTypes;
 
 namespace InstructionSetProject.Backend.Instructions.Arithmetic
 {
-    public class BitwiseXor : IInstruction
+    public class BitwiseXor : R3Instruction
     {
-        public const string Mnemonic = "XOR";
+        public new const string Mnemonic = "XOR";
 
-        public const ushort OpCode = 0x35;
+        public new const ushort OpCode = 0x35;
 
-        public List<byte> Assemble(string assemblyLine)
+        public BitwiseXor(R3Instruction instr)
         {
-            throw new NotImplementedException();
+            base.OpCode = instr.OpCode;
+            base.Mnemonic = instr.Mnemonic;
+            DestinationRegister = instr.DestinationRegister;
+            SourceRegister1 = instr.SourceRegister1;
+            SourceRegister2 = instr.SourceRegister2;
         }
 
-        public string Disassemble(List<byte> machineLine)
+        public override string GetMnemonic()
         {
-            throw new NotImplementedException();
+            return BitwiseXor.Mnemonic;
+        }
+
+        public override ushort GetOpCode()
+        {
+            return BitwiseXor.OpCode;
         }
     }
 }

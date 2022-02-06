@@ -3,23 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InstructionSetProject.Backend.InstructionTypes;
 
 namespace InstructionSetProject.Backend.Instructions.Arithmetic
 {
-    public class ArithmeticShiftRight : IInstruction
+    public class ArithmeticShiftRight : R3Instruction
     {
-        public const string Mnemonic = "ASR";
+        public new const string Mnemonic = "ASR";
 
-        public const ushort OpCode = 0x37;
+        public new const ushort OpCode = 0x37;
 
-        public List<byte> Assemble(string assemblyLine)
+        public ArithmeticShiftRight(R3Instruction instr)
         {
-            throw new NotImplementedException();
+            base.OpCode = instr.OpCode;
+            base.Mnemonic = instr.Mnemonic;
+            DestinationRegister = instr.DestinationRegister;
+            SourceRegister1 = instr.SourceRegister1;
+            SourceRegister2 = instr.SourceRegister2;
         }
 
-        public string Disassemble(List<byte> machineLine)
+        public override string GetMnemonic()
         {
-            throw new NotImplementedException();
+            return ArithmeticShiftRight.Mnemonic;
+        }
+
+        public override ushort GetOpCode()
+        {
+            return ArithmeticShiftRight.OpCode;
         }
     }
 }

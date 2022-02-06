@@ -3,23 +3,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InstructionSetProject.Backend.InstructionTypes;
 
 namespace InstructionSetProject.Backend.Instructions.General
 {
-    public class LoadWord : IInstruction
+    public class LoadWord : ImmediateInstruction
     {
-        public const string Mnemonic = "LDW";
+        public new const string Mnemonic = "LDW";
 
-        public const ushort OpCode = 0x80;
+        public new const ushort OpCode = 0x80;
 
-        public List<byte> Assemble(string assemblyLine)
+        public LoadWord(ImmediateInstruction instr)
         {
-            throw new NotImplementedException();
+            base.OpCode = instr.OpCode;
+            base.Mnemonic = instr.Mnemonic;
+            DestinationRegister = instr.DestinationRegister;
+            AddressingMode = instr.AddressingMode;
+            HighLowBit = instr.HighLowBit;
+            Immediate = instr.Immediate;
         }
 
-        public string Disassemble(List<byte> machineLine)
+        public override string GetMnemonic()
         {
-            throw new NotImplementedException();
+            return LoadWord.Mnemonic;
+        }
+
+        public override ushort GetOpCode()
+        {
+            return LoadWord.OpCode;
         }
     }
 }

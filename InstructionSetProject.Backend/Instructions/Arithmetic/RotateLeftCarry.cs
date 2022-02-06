@@ -3,23 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InstructionSetProject.Backend.InstructionTypes;
 
 namespace InstructionSetProject.Backend.Instructions.Arithmetic
 {
-    public class RotateLeftCarry : IInstruction
+    public class RotateLeftCarry : R3Instruction
     {
-        public const string Mnemonic = "RLC";
+        public new const string Mnemonic = "RLC";
 
-        public const ushort OpCode = 0x4B;
+        public new const ushort OpCode = 0x4B;
 
-        public List<byte> Assemble(string assemblyLine)
+        public RotateLeftCarry(R3Instruction instr)
         {
-            throw new NotImplementedException();
+            base.OpCode = instr.OpCode;
+            base.Mnemonic = instr.Mnemonic;
+            DestinationRegister = instr.DestinationRegister;
+            SourceRegister1 = instr.SourceRegister1;
+            SourceRegister2 = instr.SourceRegister2;
         }
 
-        public string Disassemble(List<byte> machineLine)
+        public override string GetMnemonic()
         {
-            throw new NotImplementedException();
+            return RotateLeftCarry.Mnemonic;
+        }
+
+        public override ushort GetOpCode()
+        {
+            return RotateLeftCarry.OpCode;
         }
     }
 }

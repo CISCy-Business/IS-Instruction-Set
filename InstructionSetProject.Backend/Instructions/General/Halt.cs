@@ -3,23 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InstructionSetProject.Backend.InstructionTypes;
 
 namespace InstructionSetProject.Backend.Instructions.General
 {
-    public class Halt : IInstruction
+    public class Halt : R0Instruction
     {
-        public const string Mnemonic = "HLT";
+        public new const string Mnemonic = "HLT";
 
-        public const ushort OpCode = 0x0;
+        public new const ushort OpCode = 0x0;
 
-        public List<byte> Assemble(string assemblyLine)
+        public Halt(R0Instruction instr)
         {
-            throw new NotImplementedException();
+            base.OpCode = instr.OpCode;
+            base.Mnemonic = instr.Mnemonic;
         }
 
-        public string Disassemble(List<byte> machineLine)
+        public override string GetMnemonic()
         {
-            throw new NotImplementedException();
+            return Halt.Mnemonic;
+        }
+
+        public override ushort GetOpCode()
+        {
+            return Halt.OpCode;
         }
     }
 }

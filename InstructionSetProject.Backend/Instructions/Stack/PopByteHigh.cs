@@ -3,23 +3,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InstructionSetProject.Backend.InstructionTypes;
 
 namespace InstructionSetProject.Backend.Instructions.Stack
 {
-    public class PopByteHigh : IInstruction
+    public class PopByteHigh : R1Instruction
     {
-        public const string Mnemonic = "POPH";
+        public new const string Mnemonic = "POPH";
 
-        public const ushort OpCode = 0x40B;
+        public new const ushort OpCode = 0x205;
 
-        public List<byte> Assemble(string assemblyLine)
+        public new const bool HighLowBit = true;
+
+        public PopByteHigh(R1Instruction instr)
         {
-            throw new NotImplementedException();
+            base.OpCode = instr.OpCode;
+            base.Mnemonic = instr.Mnemonic;
+            DestinationRegister = instr.DestinationRegister;
+            base.HighLowBit = instr.HighLowBit;
         }
 
-        public string Disassemble(List<byte> machineLine)
+        public override string GetMnemonic()
         {
-            throw new NotImplementedException();
+            return PopByteHigh.Mnemonic;
+        }
+
+        public override ushort GetOpCode()
+        {
+            return PopByteHigh.OpCode;
         }
     }
 }

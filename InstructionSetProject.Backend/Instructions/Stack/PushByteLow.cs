@@ -3,23 +3,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InstructionSetProject.Backend.InstructionTypes;
 
 namespace InstructionSetProject.Backend.Instructions.Stack
 {
-    public class PushByteLow : IInstruction
+    public class PushByteLow : R1Instruction
     {
-        public const string Mnemonic = "PSHL";
+        public new const string Mnemonic = "PSHL";
 
-        public const ushort OpCode = 0x406;
+        public new const ushort OpCode = 0x203;
 
-        public List<byte> Assemble(string assemblyLine)
+        public new const bool HighLowBit = false;
+
+        public PushByteLow(R1Instruction instr)
         {
-            throw new NotImplementedException();
+            base.OpCode = instr.OpCode;
+            base.Mnemonic = instr.Mnemonic;
+            DestinationRegister = instr.DestinationRegister;
+            base.HighLowBit = instr.HighLowBit;
         }
 
-        public string Disassemble(List<byte> machineLine)
+        public override string GetMnemonic()
         {
-            throw new NotImplementedException();
+            return PushByteLow.Mnemonic;
+        }
+
+        public override ushort GetOpCode()
+        {
+            return PushByteLow.OpCode;
         }
     }
 }

@@ -3,23 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InstructionSetProject.Backend.InstructionTypes;
 
 namespace InstructionSetProject.Backend.Instructions.General
 {
-    public class StoreByteLow : IInstruction
+    public class StoreByteLow : ImmediateInstruction
     {
-        public const string Mnemonic = "STL";
+        public new const string Mnemonic = "STL";
 
-        public const ushort OpCode = 0x106;
+        public new const ushort OpCode = 0x106;
 
-        public List<byte> Assemble(string assemblyLine)
+        public new const bool HighLowBit = false;
+
+        public StoreByteLow(ImmediateInstruction instr)
         {
-            throw new NotImplementedException();
+            base.OpCode = instr.OpCode;
+            base.Mnemonic = instr.Mnemonic;
+            DestinationRegister = instr.DestinationRegister;
+            AddressingMode = instr.AddressingMode;
+            base.HighLowBit = instr.HighLowBit;
+            Immediate = instr.Immediate;
         }
 
-        public string Disassemble(List<byte> machineLine)
+        public override string GetMnemonic()
         {
-            throw new NotImplementedException();
+            return StoreByteLow.Mnemonic;
+        }
+
+        public override ushort GetOpCode()
+        {
+            return StoreByteLow.OpCode;
         }
     }
 }

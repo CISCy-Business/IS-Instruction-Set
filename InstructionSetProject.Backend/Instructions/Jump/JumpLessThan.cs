@@ -3,23 +3,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InstructionSetProject.Backend.InstructionTypes;
 
 namespace InstructionSetProject.Backend.Instructions.Jump
 {
-    public class JumpLessThan : IInstruction
+    public class JumpLessThan : JumpInstruction
     {
-        public const string Mnemonic = "JLT";
+        public new const string Mnemonic = "JLT";
 
-        public const ushort OpCode = 0x181;
+        public new const ushort OpCode = 0x181;
 
-        public List<byte> Assemble(string assemblyLine)
+        public JumpLessThan(JumpInstruction instr)
         {
-            throw new NotImplementedException();
+            base.OpCode = instr.OpCode;
+            base.Mnemonic = instr.Mnemonic;
+            DestinationRegister = instr.DestinationRegister;
+            HighLowBit = instr.HighLowBit;
+            SourceRegister = instr.SourceRegister;
+            Immediate = instr.Immediate;
         }
 
-        public string Disassemble(List<byte> machineLine)
+        public override string GetMnemonic()
         {
-            throw new NotImplementedException();
+            return JumpLessThan.Mnemonic;
+        }
+
+        public override ushort GetOpCode()
+        {
+            return JumpLessThan.OpCode;
         }
     }
 }
