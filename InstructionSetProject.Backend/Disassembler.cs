@@ -28,7 +28,7 @@ namespace InstructionSetProject.Backend
             return instr.Disassemble(machineLine);
         }
 
-        private static byte GetOpCode(List<byte> machineLine)
+        private static ushort GetOpCode(List<byte> machineLine)
         {
             throw new NotImplementedException();
         }

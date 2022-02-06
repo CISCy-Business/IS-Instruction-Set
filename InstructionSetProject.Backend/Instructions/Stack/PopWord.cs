@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace InstructionSetProject.Backend.Instructions
+namespace InstructionSetProject.Backend.Instructions.Stack
 {
-    public class Add : IInstruction
+    public class PopWord : IInstruction
     {
-        public const string Mnemonic = "ADD";
+        public const string Mnemonic = "POP";
 
-        public const byte OpCode = 0;
+        public const ushort OpCode = 0x204;
 
         public List<byte> Assemble(string assemblyLine)
         {
