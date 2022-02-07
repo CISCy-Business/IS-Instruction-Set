@@ -10,4 +10,8 @@
     <None Include="wwwroot\chevron-double-right.svg" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\InstructionSetProject.Backend\InstructionSetProject.Backend.csproj" />
+  </ItemGroup>
+
 </Project>

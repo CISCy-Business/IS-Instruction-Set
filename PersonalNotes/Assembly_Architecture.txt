@@ -1,0 +1,112 @@
+
+
+registers:
+	r0:	always zero?
+	r1:
+	r2:
+	r3:
+	r4:
+	r5:
+	r6:
+	r7:
+
+	sp:
+	fl:
+
+LDW/LDB:
+0000 0000 aaaa brrr iiii iiii iiii iiii
+
+STW/STB:
+0000 0001 aaaa brrr iiii iiii iiii iiii
+
+b:    whether operating with a byte(1) or word(0)
+rrr:  register to operate with
+aaaa: addressing mode
+
+	000: immediate
+	001: register
+	010: Mem[r0 + immediate]
+	011: Mem[r0 + register]
+	100: Mem[Mem[r0 + immediate]]
+	101: Mem[SP + r0 + immediate]
+	110: Mem[Mem[SP + r0 + immediate]]
+	111: Mem[Mem[SP + immediate] + r0]
+
+
+
+0000 0hbr rrss sttt
+
+rrr: dest register
+sss: source 1
+ttt: source 2
+b:   byte vs word
+h:   high bits or low bits
+
+; =====/  PC instructions  /=====
+HLT
+NOP
+
+; =====/  Register Manipulation  /=====
+MOV r1, r2
+ADD r1, r2, r3
+SUB r1, r2, r3
+AND r1, r2, r3
+OR  r1, r2, r3
+XOR r1, r2, r3
+
+NOT r1, r2
+NEG r1, r2
+
+ASL r1, r2
+ASR r1, r2
+LSR r1, r2
+RTL r1, r2
+RTR r1, r2
+RLC r1, r2
+RRC r1, r2
+
+; =====/  Compare and Logic  /=====
+CMP r1, r2
+
+JMP label
+JLT label
+JGT label
+JLE label
+JGE label
+JEQ label
+JNE label
+
+; =====/  Flag manipulation and Logic  /=====
+STC		; Carry flag
+CLC
+STP		; Parity flag
+CLP
+STO		; Overflow flag
+CLO
+STZ		; Zero flag
+CLZ
+STS		; Sign flag
+CLS
+
+JYC label
+JNC label
+JYP label
+JNP label
+JYO label
+JNO label
+JYZ label
+JNZ label
+JYS label
+JNS label
+
+LOP r1, label
+LEA r1, label
+
+; =====/  Stack based instructions  /=====
+CAL	label
+RET
+
+PSH
+POP
+
+
