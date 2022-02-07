@@ -1,4 +1,5 @@
 ﻿@page "/disassembler"
+@using BlazorInputFile
 
 <div class="code_input">
     <div class="code_input_wrapper">
@@ -18,6 +19,8 @@
         <div class="row">
             <div class="col-sm-5">
                 <textarea @bind="currentCodeDis" id="disassemble" name="disassemble"></textarea>
+                <BlazorInputFile.InputFile OnChange="LoadFileDis"></BlazorInputFile.InputFile>
+                <button @onclick="SaveFileDis" type="button" name="dis_btn" class="btn btn-primary btn-lg">Save File</button>
             </div>
     
             <div class="col-sm-2">
@@ -29,7 +32,8 @@
             </div>
     
             <div class="col-sm-5">
-                <textarea @bind="currentCodeOutDis" id="outputDis" name="outputDis"></textarea>
+                <textarea @bind="currentCodeOutDis" id="outputDis" name="outputDis"></textarea>        
+                <button @onclick="SaveFileOut" type="button" name="dis_btn" class="btn btn-primary btn-lg">Save Output</button>
             </div>
         </div>
     </div>
@@ -51,9 +55,41 @@
     private int immediateInstructions { get; set; }
     private int directInstructions { get; set; }
 
+    private string fileName;
+    private string fileContents;
+
     private void Disassemble()
     {
         OutputFromDis(machineCode);
+    }
+
+    async Task LoadFileDis(IFileListEntry[] files)
+    {
+        var file = files.FirstOrDefault();
+        if (file == null)
+        {
+            return;
+        }
+        else
+        {
+            using (var reader = new StreamReader(file.Data))
+            {
+                fileContents = await reader.ReadToEndAsync();
+                fileName = file.Name;
+            }
+        }
+
+        currentCodeDis = fileContents;
+    }
+
+    private void SaveFileDis()
+    {
+
+    }
+
+    private void SaveFileOut()
+    {
+        
     }
 
     private void OutputFromDis(List<byte> machineCode)
