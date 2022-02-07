@@ -13,5 +13,7 @@ namespace InstructionSetProject.Backend.InstructionTypes
         public ushort GetOpCode();
         public List<byte> Assemble();
         public string Disassemble();
+
+        public string GetAddressingModeString();
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InstructionSetProject.Backend.Utilities;
 
 namespace InstructionSetProject.Backend.InstructionTypes
 {
@@ -25,6 +26,36 @@ namespace InstructionSetProject.Backend.InstructionTypes
             return OpCode;
         }
 
+        public virtual byte GetAddressingMode()
+        {
+            return AddressingMode;
+        }
+
+        public virtual string GetAddressingModeString()
+        {
+            switch (AddressingMode)
+            {
+                case 0: return "i  ";
+                case 1: return "d  ";
+                case 2: return "dn ";
+                case 3: return "r  ";
+                case 4: return "rn ";
+                case 5: return "xd ";
+                case 6: return "xn ";
+                case 7: return "xo ";
+                case 8: return "xf ";
+                case 9: return "sd ";
+                case 10: return "sn ";
+                case 11: return "so ";
+                case 12: return "sxd";
+                case 13: return "sxn";
+                case 14: return "sxo";
+                case 15: return "sxf";
+                default:
+                    throw new Exception($"Address Not Found: {AddressingMode}");
+            }
+        }
+
         public List<byte> Assemble()
         {
             throw new NotImplementedException();
@@ -32,7 +63,19 @@ namespace InstructionSetProject.Backend.InstructionTypes
 
         public string Disassemble()
         {
-            throw new NotImplementedException();
+            string assembly = "";
+
+            assembly += GetMnemonic();
+            assembly += " ";
+            assembly += GetRegister.FromByte(DestinationRegister);
+            assembly += ", ";
+            assembly += GetRegister.FromByte(DestinationRegister);
+            assembly += ", ";
+            assembly += GetAddressingModeString();
+
+            return assembly;
+
+            //throw new NotImplementedException();
         }
 
         public static ImmediateInstruction ParseInstruction(List<byte> machineCode)
