@@ -1,11 +1,22 @@
 ﻿@page "/disassembler"
 @using InstructionSetProject.Backend;
+@inject IJSRuntime JSRuntime
 
 <div class="code_input">
     <div class="code_input_wrapper">
         <div class="row">
             <div class="col-sm-5">
-                <label for="disassemble">Disassembler</label>
+                <div class="row">
+                    <div class="col-sm-6 disLabel">
+                        <label for="disassemble">Disassembler</label>
+                        <h6>(Machine Code)</h6>
+                    </div>
+                    <div class="col-sm-6 fileLoad">
+                        <InputFile OnChange="@LoadFile" accept=".txt"></InputFile>
+                    </div>
+
+                </div> 
+                
             </div>
     
             <div class="col-sm-2"></div>
@@ -13,12 +24,16 @@
 
             <div class="col-sm-5">
                 <label for="outputDis">Output</label>
+                <h6>(Assembly Table)</h6>
             </div>
         </div>
 
         <div class="row">
             <div class="col-sm-5">
                 <textarea @bind="currentCodeDis" id="disassemble" name="disassemble"></textarea>
+                <p>
+                    <button @onclick="SaveMachineCode" type="button" name="dis_btn" class="btn btn-primary btn-lg">Save Code</button>
+                </p>
             </div>
     
             <div class="col-sm-2">
@@ -31,6 +46,9 @@
     
             <div class="col-sm-5">
                 <textarea @bind="currentCodeOutDis" id="outputDis" name="outputDis"></textarea>
+                <p>
+                    <button @onclick="SaveOutput" type="button" name="dis_btn" class="btn btn-primary btn-lg">Save Output</button>
+                </p>
             </div>
         </div>
     </div>
@@ -41,27 +59,86 @@
     private string currentCodeDis { get; set; }
     private string currentCodeOutDis { get; set; }
 
-    private List<byte> machineCode = new List<byte>();
+    private string assembly { get; set; }
+
+    private List<byte> machineCode;
+    private string machineCodeString { get; set; }
 
     private int totalInstructions { get; set; }
-    private int unaryInstructions { get; set; }
-    private int nonunaryInstructions { get; set; }
-    private int logicInstructions { get; set; }
-    private int memoryInstructions { get; set; }
+    private int arithmeticInstructions { get; set; }
+    private int generalInstructions { get; set; }
+    private int jumpInstructions { get; set; }
+    private int stackInstructions { get; set; }
 
-    private int immediateInstructions { get; set; }
-    private int directInstructions { get; set; }
+    private int immediateAddrMode { get; set; }
+    private int directAddrMode { get; set; }
+    private int indirectAddrMode { get; set; }
+    private int registerDirectAddrMode { get; set; }
+    private int registerIndirectAddrMode { get; set; }
+    private int indexDirectAddrMode { get; set; }
+    private int indexIndirectAddrMode { get; set; }
+    private int indexOffsetAddrMode { get; set; }
+    private int indexDefferedAddrMode { get; set; }
+    private int stackDirectAddrMode { get; set; }
+    private int stackIndirectAddrMode { get; set; }
+    private int stackOffsetAddrMode { get; set; }
+    private int stackIndexDirectAddrMode { get; set; }
+    private int stackIndexIndirectAddrMode { get; set; }
+    private int stackIndexOffsetAddrMode { get; set; }
+    private int stackIndexDefferedAddrMode { get; set; }
+
+    private string fileContent = "";
 
     private void Disassemble()
     {
-        var test = new List<byte>();
-        test.Add(0x62);
-        test.Add(0xD1);
-        Disassembler.Disassemble(test);
-        OutputFromDis(machineCode);
+
+        machineCodeString = currentCodeDis.Replace(" ", string.Empty);
+        machineCode = HexStringToByteList(machineCodeString);
+        assembly = Disassembler.Disassemble(machineCode);
+
+        totalInstructions = Disassembler.totalInstructions;
+        arithmeticInstructions = Disassembler.arithmeticInstructions;
+        generalInstructions = Disassembler.generalInstructions;
+        jumpInstructions = Disassembler.jumpInstructions;
+        stackInstructions = Disassembler.stackInstructions;
+
+        immediateAddrMode = Disassembler.immediateAddrMode;
+        directAddrMode = Disassembler.directAddrMode;
+        indirectAddrMode = Disassembler.indirectAddrMode;
+        registerDirectAddrMode = Disassembler.registerDirectAddrMode;
+        registerIndirectAddrMode = Disassembler.registerIndirectAddrMode;
+        indexDirectAddrMode = Disassembler.indexDirectAddrMode;
+        indexIndirectAddrMode = Disassembler.indexIndirectAddrMode;
+        indexOffsetAddrMode = Disassembler.indexOffsetAddrMode;
+        indexDefferedAddrMode = Disassembler.indexDefferedAddrMode;
+        stackDirectAddrMode = Disassembler.stackDirectAddrMode;
+        stackIndirectAddrMode = Disassembler.stackIndirectAddrMode;
+        stackOffsetAddrMode = Disassembler.stackOffsetAddrMode;
+        stackIndexDirectAddrMode = Disassembler.stackIndexDirectAddrMode;
+        stackIndexIndirectAddrMode = Disassembler.stackIndexIndirectAddrMode;
+        stackIndexOffsetAddrMode = Disassembler.stackIndexOffsetAddrMode;
+        stackIndexDefferedAddrMode = Disassembler.stackIndexDefferedAddrMode;
+
+        OutputFromDis(assembly);
     }
 
-    private void OutputFromDis(List<byte> machineCode)
+    private static List<byte> HexStringToByteList(string machineCodeString) 
+    {
+        if (machineCodeString.Length % 2 == 1)
+            throw new Exception("Cannot have an odd number of digits!!");
+
+        int numChars = machineCodeString.Length;
+        byte[] bytes = new byte[numChars / 2];
+        for (int i = 0; i < numChars; i += 2)
+            bytes[i / 2] = Convert.ToByte(machineCodeString.Substring(i, 2), 16);
+
+        List<byte> mCode = new List<byte>(bytes);
+
+        return mCode;
+    }
+
+
+    private void OutputFromDis(string assembly)
     {
         // Should do some stuff instead of just printing it back and forth
         string returnStr = "";
@@ -70,22 +147,59 @@
                      "Prog Count  Inst Spec   Inst Mnem   Type    Reg    Addr Mode   Operand\n" +
                      "----------  ---------   ---------   ----    ---    ---------   -------\n";
 
-        // Print the instruction list here
+        returnStr += assembly;
 
         returnStr += "\n\nSummary Statistics\n" +
                      "------------------\n" +
                      "Total Instructions:           " + totalInstructions + "\n" +
-                     "Unary Instructions:           " + unaryInstructions + "\n" +
-                     "Non-unary Instructions:       " + nonunaryInstructions + "\n" +
-                     "Logic Instructions:           " + logicInstructions + "\n" +
-                     "Memory Instructions:          " + memoryInstructions + "\n\n";
+                     "Arithmetic Instructions:      " + arithmeticInstructions + "\n" +
+                     "General Instructions:         " + generalInstructions + "\n" +
+                     "Jump Instructions:            " + jumpInstructions + "\n" +
+                     "Stack Instructions:           " + stackInstructions + "\n\n";
 
         returnStr += "Addressing Mode Uses\n" + 
                      "--------------------\n" +
-                     "Immediate:                    " + immediateInstructions + "\n" +
-                     "Direct:                       " + directInstructions + "\n\n"; 
+                     "Immediate:                    " + immediateAddrMode + "\n" +
+                     "Direct:                       " + directAddrMode + "\n" + 
+                     "Indirect:                     " + indirectAddrMode + "\n" +  
+                     "R-Direct:                     " + registerDirectAddrMode + "\n" +  
+                     "R-Indirect:                   " + registerIndirectAddrMode + "\n" +  
+                     "Index-Direct:                 " + indexDirectAddrMode + "\n" +  
+                     "Index-Indirect:               " + indexIndirectAddrMode + "\n" +  
+                     "Index-Offset:                 " + indexOffsetAddrMode + "\n" + 
+                     "Index-Deferred:               " + indexDefferedAddrMode + "\n" + 
+                     "Stack-Direct:                 " + stackDirectAddrMode + "\n" + 
+                     "Stack-Indirect:               " + stackIndirectAddrMode + "\n" + 
+                     "Stack-Offset:                 " + stackOffsetAddrMode + "\n" + 
+                     "Stack-Index-Direct:           " + stackIndexDirectAddrMode + "\n" + 
+                     "Stack-Index-Indirect:         " + stackIndexIndirectAddrMode + "\n" +
+                     "Stack-Index-Offset:           " + stackIndexOffsetAddrMode + "\n" +
+                     "Stack-Index-Deferred:         " + stackIndexDefferedAddrMode + "\n"; 
 
         currentCodeOutDis = returnStr;
+    }
+
+    private async Task LoadFile(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        long maxsize = 512000;
+
+        var buffer = new byte[file.Size];
+        await file.OpenReadStream(maxsize).ReadAsync(buffer);
+        fileContent = System.Text.Encoding.UTF8.GetString(buffer);
+        currentCodeDis = fileContent;
+    }
+
+    private async Task SaveMachineCode()
+    {
+        byte[] file = System.Text.Encoding.UTF8.GetBytes(currentCodeDis);
+        await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "machineCode.txt", "text/plain", file);
+    }
+
+    private async Task SaveOutput()
+    {
+        byte[] file = System.Text.Encoding.UTF8.GetBytes(currentCodeOutDis);
+        await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "assemblyTable.txt", "text/plain", file);
     }
 
 }

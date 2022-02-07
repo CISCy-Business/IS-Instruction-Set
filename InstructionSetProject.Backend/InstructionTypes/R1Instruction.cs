@@ -73,5 +73,10 @@ namespace InstructionSetProject.Backend.InstructionTypes
         {
             throw new NotImplementedException();
         }
+
+        public string GetAddressingModeString()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
