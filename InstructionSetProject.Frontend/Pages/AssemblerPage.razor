@@ -58,12 +58,15 @@
     private string currentCodeAss { get; set; }
     private string currentCodeOutAss { get; set; }
 
+    private List<byte> machineCode = new List<byte>();
+
     private string fileContent = "";
 
     private void Assemble()
     {
-        // Should do some stuff instead of just printing it back and forth
-        currentCodeOutAss = currentCodeAss;
+        machineCode = Assembler.Assemble(currentCodeAss);
+        string hexCode = BitConverter.ToString(machineCode.ToArray());
+        currentCodeOutAss = hexCode.Replace("-", " ");
     }
 
     private async Task LoadFile(InputFileChangeEventArgs e)
@@ -80,13 +83,13 @@
     private async Task SaveAssemblyCode()
     {
         byte[] file = System.Text.Encoding.UTF8.GetBytes(currentCodeAss);
-        await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "machineCode.txt", "text/plain", file);
+        await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "assemblyCode.txt", "text/plain", file);
     }
 
     private async Task SaveOutput()
     {
         byte[] file = System.Text.Encoding.UTF8.GetBytes(currentCodeOutAss);
-        await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "assemblyTable.txt", "text/plain", file);
+        await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "machineCode.txt", "text/plain", file);
     }
 
 }
