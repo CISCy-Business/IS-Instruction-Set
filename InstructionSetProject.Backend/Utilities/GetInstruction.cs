@@ -98,91 +98,88 @@ namespace InstructionSetProject.Backend.Utilities
             }
         }
 
-        public static IInstruction FromMnemonic(IInstruction instr)
+        public static IInstruction FromAssembly(string instructionLine)
         {
-            var mnemonic = instr.GetMnemonic();
+            var mnemonic = instructionLine.Substring(0, instructionLine.IndexOf(' '));
+
             switch (mnemonic)
             {
                 case LoadWord.Mnemonic:
-                    return new LoadWord((ImmediateInstruction)instr);
+                    return new LoadWord(ImmediateInstruction.ParseInstruction(instructionLine));
                 case LoadByteHigh.Mnemonic:
-                    if (((ImmediateInstruction)instr).HighLowBit)
-                        return new LoadByteHigh((ImmediateInstruction)instr);
-                    else
-                        return new LoadByteLow((ImmediateInstruction)instr);
+                    return new LoadByteHigh(ImmediateInstruction.ParseInstruction(instructionLine));
+                case LoadByteLow.Mnemonic:
+                    return new LoadByteLow(ImmediateInstruction.ParseInstruction(instructionLine));
                 case StoreWord.Mnemonic:
-                    return new StoreWord((ImmediateInstruction)instr);
+                    return new StoreWord(ImmediateInstruction.ParseInstruction(instructionLine));
                 case StoreByteHigh.Mnemonic:
-                    if (((ImmediateInstruction)instr).HighLowBit)
-                        return new StoreByteHigh((ImmediateInstruction)instr);
-                    else
-                        return new StoreByteLow((ImmediateInstruction)instr);
+                    return new StoreByteHigh(ImmediateInstruction.ParseInstruction(instructionLine));
+                case StoreByteLow.Mnemonic:
+                    return new StoreByteLow(ImmediateInstruction.ParseInstruction(instructionLine));
                 case Halt.Mnemonic:
-                    return new Halt((R0Instruction)instr);
+                    return new Halt(R0Instruction.ParseInstruction(instructionLine));
                 case NoOperation.Mnemonic:
-                    return new NoOperation((R0Instruction)instr);
+                    return new NoOperation(R0Instruction.ParseInstruction(instructionLine));
                 case BitwiseAdd.Mnemonic:
-                    return new BitwiseAdd((R3Instruction)instr);
+                    return new BitwiseAdd(R3Instruction.ParseInstruction(instructionLine));
                 case BitwiseSubtract.Mnemonic:
-                    return new BitwiseSubtract((R3Instruction)instr);
+                    return new BitwiseSubtract(R3Instruction.ParseInstruction(instructionLine));
                 case BitwiseAnd.Mnemonic:
-                    return new BitwiseAnd((R3Instruction)instr);
+                    return new BitwiseAnd(R3Instruction.ParseInstruction(instructionLine));
                 case BitwiseOr.Mnemonic:
-                    return new BitwiseOr((R3Instruction)instr);
+                    return new BitwiseOr(R3Instruction.ParseInstruction(instructionLine));
                 case BitwiseXor.Mnemonic:
-                    return new BitwiseXor((R3Instruction)instr);
+                    return new BitwiseXor(R3Instruction.ParseInstruction(instructionLine));
                 case BitwiseNot.Mnemonic:
-                    return new BitwiseNot((R2Instruction)instr);
+                    return new BitwiseNot(R2Instruction.ParseInstruction(instructionLine));
                 case BitwiseNeg.Mnemonic:
-                    return new BitwiseNeg((R2Instruction)instr);
+                    return new BitwiseNeg(R2Instruction.ParseInstruction(instructionLine));
                 case ArithmeticShiftLeft.Mnemonic:
-                    return new ArithmeticShiftLeft((R3Instruction)instr);
+                    return new ArithmeticShiftLeft(R3Instruction.ParseInstruction(instructionLine));
                 case ArithmeticShiftRight.Mnemonic:
-                    return new ArithmeticShiftRight((R3Instruction)instr);
+                    return new ArithmeticShiftRight(R3Instruction.ParseInstruction(instructionLine));
                 case LogicalShiftRight.Mnemonic:
-                    return new LogicalShiftRight((R3Instruction)instr);
+                    return new LogicalShiftRight(R3Instruction.ParseInstruction(instructionLine));
                 case RotateLeft.Mnemonic:
-                    return new RotateLeft((R3Instruction)instr);
+                    return new RotateLeft(R3Instruction.ParseInstruction(instructionLine));
                 case RotateRight.Mnemonic:
-                    return new RotateRight((R3Instruction)instr);
+                    return new RotateRight(R3Instruction.ParseInstruction(instructionLine));
                 case RotateLeftCarry.Mnemonic:
-                    return new RotateLeftCarry((R3Instruction)instr);
+                    return new RotateLeftCarry(R3Instruction.ParseInstruction(instructionLine));
                 case RotateRightCarry.Mnemonic:
-                    return new RotateRightCarry((R3Instruction)instr);
+                    return new RotateRightCarry(R3Instruction.ParseInstruction(instructionLine));
                 case JumpUnconditional.Mnemonic:
-                    return new JumpUnconditional((JumpInstruction)instr);
+                    return new JumpUnconditional(JumpInstruction.ParseInstruction(instructionLine));
                 case JumpLessThan.Mnemonic:
-                    return new JumpLessThan((JumpInstruction)instr);
+                    return new JumpLessThan(JumpInstruction.ParseInstruction(instructionLine));
                 case JumpGreaterThan.Mnemonic:
-                    return new JumpGreaterThan((JumpInstruction)instr);
+                    return new JumpGreaterThan(JumpInstruction.ParseInstruction(instructionLine));
                 case JumpLessEqual.Mnemonic:
-                    return new JumpLessEqual((JumpInstruction)instr);
+                    return new JumpLessEqual(JumpInstruction.ParseInstruction(instructionLine));
                 case JumpGreaterEqual.Mnemonic:
-                    return new JumpGreaterEqual((JumpInstruction)instr);
+                    return new JumpGreaterEqual(JumpInstruction.ParseInstruction(instructionLine));
                 case JumpEqual.Mnemonic:
-                    return new JumpEqual((JumpInstruction)instr);
+                    return new JumpEqual(JumpInstruction.ParseInstruction(instructionLine));
                 case JumpNotEqual.Mnemonic:
-                    return new JumpNotEqual((JumpInstruction)instr);
+                    return new JumpNotEqual(JumpInstruction.ParseInstruction(instructionLine));
                 case Loop.Mnemonic:
-                    return new Loop((JumpInstruction)instr);
+                    return new Loop(JumpInstruction.ParseInstruction(instructionLine));
                 case Call.Mnemonic:
-                    return new Call((JumpInstruction)instr);
+                    return new Call(JumpInstruction.ParseInstruction(instructionLine));
                 case Return.Mnemonic:
-                    return new Return((JumpInstruction)instr);
+                    return new Return(JumpInstruction.ParseInstruction(instructionLine));
                 case PushWord.Mnemonic:
-                    return new PushWord((R1Instruction)instr);
+                    return new PushWord(R1Instruction.ParseInstruction(instructionLine));
                 case PushByteHigh.Mnemonic:
-                    if (((R1Instruction)instr).HighLowBit)
-                        return new PushByteHigh((R1Instruction)instr);
-                    else
-                        return new PushByteLow((R1Instruction)instr);
+                    return new PushByteHigh(R1Instruction.ParseInstruction(instructionLine));
+                case PushByteLow.Mnemonic:
+                    return new PushByteLow(R1Instruction.ParseInstruction(instructionLine));
                 case PopWord.Mnemonic:
-                    return new PopWord((R1Instruction)instr);
+                    return new PopWord(R1Instruction.ParseInstruction(instructionLine));
                 case PopByteHigh.Mnemonic:
-                    if (((R1Instruction)instr).HighLowBit)
-                        return new PopByteHigh((R1Instruction)instr);
-                    else
-                        return new PopByteLow((R1Instruction)instr);
+                    return new PopByteHigh(R1Instruction.ParseInstruction(instructionLine));
+                case PopByteLow.Mnemonic:
+                    return new PopByteLow(R1Instruction.ParseInstruction(instructionLine));
                 default:
                     throw new Exception($"Instruction not found with Mnemonic: {mnemonic}");
             }
