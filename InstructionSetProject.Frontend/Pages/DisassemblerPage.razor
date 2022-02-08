@@ -56,7 +56,7 @@
 
 @code {
 
-    private string currentCodeDis { get; set; }
+    public string currentCodeDis { get; set; }
     private string currentCodeOutDis { get; set; }
 
     private string assembly { get; set; }
@@ -88,6 +88,10 @@
     private int stackIndexDefferedAddrMode { get; set; }
 
     private string fileContent = "";
+
+    public DisassemblerPage()
+    {
+    }
 
     private void Disassemble()
     {
