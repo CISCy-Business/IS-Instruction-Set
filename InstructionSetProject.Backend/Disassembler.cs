@@ -101,7 +101,7 @@ namespace InstructionSetProject.Backend
 
                 string fullInstruction = ConvertLineToAssemblyCode(instruction, instrType);
 
-                if (immOrJump)
+                if (instrType == InstructionType.Immediate)
                 {
                     instructionCode += "   " + programCounter + "         ";
                     instructionCode += instOpCode + "         ";
