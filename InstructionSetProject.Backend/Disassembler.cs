@@ -106,8 +106,7 @@ namespace InstructionSetProject.Backend
                     instructionCode += "   " + programCounter + "         ";
                     instructionCode += instOpCode + "         ";
                     instructionCode += fullInstruction.Substring(0, 4) + "      ";
-                    instructionCode += instrType.ToString().Substring(0, 1).ToLower() + "                 ";
-                    //Reg
+                    instructionCode += instrType.ToString().Substring(0, 1).ToLower() + "          ";
                     instructionCode += addrMode + "      ";
 
                     switch (addrMode)
@@ -140,8 +139,7 @@ namespace InstructionSetProject.Backend
                     instructionCode += "   " + programCounter + "         ";
                     instructionCode += instOpCode + "         ";
                     instructionCode += fullInstruction.Substring(0, 4) + "      ";
-                    instructionCode += instrType.ToString() + "                         ";
-                    //Reg
+                    instructionCode += instrType.ToString() + "                  ";
                     instructionCode += instOperand;
                     instructionCode += "\n";
                 }

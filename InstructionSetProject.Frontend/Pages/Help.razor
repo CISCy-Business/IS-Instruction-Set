@@ -1,0 +1,586 @@
+﻿@page "/help"
+
+<style>
+    table, th, td {
+      border: 2px solid black;
+      align-content: center;
+    }
+
+    table {
+        color: black;
+        background-color: darkgray;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    div {
+        font-size: 18px;
+        text-align: center;
+    }
+</style>
+
+
+<div class="code_input" style="width:100%">
+    <br /><h1>Our ISA</h1><br />
+
+    <p style="font-size: 18px">
+        Here you can find our entire instruction set up to this point as well as examples for each.
+    </p>
+
+    <div>
+        <label>Addressing Modes</label>
+        <table style="width:60%">
+          <tr>
+            <th>Name</th>
+            <th>Letter</th>
+            <th>Binary</th>
+            <th>Treatment</th>
+          </tr>
+          <tr>
+            <td>immediate</td>
+            <td>i</td>
+            <td>0000</td>
+            <td>operand</td>
+          </tr>
+          <tr>
+            <td>direct</td>
+            <td>d</td>
+            <td>0001</td>
+            <td>Mem[operand]</td>
+          </tr>
+          <tr>
+            <td>indirect</td>
+            <td>dn</td>
+            <td>0010</td>
+            <td>Mem[Mem[operand]]</td>
+          </tr>
+          <tr>
+            <td>register direct</td>
+            <td>r</td>
+            <td>0011</td>
+            <td>Mem[register]</td>
+          </tr>
+          <tr>
+            <td>register indirect</td>
+            <td>rn</td>
+            <td>0100</td>
+            <td>Mem[Mem[register]]</td>
+          </tr>
+          <tr>
+            <td>indexed direct</td>
+            <td>xd</td>
+            <td>0101</td>
+            <td>Mem[r7 + operand]</td>
+          </tr>
+          <tr>
+            <td>indexed indirect</td>
+            <td>xn</td>
+            <td>0110</td>
+            <td>Mem[Mem[r7 + operand]]</td>
+          </tr>
+          <tr>
+            <td>indexed offset</td>
+            <td>xo</td>
+            <td>0111</td>
+            <td>Mem[Mem[r7] + operand]</td>
+          </tr>
+          <tr>
+            <td>indexed deferred</td>
+            <td>xf</td>
+            <td>1000</td>
+            <td>Mem[Mem[operand] + r7]</td>
+          </tr>
+          <tr>
+            <td>stack direct</td>
+            <td>sd</td>
+            <td>1001</td>
+            <td>Mem[SP + operand]</td>
+          </tr>
+          <tr>
+            <td>stack indirect</td>
+            <td>sn</td>
+            <td>1010</td>
+            <td>Mem[Mem[SP + operand]]</td>
+          </tr>
+          <tr>
+            <td>stack offset</td>
+            <td>so</td>
+            <td>1011</td>
+            <td>Mem[Mem[SP] + operand]</td>
+          </tr>
+          <tr>
+            <td>stack indexed direct</td>
+            <td>sxd</td>
+            <td>1100</td>
+            <td>Mem[SP + r7 + operand]</td>
+          </tr>
+          <tr>
+            <td>stack indexed indirect</td>
+            <td>sxn</td>
+            <td>1101</td>
+            <td>Mem[Mem[SP + r7 + operand]]</td>
+          </tr>
+          <tr>
+            <td>stack indexed offset</td>
+            <td>sxo</td>
+            <td>1110</td>
+            <td>Mem[Mem[SP + r7] + operand]</td>
+          </tr>
+          <tr>
+            <td>stack indexed deferred</td>
+            <td>sxf</td>
+            <td>1111</td>
+            <td>Mem[Mem[SP + operand] + r7]</td>
+          </tr>
+        </table>
+    </div>
+
+    <div>
+        <label>Types of Instructions</label>
+        <table style="width:60%">
+          <tr>
+            <th>Legend</th>
+            <th>Definition</th>
+          </tr>
+          <tr>
+            <td>o</td>
+            <td>op code</td>
+          </tr>
+          <tr>
+            <td>a</td>
+            <td>address mode</td>
+          </tr>
+          <tr>
+            <td>b</td>
+            <td>whether working with high byte(1) or low byte(0) (only used by instructions that operate on bytes)</td>
+          </tr>
+          <tr>
+            <td>r</td>
+            <td>the first register specified (usually destination register)</td>
+          </tr>
+          <tr>
+            <td>s</td>
+            <td>the second register specified (usually source register 1)</td>
+          </tr>
+          <tr>
+            <td>t</td>
+            <td>the third register specified (usually source register 2)</td>
+          </tr>
+          <tr>
+            <td>i</td>
+            <td>immediate</td>
+          </tr>
+        </table>
+
+        <br />
+
+        <table style="width:70%">
+          <tr>
+            <th>Type</th>
+            <th>Definition</th>
+            <th>Format</th>
+          </tr>
+          <tr>
+            <td>i-type</td>
+            <td>immediate type: the following two bytes will be
+            treated as an operand rather than another
+            instruction<br />
+            NOTE: the first bit will always be a 1. Only op codes starting
+                   with a 1 will use the next two bytes as an operand</td>
+            <td>10oo oooo aaaa brrr | iiii iiii iiii iiii</td>
+          </tr>
+          <tr>
+            <td>j-type</td>
+            <td>jump type: the following two bytes will be
+            treated as an operand rather than another
+            instruction</td>
+            <td>11oo oooo osss brrr | iiii iiii iiii iiii</td>
+          </tr>
+          <tr>
+            <td>r0-type</td>
+            <td>no registers specified, pure opcode</td>
+            <td>000o oooo oooo oooo</td>
+          </tr>
+           <tr>
+            <td>r1-type</td>
+            <td>register one type: two byte opcode involving one register</td>
+            <td>001o oooo oooo brrr</td>
+          </tr>
+           <tr>
+            <td>r2-type</td>
+            <td>register three type: two byte opcode involving two registers</td>
+            <td>010o oooo ooss srrr</td>
+          </tr>
+           <tr>
+            <td>r3-type</td>
+            <td>register three type: two byte opcode involving three registers</td>
+            <td>011o ooot ttss srrr</td>
+          </tr>
+        </table>
+    </div>
+
+    <div>
+        <label>Instructions</label>
+        <table style="width:90%">
+          <tr>
+            <th>Name</th>
+            <th>Mnemonic</th>
+            <th>Type</th>
+            <th>Op Code</th>
+            <th>Example</th>
+            <th>Example Pseudo Code</th>
+            <th>Example Binary</th>
+          </tr>
+          <tr>
+            <td>Load Word</td>
+            <td>LDW</td>
+            <td>i</td>
+            <td>1000 0000</td>
+            <td>LDW r1, r2, r</td>
+            <td>r1 = Mem[r2]</td>
+            <td>1000 0000 0011 0001 | 0000 0000 0000 0011</td>
+          </tr>
+          <tr>
+            <td>Load High Byte</td>
+            <td>LDH</td>
+            <td>i</td>
+            <td>1000 0001;b=1</td>
+            <td>LDH r5, 15, i</td>
+            <td>r5(high) = 15</td>
+            <td>1000 0001 0000 1101 | 0000 0000 0000 1111</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+
+        </table>
+    </div>
+</div>
+
+
+
+
+@code {
+
+}
