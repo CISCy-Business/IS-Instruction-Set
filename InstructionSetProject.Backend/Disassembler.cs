@@ -101,7 +101,7 @@ namespace InstructionSetProject.Backend
 
                 string fullInstruction = ConvertLineToAssemblyCode(instruction, instrType);
 
-                if (immOrJump)
+                if (instrType == InstructionType.Immediate)
                 {
                     instructionCode += "   " + programCounter + "         ";
                     instructionCode += instOpCode + "         ";
@@ -197,8 +197,8 @@ namespace InstructionSetProject.Backend
                     return typedInstr.Disassemble();
                 case InstructionType.Immediate:
                     genericTypedInstr = ImmediateInstruction.ParseInstruction(instruction);
+                    addrMode = ((ImmediateInstruction)genericTypedInstr).GetAddressingModeString();
                     typedInstr = GetInstruction.FromOpCode(genericTypedInstr);
-                    addrMode = typedInstr.GetAddressingModeString();
                     return typedInstr.Disassemble();
                 case InstructionType.Jump:
                     genericTypedInstr = JumpInstruction.ParseInstruction(instruction);

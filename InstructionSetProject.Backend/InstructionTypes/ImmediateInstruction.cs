@@ -26,12 +26,17 @@ namespace InstructionSetProject.Backend.InstructionTypes
             return OpCode;
         }
 
-        public virtual byte GetAddressingMode()
+        public virtual bool GetHighLowBit()
+        {
+            return HighLowBit;
+        }
+
+        public byte GetAddressingMode()
         {
             return AddressingMode;
         }
 
-        public virtual string GetAddressingModeString()
+        public string GetAddressingModeString()
         {
             switch (AddressingMode)
             {
@@ -52,13 +57,58 @@ namespace InstructionSetProject.Backend.InstructionTypes
                 case 14: return "sxo";
                 case 15: return "sxf";
                 default:
-                    throw new Exception($"Address Not Found: {AddressingMode}");
+                    throw new Exception($"Addressing Mode Not Found: {AddressingMode}");
+            }
+        }
+
+        public static byte ConvertAddressingModeToByte(string addrMode)
+        {
+            switch (addrMode)
+            {
+                case "i": return 0;
+                case "d": return 1;
+                case "dn": return 2;
+                case "r": return 3;
+                case "rn": return 4;
+                case "xd": return 5;
+                case "xn": return 6;
+                case "xo": return 7;
+                case "xf": return 8;
+                case "sd": return 9;
+                case "sn": return 10;
+                case "so": return 11;
+                case "sxd": return 12;
+                case "sxn": return 13;
+                case "sxo": return 14;
+                case "sxf": return 15;
+                default:
+                    throw new Exception($"Addressing Mode Not Found: {addrMode}");
             }
         }
 
         public List<byte> Assemble()
         {
-            throw new NotImplementedException();
+            var machineCode = new List<byte>();
+
+            byte firstByte = 0;
+            firstByte += (byte) (GetOpCode());
+            machineCode.Add(firstByte);
+
+            byte secondByte = 0;
+            secondByte += (byte) (GetAddressingMode() << 4);
+            if (GetHighLowBit()) secondByte += 8;
+            secondByte += DestinationRegister;
+            machineCode.Add(secondByte);
+
+            byte thirdByte = 0;
+            thirdByte += (byte) (Immediate >> 8);
+            machineCode.Add(thirdByte);
+
+            byte fourthByte = 0;
+            fourthByte += (byte) (Immediate & 0xFF);
+            machineCode.Add(fourthByte);
+
+            return machineCode;
         }
 
         public string Disassemble()
@@ -69,13 +119,18 @@ namespace InstructionSetProject.Backend.InstructionTypes
             assembly += " ";
             assembly += GetRegister.FromByte(DestinationRegister);
             assembly += ", ";
-            assembly += GetRegister.FromByte(DestinationRegister);
+            if (AddressingMode == '3' || AddressingMode == '4')
+            {
+                assembly += GetRegister.FromByte((byte)Immediate);
+            }
+            else
+            {
+                assembly += Immediate.ToString();
+            }
             assembly += ", ";
             assembly += GetAddressingModeString();
 
             return assembly;
-
-            //throw new NotImplementedException();
         }
 
         public static ImmediateInstruction ParseInstruction(List<byte> machineCode)
@@ -101,7 +156,29 @@ namespace InstructionSetProject.Backend.InstructionTypes
 
         public static ImmediateInstruction ParseInstruction(string assemblyCode)
         {
-            throw new NotImplementedException();
+            var tokens = assemblyCode.Split(' ');
+
+            if (tokens.Length != 4)
+                throw new Exception("Incorrect number of tokens obtained from assembly instruction");
+
+            var instr = new ImmediateInstruction();
+
+            instr.Mnemonic = tokens[0];
+
+            instr.DestinationRegister = GetRegister.FromString(tokens[1].TrimEnd(','));
+
+            if (tokens[2].StartsWith('r'))
+            {
+                instr.Immediate = GetRegister.FromString(tokens[2].TrimEnd(','));
+            }
+            else
+            {
+                instr.Immediate = ushort.Parse(tokens[2].TrimEnd(','));
+            }
+
+            instr.AddressingMode = ImmediateInstruction.ConvertAddressingModeToByte(tokens[3]);
+
+            return instr;
         }
     }
 }

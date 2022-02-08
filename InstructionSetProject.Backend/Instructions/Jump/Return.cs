@@ -32,5 +32,36 @@ namespace InstructionSetProject.Backend.Instructions.Jump
         {
             return Return.OpCode;
         }
+
+        public override string Disassemble()
+        {
+            string assembly = "";
+
+            assembly += GetMnemonic();
+
+            return assembly;
+        }
+
+        public new static Return ParseInstruction(string assemblyCode)
+        {
+            var tokens = assemblyCode.Split(' ');
+
+            if (tokens.Length != 1)
+                throw new Exception("Incorrect number of tokens obtained from assembly instruction");
+
+            var instr = new JumpInstruction();
+
+            instr.Mnemonic = tokens[0];
+
+            instr.DestinationRegister = 0;
+
+            instr.SourceRegister = 0;
+
+            instr.HighLowBit = false;
+
+            instr.Immediate = 0;
+
+            return new Return(instr);
+        }
     }
 }

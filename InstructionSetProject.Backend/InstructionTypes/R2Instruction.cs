@@ -73,12 +73,20 @@ namespace InstructionSetProject.Backend.InstructionTypes
 
         public static R2Instruction ParseInstruction(string assemblyCode)
         {
-            throw new NotImplementedException();
-        }
+            var tokens = assemblyCode.Split(' ');
 
-        public string GetAddressingModeString()
-        {
-            throw new NotImplementedException();
+            if (tokens.Length != 3)
+                throw new Exception("Incorrect number fo tokens obtained from assembly instruction");
+
+            var instr = new R2Instruction();
+
+            instr.Mnemonic = tokens[0];
+
+            instr.DestinationRegister = GetRegister.FromString(tokens[1].TrimEnd(','));
+
+            instr.SourceRegister = GetRegister.FromString(tokens[2]);
+
+            return instr;
         }
     }
 }

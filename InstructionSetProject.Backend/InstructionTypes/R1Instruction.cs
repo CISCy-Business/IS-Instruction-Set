@@ -24,6 +24,11 @@ namespace InstructionSetProject.Backend.InstructionTypes
             return OpCode;
         }
 
+        public virtual bool GetHighLowBit()
+        {
+            return HighLowBit;
+        }
+
         public List<byte> Assemble()
         {
             var machineCode = new List<byte>();
@@ -34,7 +39,7 @@ namespace InstructionSetProject.Backend.InstructionTypes
 
             byte secondByte = 0;
             secondByte += (byte) ((GetOpCode() & 0xF) << 4);
-            if (HighLowBit) secondByte += 8;
+            if (GetHighLowBit()) secondByte += 8;
             secondByte += DestinationRegister;
             machineCode.Add(secondByte);
 
@@ -71,12 +76,18 @@ namespace InstructionSetProject.Backend.InstructionTypes
 
         public static R1Instruction ParseInstruction(string assemblyCode)
         {
-            throw new NotImplementedException();
-        }
+            var tokens = assemblyCode.Split(' ');
 
-        public string GetAddressingModeString()
-        {
-            throw new NotImplementedException();
+            if (tokens.Length != 2)
+                throw new Exception("Incorrect number of tokens obtained from assembly instruction");
+
+            var instr = new R1Instruction();
+
+            instr.Mnemonic = tokens[0];
+
+            instr.DestinationRegister = GetRegister.FromString(tokens[1]);
+
+            return instr;
         }
     }
 }
