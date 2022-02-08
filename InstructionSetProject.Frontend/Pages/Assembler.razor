@@ -1,11 +1,21 @@
 ﻿@page "/assembler"
+@using InstructionSetProject.Backend;
+@inject IJSRuntime JSRuntime
 
 <div class="code_input">
     <div class="code_input_wrapper">
         <div class="row">
             <div class="col-sm-5">
-                <label for="assemble">Assembler</label>
-                <h6>(Assembly Code)</h6>
+                <div class="row">
+                    <div class="col-sm-6 assemLabel">
+                        <label for="assemble">Assembler</label>
+                        <h6>(Assembly Code)</h6>
+                    </div>
+                    <div class="col-sm-6 fileLoad">
+                        <InputFile OnChange="@LoadFile" accept=".txt"></InputFile>
+                    </div>
+
+                </div> 
             </div>
     
             <div class="col-sm-2"></div>
@@ -20,6 +30,9 @@
         <div class="row">
             <div class="col-sm-5">
                 <textarea @bind="currentCodeAss" id="assemble" name="assemble"></textarea>
+                <p>
+                    <button @onclick="SaveAssemblyCode" type="button" name="dis_btn" class="btn btn-primary btn-lg">Save Code</button>
+                </p>
             </div>
     
             <div class="col-sm-2">
@@ -32,6 +45,9 @@
     
             <div class="col-sm-5">
                 <textarea @bind="currentCodeOutAss" id="outputAss" name="outputAss"></textarea>
+                <p>
+                    <button @onclick="SaveOutput" type="button" name="dis_btn" class="btn btn-primary btn-lg">Save Output</button>
+                </p>
             </div>
         </div>
     </div>
@@ -42,12 +58,35 @@
     private string currentCodeAss { get; set; }
     private string currentCodeOutAss { get; set; }
 
-    private List<byte> machineCode = new List<byte>();
+    private string fileContent = "";
 
     private void Assemble()
     {
         // Should do some stuff instead of just printing it back and forth
         currentCodeOutAss = currentCodeAss;
+    }
+
+    private async Task LoadFile(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        long maxsize = 512000;
+
+        var buffer = new byte[file.Size];
+        await file.OpenReadStream(maxsize).ReadAsync(buffer);
+        fileContent = System.Text.Encoding.UTF8.GetString(buffer);
+        currentCodeAss = fileContent;
+    }
+
+    private async Task SaveAssemblyCode()
+    {
+        byte[] file = System.Text.Encoding.UTF8.GetBytes(currentCodeAss);
+        await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "machineCode.txt", "text/plain", file);
+    }
+
+    private async Task SaveOutput()
+    {
+        byte[] file = System.Text.Encoding.UTF8.GetBytes(currentCodeOutAss);
+        await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "assemblyTable.txt", "text/plain", file);
     }
 
 }
