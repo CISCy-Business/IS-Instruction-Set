@@ -30,5 +30,10 @@ namespace InstructionSetProject.Backend.Instructions.Stack
         {
             return PopWord.OpCode;
         }
+
+        public override bool GetHighLowBit()
+        {
+            return false;
+        }
     }
 }

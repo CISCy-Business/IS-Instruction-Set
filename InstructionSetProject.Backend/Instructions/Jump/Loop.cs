@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using InstructionSetProject.Backend.InstructionTypes;
+using InstructionSetProject.Backend.Utilities;
 
 namespace InstructionSetProject.Backend.Instructions.Jump
 {
@@ -31,6 +32,41 @@ namespace InstructionSetProject.Backend.Instructions.Jump
         public override ushort GetOpCode()
         {
             return Loop.OpCode;
+        }
+
+        public override string Disassemble()
+        {
+            string assembly = "";
+
+            assembly += GetMnemonic();
+            assembly += " ";
+            assembly += GetRegister.FromByte(DestinationRegister);
+            assembly += ", ";
+            assembly += Immediate.ToString();
+
+            return assembly;
+        }
+
+        public new static Loop ParseInstruction(string assemblyCode)
+        {
+            var tokens = assemblyCode.Split(' ');
+
+            if (tokens.Length != 3)
+                throw new Exception("Incorrect number of tokens obtained from assembly instruction");
+
+            var instr = new JumpInstruction();
+
+            instr.Mnemonic = tokens[0];
+
+            instr.DestinationRegister = GetRegister.FromString(tokens[1].TrimEnd(','));
+
+            instr.SourceRegister = 0;
+
+            instr.HighLowBit = false;
+
+            instr.Immediate = ushort.Parse(tokens[2]);
+
+            return new Loop(instr);
         }
     }
 }

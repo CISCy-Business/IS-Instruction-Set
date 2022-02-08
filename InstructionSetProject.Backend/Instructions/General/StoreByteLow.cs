@@ -34,5 +34,10 @@ namespace InstructionSetProject.Backend.Instructions.General
         {
             return StoreByteLow.OpCode;
         }
+
+        public override bool GetHighLowBit()
+        {
+            return StoreByteLow.HighLowBit;
+        }
     }
 }

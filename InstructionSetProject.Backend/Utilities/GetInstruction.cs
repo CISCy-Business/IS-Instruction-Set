@@ -149,7 +149,7 @@ namespace InstructionSetProject.Backend.Utilities
                 case RotateRightCarry.Mnemonic:
                     return new RotateRightCarry(R3Instruction.ParseInstruction(instructionLine));
                 case JumpUnconditional.Mnemonic:
-                    return new JumpUnconditional(JumpInstruction.ParseInstruction(instructionLine));
+                    return JumpUnconditional.ParseInstruction(instructionLine);
                 case JumpLessThan.Mnemonic:
                     return new JumpLessThan(JumpInstruction.ParseInstruction(instructionLine));
                 case JumpGreaterThan.Mnemonic:
@@ -163,11 +163,11 @@ namespace InstructionSetProject.Backend.Utilities
                 case JumpNotEqual.Mnemonic:
                     return new JumpNotEqual(JumpInstruction.ParseInstruction(instructionLine));
                 case Loop.Mnemonic:
-                    return new Loop(JumpInstruction.ParseInstruction(instructionLine));
+                    return Loop.ParseInstruction(instructionLine);
                 case Call.Mnemonic:
-                    return new Call(JumpInstruction.ParseInstruction(instructionLine));
+                    return Call.ParseInstruction(instructionLine);
                 case Return.Mnemonic:
-                    return new Return(JumpInstruction.ParseInstruction(instructionLine));
+                    return Return.ParseInstruction(instructionLine);
                 case PushWord.Mnemonic:
                     return new PushWord(R1Instruction.ParseInstruction(instructionLine));
                 case PushByteHigh.Mnemonic:

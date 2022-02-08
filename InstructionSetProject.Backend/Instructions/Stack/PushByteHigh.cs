@@ -32,5 +32,10 @@ namespace InstructionSetProject.Backend.Instructions.Stack
         {
             return PushByteHigh.OpCode;
         }
+
+        public override bool GetHighLowBit()
+        {
+            return PushByteHigh.HighLowBit;
+        }
     }
 }
