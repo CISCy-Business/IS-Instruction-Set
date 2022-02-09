@@ -61,7 +61,7 @@ namespace InstructionSetProject.Backend.Instructions.Jump
 
             instr.HighLowBit = false;
 
-            instr.Immediate = ushort.Parse(tokens[1]);
+            instr.Immediate = Convert.ToUInt16(tokens[1], 16);
 
             return new JumpUnconditional(instr);
         }

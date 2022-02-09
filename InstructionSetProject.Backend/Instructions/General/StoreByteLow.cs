@@ -11,7 +11,7 @@ namespace InstructionSetProject.Backend.Instructions.General
     {
         public new const string Mnemonic = "STL";
 
-        public new const ushort OpCode = 0x106;
+        public new const ushort OpCode = 0x83;
 
         public new const bool HighLowBit = false;
 

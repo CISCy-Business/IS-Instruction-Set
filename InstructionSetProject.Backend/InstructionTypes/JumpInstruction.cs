@@ -104,7 +104,7 @@ namespace InstructionSetProject.Backend.InstructionTypes
 
             instr.SourceRegister = GetRegister.FromString(tokens[2].TrimEnd(','));
 
-            instr.Immediate = ushort.Parse(tokens[2].TrimEnd(','));
+            instr.Immediate = Convert.ToUInt16(tokens[3], 16);
 
             return instr;
         }

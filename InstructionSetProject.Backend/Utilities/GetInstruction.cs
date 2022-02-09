@@ -100,7 +100,7 @@ namespace InstructionSetProject.Backend.Utilities
 
         public static IInstruction FromAssembly(string instructionLine)
         {
-            var mnemonic = instructionLine.Substring(0, instructionLine.IndexOf(' '));
+            var mnemonic = instructionLine.Split(' ')[0];
 
             switch (mnemonic)
             {

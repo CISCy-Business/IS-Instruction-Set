@@ -42,6 +42,7 @@ namespace InstructionSetProject.Backend
         public static string Disassemble(List<byte> machineCode)
         {
             var instructionCode = "";
+            assemblyCode = "";
             totalInstructions = 0;
             arithmeticInstructions = 0;
             generalInstructions = 0;

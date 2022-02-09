@@ -173,7 +173,6 @@ namespace InstructionSetProject.Backend.InstructionTypes
             }
             else
             {
-                //instr.Immediate = ushort.Parse(tokens[2].TrimEnd(','));
                 instr.Immediate = Convert.ToUInt16(tokens[2].TrimEnd(','), 16);
             }
 
