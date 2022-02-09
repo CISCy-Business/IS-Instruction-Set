@@ -39,7 +39,7 @@ namespace InstructionSetProject.Backend.Instructions.Jump
 
             assembly += GetMnemonic();
             assembly += " ";
-            assembly += Immediate;
+            assembly += Immediate.ToString("X2");
 
             return assembly;
         }

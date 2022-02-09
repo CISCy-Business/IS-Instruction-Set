@@ -16,6 +16,7 @@ namespace InstructionSetProject.Backend
         public static string programCounter = "";
         public static bool immOrJump = false;
         public static string addrMode = "";
+        public static string assemblyCode = "";
         public static int totalInstructions { get; set; } = 0;
         public static int arithmeticInstructions { get; set; } = 0;
         public static int generalInstructions { get; set; } = 0;
@@ -103,26 +104,26 @@ namespace InstructionSetProject.Backend
 
                 if (instrType == InstructionType.Immediate)
                 {
-                    instructionCode += "   " + programCounter + "         ";
-                    instructionCode += instOpCode + "         ";
-                    instructionCode += fullInstruction.Substring(0, 4) + "      ";
-                    instructionCode += instrType.ToString().Substring(0, 1).ToLower() + "          ";
-                    instructionCode += addrMode + "      ";
+                    instructionCode += "   " + programCounter + "      ";
+                    instructionCode += instrType.ToString().Substring(0, 1).ToLower() + "       ";
+                    instructionCode += instOpCode + "       ";
+                    instructionCode += fullInstruction;
+                   
 
                     switch (addrMode)
                     {
-                        case "i  ": immediateAddrMode++; break;
-                        case "d  ": directAddrMode++; break;
-                        case "dn ": indirectAddrMode++; break;
-                        case "r  ": registerDirectAddrMode++; break;
-                        case "rn ": registerIndirectAddrMode++; break;
-                        case "xd ": indexDirectAddrMode++; break;
-                        case "xn ": indexIndirectAddrMode++; break;
-                        case "xo ": indexOffsetAddrMode++; break;
-                        case "xf ": indexDefferedAddrMode++; break;
-                        case "sd ": stackDirectAddrMode++; break;
-                        case "sn ": stackIndirectAddrMode++; break;
-                        case "so ": stackOffsetAddrMode++; break;
+                        case "i": immediateAddrMode++; break;
+                        case "d": directAddrMode++; break;
+                        case "dn": indirectAddrMode++; break;
+                        case "r": registerDirectAddrMode++; break;
+                        case "rn": registerIndirectAddrMode++; break;
+                        case "xd": indexDirectAddrMode++; break;
+                        case "xn": indexIndirectAddrMode++; break;
+                        case "xo": indexOffsetAddrMode++; break;
+                        case "xf": indexDefferedAddrMode++; break;
+                        case "sd": stackDirectAddrMode++; break;
+                        case "sn": stackIndirectAddrMode++; break;
+                        case "so": stackOffsetAddrMode++; break;
                         case "sxd": stackIndexDirectAddrMode++; break;
                         case "sxn": stackIndexIndirectAddrMode++; break;
                         case "sxo": stackIndexOffsetAddrMode++; break;
@@ -131,18 +132,18 @@ namespace InstructionSetProject.Backend
                             throw new Exception($"Address Not Found: {addrMode}");
                     }
 
-                    instructionCode += instOperand;
                     instructionCode += "\n";
                 }
                 else
                 {
-                    instructionCode += "   " + programCounter + "         ";
-                    instructionCode += instOpCode + "         ";
-                    instructionCode += fullInstruction.Substring(0, 4) + "      ";
-                    instructionCode += instrType.ToString() + "                  ";
-                    instructionCode += instOperand;
+                    instructionCode += "   " + programCounter + "      ";
+                    instructionCode += instrType.ToString() + "      ";
+                    instructionCode += instOpCode + "       ";
+                    instructionCode += fullInstruction;
                     instructionCode += "\n";
                 }
+
+                assemblyCode += fullInstruction + "\n";
 
                 totalInstructions++;
 

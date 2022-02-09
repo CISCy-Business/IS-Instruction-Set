@@ -42,7 +42,7 @@ namespace InstructionSetProject.Backend.Instructions.Jump
             assembly += " ";
             assembly += GetRegister.FromByte(DestinationRegister);
             assembly += ", ";
-            assembly += Immediate.ToString();
+            assembly += Immediate.ToString("X2");
 
             return assembly;
         }

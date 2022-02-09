@@ -62,7 +62,7 @@ namespace InstructionSetProject.Backend.InstructionTypes
             assembly += ", ";
             assembly += GetRegister.FromByte(SourceRegister);
             assembly += ", ";
-            assembly += Immediate.ToString();
+            assembly += Immediate.ToString("X2");
 
             return assembly;
         }

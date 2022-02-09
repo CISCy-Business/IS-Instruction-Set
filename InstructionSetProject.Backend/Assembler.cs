@@ -17,8 +17,11 @@ namespace InstructionSetProject.Backend
             var machineCode = new List<byte>();
             foreach (var line in assemblyLines)
             {
-                var machineLine = ConvertLineToMachineCode(line);
-                machineCode = machineCode.Concat(machineLine).ToList();
+                if (line != String.Empty)
+                {
+                    var machineLine = ConvertLineToMachineCode(line);
+                    machineCode = machineCode.Concat(machineLine).ToList();
+                }
             }
             return machineCode;
         }
