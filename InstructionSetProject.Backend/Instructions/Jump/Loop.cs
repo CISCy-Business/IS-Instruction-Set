@@ -42,7 +42,7 @@ namespace InstructionSetProject.Backend.Instructions.Jump
             assembly += " ";
             assembly += GetRegister.FromByte(DestinationRegister);
             assembly += ", ";
-            assembly += Immediate.ToString();
+            assembly += Immediate.ToString("X2");
 
             return assembly;
         }
@@ -64,7 +64,7 @@ namespace InstructionSetProject.Backend.Instructions.Jump
 
             instr.HighLowBit = false;
 
-            instr.Immediate = ushort.Parse(tokens[2]);
+            instr.Immediate = Convert.ToUInt16(tokens[2], 16);
 
             return new Loop(instr);
         }

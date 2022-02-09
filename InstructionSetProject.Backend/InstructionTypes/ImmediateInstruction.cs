@@ -40,18 +40,18 @@ namespace InstructionSetProject.Backend.InstructionTypes
         {
             switch (AddressingMode)
             {
-                case 0: return "i  ";
-                case 1: return "d  ";
-                case 2: return "dn ";
-                case 3: return "r  ";
-                case 4: return "rn ";
-                case 5: return "xd ";
-                case 6: return "xn ";
-                case 7: return "xo ";
-                case 8: return "xf ";
-                case 9: return "sd ";
-                case 10: return "sn ";
-                case 11: return "so ";
+                case 0: return "i";
+                case 1: return "d";
+                case 2: return "dn";
+                case 3: return "r";
+                case 4: return "rn";
+                case 5: return "xd";
+                case 6: return "xn";
+                case 7: return "xo";
+                case 8: return "xf";
+                case 9: return "sd";
+                case 10: return "sn";
+                case 11: return "so";
                 case 12: return "sxd";
                 case 13: return "sxn";
                 case 14: return "sxo";
@@ -125,7 +125,7 @@ namespace InstructionSetProject.Backend.InstructionTypes
             }
             else
             {
-                assembly += Immediate.ToString();
+                assembly += Immediate.ToString("X2");
             }
             assembly += ", ";
             assembly += GetAddressingModeString();
@@ -173,7 +173,7 @@ namespace InstructionSetProject.Backend.InstructionTypes
             }
             else
             {
-                instr.Immediate = ushort.Parse(tokens[2].TrimEnd(','));
+                instr.Immediate = Convert.ToUInt16(tokens[2].TrimEnd(','), 16);
             }
 
             instr.AddressingMode = ImmediateInstruction.ConvertAddressingModeToByte(tokens[3]);

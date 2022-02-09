@@ -59,7 +59,7 @@
     public string currentCodeDis { get; set; }
     private string currentCodeOutDis { get; set; }
 
-    private string assembly { get; set; }
+    private string output { get; set; }
 
     private List<byte> machineCode;
     private string machineCodeString { get; set; }
@@ -88,6 +88,7 @@
     private int stackIndexDefferedAddrMode { get; set; }
 
     private string fileContent = "";
+    private string assemblyCode = "";
 
     public DisassemblerPage()
     {
@@ -98,7 +99,8 @@
 
         machineCodeString = currentCodeDis.Replace(" ", string.Empty);
         machineCode = HexStringToByteList(machineCodeString);
-        assembly = Disassembler.Disassemble(machineCode);
+        output = Disassembler.Disassemble(machineCode);
+        assemblyCode = Disassembler.assemblyCode;
 
         totalInstructions = Disassembler.totalInstructions;
         arithmeticInstructions = Disassembler.arithmeticInstructions;
@@ -123,7 +125,7 @@
         stackIndexOffsetAddrMode = Disassembler.stackIndexOffsetAddrMode;
         stackIndexDefferedAddrMode = Disassembler.stackIndexDefferedAddrMode;
 
-        OutputFromDis(assembly);
+        OutputFromDis(output);
     }
 
     private static List<byte> HexStringToByteList(string machineCodeString) 
@@ -148,8 +150,8 @@
         string returnStr = "";
         returnStr += "   Name: Dante, Lucas, Preston\n" +
                      "Project: Project 1 - Custom ISA\n\n" +
-                     "Prog Count  Inst Spec   Inst Mnem   Type    Addr Mode   Operand\n" +
-                     "----------  ---------   ---------   ----    ---------   -------\n";
+                     "Prog Count  Type   Opcode       Instruction\n" +
+                     "----------  ----   ------    -----------------\n";
 
         returnStr += assembly;
 
@@ -202,7 +204,7 @@
 
     private async Task SaveOutput()
     {
-        byte[] file = System.Text.Encoding.UTF8.GetBytes(currentCodeOutDis);
+        byte[] file = System.Text.Encoding.UTF8.GetBytes(assemblyCode);
         await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "assemblyTable.txt", "text/plain", file);
     }
 
