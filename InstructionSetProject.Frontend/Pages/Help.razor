@@ -1,27 +1,38 @@
-@page "/help"
+﻿@page "/help"
 
 <style>
     table, th, td {
-      border: 2px solid black;
+      border: 1px solid black;
       align-content: center;
+    }
+
+    th {
+        background: darkgray;
+        border: 2px solid black;
+        font-size: 20px;
     }
 
     table {
         color: black;
-        background-color: white;
+        background: white;
         margin-left: auto;
         margin-right: auto;
+        border: 2px solid black;
     }
 
     div {
         font-size: 18px;
         text-align: center;
     }
+
+    label {
+        font-size: 34px;
+    }
 </style>
 
 
 <div class="code_input" style="width:100%">
-    <br /><h1>Our ISA</h1><br />
+    <br /><h1>IS Instruction Set Architecture</h1><br />
 
     <p style="font-size: 18px">
         Here you can find our entire instruction set up to this point as well as examples for each.
@@ -285,7 +296,7 @@
             <td>Mem[r5](low) = r2</td>
             <td>1000 0011 0011 0010 | 0000 0000 0000 0101</td>
           </tr>
-          <tr style="height: 10px">
+          <tr style="height: 25px">
           </tr>
           <tr>
             <td>Halt Program</td>
@@ -305,279 +316,290 @@
             <td>No Operation</td>
             <td>0000 0000 0000 0001</td>
           </tr>
-          <tr style="height: 10px">
+          <tr style="height: 25px">
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Bitwise Add</td>
+            <td>ADD</td>
+            <td>r3</td>
+            <td>0110 001</td>
+            <td>ADD r1, r2, r3</td>
+            <td>r1 = r2 + r3</td>
+            <td>0110 0010 1101 0001</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Bitwise Subtract </td>
+            <td>SUB</td>
+            <td>r3</td>
+            <td>0110 010</td>
+            <td>SUB r1, r2, r3</td>
+            <td>r1 = r2 - r3</td>
+            <td>0110 0100 1101 0001</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Bitwise And</td>
+            <td>AND</td>
+            <td>r3</td>
+            <td>0110 011</td>
+            <td>AND r1, r2, r3</td>
+            <td>r1 = r2 & r3</td>
+            <td>0110 0110 1101 0001</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Bitwise Or</td>
+            <td>OR</td>
+            <td>r3</td>
+            <td>0110 100</td>
+            <td>OR  r1, r2, r3</td>
+            <td>r1 = r2 | r3</td>
+            <td>0110 1000 1101 0001</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Bitwise Xor</td>
+            <td>XOR</td>
+            <td>r3</td>
+            <td>0110 101</td>
+            <td>XOR r1, r2, r3</td>
+            <td>r1 = r2 ^ r3</td>
+            <td>0110 1010 1101 0001</td>
+          </tr>
+          <tr style="height: 25px">
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Bitwise Not</td>
+            <td>NOT</td>
+            <td>r2</td>
+            <td>0100 0000 00</td>
+            <td>NOT r1, r2</td>
+            <td>r1 = ~r2</td>
+            <td>0100 0000 0001 0001</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Bitwise Neg</td>
+            <td>NEG</td>
+            <td>r2</td>
+            <td>0100 0000 01</td>
+            <td>NEG r1, r2</td>
+            <td>r1 = -r2</td>
+            <td>0100 0000 0101 0001</td>
+          </tr>
+          <tr style="height: 25px">
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Arith Shift Left</td>
+            <td>ASL</td>
+            <td>r3</td>
+            <td>0110 110</td>
+            <td>ASL r1, r2, r3</td>
+            <td>r1 = r2 <img src="chevron-double-left.svg"/> r3</td>
+            <td>0110 1100 1101 0001</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Arith Shift Right</td>
+            <td>ASR</td>
+            <td>r3</td>
+            <td>0110 111</td>
+            <td>ASR r1, r2, r3</td>
+            <td>r1 = r2 <img src="chevron-double-right.svg"/> r3</td>
+            <td>0110 1110 1101 0001</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Logic Shift Right</td>
+            <td>LSR</td>
+            <td>r3</td>
+            <td>0111 000</td>
+            <td>LSR r1, r2, r3</td>
+            <td>r1 = r2 >>> r3 (java)</td>
+            <td>0111 0000 1101 0001</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Rotate Left</td>
+            <td>RTL</td>
+            <td>r3</td>
+            <td>0111 001</td>
+            <td>RTL r1, r2, r3</td>
+            <td>r1 = r2 rotated by r3</td>
+            <td>0111 0010 1101 0001</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Rotate Right</td>
+            <td>RTR</td>
+            <td>r3</td>
+            <td>0111 010</td>
+            <td>RTR r1, r2, r3</td>
+            <td>r1 = r2 rotated by r3</td>
+            <td>0111 0100 1101 0001</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Rotate Left Carry</td>
+            <td>RLC</td>
+            <td>r3</td>
+            <td>0111 011</td>
+            <td>RLC r1, r2, r3</td>
+            <td>r1 = r2 rotated by r3</td>
+            <td>0111 0110 1101 0001</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Rotate Right Carry</td>
+            <td>RRC</td>
+            <td>r3</td>
+            <td>0111 100</td>
+            <td>RRC r1, r2, r3</td>
+            <td>r1 = r2 rotated by r3</td>
+            <td>0111 1000 1101 0001</td>
+          </tr>
+          <tr style="height: 25px">
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Jump Unconditional</td>
+            <td>TMP</td>
+            <td>j</td>
+            <td>1100 0000 0</td>
+            <td>JMP label</td>
+            <td>goto label</td>
+            <td>1100 0000 0000 0000 | ???? ???? ???? ????</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Jump Less Than</td>
+            <td>JLT</td>
+            <td>j</td>
+            <td>1100 0000 1</td>
+            <td>JLT r1, r2, label</td>
+            <td>goto if r1 <img src="chevron-left.svg"/> r2</td>
+            <td>1100 0000 1010 0001 | ???? ???? ???? ????</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Jump Greater Than</td>
+            <td>JGT</td>
+            <td>j</td>
+            <td>1100 0001 0</td>
+            <td>JGT r1, r2, label</td>
+            <td>goto if r1 <img src="chevron-right.svg"/> r2</td>
+            <td>1100 0001 0010 0001 | ???? ???? ???? ????</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Jump Less Equal</td>
+            <td>JLE</td>
+            <td>j</td>
+            <td>1100 0001 1</td>
+            <td>JLE r1, r2, label</td>
+            <td>goto if r1 <img src="chevron-left.svg"/>= r2</td>
+            <td>1100 0001 1010 0001 | ???? ???? ???? ????</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Jump Greater Equal</td>
+            <td>JGE</td>
+            <td>j</td>
+            <td>1100 0010 0</td>
+            <td>JGE r1, r2, label</td>
+            <td>goto if r1 <img src="chevron-right.svg"/>= r2</td>
+            <td>1100 0010 0010 0001 | ???? ???? ???? ????</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Jump Equal</td>
+            <td>JEQ</td>
+            <td>j</td>
+            <td>1100 0010 1</td>
+            <td>JEQ r1, r2, label</td>
+            <td>goto if r1 == r2</td>
+            <td>1100 0010 1010 0001 | ???? ???? ???? ????</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Jump Not Equal</td>
+            <td>JNE</td>
+            <td>j</td>
+            <td>1100 0011 0</td>
+            <td>JNE r1, r2, label</td>
+            <td>goto if r1 != r2</td>
+            <td>1100 0011 0010 0001 | ???? ???? ???? ????</td>
+          </tr>
+          <tr style="height: 25px">
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Loop</td>
+            <td>LOP</td>
+            <td>j</td>
+            <td>1100 0011 1</td>
+            <td>LOOP r1, label</td>
+            <td>goto if r1 != 0 (r1--)</td>
+            <td>1100 0011 1000 0001 | ???? ???? ???? ????</td>
+          </tr>
+          <tr style="height: 25px">
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Call Procedure</td>
+            <td>CAL</td>
+            <td>j</td>
+            <td>1110 0000 0</td>
+            <td>CAL proc</td>
+            <td>move PC into Stack, goto</td>
+            <td>1110 0000 0000 0000 | ???? ???? ???? ????</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Return from Proc</td>
+            <td>RET</td>
+            <td>j</td>
+            <td>1110 0000 1</td>
+            <td>RET</td>
+            <td>get PC from Stack, goto</td>
+            <td>1110 0000 1000 0000 | ???? ???? ???? ????</td>
+          </tr>
+          <tr style="height: 25px">
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Push word to stack</td>
+            <td>PUSH</td>
+            <td>r1</td>
+            <td>0010 0000 0010</td>
+            <td>PUSH r1</td>
+            <td>move r1 onto stack</td>
+            <td>0010 0000 0010 0001</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Push byte (high)</td>
+            <td>PSHH</td>
+            <td>r1</td>
+            <td>0010 0000 0011;b=1</td>
+            <td>PSHH r1</td>
+            <td>move r1(high) to stack</td>
+            <td>0010 0000 0011 1001</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Push byte (low)</td>
+            <td>PSHL</td>
+            <td>r1</td>
+            <td>0010 0000 0011;b=0</td>
+            <td>PSHL r1</td>
+            <td>move r1(low) to stack</td>
+            <td>0010 0000 0011 0001</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Pop word from stack</td>
+            <td>POP</td>
+            <td>r1</td>
+            <td>0010 0000 0100</td>
+            <td>POP r1</td>
+            <td>move stack to r1</td>
+            <td>0010 0000 0100 0001</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Pop byte (high)</td>
+            <td>POPH</td>
+            <td>r1</td>
+            <td>0010 0000 0101;b=1</td>
+            <td>POPH r1</td>
+            <td>pop byte to r1(high)</td>
+            <td>0010 0000 0101 1001</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Pop byte (low)</td>
+            <td>POPL</td>
+            <td>r1</td>
+            <td>0010 0000 0101;b=0</td>
+            <td>POPL r1</td>
+            <td>pop byte to r1(low)</td>
+            <td>0010 0000 0101 0001</td>
           </tr>
-
         </table>
     </div>
 </div>

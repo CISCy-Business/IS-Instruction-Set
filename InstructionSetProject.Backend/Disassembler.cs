@@ -135,6 +135,14 @@ namespace InstructionSetProject.Backend
 
                     instructionCode += "\n";
                 }
+                else if (instrType == InstructionType.Jump)
+                {
+                    instructionCode += "   " + programCounter + "      ";
+                    instructionCode += instrType.ToString().Substring(0, 1).ToLower() + "       ";
+                    instructionCode += instOpCode + "       ";
+                    instructionCode += fullInstruction;
+                    instructionCode += "\n";
+                }
                 else
                 {
                     instructionCode += "   " + programCounter + "      ";

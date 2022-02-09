@@ -45,7 +45,7 @@
             </div>
     
             <div class="col-sm-5">
-                <textarea @bind="currentCodeOutDis" id="outputDis" name="outputDis"></textarea>
+                <textarea @bind="currentCodeOutDis" id="outputDis" name="outputDis" readonly></textarea>
                 <p>
                     <button @onclick="SaveOutput" type="button" name="dis_btn" class="btn btn-primary btn-lg">Save Output</button>
                 </p>
@@ -205,7 +205,7 @@
     private async Task SaveOutput()
     {
         byte[] file = System.Text.Encoding.UTF8.GetBytes(assemblyCode);
-        await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "assemblyTable.txt", "text/plain", file);
+        await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "assemblyCode.txt", "text/plain", file);
     }
 
 }
