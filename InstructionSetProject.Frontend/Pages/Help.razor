@@ -1,4 +1,4 @@
-﻿@page "/help"
+@page "/help"
 
 <style>
     table, th, td {
@@ -259,49 +259,53 @@
             <td>1000 0001 0000 0011 | 0000 0000 0000 1010</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Store Word</td>
+            <td>STW</td>
+            <td>i</td>
+            <td>1000 0010</td>
+            <td>STW r1, label, d</td>
+            <td>Mem[label] = r1</td>
+            <td>1000 0010 0001 0001 | ???? ???? ???? ????</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Store High Byte</td>
+            <td>STH</td>
+            <td>i</td>
+            <td>1000 0011;b=1</td>
+            <td>STH r1, r2, rn</td>
+            <td>Mem[Mem[r2]](high) = r1</td>
+            <td>1000 0011 0100 1001 | 0000 0000 0000 0011</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Store Low Byte</td>
+            <td>STL</td>
+            <td>i</td>
+            <td>1000 0011;b=0</td>
+            <td>STL r2, r5, r</td>
+            <td>Mem[r5](low) = r2</td>
+            <td>1000 0011 0011 0010 | 0000 0000 0000 0101</td>
+          </tr>
+          <tr style="height: 10px">
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>Halt Program</td>
+            <td>HLT</td>
+            <td>r0</td>
+            <td>0000 ... 0000</td>
+            <td>HLT</td>
+            <td>Stop Program</td>
+            <td>0000 0000 0000 0000</td>
           </tr>
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>No Operation</td>
+            <td>NOP</td>
+            <td>r0</td>
+            <td>0000 ... 0001</td>
+            <td>NOP</td>
+            <td>No Operation</td>
+            <td>0000 0000 0000 0001</td>
+          </tr>
+          <tr style="height: 10px">
           </tr>
           <tr>
             <td></td>
