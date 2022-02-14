@@ -1,5 +1,6 @@
 ﻿@page "/disassembler"
 @using InstructionSetProject.Backend;
+@using InstructionSetProject.Backend.StaticFrontend;
 @inject IJSRuntime JSRuntime
 
 <div class="code_input">
@@ -206,6 +207,17 @@
     {
         byte[] file = System.Text.Encoding.UTF8.GetBytes(assemblyCode);
         await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "assemblyCode.txt", "text/plain", file);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        StartupMethod();
+    }
+
+    void StartupMethod()
+    {
+        currentCodeDis = FrontendVariables.getCurrentCodeDisassembler();
+        FrontendVariables.setCurrentCodeDisassembler("");
     }
 
 }
