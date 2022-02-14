@@ -1,5 +1,6 @@
 ﻿@page "/assembler"
 @using InstructionSetProject.Backend;
+@using InstructionSetProject.Backend.StaticFrontend;
 @inject IJSRuntime JSRuntime
 
 <div class="code_input">
@@ -90,6 +91,17 @@
     {
         byte[] file = System.Text.Encoding.UTF8.GetBytes(currentCodeOutAss);
         await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "machineCode.txt", "text/plain", file);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        StartupMethod();
+    }
+
+    void StartupMethod()
+    {
+        currentCodeAss = FrontendVariables.getCurrentCodeAssembler();
+        FrontendVariables.setCurrentCodeAssembler("");
     }
 
 }

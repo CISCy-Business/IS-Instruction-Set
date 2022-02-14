@@ -1,4 +1,6 @@
 ﻿@page "/samples"
+@using InstructionSetProject.Backend.StaticFrontend;
+@inject NavigationManager UriHelper
 @inject IJSRuntime JSRuntime
 
 <style>
@@ -50,13 +52,13 @@
         <div class="col-sm-3">
             <label>Assembly Code</label><br />
             <textarea id="idAddSubAssem1" readonly>@addSubAssem1</textarea><br />
-            <button class="btn btn-primary btn-lg" @onclick="() => CopyTextToClipboard(idAddSubAssem1)">Copy Source</button>
+            <button class="btn btn-primary btn-lg" @onclick="() => NavigateAssemblerSample(addSubAssem1)">Open Source</button>
         </div>
         <div class="col-sm-2"><img src="arrow-left-right.svg"/></div>
         <div class="col-sm-3">
             <label>Machine Code</label><br />
             <textarea id="idAddSubMach1" readonly>@addSubMach1</textarea>
-            <button class="btn btn-primary btn-lg" @onclick="() => CopyTextToClipboard(idAddSubMach1)">Copy Machine</button>
+            <button class="btn btn-primary btn-lg" @onclick="() => NavigateDisassemblerSample(addSubMach1)">Open Machine</button>
         </div>
         <div class="col-sm-2"></div>
     </div>
@@ -88,13 +90,13 @@
         <div class="col-sm-3">
             <label>Assembly Code</label><br />
             <textarea id="idLoadStoreAssem1" readonly>@loadStoreAssem1</textarea>
-            <button class="btn btn-primary btn-lg" @onclick="() => CopyTextToClipboard(idLoadStoreAssem1)">Copy Source</button>
+            <button class="btn btn-primary btn-lg" @onclick="() => NavigateAssemblerSample(loadStoreAssem1)">Open Source</button>
         </div>
         <div class="col-sm-2"><img src="arrow-left-right.svg"/></div>
         <div class="col-sm-3">
             <label>Machine Code</label><br />
             <textarea id="idLoadStoreMach1" readonly>@loadStoreMach1</textarea>
-            <button class="btn btn-primary btn-lg" @onclick="() => CopyTextToClipboard(idLoadStoreMach1)">Copy Machine</button>
+            <button class="btn btn-primary btn-lg" @onclick="() => NavigateDisassemblerSample(loadStoreMach1)">Open Machine</button>
         </div>
         <div class="col-sm-2"></div>
     </div>
@@ -126,13 +128,13 @@
         <div class="col-sm-3">
             <label>Assembly Code</label><br />
             <textarea id="idJumpAssem1" readonly>@jumpAssem1</textarea><br />
-            <button class="btn btn-primary btn-lg" @onclick="() => CopyTextToClipboard(idJumpAssem1)">Copy Source</button>
+            <button class="btn btn-primary btn-lg" @onclick="() => NavigateAssemblerSample(jumpAssem1)">Open Source</button>
         </div>
         <div class="col-sm-2"><img src="arrow-left-right.svg"/></div>
         <div class="col-sm-3">
             <label>Machine Code</label><br />
             <textarea id="idJumpMach1" readonly>@jumpMach1</textarea>
-            <button class="btn btn-primary btn-lg" @onclick="() => CopyTextToClipboard(idJumpMach1)">Copy Machine</button>
+            <button class="btn btn-primary btn-lg" @onclick="() => NavigateDisassemblerSample(jumpMach1)">Open Machine</button>
         </div>
         <div class="col-sm-2"></div>
     </div>
@@ -165,13 +167,13 @@
         <div class="col-sm-3">
             <label>Assembly Code</label><br />
             <textarea id="idPushPopAssem1" readonly>@pushPopAssem1</textarea><br />
-            <button class="btn btn-primary btn-lg" @onclick="() => CopyTextToClipboard(idPushPopAssem1)">Copy Source</button>
+            <button class="btn btn-primary btn-lg" @onclick="() => NavigateAssemblerSample(pushPopAssem1)">Open Source</button>
         </div>
         <div class="col-sm-2"><img src="arrow-left-right.svg"/></div>
         <div class="col-sm-3">
             <label>Machine Code</label><br />
             <textarea id="idPushPopMach1" readonly>@pushPopMach1</textarea>
-            <button class="btn btn-primary btn-lg" @onclick="() => CopyTextToClipboard(idPushPopMach1)">Copy Machine</button>
+            <button class="btn btn-primary btn-lg" @onclick="() => NavigateDisassemblerSample(pushPopMach1)">Open Machine</button>
         </div>
         <div class="col-sm-2"></div>
     </div>
@@ -198,25 +200,23 @@
 
 @code {
     private string addSubAssem1 = "ADD r1, r2, r3\nSUB r1, r2, r3\nHLT";
-    private string addSubMach1 = "";
-    private string idAddSubAssem1 = "idAddSubAssem1";
-    private string idAddSubMach1 = "idAddSubMach1";
+    private string addSubMach1 = "62 D1 64 D1 00 00";
     private string loadStoreAssem1 = "LDW r1, r2, r\nSTW r1, 1AB2, d\nHLT";
-    private string loadStoreMach1 = "";
-    private string idLoadStoreAssem1 = "idLoadStoreAssem1";
-    private string idLoadStoreMach1 = "idLoadStoreMach1";
+    private string loadStoreMach1 = "80 31 00 02 82 11 1A B2 00 00";
     private string jumpAssem1 = "JMP 0006\nXOR r1, r2, r3\nSTW r1, 001A, d\nHLT";
-    private string jumpMach1 = "";
-    private string idJumpAssem1 = "idJumpAssem1";
-    private string idJumpMach1 = "idJumpMach1";
+    private string jumpMach1 = "C0 00 00 06 6A D1 82 11 00 1A 00 00";
     private string pushPopAssem1 = "PUSH r1\nPOP r1\nSTW r1, 01AA, d\nHLT";
-    private string pushPopMach1 = "";
-    private string idPushPopAssem1 = "idPushPopAssem1";
-    private string idPushPopMach1 = "idPushPopMach1";
+    private string pushPopMach1 = "20 21 20 41 82 11 01 AA 00 00";
 
-
-    private async Task CopyTextToClipboard(string id)
+    void NavigateAssemblerSample(string textToPush)
     {
-        await JSRuntime.InvokeVoidAsync("copyClipboard", id);
+        FrontendVariables.setCurrentCodeAssembler(textToPush);
+        UriHelper.NavigateTo("assembler");
+    }
+
+    void NavigateDisassemblerSample(string textToPush)
+    {
+        FrontendVariables.setCurrentCodeDisassembler(textToPush);
+        UriHelper.NavigateTo("disassembler");
     }
 }
