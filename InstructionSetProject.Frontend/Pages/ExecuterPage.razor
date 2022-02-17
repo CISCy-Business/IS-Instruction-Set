@@ -1,0 +1,143 @@
+﻿@page "/executer"
+@using InstructionSetProject.Backend;
+@using InstructionSetProject.Backend.StaticFrontend;
+@inject IJSRuntime JSRuntime
+
+<style>
+
+    /* Style the tab */
+    .tab {
+      overflow: hidden;
+      background-color: #20639B;
+      margin: 0px;
+    }
+
+    /* Style the buttons inside the tab */
+    .tab button {
+      color: black;
+      background-color: white;
+      margin: 0px;
+      float: left;
+      border: 1px solid black;
+      outline: none;
+      cursor: pointer;
+      padding: 12px 16px;
+      transition: 0.3s;
+      font-size: 24px;
+    }
+
+    /* Change background color of buttons on hover */
+    .tab button:hover {
+      background-color: rgb(150, 150, 150);
+    }
+
+    /* Create an active/current tablink class */
+    .tab button.active {
+      color: black;
+      background-color: rgb(200, 200, 200);
+      border: 1px solid black;
+    }
+
+    /* Style the tab content */
+    .tabcontent {
+      display: none;
+      border: 1px solid black;
+      background-color: darkgray;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: auto auto auto;
+    }
+
+    .grid-container > div {
+      font-size: 30px;
+    }
+
+    #Executer > textarea {
+        width: 100%;
+        height: 300px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+        transform: translateY(5px);
+    }
+
+    #Executer > div {
+        text-align: center;
+        align-content: center;
+    }
+
+    #Debugger > textarea {
+        width: 100%;
+        height: 657px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+        transform: translateY(5px);
+    }
+
+    #Debugger > div {
+        text-align: center;
+        align-content: center;
+    }
+
+    #exLabel {
+        font-size: 22px;
+        padding-top: 0px;
+        color: black;
+    }
+</style>
+
+<div class="code_input_executer">
+    <div class="code_input_wrapper">
+        <div class="grid-container">
+            <div>
+                <div class="tab">
+                    <button class="tablinks" onclick="swapTab(event, 'Executer')" id="defaultOpen">Executer</button>
+                    <button class="tablinks" onclick="swapTab(event, 'Debugger')">Debugger</button>
+                </div>
+
+                <div id="Executer" class="tabcontent">
+                    <div>
+                        <label id="exLabel"><b>Source Code</b></label>
+                    </div>
+                    <textarea>Assembly Code</textarea><br />
+                    <div>
+                        <label id="exLabel"><b>Machine Code</b></label>
+                    </div>
+                    <textarea id="machineTextBox">Machine Code</textarea>
+                </div>
+
+                <div id="Debugger" class="tabcontent">
+                    <div>
+                        <label id="exLabel"><b>Stack Trace</b></label>
+                    </div>
+                    <textarea>Debugged Code</textarea>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <p>Registers and other info</p><br /><br /><br /><br />
+                </div>
+                <div>
+                    <p>input box for taking user input</p><br /><br /><br /><br />
+                </div>
+                <div>
+                    <p>output box for what the program computes</p>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <p>Memory Dump</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JSRuntime.InvokeVoidAsync("autoSelectFirstTab");
+    }
+
+}
