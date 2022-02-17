@@ -5,6 +5,12 @@
     Layout = "_Layout";
 }
 
+<head>
+    <environment include="Development">
+        <link href="_content/Syncfusion.Blazor.Themes/bootstrap4.css" rel="stylesheet"/>
+    </environment>
+</head>
+
 <script>
     function BlazorDownloadFile(filename, contentType, content) {
         // Create the URL
