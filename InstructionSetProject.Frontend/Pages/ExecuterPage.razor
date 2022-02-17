@@ -7,77 +7,91 @@
 
     /* Style the tab */
     .tab {
-      overflow: hidden;
-      background-color: #20639B;
-      margin: 0px;
+        overflow: hidden;
+        background-color: #20639B;
+        margin: 0px;
     }
 
     /* Style the buttons inside the tab */
     .tab button {
-      color: black;
-      background-color: white;
-      margin: 0px;
-      float: left;
-      border: 1px solid black;
-      outline: none;
-      cursor: pointer;
-      padding: 12px 16px;
-      transition: 0.3s;
-      font-size: 24px;
+        position: relative;
+        border-radius: 17px 17px 0px 0px;
+        color: black;
+        background-color: white;
+        margin: 0px;
+        float: left;
+        border-top: 1px solid black;
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+        outline: none;
+        cursor: pointer;
+        padding: 12px 16px;
+        transition: 0.3s;
+        font-size: 24px;
+        transform: translateY(6px);
     }
 
     /* Change background color of buttons on hover */
     .tab button:hover {
-      background-color: rgb(150, 150, 150);
+        background-color: rgb(200, 200, 200);
     }
 
     /* Create an active/current tablink class */
     .tab button.active {
-      color: black;
-      background-color: rgb(200, 200, 200);
-      border: 1px solid black;
+        color: black;
+        background-color: darkgray;
+        border-top: 1px solid black;
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+        transform: scale(1.05);
+        transform: translateY(3px);
+        z-index: 2;
     }
 
     /* Style the tab content */
     .tabcontent {
-      display: none;
-      border: 1px solid black;
-      background-color: darkgray;
+        position: relative;
+        display: none;
+        border-bottom: 1px solid black;
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+        border-radius: 0px 5px 5px 5px;
+        background-color: darkgray;
+        z-index: 1;
     }
 
     .grid-container {
-      display: grid;
-      grid-template-columns: auto auto auto;
+        display: grid;
+        grid-template-columns: 600px 550px auto;
     }
 
     .grid-container > div {
-      font-size: 30px;
+        font-size: 30px;
     }
 
-    #Executer > textarea {
+    .executerTabContent, .debuggerTabContent, .statsTabContent {
+        margin: 0px 5px 0px 5px;
+    }
+
+    .executerTabContent > textarea {
         width: 100%;
-        height: 300px;
+        height: 350px;
         margin-top: 0px;
         margin-bottom: 0px;
         transform: translateY(5px);
     }
 
-    #Executer > div {
+    .executerTabContent > div, .debuggerTabContent > div, .statsTabContent > div {
         text-align: center;
         align-content: center;
     }
 
-    #Debugger > textarea {
+    .debuggerTabContent > textarea, .statsTabContent > textarea {
         width: 100%;
-        height: 657px;
+        height: 757px;
         margin-top: 0px;
         margin-bottom: 0px;
         transform: translateY(5px);
-    }
-
-    #Debugger > div {
-        text-align: center;
-        align-content: center;
     }
 
     #exLabel {
@@ -85,49 +99,205 @@
         padding-top: 0px;
         color: black;
     }
+
+    .inputBox, .outputBox, .memoryDumpContent {
+        margin: 0px 5px 0px 5px;
+    }
+
+    .inputBox > textarea, .outputBox > textarea {
+        width: 100%;
+        height: 185px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+        transform: translateY(5px);
+    }
+
+    .inputBox > div, .outputBox > div, .memoryDumpContent > div {
+        text-align: center;
+        align-content: center;
+    }
+
+    .middleGridCol {
+        margin: 0px 10px 0px 10px;
+    }
+
+    .ioContent, .memDump {
+        border-radius: 5px 5px 5px 5px;
+        border: 1px solid black;
+        background-color: darkgray;
+    }
+
+    .memoryDumpContent > textarea {
+        width: 100%;
+        height: 332px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+        transform: translateY(5px);
+    }
+
+    .container {
+        margin-bottom: 16px;
+    }
+
+    .registerTextArea {
+        max-width: 150px;
+        height: 35px;
+        overflow-x: hidden;
+        overflow-y: hidden;
+        text-align: center;
+        font-size: 18px;
+        color: black;
+        transform: translateY(10px);
+    }
+
+    .registerLabel {
+        font-family: "Source Code Pro", monospace;
+        font-size: 20px;
+        padding: 0px;
+        margin: 0px;
+        color: black;
+    }
+
+    .instLabel {
+        font-family: "Source Code Pro", monospace;
+        font-size: 29px;
+        padding: 0px;
+        margin: 0px;
+        color: black;
+    }
+
+    hr {
+        margin-top: 30px;
+        max-width: 195px;
+    }
 </style>
 
 <div class="code_input_executer">
     <div class="code_input_wrapper">
+        <div>
+            <p> - - - - - - -- - - - - - - -  --  - -- - - - - - - - - - - - - 
+                - - - - - - -- - - - - - - -  --  - -- - - - - - - - - - - - -  
+                - - - - - - -- - - - - - - -  - Where the tool bar will go in the future 
+                -  - -- - - - - - - - - - - - - - - - - - - -- - - - - - - -  -
+                -  - -- - - - - - - - - - - - - - - - - - - -- - - - - - - -  --  
+                - -- - - - - - - - - - - - -
+            </p>
+        </div>
         <div class="grid-container">
-            <div>
+            <div class="codeDiv">
                 <div class="tab">
                     <button class="tablinks" onclick="swapTab(event, 'Executer')" id="defaultOpen">Executer</button>
                     <button class="tablinks" onclick="swapTab(event, 'Debugger')">Debugger</button>
+                    <button class="tablinks" onclick="swapTab(event, 'Stats')">Statistics</button>
                 </div>
 
                 <div id="Executer" class="tabcontent">
-                    <div>
-                        <label id="exLabel"><b>Source Code</b></label>
+                    <div class="executerTabContent">
+                        <div>
+                            <label id="exLabel"><b>Source Code</b></label>
+                        </div>
+                        <textarea>Assembly Code</textarea><br />
+                        <div>
+                            <label id="exLabel"><b>Machine Code</b></label>
+                        </div>
+                        <textarea id="machineTextBox">Machine Code</textarea>
                     </div>
-                    <textarea>Assembly Code</textarea><br />
-                    <div>
-                        <label id="exLabel"><b>Machine Code</b></label>
-                    </div>
-                    <textarea id="machineTextBox">Machine Code</textarea>
                 </div>
 
                 <div id="Debugger" class="tabcontent">
-                    <div>
-                        <label id="exLabel"><b>Stack Trace</b></label>
+                    <div class="debuggerTabContent">
+                        <div>
+                            <label id="exLabel"><b>Stack Trace</b></label>
+                        </div>
+                        <textarea>Debugged Code</textarea>
                     </div>
-                    <textarea>Debugged Code</textarea>
+                </div>
+
+                <div id="Stats" class="tabcontent">
+                    <div class="statsTabContent">
+                        <div>
+                            <label id="exLabel"><b>Statistics</b></label>
+                        </div>
+                        <textarea>Statistics</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="middleGridCol">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label class="registerLabel"><b>R0:</b></label>
+                            <textarea readonly class="registerTextArea">0x0000</textarea><br />
+
+                            <label class="registerLabel"><b>R1:</b></label>
+                            <textarea readonly class="registerTextArea">0x0000</textarea><br />
+
+                            <label class="registerLabel"><b>R2:</b></label>
+                            <textarea readonly class="registerTextArea">0x0000</textarea><br />
+
+                            <label class="registerLabel"><b>R3:</b></label>
+                            <textarea readonly class="registerTextArea">0x0000</textarea><br />
+
+                            <label class="registerLabel"><b>R4:</b></label>
+                            <textarea readonly class="registerTextArea">0x0000</textarea><br />
+
+                            <label class="registerLabel"><b>R5:</b></label>
+                            <textarea readonly class="registerTextArea">0x0000</textarea><br />
+
+                            <label class="registerLabel"><b>R6:</b></label>
+                            <textarea readonly class="registerTextArea">0x0000</textarea><br />
+
+                            <label class="registerLabel"><b>R7:</b></label>
+                            <textarea readonly class="registerTextArea">0x0000</textarea>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="registerLabel"><b>IP:</b></label>
+                            <textarea readonly class="registerTextArea">0x0000</textarea><br />
+
+                            <label class="registerLabel"><b>SP:</b></label>
+                            <textarea readonly class="registerTextArea">0x0000</textarea><br />
+
+                            <label class="registerLabel"><b>FL:</b></label>
+                            <textarea readonly class="registerTextArea">0x0000</textarea><br />
+
+                            <label class="registerLabel"><b>PC:</b></label>
+                            <textarea readonly class="registerTextArea">0x00000000</textarea><br /><hr />
+
+                            <label class="instLabel"><b>Instruction</b></label><br />
+
+                            <label class="registerLabel"><b>OC:</b></label>
+                            <textarea readonly class="registerTextArea">0x00</textarea><br />
+
+                            <label class="registerLabel"><b>OP:</b></label>
+                            <textarea readonly class="registerTextArea">0x0000</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ioContent">
+                    <div class="inputBox">
+                        <div>
+                            <label id="exLabel"><b>Input</b></label>
+                        </div>
+                        <textarea>Input</textarea><br />
+                    </div>
+                    <div class="outputBox">
+                        <div>
+                            <label id="exLabel"><b>Output</b></label>
+                        </div>
+                        <textarea>Output</textarea>
+                    </div>
                 </div>
             </div>
             <div>
-                <div>
-                    <p>Registers and other info</p><br /><br /><br /><br />
-                </div>
-                <div>
-                    <p>input box for taking user input</p><br /><br /><br /><br />
-                </div>
-                <div>
-                    <p>output box for what the program computes</p>
-                </div>
-            </div>
-            <div>
-                <div>
-                    <p>Memory Dump</p>
+                <div class="memDump">
+                    <div class="memoryDumpContent">
+                        <div>
+                            <label id="exLabel"><b>Memory Dump</b></label>
+                        </div>
+                        <textarea>Memory Dump</textarea><br />
+                    </div>
                 </div>
             </div>
         </div>
