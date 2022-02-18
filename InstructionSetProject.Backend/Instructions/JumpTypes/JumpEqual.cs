@@ -9,19 +9,9 @@ namespace InstructionSetProject.Backend.Instructions.JumpTypes
 {
     public class JumpEqual : JumpInstruction
     {
-        public new const string Mnemonic = "JEQ";
+        public const string Mnemonic = "JEQ";
 
-        public new const ushort OpCode = 0x185;
-
-        public JumpEqual(JumpInstruction instr)
-        {
-            base.OpCode = instr.OpCode;
-            base.Mnemonic = instr.Mnemonic;
-            DestinationRegister = instr.DestinationRegister;
-            HighLowBit = instr.HighLowBit;
-            SourceRegister = instr.SourceRegister;
-            Immediate = instr.Immediate;
-        }
+        public const ushort OpCode = 0b1010_0000_0100_0000;
 
         public override string GetMnemonic()
         {

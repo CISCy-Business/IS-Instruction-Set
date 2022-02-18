@@ -40,7 +40,7 @@ namespace InstructionSetProject.Backend.Instructions.JumpTypes
 
             assembly += GetMnemonic();
             assembly += " ";
-            assembly += GetRegister.FromByte(DestinationRegister);
+            assembly += Register.ParseDestination(DestinationRegister);
             assembly += ", ";
             assembly += Immediate.ToString("X2");
 
@@ -58,7 +58,7 @@ namespace InstructionSetProject.Backend.Instructions.JumpTypes
 
             instr.Mnemonic = tokens[0];
 
-            instr.DestinationRegister = GetRegister.FromString(tokens[1].TrimEnd(','));
+            instr.DestinationRegister = Register.FromString(tokens[1].TrimEnd(','));
 
             instr.SourceRegister = 0;
 

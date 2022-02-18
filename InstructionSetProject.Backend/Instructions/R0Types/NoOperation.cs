@@ -9,15 +9,9 @@ namespace InstructionSetProject.Backend.Instructions.R0Types
 {
     public class NoOperation : R0Instruction
     {
-        public new const string Mnemonic = "NOP";
+        public const string Mnemonic = "NOP";
 
-        public new const ushort OpCode = 0x1;
-
-        public NoOperation(R0Instruction instr)
-        {
-            base.OpCode = instr.OpCode;
-            base.Mnemonic = instr.Mnemonic;
-        }
+        public const ushort OpCode = 0b0000_0000_0000_1000;
 
         public override string GetMnemonic()
         {

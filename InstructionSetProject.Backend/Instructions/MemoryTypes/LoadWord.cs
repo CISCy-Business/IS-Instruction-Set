@@ -9,19 +9,9 @@ namespace InstructionSetProject.Backend.Instructions.MemoryTypes
 {
     public class LoadWord : MemoryInstruction
     {
-        public new const string Mnemonic = "LDW";
+        public const string Mnemonic = "LDW";
 
-        public new const ushort OpCode = 0x80;
-
-        public LoadWord(MemoryInstruction instr)
-        {
-            base.OpCode = instr.OpCode;
-            base.Mnemonic = instr.Mnemonic;
-            DestinationRegister = instr.DestinationRegister;
-            AddressingMode = instr.AddressingMode;
-            HighLowBit = instr.HighLowBit;
-            Immediate = instr.Immediate;
-        }
+        public const ushort OpCode = 0b1000_0000_0000_0000;
 
         public override string GetMnemonic()
         {
@@ -31,11 +21,6 @@ namespace InstructionSetProject.Backend.Instructions.MemoryTypes
         public override ushort GetOpCode()
         {
             return LoadWord.OpCode;
-        }
-
-        public override bool GetHighLowBit()
-        {
-            return false;
         }
     }
 }

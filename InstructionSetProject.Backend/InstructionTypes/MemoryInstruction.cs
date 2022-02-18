@@ -7,108 +7,48 @@ using InstructionSetProject.Backend.Utilities;
 
 namespace InstructionSetProject.Backend.InstructionTypes
 {
-    public class MemoryInstruction : IInstruction
+    public abstract class MemoryInstruction : IInstruction
     {
-        public string Mnemonic = "";
-        public ushort OpCode;
-        public byte AddressingMode;
-        public bool HighLowBit;
-        public byte DestinationRegister;
-        public ushort Immediate;
+        public ushort AddressingMode;
+        public ushort DestinationRegister;
+        public short Immediate;
 
-        public virtual string GetMnemonic()
-        {
-            return Mnemonic;
-        }
+        public const ushort BitwiseMask = 0b1111_1111_1000_0000;
 
-        public virtual ushort GetOpCode()
+        public static Dictionary<ushort, string> AddressingModeMap = new()
         {
-            return OpCode;
-        }
+            {0b000_0000, "i"},
+            {0b000_1000, "id"},
+            {0b001_0000, "in"},
+            {0b001_1000, "rd"},
+            {0b010_0000, "rn"},
+            {0b010_1000, "xd"},
+            {0b011_0000, "xn"},
+            {0b011_1000, "xo"},
+            {0b100_0000, "xf"},
+            {0b100_1000, "sd"},
+            {0b101_0000, "sn"},
+            {0b101_1000, "so"},
+            {0b110_0000, "sxd"},
+            {0b110_1000, "sxn"},
+            {0b111_0000, "sxo"},
+            {0b111_1000, "sxf"}
+        };
 
-        public virtual bool GetHighLowBit()
-        {
-            return HighLowBit;
-        }
+        public abstract string GetMnemonic();
 
-        public byte GetAddressingMode()
-        {
-            return AddressingMode;
-        }
-
-        public string GetAddressingModeString()
-        {
-            switch (AddressingMode)
-            {
-                case 0: return "i";
-                case 1: return "d";
-                case 2: return "dn";
-                case 3: return "r";
-                case 4: return "rn";
-                case 5: return "xd";
-                case 6: return "xn";
-                case 7: return "xo";
-                case 8: return "xf";
-                case 9: return "sd";
-                case 10: return "sn";
-                case 11: return "so";
-                case 12: return "sxd";
-                case 13: return "sxn";
-                case 14: return "sxo";
-                case 15: return "sxf";
-                default:
-                    throw new Exception($"Addressing Mode Not Found: {AddressingMode}");
-            }
-        }
-
-        public static byte ConvertAddressingModeToByte(string addrMode)
-        {
-            switch (addrMode)
-            {
-                case "i": return 0;
-                case "d": return 1;
-                case "dn": return 2;
-                case "r": return 3;
-                case "rn": return 4;
-                case "xd": return 5;
-                case "xn": return 6;
-                case "xo": return 7;
-                case "xf": return 8;
-                case "sd": return 9;
-                case "sn": return 10;
-                case "so": return 11;
-                case "sxd": return 12;
-                case "sxn": return 13;
-                case "sxo": return 14;
-                case "sxf": return 15;
-                default:
-                    throw new Exception($"Addressing Mode Not Found: {addrMode}");
-            }
-        }
+        public abstract ushort GetOpCode();
 
         public List<byte> Assemble()
         {
-            var machineCode = new List<byte>();
+            var firstHalfInstr = GetOpCode();
+            firstHalfInstr += DestinationRegister;
+            firstHalfInstr += AddressingMode;
 
-            byte firstByte = 0;
-            firstByte += (byte) (GetOpCode());
-            machineCode.Add(firstByte);
+            var fullInstr = (uint)(firstHalfInstr << 16);
+            fullInstr += (uint)Immediate;
 
-            byte secondByte = 0;
-            secondByte += (byte) (GetAddressingMode() << 4);
-            if (GetHighLowBit()) secondByte += 8;
-            secondByte += DestinationRegister;
-            machineCode.Add(secondByte);
-
-            byte thirdByte = 0;
-            thirdByte += (byte) (Immediate >> 8);
-            machineCode.Add(thirdByte);
-
-            byte fourthByte = 0;
-            fourthByte += (byte) (Immediate & 0xFF);
-            machineCode.Add(fourthByte);
-
-            return machineCode;
+            return InstructionUtilities.ConvertToByteArray(fullInstr);
         }
 
         public string Disassemble()
@@ -117,68 +57,53 @@ namespace InstructionSetProject.Backend.InstructionTypes
 
             assembly += GetMnemonic();
             assembly += " ";
-            assembly += GetRegister.FromByte(DestinationRegister);
+            assembly += Register.ParseDestination(DestinationRegister);
             assembly += ", ";
-            if (AddressingMode == '3' || AddressingMode == '4')
+            if (AddressingMode == 0b001_1000 || AddressingMode == 0b010_0000)
             {
-                assembly += GetRegister.FromByte((byte)Immediate);
+                assembly += Register.ParseDestination((ushort)Immediate);
             }
             else
             {
                 assembly += Immediate.ToString("X2");
             }
             assembly += ", ";
-            assembly += GetAddressingModeString();
+            assembly += AddressingModeMap[AddressingMode];
 
             return assembly;
         }
 
-        public static MemoryInstruction ParseInstruction(List<byte> machineCode)
+        public void ParseInstruction(List<byte> machineCode)
         {
-            if (machineCode.Count != 4)
-                throw new Exception("Incorrect number of bytes for this instruction type");
+            var fullInstr = InstructionUtilities.ConvertToUint(machineCode);
+            var firstHalfInstr = (ushort)(fullInstr >> 16);
 
-            var instr = new MemoryInstruction();
+            AddressingMode = (ushort)(firstHalfInstr & 0b111_1000);
 
-            instr.OpCode = machineCode[0];
+            DestinationRegister = (ushort)(firstHalfInstr & 0b111);
 
-            instr.AddressingMode = (byte)((machineCode[1] & 0xF0) >> 4);
-
-            instr.HighLowBit = (machineCode[1] & 0x8) != 0;
-
-            instr.DestinationRegister = (byte)(machineCode[1] & 0x7);
-
-            instr.Immediate = machineCode[3];
-            instr.Immediate += (ushort)(machineCode[2] << 8);
-
-            return instr;
+            Immediate = (short)(fullInstr & 0b1111_1111_1111_1111);
         }
 
-        public static MemoryInstruction ParseInstruction(string assemblyCode)
+        public void ParseInstruction(string assemblyCode)
         {
             var tokens = assemblyCode.Split(' ');
 
             if (tokens.Length != 4)
                 throw new Exception("Incorrect number of tokens obtained from assembly instruction");
 
-            var instr = new MemoryInstruction();
+            DestinationRegister = Register.ParseDestination(tokens[1].TrimEnd(','));
 
-            instr.Mnemonic = tokens[0];
+            AddressingMode = AddressingModeMap.FirstOrDefault(mode => mode.Value == tokens[3]).Key;
 
-            instr.DestinationRegister = GetRegister.FromString(tokens[1].TrimEnd(','));
-
-            if (tokens[2].StartsWith('r'))
+            if (AddressingMode == 0b001_1000 || AddressingMode == 0b010_0000)
             {
-                instr.Immediate = GetRegister.FromString(tokens[2].TrimEnd(','));
+                Immediate = (short)Register.ParseDestination(tokens[2].TrimEnd(','));
             }
             else
             {
-                instr.Immediate = Convert.ToUInt16(tokens[2].TrimEnd(','), 16);
+                Immediate = Convert.ToInt16(tokens[2].TrimEnd(','), 16);
             }
-
-            instr.AddressingMode = MemoryInstruction.ConvertAddressingModeToByte(tokens[3]);
-
-            return instr;
         }
     }
 }

@@ -7,10 +7,11 @@ using InstructionSetProject.Backend.Utilities;
 
 namespace InstructionSetProject.Backend.InstructionTypes
 {
-    public abstract class R2Instruction : IInstruction
+    public abstract class R2IInstruction : IInstruction
     {
         public ushort DestinationRegister;
         public ushort SourceRegister;
+        public short Immediate;
 
         public const ushort BitwiseMask = 0b1111_1111_1100_0000;
 
@@ -20,9 +21,12 @@ namespace InstructionSetProject.Backend.InstructionTypes
 
         public List<byte> Assemble()
         {
-            var fullInstr = GetOpCode();
-            fullInstr += DestinationRegister;
-            fullInstr += SourceRegister;
+            var firstHalfInstr = GetOpCode();
+            firstHalfInstr += DestinationRegister;
+            firstHalfInstr += SourceRegister;
+
+            var fullInstr = (uint)(firstHalfInstr << 16);
+            fullInstr += (uint)Immediate;
 
             return InstructionUtilities.ConvertToByteArray(fullInstr);
         }
@@ -36,29 +40,36 @@ namespace InstructionSetProject.Backend.InstructionTypes
             assembly += Register.ParseDestination(DestinationRegister);
             assembly += ", ";
             assembly += Register.ParseFirstSource(SourceRegister);
+            assembly += ", ";
+            assembly += Immediate.ToString("X2");
 
             return assembly;
         }
 
         public void ParseInstruction(List<byte> machineCode)
         {
-            var fullInstr = InstructionUtilities.ConvertToUshort(machineCode);
+            var fullInstr = InstructionUtilities.ConvertToUint(machineCode);
+            var firstHalfInstr = (ushort) (fullInstr >> 16);
 
-            DestinationRegister = (ushort)(fullInstr & 0b111);
+            DestinationRegister = (ushort) (firstHalfInstr & 0b111);
 
-            SourceRegister = (ushort)(fullInstr & 0b11_1000);
+            SourceRegister = (ushort) (firstHalfInstr & 0b11_1000);
+
+            Immediate = (short) (fullInstr & 0b1111_1111_1111_1111);
         }
 
         public void ParseInstruction(string assemblyCode)
         {
             var tokens = assemblyCode.Split(' ');
 
-            if (tokens.Length != 3)
-                throw new Exception("Incorrect number fo tokens obtained from assembly instruction");
+            if (tokens.Length != 4)
+                throw new Exception("Incorrect number of tokens obtained from assembly instruction");
 
             DestinationRegister = Register.ParseDestination(tokens[1].TrimEnd(','));
 
-            SourceRegister = Register.ParseFirstSource(tokens[2]);
+            SourceRegister = Register.ParseFirstSource(tokens[2].TrimEnd(','));
+
+            Immediate = Convert.ToInt16(tokens[3], 16);
         }
     }
 }

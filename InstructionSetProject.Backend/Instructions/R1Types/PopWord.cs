@@ -9,17 +9,9 @@ namespace InstructionSetProject.Backend.Instructions.R1Types
 {
     public class PopWord : R1Instruction
     {
-        public new const string Mnemonic = "POP";
+        public const string Mnemonic = "PSW";
 
-        public new const ushort OpCode = 0x204;
-
-        public PopWord(R1Instruction instr)
-        {
-            base.OpCode = instr.OpCode;
-            base.Mnemonic = instr.Mnemonic;
-            DestinationRegister = instr.DestinationRegister;
-            HighLowBit = instr.HighLowBit;
-        }
+        public const ushort OpCode = 0b0010_0000_0001_0000;
 
         public override string GetMnemonic()
         {
@@ -29,11 +21,6 @@ namespace InstructionSetProject.Backend.Instructions.R1Types
         public override ushort GetOpCode()
         {
             return PopWord.OpCode;
-        }
-
-        public override bool GetHighLowBit()
-        {
-            return false;
         }
     }
 }

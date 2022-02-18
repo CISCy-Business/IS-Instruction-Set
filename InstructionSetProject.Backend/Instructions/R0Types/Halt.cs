@@ -9,15 +9,9 @@ namespace InstructionSetProject.Backend.Instructions.R0Types
 {
     public class Halt : R0Instruction
     {
-        public new const string Mnemonic = "HLT";
+        public const string Mnemonic = "HLT";
 
-        public new const ushort OpCode = 0x0;
-
-        public Halt(R0Instruction instr)
-        {
-            base.OpCode = instr.OpCode;
-            base.Mnemonic = instr.Mnemonic;
-        }
+        public const ushort OpCode = 0b0000_0000_0000_0000;
 
         public override string GetMnemonic()
         {

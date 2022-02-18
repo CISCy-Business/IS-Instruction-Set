@@ -2,40 +2,26 @@
 
 namespace InstructionSetProject.Backend.InstructionTypes
 {
-    public class R3Instruction : IInstruction
+    public abstract class R3Instruction : IInstruction
     {
-        public string Mnemonic = "";
-        public ushort OpCode;
-        public byte DestinationRegister;
-        public byte SourceRegister1;
-        public byte SourceRegister2;
+        public ushort DestinationRegister;
+        public ushort SourceRegister1;
+        public ushort SourceRegister2;
 
-        public virtual string GetMnemonic()
-        {
-            return Mnemonic;
-        }
+        public const ushort BitwiseMask = 0b1111_1110_0000_0000;
 
-        public virtual ushort GetOpCode()
-        {
-            return OpCode;
-        }
+        public abstract string GetMnemonic();
+
+        public abstract ushort GetOpCode();
         
         public List<byte> Assemble()
         {
-            var machineCode = new List<byte>();
+            var fullInstr = GetOpCode();
+            fullInstr += DestinationRegister;
+            fullInstr += SourceRegister1;
+            fullInstr += SourceRegister2;
 
-            byte firstByte = 0;
-            firstByte += (byte) (GetOpCode() << 1);
-            firstByte += (byte) ((SourceRegister2 & 4) >> 2);
-            machineCode.Add(firstByte);
-
-            byte secondByte = 0;
-            secondByte += (byte) ((SourceRegister2 & 3) << 6);
-            secondByte += (byte) (SourceRegister1 << 3);
-            secondByte += DestinationRegister;
-            machineCode.Add(secondByte);
-
-            return machineCode;
+            return InstructionUtilities.ConvertToByteArray(fullInstr);
         }
 
         public string Disassemble()
@@ -44,52 +30,38 @@ namespace InstructionSetProject.Backend.InstructionTypes
 
             assembly += GetMnemonic();
             assembly += " ";
-            assembly += GetRegister.FromByte(DestinationRegister);
+            assembly += Register.ParseDestination(DestinationRegister);
             assembly += ", ";
-            assembly += GetRegister.FromByte(SourceRegister1);
+            assembly += Register.ParseFirstSource(SourceRegister1);
             assembly += ", ";
-            assembly += GetRegister.FromByte(SourceRegister2);
+            assembly += Register.ParseSecondSource(SourceRegister2);
 
             return assembly;
         }
 
-        public static R3Instruction ParseInstruction(List<byte> machineCode)
+        public void ParseInstruction(List<byte> machineCode)
         {
-            if (machineCode.Count != 2)
-                throw new Exception("Incorrect number of bytes for this instruction type");
+            var fullInstr = InstructionUtilities.ConvertToUshort(machineCode);
 
-            var instr = new R3Instruction();
+            DestinationRegister = (ushort)(fullInstr & 0b111);
 
-            instr.OpCode = (ushort)((machineCode[0] & 0xFE) >> 1);
+            SourceRegister1 = (ushort)(fullInstr & 0b11_1000);
 
-            instr.DestinationRegister = (byte)(machineCode[1] & 0x7);
-
-            instr.SourceRegister1 = (byte)((machineCode[1] & 0x38) >> 3);
-
-            instr.SourceRegister2 = (byte)((machineCode[1] & 0xC0) >> 6);
-            instr.SourceRegister2 += (byte)((machineCode[0] & 0x1) << 2);
-
-            return instr;
+            SourceRegister2 = (ushort)(fullInstr & 0b1_1100_0000);
         }
 
-        public static R3Instruction ParseInstruction(string assemblyCode)
+        public void ParseInstruction(string assemblyCode)
         {
             var tokens = assemblyCode.Split(' ');
 
             if (tokens.Length != 4)
                 throw new Exception("Incorrect number of tokens obtained from assembly instruction");
 
-            var instr = new R3Instruction();
+            DestinationRegister = Register.ParseDestination(tokens[1].TrimEnd(','));
 
-            instr.Mnemonic = tokens[0];
+            SourceRegister1 = Register.ParseFirstSource(tokens[2].TrimEnd(','));
 
-            instr.DestinationRegister = GetRegister.FromString(tokens[1].TrimEnd(','));
-
-            instr.SourceRegister1 = GetRegister.FromString(tokens[2].TrimEnd(','));
-
-            instr.SourceRegister2 = GetRegister.FromString(tokens[3]);
-
-            return instr;
+            SourceRegister2 = Register.ParseSecondSource(tokens[3]);
         }
     }
 }

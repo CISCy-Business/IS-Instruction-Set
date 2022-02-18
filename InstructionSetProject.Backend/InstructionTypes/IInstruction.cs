@@ -13,5 +13,7 @@ namespace InstructionSetProject.Backend.InstructionTypes
         public ushort GetOpCode();
         public List<byte> Assemble();
         public string Disassemble();
+        public void ParseInstruction(string assemblyCode);
+        public void ParseInstruction(List<byte> machineCode);
     }
 }

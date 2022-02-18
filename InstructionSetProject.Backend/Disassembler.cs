@@ -78,7 +78,7 @@ namespace InstructionSetProject.Backend
                 progCounter = i;
 
                 var instrType = InstructionUtilities.GetInstructionType(instruction);
-                if (instrType == InstructionType.Immediate || instrType == InstructionType.Jump)
+                if (instrType == InstructionType.Memory || instrType == InstructionType.Jump || instrType == InstructionType.R2I)
                 {
                     instruction.Add(machineCode[i + 2]);
                     instruction.Add(machineCode[i + 3]);
@@ -101,9 +101,9 @@ namespace InstructionSetProject.Backend
                     programCounter = progCounter.ToString("X2");
                 }
 
-                string fullInstruction = ConvertLineToAssemblyCode(instruction, instrType);
+                string fullInstruction = ConvertLineToAssemblyCode(instruction);
 
-                if (instrType == InstructionType.Immediate)
+                if (instrType == InstructionType.Memory)
                 {
                     instructionCode += "   " + programCounter + "      ";
                     instructionCode += instrType.ToString().Substring(0, 1).ToLower() + "       ";
@@ -182,39 +182,11 @@ namespace InstructionSetProject.Backend
             return instructionCode.TrimEnd();
         }
 
-        public static string ConvertLineToAssemblyCode(List<byte> instruction, InstructionType type)
+        public static string ConvertLineToAssemblyCode(List<byte> instruction)
         {
-            IInstruction genericTypedInstr, typedInstr;
-            switch (type)
-            {
-                case InstructionType.R0:
-                    genericTypedInstr = R0Instruction.ParseInstruction(instruction);
-                    typedInstr = GetInstruction.FromOpCode(genericTypedInstr);
-                    return typedInstr.Disassemble();
-                case InstructionType.R1:
-                    genericTypedInstr = R1Instruction.ParseInstruction(instruction);
-                    typedInstr = GetInstruction.FromOpCode(genericTypedInstr);
-                    return typedInstr.Disassemble();
-                case InstructionType.R2:
-                    genericTypedInstr = R2Instruction.ParseInstruction(instruction);
-                    typedInstr = GetInstruction.FromOpCode(genericTypedInstr);
-                    return typedInstr.Disassemble();
-                case InstructionType.R3:
-                    genericTypedInstr = R3Instruction.ParseInstruction(instruction);
-                    typedInstr = GetInstruction.FromOpCode(genericTypedInstr);
-                    return typedInstr.Disassemble();
-                case InstructionType.Immediate:
-                    genericTypedInstr = MemoryInstruction.ParseInstruction(instruction);
-                    addrMode = ((MemoryInstruction)genericTypedInstr).GetAddressingModeString();
-                    typedInstr = GetInstruction.FromOpCode(genericTypedInstr);
-                    return typedInstr.Disassemble();
-                case InstructionType.Jump:
-                    genericTypedInstr = JumpInstruction.ParseInstruction(instruction);
-                    typedInstr = GetInstruction.FromOpCode(genericTypedInstr);
-                    return typedInstr.Disassemble();
-                default:
-                    throw new Exception("Instruction type not found");
-            }
+            var instr = GetInstruction.FromOpCode(instruction);
+            instr.ParseInstruction(instruction);
+            return instr.Disassemble();
         }
     }
 }
