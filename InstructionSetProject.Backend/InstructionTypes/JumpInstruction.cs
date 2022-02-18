@@ -7,49 +7,28 @@ using InstructionSetProject.Backend.Utilities;
 
 namespace InstructionSetProject.Backend.InstructionTypes
 {
-    public class JumpInstruction : IInstruction
+    public abstract class JumpInstruction : IInstruction
     {
-        public string Mnemonic = "";
-        public ushort OpCode;
-        public bool HighLowBit = false;
-        public byte DestinationRegister;
-        public byte SourceRegister;
-        public ushort Immediate;
+        public ushort DestinationRegister;
+        public ushort SourceRegister;
+        public short Immediate;
 
-        public virtual string GetMnemonic()
-        {
-            return Mnemonic;
-        }
+        public const ushort BitwiseMask = 0b1111_1111_1100_0000;
 
-        public virtual ushort GetOpCode()
-        {
-            return OpCode;
-        }
+        public abstract string GetMnemonic();
+
+        public abstract ushort GetOpCode();
 
         public List<byte> Assemble()
         {
-            var machineCode = new List<byte>();
+            var firstHalfInstr = GetOpCode();
+            firstHalfInstr += DestinationRegister;
+            firstHalfInstr += SourceRegister;
 
-            byte firstByte = 0;
-            firstByte += (byte) (GetOpCode() >> 1);
-            machineCode.Add(firstByte);
+            var fullInstr = (uint) (firstHalfInstr << 16);
+            fullInstr += (uint) Immediate;
 
-            byte secondByte = 0;
-            secondByte += (byte) ((GetOpCode() & 1) << 7);
-            secondByte += (byte) (SourceRegister << 4);
-            if (HighLowBit) secondByte += 8;
-            secondByte += DestinationRegister;
-            machineCode.Add(secondByte);
-
-            byte thirdByte = 0;
-            thirdByte += (byte) (Immediate >> 8);
-            machineCode.Add(thirdByte);
-
-            byte fourthByte = 0;
-            fourthByte += (byte) (Immediate & 0xFF);
-            machineCode.Add(fourthByte);
-
-            return machineCode;
+            return InstructionUtilities.ConvertToByteArray(fullInstr);
         }
 
         public virtual string Disassemble()
@@ -58,55 +37,39 @@ namespace InstructionSetProject.Backend.InstructionTypes
 
             assembly += GetMnemonic();
             assembly += " ";
-            assembly += GetRegister.FromByte(DestinationRegister);
+            assembly += Register.ParseDestination(DestinationRegister);
             assembly += ", ";
-            assembly += GetRegister.FromByte(SourceRegister);
+            assembly += Register.ParseFirstSource(SourceRegister);
             assembly += ", ";
             assembly += Immediate.ToString("X2");
 
             return assembly;
         }
 
-        public static JumpInstruction ParseInstruction(List<byte> machineCode)
+        public void ParseInstruction(List<byte> machineCode)
         {
-            if (machineCode.Count != 4)
-                throw new Exception("Incorrect number of bytes for this instruction type");
+            var fullInstr = InstructionUtilities.ConvertToUint(machineCode);
+            var firstHalfInstr = (ushort) (fullInstr >> 16);
 
-            var instr = new JumpInstruction();
+            DestinationRegister = (ushort)(firstHalfInstr & 0b111);
 
-            instr.OpCode = (ushort)(machineCode[0] << 1);
-            instr.OpCode += (ushort)((machineCode[1] & 0x128) >> 7);
+            SourceRegister = (ushort)(firstHalfInstr & 0b11_1000);
 
-            instr.DestinationRegister = (byte)(machineCode[1] & 0x7);
-
-            instr.HighLowBit = (machineCode[1] & 0x8) != 0;
-
-            instr.SourceRegister = (byte)((machineCode[1] & 0x70) >> 4);
-
-            instr.Immediate = machineCode[3];
-            instr.Immediate += (ushort)(machineCode[2] << 8);
-
-            return instr;
+            Immediate = (short) (fullInstr & 0b1111_1111_1111_1111);
         }
 
-        public static JumpInstruction ParseInstruction(string assemblyCode)
+        public void ParseInstruction(string assemblyCode)
         {
             var tokens = assemblyCode.Split(' ');
 
             if (tokens.Length != 4)
                 throw new Exception("Incorrect number of tokens obtained from assembly instruction");
 
-            var instr = new JumpInstruction();
+            DestinationRegister = Register.ParseDestination(tokens[1].TrimEnd(','));
 
-            instr.Mnemonic = tokens[0];
+            SourceRegister = Register.ParseFirstSource(tokens[2].TrimEnd(','));
 
-            instr.DestinationRegister = GetRegister.FromString(tokens[1].TrimEnd(','));
-
-            instr.SourceRegister = GetRegister.FromString(tokens[2].TrimEnd(','));
-
-            instr.Immediate = Convert.ToUInt16(tokens[3], 16);
-
-            return instr;
+            Immediate = Convert.ToInt16(tokens[3], 16);
         }
     }
 }

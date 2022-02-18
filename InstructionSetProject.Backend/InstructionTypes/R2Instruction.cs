@@ -7,38 +7,24 @@ using InstructionSetProject.Backend.Utilities;
 
 namespace InstructionSetProject.Backend.InstructionTypes
 {
-    public class R2Instruction : IInstruction
+    public abstract class R2Instruction : IInstruction
     {
-        public string Mnemonic = "";
-        public ushort OpCode;
-        public byte DestinationRegister;
-        public byte SourceRegister;
+        public ushort DestinationRegister;
+        public ushort SourceRegister;
 
-        public virtual string GetMnemonic()
-        {
-            return Mnemonic;
-        }
+        public const ushort BitwiseMask = 0b1111_1111_1100_0000;
 
-        public virtual ushort GetOpCode()
-        {
-            return OpCode;
-        }
+        public abstract string GetMnemonic();
+
+        public abstract ushort GetOpCode();
 
         public List<byte> Assemble()
         {
-            var machineCode = new List<byte>();
+            var fullInstr = GetOpCode();
+            fullInstr += DestinationRegister;
+            fullInstr += SourceRegister;
 
-            byte firstByte = 0;
-            firstByte += (byte) (GetOpCode() >> 2);
-            machineCode.Add(firstByte);
-
-            byte secondByte = 0;
-            secondByte += (byte) ((GetOpCode() & 0x3) << 6);
-            secondByte += (byte) ((SourceRegister) << 3);
-            secondByte += DestinationRegister;
-            machineCode.Add(secondByte);
-
-            return machineCode;
+            return InstructionUtilities.ConvertToByteArray(fullInstr);
         }
 
         public string Disassemble()
@@ -47,46 +33,32 @@ namespace InstructionSetProject.Backend.InstructionTypes
 
             assembly += GetMnemonic();
             assembly += " ";
-            assembly += GetRegister.FromByte(DestinationRegister);
+            assembly += Register.ParseDestination(DestinationRegister);
             assembly += ", ";
-            assembly += GetRegister.FromByte(SourceRegister);
+            assembly += Register.ParseFirstSource(SourceRegister);
 
             return assembly;
         }
 
-        public static R2Instruction ParseInstruction(List<byte> machineCode)
+        public void ParseInstruction(List<byte> machineCode)
         {
-            if (machineCode.Count != 2)
-                throw new Exception("Incorrect number of bytes for this instruction type");
+            var fullInstr = InstructionUtilities.ConvertToUshort(machineCode);
 
-            var instr = new R2Instruction();
+            DestinationRegister = (ushort)(fullInstr & 0b111);
 
-            instr.OpCode = (ushort)((machineCode[1] & 0xC0) >> 6);
-            instr.OpCode += (ushort)(machineCode[0] << 2);
-
-            instr.DestinationRegister = (byte)(machineCode[1] & 0x7);
-
-            instr.SourceRegister = (byte)((machineCode[1] & 0x38) >> 3);
-
-            return instr;
+            SourceRegister = (ushort)(fullInstr & 0b11_1000);
         }
 
-        public static R2Instruction ParseInstruction(string assemblyCode)
+        public void ParseInstruction(string assemblyCode)
         {
             var tokens = assemblyCode.Split(' ');
 
             if (tokens.Length != 3)
                 throw new Exception("Incorrect number fo tokens obtained from assembly instruction");
 
-            var instr = new R2Instruction();
+            DestinationRegister = Register.ParseDestination(tokens[1].TrimEnd(','));
 
-            instr.Mnemonic = tokens[0];
-
-            instr.DestinationRegister = GetRegister.FromString(tokens[1].TrimEnd(','));
-
-            instr.SourceRegister = GetRegister.FromString(tokens[2]);
-
-            return instr;
+            SourceRegister = Register.ParseFirstSource(tokens[2]);
         }
     }
 }
