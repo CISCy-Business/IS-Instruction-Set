@@ -204,8 +204,8 @@ namespace InstructionSetProject.Backend
                     typedInstr = GetInstruction.FromOpCode(genericTypedInstr);
                     return typedInstr.Disassemble();
                 case InstructionType.Immediate:
-                    genericTypedInstr = ImmediateInstruction.ParseInstruction(instruction);
-                    addrMode = ((ImmediateInstruction)genericTypedInstr).GetAddressingModeString();
+                    genericTypedInstr = MemoryInstruction.ParseInstruction(instruction);
+                    addrMode = ((MemoryInstruction)genericTypedInstr).GetAddressingModeString();
                     typedInstr = GetInstruction.FromOpCode(genericTypedInstr);
                     return typedInstr.Disassemble();
                 case InstructionType.Jump:

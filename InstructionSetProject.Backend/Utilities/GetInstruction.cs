@@ -1,7 +1,11 @@
-﻿using InstructionSetProject.Backend.Instructions.Arithmetic;
-using InstructionSetProject.Backend.Instructions.General;
-using InstructionSetProject.Backend.Instructions.Jump;
-using InstructionSetProject.Backend.Instructions.Stack;
+﻿
+using InstructionSetProject.Backend.Instructions.JumpTypes;
+using InstructionSetProject.Backend.Instructions.MemoryTypes;
+using InstructionSetProject.Backend.Instructions.R0Types;
+using InstructionSetProject.Backend.Instructions.R1Types;
+using InstructionSetProject.Backend.Instructions.R2Types;
+using InstructionSetProject.Backend.Instructions.R2ITypes;
+using InstructionSetProject.Backend.Instructions.R3Types;
 using InstructionSetProject.Backend.InstructionTypes;
 
 namespace InstructionSetProject.Backend.Utilities
@@ -14,19 +18,19 @@ namespace InstructionSetProject.Backend.Utilities
             switch (opCode)
             {
                 case LoadWord.OpCode:
-                    return new LoadWord((ImmediateInstruction)instr);
+                    return new LoadWord((MemoryInstruction)instr);
                 case LoadByteHigh.OpCode:
-                    if (((ImmediateInstruction) instr).HighLowBit)
-                        return new LoadByteHigh((ImmediateInstruction) instr);
+                    if (((MemoryInstruction) instr).HighLowBit)
+                        return new LoadByteHigh((MemoryInstruction) instr);
                     else
-                        return new LoadByteLow((ImmediateInstruction) instr);
+                        return new LoadByteLow((MemoryInstruction) instr);
                 case StoreWord.OpCode:
-                    return new StoreWord((ImmediateInstruction)instr);
+                    return new StoreWord((MemoryInstruction)instr);
                 case StoreByteHigh.OpCode:
-                    if (((ImmediateInstruction)instr).HighLowBit)
-                        return new StoreByteHigh((ImmediateInstruction)instr);
+                    if (((MemoryInstruction)instr).HighLowBit)
+                        return new StoreByteHigh((MemoryInstruction)instr);
                     else
-                        return new StoreByteLow((ImmediateInstruction)instr);
+                        return new StoreByteLow((MemoryInstruction)instr);
                 case Halt.OpCode:
                     return new Halt((R0Instruction)instr);
                 case NoOperation.OpCode:
@@ -105,17 +109,17 @@ namespace InstructionSetProject.Backend.Utilities
             switch (mnemonic)
             {
                 case LoadWord.Mnemonic:
-                    return new LoadWord(ImmediateInstruction.ParseInstruction(instructionLine));
+                    return new LoadWord(MemoryInstruction.ParseInstruction(instructionLine));
                 case LoadByteHigh.Mnemonic:
-                    return new LoadByteHigh(ImmediateInstruction.ParseInstruction(instructionLine));
+                    return new LoadByteHigh(MemoryInstruction.ParseInstruction(instructionLine));
                 case LoadByteLow.Mnemonic:
-                    return new LoadByteLow(ImmediateInstruction.ParseInstruction(instructionLine));
+                    return new LoadByteLow(MemoryInstruction.ParseInstruction(instructionLine));
                 case StoreWord.Mnemonic:
-                    return new StoreWord(ImmediateInstruction.ParseInstruction(instructionLine));
+                    return new StoreWord(MemoryInstruction.ParseInstruction(instructionLine));
                 case StoreByteHigh.Mnemonic:
-                    return new StoreByteHigh(ImmediateInstruction.ParseInstruction(instructionLine));
+                    return new StoreByteHigh(MemoryInstruction.ParseInstruction(instructionLine));
                 case StoreByteLow.Mnemonic:
-                    return new StoreByteLow(ImmediateInstruction.ParseInstruction(instructionLine));
+                    return new StoreByteLow(MemoryInstruction.ParseInstruction(instructionLine));
                 case Halt.Mnemonic:
                     return new Halt(R0Instruction.ParseInstruction(instructionLine));
                 case NoOperation.Mnemonic:
