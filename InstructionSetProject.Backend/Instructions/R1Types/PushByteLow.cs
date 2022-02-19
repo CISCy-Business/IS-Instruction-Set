@@ -9,19 +9,9 @@ namespace InstructionSetProject.Backend.Instructions.R1Types
 {
     public class PushByteLow : R1Instruction
     {
-        public new const string Mnemonic = "PSHL";
+        public const string Mnemonic = "PSL";
 
-        public new const ushort OpCode = 0x203;
-
-        public new const bool HighLowBit = false;
-
-        public PushByteLow(R1Instruction instr)
-        {
-            base.OpCode = instr.OpCode;
-            base.Mnemonic = instr.Mnemonic;
-            DestinationRegister = instr.DestinationRegister;
-            base.HighLowBit = instr.HighLowBit;
-        }
+        public const ushort OpCode = 0b0010_0000_0001_1000;
 
         public override string GetMnemonic()
         {
@@ -31,11 +21,6 @@ namespace InstructionSetProject.Backend.Instructions.R1Types
         public override ushort GetOpCode()
         {
             return PushByteLow.OpCode;
-        }
-
-        public override bool GetHighLowBit()
-        {
-            return PushByteLow.HighLowBit;
         }
     }
 }

@@ -9,28 +9,18 @@ namespace InstructionSetProject.Backend.Instructions.JumpTypes
 {
     public class JumpGreaterEqual : JumpInstruction
     {
-        public new const string Mnemonic = "JGE";
+        public const string Mnemonic = "JGE";
 
-        public new const ushort OpCode = 0x184;
-
-        public JumpGreaterEqual(JumpInstruction instr)
-        {
-            base.OpCode = instr.OpCode;
-            base.Mnemonic = instr.Mnemonic;
-            DestinationRegister = instr.DestinationRegister;
-            HighLowBit = instr.HighLowBit;
-            SourceRegister = instr.SourceRegister;
-            Immediate = instr.Immediate;
-        }
+        public const ushort OpCode = 0b1010_0001_1000_0000;
 
         public override string GetMnemonic()
         {
-            return JumpGreaterEqual.Mnemonic;
+            return Mnemonic;
         }
 
         public override ushort GetOpCode()
         {
-            return JumpGreaterEqual.OpCode;
+            return OpCode;
         }
     }
 }

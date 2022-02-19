@@ -9,17 +9,9 @@ namespace InstructionSetProject.Backend.Instructions.R2Types
 {
     public class BitwiseNot : R2Instruction
     {
-        public new const string Mnemonic = "NOT";
+        public const string Mnemonic = "NOT";
 
-        public new const ushort OpCode = 0x100;
-
-        public BitwiseNot(R2Instruction instr)
-        {
-            base.OpCode = instr.OpCode;
-            base.Mnemonic = instr.Mnemonic;
-            DestinationRegister = instr.DestinationRegister;
-            SourceRegister = instr.SourceRegister;
-        }
+        public const ushort OpCode = 0b0100_0101_0100_0000;
 
         public override string GetMnemonic()
         {

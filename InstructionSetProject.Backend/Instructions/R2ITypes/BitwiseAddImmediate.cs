@@ -7,7 +7,7 @@ using InstructionSetProject.Backend.InstructionTypes;
 
 namespace InstructionSetProject.Backend.Instructions.R2ITypes
 {
-    internal class BitwiseAddImmediate : R2IInstruction
+    public class BitwiseAddImmediate : R2IInstruction
     {
         public const string Mnemonic = "ADI";
 

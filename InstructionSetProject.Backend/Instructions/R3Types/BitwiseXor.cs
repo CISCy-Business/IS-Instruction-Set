@@ -9,27 +9,18 @@ namespace InstructionSetProject.Backend.Instructions.R3Types
 {
     public class BitwiseXor : R3Instruction
     {
-        public new const string Mnemonic = "XOR";
+        public const string Mnemonic = "XOR";
 
-        public new const ushort OpCode = 0x35;
-
-        public BitwiseXor(R3Instruction instr)
-        {
-            base.OpCode = instr.OpCode;
-            base.Mnemonic = instr.Mnemonic;
-            DestinationRegister = instr.DestinationRegister;
-            SourceRegister1 = instr.SourceRegister1;
-            SourceRegister2 = instr.SourceRegister2;
-        }
+        public const ushort OpCode = 0b0110_1100_0000_0000;
 
         public override string GetMnemonic()
         {
-            return BitwiseXor.Mnemonic;
+            return Mnemonic;
         }
 
         public override ushort GetOpCode()
         {
-            return BitwiseXor.OpCode;
+            return OpCode;
         }
     }
 }

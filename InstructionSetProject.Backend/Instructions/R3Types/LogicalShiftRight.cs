@@ -9,27 +9,18 @@ namespace InstructionSetProject.Backend.Instructions.R3Types
 {
     public class LogicalShiftRight : R3Instruction
     {
-        public new const string Mnemonic = "LSR";
+        public const string Mnemonic = "LSR";
 
-        public new const ushort OpCode = 0x38;
-
-        public LogicalShiftRight(R3Instruction instr)
-        {
-            base.OpCode = instr.OpCode;
-            base.Mnemonic = instr.Mnemonic;
-            DestinationRegister = instr.DestinationRegister;
-            SourceRegister1 = instr.SourceRegister1;
-            SourceRegister2 = instr.SourceRegister2;
-        }
+        public const ushort OpCode = 0b0111_0110_0000_0000;
 
         public override string GetMnemonic()
         {
-            return LogicalShiftRight.Mnemonic;
+            return Mnemonic;
         }
 
         public override ushort GetOpCode()
         {
-            return LogicalShiftRight.OpCode;
+            return OpCode;
         }
     }
 }

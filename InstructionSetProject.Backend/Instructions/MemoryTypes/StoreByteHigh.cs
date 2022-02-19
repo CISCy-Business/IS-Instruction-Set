@@ -9,35 +9,18 @@ namespace InstructionSetProject.Backend.Instructions.MemoryTypes
 {
     public class StoreByteHigh : MemoryInstruction
     {
-        public new const string Mnemonic = "STH";
+        public const string Mnemonic = "STH";
 
-        public new const ushort OpCode = 0x83;
-
-        public new const bool HighLowBit = true;
-
-        public StoreByteHigh(MemoryInstruction instr)
-        {
-            base.OpCode = instr.OpCode;
-            base.Mnemonic = instr.Mnemonic;
-            DestinationRegister = instr.DestinationRegister;
-            AddressingMode = instr.AddressingMode;
-            base.HighLowBit = instr.HighLowBit;
-            Immediate = instr.Immediate;
-        }
+        public const ushort OpCode = 0b1000_0010_1000_0000;
 
         public override string GetMnemonic()
         {
-            return StoreByteHigh.Mnemonic;
+            return Mnemonic;
         }
 
         public override ushort GetOpCode()
         {
-            return StoreByteHigh.OpCode;
-        }
-
-        public override bool GetHighLowBit()
-        {
-            return StoreByteHigh.HighLowBit;
+            return OpCode;
         }
     }
 }

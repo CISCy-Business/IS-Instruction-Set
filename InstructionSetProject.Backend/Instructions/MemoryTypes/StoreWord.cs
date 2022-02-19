@@ -9,33 +9,18 @@ namespace InstructionSetProject.Backend.Instructions.MemoryTypes
 {
     public class StoreWord : MemoryInstruction
     {
-        public new const string Mnemonic = "STW";
+        public const string Mnemonic = "STW";
 
-        public new const ushort OpCode = 0x82;
-
-        public StoreWord(MemoryInstruction instr)
-        {
-            base.OpCode = instr.OpCode;
-            base.Mnemonic = instr.Mnemonic;
-            DestinationRegister = instr.DestinationRegister;
-            AddressingMode = instr.AddressingMode;
-            HighLowBit = instr.HighLowBit;
-            Immediate = instr.Immediate;
-        }
+        public const ushort OpCode = 0b1000_0000_1000_0000;
 
         public override string GetMnemonic()
         {
-            return StoreWord.Mnemonic;
+            return Mnemonic;
         }
 
         public override ushort GetOpCode()
         {
-            return StoreWord.OpCode;
-        }
-
-        public override bool GetHighLowBit()
-        {
-            return false;
+            return OpCode;
         }
     }
 }
