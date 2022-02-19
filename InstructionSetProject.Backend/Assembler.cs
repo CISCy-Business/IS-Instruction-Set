@@ -20,13 +20,21 @@ namespace InstructionSetProject.Backend
                 if (line != String.Empty)
                 {
                     var machineLine = ConvertLineToMachineCode(line);
-                    machineCode = machineCode.Concat(machineLine).ToList();
+
+                    machineCode.Add((byte)(machineLine.opcode >> 8));
+                    machineCode.Add((byte)(machineLine.opcode >> 0));
+
+                    if (machineLine.operand != null)
+                    {
+                        machineCode.Add((byte)(machineLine.operand >> 8));
+                        machineCode.Add((byte)(machineLine.operand >> 0));
+                    }
                 }
             }
             return machineCode;
         }
         
-        public static List<byte> ConvertLineToMachineCode(string instructionLine)
+        public static (ushort opcode, ushort? operand) ConvertLineToMachineCode(string instructionLine)
         {
             var instr = InstructionManager.Instance.Get(InstructionUtilities.GetMnemonic(instructionLine));
             instr.ParseInstruction(instructionLine);

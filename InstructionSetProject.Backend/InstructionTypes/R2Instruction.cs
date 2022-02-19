@@ -18,13 +18,10 @@ namespace InstructionSetProject.Backend.InstructionTypes
 
         public abstract ushort GetOpCode();
 
-        public List<byte> Assemble()
+        public (ushort opcode, ushort? operand) Assemble()
         {
-            var fullInstr = GetOpCode();
-            fullInstr += DestinationRegister;
-            fullInstr += SourceRegister;
-
-            return InstructionUtilities.ConvertToByteArray(fullInstr);
+            var opcode = (ushort)(GetOpCode() | DestinationRegister | SourceRegister);
+            return (opcode, null);
         }
 
         public string Disassemble()
@@ -40,13 +37,10 @@ namespace InstructionSetProject.Backend.InstructionTypes
             return assembly;
         }
 
-        public void ParseInstruction(List<byte> machineCode)
+        public void ParseInstruction((ushort opcode, ushort? operand) machineCode)
         {
-            var fullInstr = InstructionUtilities.ConvertToUshort(machineCode);
-
-            DestinationRegister = (ushort)(fullInstr & 0b111);
-
-            SourceRegister = (ushort)(fullInstr & 0b11_1000);
+            DestinationRegister = (ushort)(machineCode.opcode & 0b111);
+            SourceRegister = (ushort)(machineCode.opcode & 0b11_1000);
         }
 
         public void ParseInstruction(string assemblyCode)

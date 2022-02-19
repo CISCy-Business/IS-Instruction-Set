@@ -14,23 +14,17 @@ namespace InstructionSetProject.Backend.InstructionTypes
 
         public abstract ushort GetOpCode();
 
-        public List<byte> Assemble()
+        public (ushort opcode, ushort? operand) Assemble()
         {
-            var fullInstr = GetOpCode();
-
-            return InstructionUtilities.ConvertToByteArray(fullInstr);
+            return (GetOpCode(), null);
         }
 
         public string Disassemble()
         {
-            string assembly = "";
-
-            assembly += GetMnemonic();
-
-            return assembly;
+            return GetMnemonic();
         }
 
-        public void ParseInstruction(List<byte> machineCode)
+        public void ParseInstruction((ushort opcode, ushort? operand) machineCode)
         {
         }
 

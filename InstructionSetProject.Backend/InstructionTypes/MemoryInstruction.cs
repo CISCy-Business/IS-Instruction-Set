@@ -19,16 +19,10 @@ namespace InstructionSetProject.Backend.InstructionTypes
 
         public abstract ushort GetOpCode();
 
-        public List<byte> Assemble()
+        public (ushort opcode, ushort? operand) Assemble()
         {
-            var firstHalfInstr = GetOpCode();
-            firstHalfInstr += DestinationRegister;
-            firstHalfInstr += AddressingMode;
-
-            var fullInstr = (uint)(firstHalfInstr << 16);
-            fullInstr += (uint)Immediate;
-
-            return InstructionUtilities.ConvertToByteArray(fullInstr);
+            var opcode = (ushort)(GetOpCode() | DestinationRegister | AddressingMode);
+            return (opcode, (ushort)Immediate);
         }
 
         public string Disassemble()
@@ -53,16 +47,15 @@ namespace InstructionSetProject.Backend.InstructionTypes
             return assembly;
         }
 
-        public void ParseInstruction(List<byte> machineCode)
+        public void ParseInstruction((ushort opcode, ushort? operand) machineCode)
         {
-            var fullInstr = InstructionUtilities.ConvertToUint(machineCode);
-            var firstHalfInstr = (ushort)(fullInstr >> 16);
+            AddressingMode = (ushort)(machineCode.opcode & 0b111_1000);
+            DestinationRegister = (ushort)(machineCode.opcode & 0b111);
 
-            AddressingMode = (ushort)(firstHalfInstr & 0b111_1000);
+            if (machineCode.operand == null)
+                throw new ArgumentException("Operand to memory instruction cannot be null.");
 
-            DestinationRegister = (ushort)(firstHalfInstr & 0b111);
-
-            Immediate = (short)(fullInstr & 0b1111_1111_1111_1111);
+            Immediate = (short)machineCode.operand;
         }
 
         public void ParseInstruction(string assemblyCode)
