@@ -184,7 +184,10 @@ namespace InstructionSetProject.Backend
 
         public static string ConvertLineToAssemblyCode(List<byte> instruction)
         {
-            var instr = GetInstruction.FromOpCode(instruction);
+            var beginInstruction = (ushort)(instruction[0] << 8);
+            beginInstruction += instruction[1];
+
+            var instr = InstructionManager.Instance.Get(InstructionUtilities.GetOpCode(beginInstruction));
             instr.ParseInstruction(instruction);
             return instr.Disassemble();
         }

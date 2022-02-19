@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InstructionSetProject.Backend.InstructionTypes;
 
 namespace InstructionSetProject.Backend.Utilities
 {
@@ -74,6 +75,35 @@ namespace InstructionSetProject.Backend.Utilities
             fullInstr += bytes[3];
 
             return fullInstr;
+        }
+
+        public static string GetMnemonic(string instruction)
+        {
+            var tokens = instruction.Split(' ');
+            return tokens[0];
+        }
+
+        public static ushort GetOpCode(ushort instruction)
+        {
+            switch (instruction >> 13)
+            {
+                case 0b000:
+                    return (ushort)(R0Instruction.BitwiseMask & instruction);
+                case 0b001:
+                    return (ushort)(R1Instruction.BitwiseMask & instruction);
+                case 0b010:
+                    return (ushort)(R2Instruction.BitwiseMask & instruction);
+                case 0b011:
+                    return (ushort)(R3Instruction.BitwiseMask & instruction);
+                case 0b100:
+                    return (ushort)(MemoryInstruction.BitwiseMask & instruction);
+                case 0b101:
+                    return (ushort)(JumpInstruction.BitwiseMask & instruction);
+                case 0b110:
+                    return (ushort)(R2IInstruction.BitwiseMask & instruction);
+                default:
+                    throw new Exception("Instruction does not match any instruction type pattern.");
+            }
         }
     }
 

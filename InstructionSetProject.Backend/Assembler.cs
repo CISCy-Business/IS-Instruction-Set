@@ -28,7 +28,7 @@ namespace InstructionSetProject.Backend
         
         public static List<byte> ConvertLineToMachineCode(string instructionLine)
         {
-            var instr = GetInstruction.FromMnemonic(instructionLine);
+            var instr = InstructionManager.Instance.Get(InstructionUtilities.GetMnemonic(instructionLine));
             instr.ParseInstruction(instructionLine);
             return instr.Assemble();
         }
