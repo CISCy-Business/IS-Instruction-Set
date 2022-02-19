@@ -9,35 +9,18 @@ namespace InstructionSetProject.Backend.Instructions.MemoryTypes
 {
     public class LoadByteLow : MemoryInstruction
     {
-        public new const string Mnemonic = "LDL";
+        public const string Mnemonic = "LDL";
 
-        public new const ushort OpCode = 0x81;
-
-        public new const bool HighLowBit = false;
-
-        public LoadByteLow(MemoryInstruction instr)
-        {
-            base.OpCode = instr.OpCode;
-            base.Mnemonic = instr.Mnemonic;
-            DestinationRegister = instr.DestinationRegister;
-            AddressingMode = instr.AddressingMode;
-            base.HighLowBit = instr.HighLowBit;
-            Immediate = instr.Immediate;
-        }
+        public const ushort OpCode = 0b1000_0001_0000_0000;
 
         public override string GetMnemonic()
         {
-            return LoadByteLow.Mnemonic;
+            return Mnemonic;
         }
 
         public override ushort GetOpCode()
         {
-            return LoadByteLow.OpCode;
-        }
-
-        public override bool GetHighLowBit()
-        {
-            return LoadByteLow.HighLowBit;
+            return OpCode;
         }
     }
 }

@@ -9,27 +9,18 @@ namespace InstructionSetProject.Backend.Instructions.R3Types
 {
     public class RotateLeft : R3Instruction
     {
-        public new const string Mnemonic = "RTL";
+        public const string Mnemonic = "RTL";
 
-        public new const ushort OpCode = 0x39;
-
-        public RotateLeft(R3Instruction instr)
-        {
-            base.OpCode = instr.OpCode;
-            base.Mnemonic = instr.Mnemonic;
-            DestinationRegister = instr.DestinationRegister;
-            SourceRegister1 = instr.SourceRegister1;
-            SourceRegister2 = instr.SourceRegister2;
-        }
+        public const ushort OpCode = 0b0111_1000_0000_0000;
 
         public override string GetMnemonic()
         {
-            return RotateLeft.Mnemonic;
+            return Mnemonic;
         }
 
         public override ushort GetOpCode()
         {
-            return RotateLeft.OpCode;
+            return OpCode;
         }
     }
 }

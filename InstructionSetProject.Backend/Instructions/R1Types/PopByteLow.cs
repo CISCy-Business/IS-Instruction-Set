@@ -9,19 +9,9 @@ namespace InstructionSetProject.Backend.Instructions.R1Types
 {
     public class PopByteLow : R1Instruction
     {
-        public new const string Mnemonic = "POPL";
+        public const string Mnemonic = "PPL";
 
-        public new const ushort OpCode = 0x205;
-
-        public new const bool HighLowBit = false;
-
-        public PopByteLow(R1Instruction instr)
-        {
-            base.OpCode = instr.OpCode;
-            base.Mnemonic = instr.Mnemonic;
-            DestinationRegister = instr.DestinationRegister;
-            base.HighLowBit = instr.HighLowBit;
-        }
+        public const ushort OpCode = 0b0010_0000_0011_0000;
 
         public override string GetMnemonic()
         {
@@ -31,11 +21,6 @@ namespace InstructionSetProject.Backend.Instructions.R1Types
         public override ushort GetOpCode()
         {
             return PopByteLow.OpCode;
-        }
-
-        public override bool GetHighLowBit()
-        {
-            return PopByteLow.HighLowBit;
         }
     }
 }

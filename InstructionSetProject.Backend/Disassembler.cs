@@ -111,27 +111,27 @@ namespace InstructionSetProject.Backend
                     instructionCode += fullInstruction;
                    
 
-                    switch (addrMode)
-                    {
-                        case "i": immediateAddrMode++; break;
-                        case "d": directAddrMode++; break;
-                        case "dn": indirectAddrMode++; break;
-                        case "r": registerDirectAddrMode++; break;
-                        case "rn": registerIndirectAddrMode++; break;
-                        case "xd": indexDirectAddrMode++; break;
-                        case "xn": indexIndirectAddrMode++; break;
-                        case "xo": indexOffsetAddrMode++; break;
-                        case "xf": indexDefferedAddrMode++; break;
-                        case "sd": stackDirectAddrMode++; break;
-                        case "sn": stackIndirectAddrMode++; break;
-                        case "so": stackOffsetAddrMode++; break;
-                        case "sxd": stackIndexDirectAddrMode++; break;
-                        case "sxn": stackIndexIndirectAddrMode++; break;
-                        case "sxo": stackIndexOffsetAddrMode++; break;
-                        case "sxf": stackIndexDefferedAddrMode++; break;
-                        default:
-                            throw new Exception($"Address Not Found: {addrMode}");
-                    }
+                    // switch (addrMode)
+                    // {
+                    //     case "i": immediateAddrMode++; break;
+                    //     case "d": directAddrMode++; break;
+                    //     case "dn": indirectAddrMode++; break;
+                    //     case "r": registerDirectAddrMode++; break;
+                    //     case "rn": registerIndirectAddrMode++; break;
+                    //     case "xd": indexDirectAddrMode++; break;
+                    //     case "xn": indexIndirectAddrMode++; break;
+                    //     case "xo": indexOffsetAddrMode++; break;
+                    //     case "xf": indexDefferedAddrMode++; break;
+                    //     case "sd": stackDirectAddrMode++; break;
+                    //     case "sn": stackIndirectAddrMode++; break;
+                    //     case "so": stackOffsetAddrMode++; break;
+                    //     case "sxd": stackIndexDirectAddrMode++; break;
+                    //     case "sxn": stackIndexIndirectAddrMode++; break;
+                    //     case "sxo": stackIndexOffsetAddrMode++; break;
+                    //     case "sxf": stackIndexDefferedAddrMode++; break;
+                    //     default:
+                    //         throw new Exception($"Address Not Found: {addrMode}");
+                    // }
 
                     instructionCode += "\n";
                 }

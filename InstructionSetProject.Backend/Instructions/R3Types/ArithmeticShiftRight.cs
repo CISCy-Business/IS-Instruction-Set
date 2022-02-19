@@ -9,27 +9,18 @@ namespace InstructionSetProject.Backend.Instructions.R3Types
 {
     public class ArithmeticShiftRight : R3Instruction
     {
-        public new const string Mnemonic = "ASR";
+        public const string Mnemonic = "ASR";
 
-        public new const ushort OpCode = 0x37;
-
-        public ArithmeticShiftRight(R3Instruction instr)
-        {
-            base.OpCode = instr.OpCode;
-            base.Mnemonic = instr.Mnemonic;
-            DestinationRegister = instr.DestinationRegister;
-            SourceRegister1 = instr.SourceRegister1;
-            SourceRegister2 = instr.SourceRegister2;
-        }
+        public const ushort OpCode = 0b0111_0100_0000_0000;
 
         public override string GetMnemonic()
         {
-            return ArithmeticShiftRight.Mnemonic;
+            return Mnemonic;
         }
 
         public override ushort GetOpCode()
         {
-            return ArithmeticShiftRight.OpCode;
+            return OpCode;
         }
     }
 }

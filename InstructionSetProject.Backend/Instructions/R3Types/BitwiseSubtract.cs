@@ -9,27 +9,18 @@ namespace InstructionSetProject.Backend.Instructions.R3Types
 {
     public class BitwiseSubtract : R3Instruction
     {
-        public new const string Mnemonic = "SUB";
+        public const string Mnemonic = "SUB";
 
-        public new const ushort OpCode = 0x32;
-
-        public BitwiseSubtract(R3Instruction instr)
-        {
-            base.OpCode = instr.OpCode;
-            base.Mnemonic = instr.Mnemonic;
-            DestinationRegister = instr.DestinationRegister;
-            SourceRegister1 = instr.SourceRegister1;
-            SourceRegister2 = instr.SourceRegister2;
-        }
+        public const ushort OpCode = 0b0110_0100_0000_0000;
 
         public override string GetMnemonic()
         {
-            return BitwiseSubtract.Mnemonic;
+            return Mnemonic;
         }
 
         public override ushort GetOpCode()
         {
-            return BitwiseSubtract.OpCode;
+            return OpCode;
         }
     }
 }

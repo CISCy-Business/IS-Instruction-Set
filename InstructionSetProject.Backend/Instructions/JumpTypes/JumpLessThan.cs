@@ -9,28 +9,18 @@ namespace InstructionSetProject.Backend.Instructions.JumpTypes
 {
     public class JumpLessThan : JumpInstruction
     {
-        public new const string Mnemonic = "JLT";
+        public const string Mnemonic = "JLT";
 
-        public new const ushort OpCode = 0x181;
-
-        public JumpLessThan(JumpInstruction instr)
-        {
-            base.OpCode = instr.OpCode;
-            base.Mnemonic = instr.Mnemonic;
-            DestinationRegister = instr.DestinationRegister;
-            HighLowBit = instr.HighLowBit;
-            SourceRegister = instr.SourceRegister;
-            Immediate = instr.Immediate;
-        }
+        public const ushort OpCode = 0b1010_0000_1100_0000;
 
         public override string GetMnemonic()
         {
-            return JumpLessThan.Mnemonic;
+            return Mnemonic;
         }
 
         public override ushort GetOpCode()
         {
-            return JumpLessThan.OpCode;
+            return OpCode;
         }
     }
 }
