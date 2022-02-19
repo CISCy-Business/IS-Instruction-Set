@@ -101,7 +101,13 @@ namespace InstructionSetProject.Backend
                     programCounter = progCounter.ToString("X2");
                 }
 
-                string fullInstruction = ConvertLineToAssemblyCode(instruction);
+                ushort opcode = (ushort)(instruction[0] << 8 | instruction[1]);
+                ushort? operand = (instruction.Count == 2) ? null : (ushort?)(instruction[2] << 8 | instruction[3]);
+
+                (ushort opcode, ushort? operand) code = (opcode, operand);
+
+
+                string fullInstruction = ConvertLineToAssemblyCode(code);
 
                 if (instrType == InstructionType.Memory)
                 {
@@ -182,12 +188,9 @@ namespace InstructionSetProject.Backend
             return instructionCode.TrimEnd();
         }
 
-        public static string ConvertLineToAssemblyCode(List<byte> instruction)
+        public static string ConvertLineToAssemblyCode((ushort opcode, ushort? operand) instruction)
         {
-            var beginInstruction = (ushort)(instruction[0] << 8);
-            beginInstruction += instruction[1];
-
-            var instr = InstructionManager.Instance.Get(InstructionUtilities.GetOpCode(beginInstruction));
+            var instr = InstructionManager.Instance.Get(InstructionUtilities.GetOpCode(instruction.opcode));
             instr.ParseInstruction(instruction);
             return instr.Disassemble();
         }

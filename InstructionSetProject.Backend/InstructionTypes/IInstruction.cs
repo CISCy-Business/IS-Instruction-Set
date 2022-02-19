@@ -11,9 +11,9 @@ namespace InstructionSetProject.Backend.InstructionTypes
     {
         public string GetMnemonic();
         public ushort GetOpCode();
-        public List<byte> Assemble();
+        public (ushort opcode, ushort? operand) Assemble();
         public string Disassemble();
         public void ParseInstruction(string assemblyCode);
-        public void ParseInstruction(List<byte> machineCode);
+        public void ParseInstruction((ushort opcode, ushort? operand) machineCode);
     }
 }
