@@ -1,6 +1,7 @@
 ﻿@page "/assembler"
 @using InstructionSetProject.Backend;
 @using InstructionSetProject.Backend.StaticFrontend;
+@inject NavigationManager UriHelper
 @inject IJSRuntime JSRuntime
 
 <div class="code_input">
@@ -32,7 +33,8 @@
             <div class="col-sm-5">
                 <textarea @bind="currentCodeAss" id="assemble" name="assemble"></textarea>
                 <p>
-                    <button @onclick="SaveAssemblyCode" type="button" name="dis_btn" class="btn btn-primary btn-lg">Save Code</button>
+                    <button @onclick="SaveAssemblyCode" type="button" name="ass_btn" class="btn btn-primary btn-lg">Save Code</button>
+                    <button @onclick="OpenAssemblyCodeExecuter" type="button" name="ass_btn" class="btn btn-primary btn-lg float-end">Open Executer</button>
                 </p>
             </div>
     
@@ -47,7 +49,7 @@
             <div class="col-sm-5">
                 <textarea @bind="currentCodeOutAss" id="outputAss" name="outputAss" readonly></textarea>
                 <p>
-                    <button @onclick="SaveOutput" type="button" name="dis_btn" class="btn btn-primary btn-lg">Save Output</button>
+                    <button @onclick="SaveOutput" type="button" name="ass_btn" class="btn btn-primary btn-lg">Save Output</button>
                 </p>
             </div>
         </div>
@@ -93,6 +95,12 @@
         await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "machineCode.txt", "text/plain", file);
     }
 
+    private void OpenAssemblyCodeExecuter()
+    {
+        FrontendVariables.currentAssemblyCodeExecuter = currentCodeAss;
+        UriHelper.NavigateTo("executer");
+    }
+
     protected override async Task OnInitializedAsync()
     {
         StartupMethod();
@@ -100,8 +108,8 @@
 
     void StartupMethod()
     {
-        currentCodeAss = FrontendVariables.getCurrentCodeAssembler();
-        FrontendVariables.setCurrentCodeAssembler("");
+        currentCodeAss = FrontendVariables.currentCodeAssembler;
+        FrontendVariables.currentCodeAssembler = "";
     }
 
 }

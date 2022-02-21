@@ -1,7 +1,9 @@
 ﻿@page "/disassembler"
 @using InstructionSetProject.Backend;
 @using InstructionSetProject.Backend.StaticFrontend;
+@inject NavigationManager UriHelper
 @inject IJSRuntime JSRuntime
+
 
 <div class="code_input">
     <div class="code_input_wrapper">
@@ -34,6 +36,7 @@
                 <textarea @bind="currentCodeDis" id="disassemble" name="disassemble"></textarea>
                 <p>
                     <button @onclick="SaveMachineCode" type="button" name="dis_btn" class="btn btn-primary btn-lg">Save Code</button>
+                    <button @onclick="OpenMachineCodeExecuter" type="button" name="dis_exec_btn" class="btn btn-primary btn-lg float-end">Open Executer</button>
                 </p>
             </div>
     
@@ -149,9 +152,7 @@
     {
         // Should do some stuff instead of just printing it back and forth
         string returnStr = "";
-        returnStr += "   Name: Dante, Lucas, Preston\n" +
-                     "Project: Project 1 - Custom ISA\n\n" +
-                     "Prog Count  Type   Opcode       Instruction\n" +
+        returnStr += "Prog Count  Type   Opcode       Instruction\n" +
                      "----------  ----   ------    -----------------\n";
 
         returnStr += assembly;
@@ -166,7 +167,7 @@
 
         returnStr += "Addressing Mode Uses\n" + 
                      "--------------------\n" +
-                     "Memory:                    " + immediateAddrMode + "\n" +
+                     "Memory:                       " + immediateAddrMode + "\n" +
                      "Direct:                       " + directAddrMode + "\n" + 
                      "Indirect:                     " + indirectAddrMode + "\n" +  
                      "R-Direct:                     " + registerDirectAddrMode + "\n" +  
@@ -209,6 +210,12 @@
         await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "assemblyCode.txt", "text/plain", file);
     }
 
+    private void OpenMachineCodeExecuter()
+    {
+        FrontendVariables.currentMachineCodeExecuter = currentCodeDis;
+        UriHelper.NavigateTo("executer");
+    }
+
     protected override async Task OnInitializedAsync()
     {
         StartupMethod();
@@ -216,8 +223,8 @@
 
     void StartupMethod()
     {
-        currentCodeDis = FrontendVariables.getCurrentCodeDisassembler();
-        FrontendVariables.setCurrentCodeDisassembler("");
+        currentCodeDis = FrontendVariables.currentCodeDisassembler;
+        FrontendVariables.currentCodeDisassembler = "";
     }
 
 }

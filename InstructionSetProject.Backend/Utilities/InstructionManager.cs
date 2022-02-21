@@ -42,7 +42,7 @@ namespace InstructionSetProject.Backend.Utilities
             // R2 Instructions
 
             Add(BitwiseNeg.OpCode, BitwiseNeg.Mnemonic, () => new BitwiseNeg());
-            Add(BitwiseNot.OpCode, BitwiseNeg.Mnemonic, () => new BitwiseNot());
+            Add(BitwiseNot.OpCode, BitwiseNot.Mnemonic, () => new BitwiseNot());
             Add(Compare.OpCode, Compare.Mnemonic, () => new Compare());
             Add(Exchange.OpCode, Exchange.Mnemonic, () => new Exchange());
             Add(ExchangeAboveEqual.OpCode, ExchangeAboveEqual.Mnemonic, () => new ExchangeAboveEqual());

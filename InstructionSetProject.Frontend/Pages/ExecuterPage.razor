@@ -1,6 +1,7 @@
 ﻿@page "/executer"
 @using InstructionSetProject.Backend;
 @using InstructionSetProject.Backend.StaticFrontend;
+@inject NavigationManager UriHelper
 @inject IJSRuntime JSRuntime
 
 <style>
@@ -62,7 +63,7 @@
 
     .grid-container {
         display: grid;
-        grid-template-columns: 600px 550px auto;
+        grid-template-columns: auto auto auto;
     }
 
     .grid-container > div {
@@ -119,6 +120,7 @@
 
     .middleGridCol {
         margin: 0px 10px 0px 10px;
+        text-align: center;
     }
 
     .ioContent, .memDump {
@@ -127,9 +129,13 @@
         background-color: darkgray;
     }
 
+    .memDump {
+        margin-top: 5px;
+    }
+
     .memoryDumpContent > textarea {
         width: 100%;
-        height: 332px;
+        height: 813px;
         margin-top: 0px;
         margin-bottom: 0px;
         transform: translateY(5px);
@@ -170,18 +176,50 @@
         margin-top: 30px;
         max-width: 195px;
     }
+
+    .ioContent {
+        /*Remove the comments around the next line of code if input/output are not used*/
+        /*display: none;*/
+    }
+
+    #target {
+        min-width: 600px;
+        min-height: 350px;
+        max-width: 1000px;
+        max-height: 700px;
+    }
+
+    .e-toolbar {
+        border: 2px solid gray;
+    }
 </style>
 
 <div class="code_input_executer">
     <div class="code_input_wrapper">
         <div>
-            <p> - - - - - - -- - - - - - - -  --  - -- - - - - - - - - - - - - 
-                - - - - - - -- - - - - - - -  --  - -- - - - - - - - - - - - -  
-                - - - - - - -- - - - - - - -  - Where the tool bar will go in the future 
-                -  - -- - - - - - - - - - - - - - - - - - - -- - - - - - - -  -
-                -  - -- - - - - - - - - - - - - - - - - - - -- - - - - - - -  --  
-                - -- - - - - - - - - - - - -
-            </p>
+            <SfToolbar Height="65px">
+                <ToolbarItems>
+                    <ToolbarItem PrefixIcon="e-icons e-settings" Text="Build" TooltipText="Build the source/machine code prior to running"></ToolbarItem>
+                    <ToolbarItem PrefixIcon="e-icons e-chevron-right-fill" Text="Run" Type="ItemType.Button" OnClick="navigate" TooltipText="Run the code"></ToolbarItem>
+                    <ToolbarItem PrefixIcon="e-icons e-properties-1" Text="Debug" TooltipText="Start debugging the code" OnClick="Debug"></ToolbarItem>
+                    <ToolbarItem Type="ItemType.Separator"></ToolbarItem>
+                    <ToolbarItem PrefixIcon="e-icons e-text-wrap" Text="Step" TooltipText="Step through each line of code upon debugging" Disabled="@ShowItem"></ToolbarItem>
+                    <ToolbarItem PrefixIcon="e-icons e-check" Text="Continue" TooltipText="Continue through the rest of the program" Disabled="@ShowItem"></ToolbarItem>
+                    <ToolbarItem Type="ItemType.Separator"></ToolbarItem>
+                    <ToolbarItem PrefixIcon="e-icons e-bullet-3" Text="Stop" TooltipText="Stop the program"></ToolbarItem>
+                    <ToolbarItem PrefixIcon="e-icons e-repeat" Text="ReRun" TooltipText="Re-build and Re-run the program"></ToolbarItem>
+                    <ToolbarItem Type="ItemType.Separator"></ToolbarItem>
+                    <ToolbarItem Text="DataPath" TooltipText="Show the data path of instructions" Disabled="@ShowButton" OnClick="OnClicked"></ToolbarItem>
+                </ToolbarItems>
+            </SfToolbar>
+
+            <SfDialog Target="#target" Width="600px" Height="350px" ResizeHandles="@dialogResizeDirections" AllowDragging="true" EnableResize="true" ShowCloseIcon="true" @bind-Visible="Visibility">
+                <DialogTemplates>
+                    <Header> I am a resizeable and moveable within window modal!!</Header>
+                    <Content> I will be used to show case the data path instructions take inside the "CPU" </Content>
+                </DialogTemplates>
+                <DialogEvents OnOpen="@DialogOpen" Closed="@DialogClose"></DialogEvents>
+            </SfDialog>
         </div>
         <div class="grid-container">
             <div class="codeDiv">
@@ -196,11 +234,11 @@
                         <div>
                             <label id="exLabel"><b>Source Code</b></label>
                         </div>
-                        <textarea>Assembly Code</textarea><br />
+                        <textarea @bind="ExecAssemblyCode"></textarea><br />
                         <div>
                             <label id="exLabel"><b>Machine Code</b></label>
                         </div>
-                        <textarea id="machineTextBox">Machine Code</textarea>
+                        <textarea @bind="ExecMachineCode" id="machineTextBox"></textarea>
                     </div>
                 </div>
 
@@ -305,9 +343,58 @@
 </div>
 
 @code {
+    private string ExecMachineCode = "";
+    private string ExecAssemblyCode = "";
+    public bool ShowItem { get; set; } = true;
+    private bool Visibility { get; set; } = false;
+    private bool ShowButton { get; set; } = false;
+    private ResizeDirection[] dialogResizeDirections { get; set; } = new ResizeDirection[] { ResizeDirection.All };
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await JSRuntime.InvokeVoidAsync("autoSelectFirstTab");
     }
+
+    protected override async Task OnInitializedAsync()
+    {
+        StartupMethod();
+    }
+
+    void StartupMethod()
+    {
+        ExecMachineCode = FrontendVariables.currentMachineCodeExecuter;
+        FrontendVariables.currentMachineCodeExecuter = "";
+        ExecAssemblyCode = FrontendVariables.currentAssemblyCodeExecuter;
+        FrontendVariables.currentAssemblyCodeExecuter = "";
+    }
+
+    void navigate()
+    {
+        ExecAssemblyCode = "It sorta worked";
+    }
+
+    void Debug()
+    {
+        OnItemClick();
+    }
+
+    public void OnItemClick()
+    {
+        ShowItem = !ShowItem;
+    }
+
+    private void DialogOpen(Object args)
+    {
+        this.ShowButton = true;
+    }
+    private void DialogClose(Object args)
+    {
+        this.ShowButton = false;
+    }
+    private void OnClicked()
+    {
+        this.Visibility = true;
+    }
+
 
 }
