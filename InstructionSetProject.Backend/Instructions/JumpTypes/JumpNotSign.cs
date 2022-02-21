@@ -9,7 +9,7 @@ namespace InstructionSetProject.Backend.Instructions.JumpTypes
 {
     public class JumpNotSign : JumpInstruction
     {
-        public const string Mnemonic = "JNE";
+        public const string Mnemonic = "JNS";
 
         public const ushort OpCode = 0b1010_0100_1000_0000;
 

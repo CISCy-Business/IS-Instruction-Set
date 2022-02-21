@@ -8,28 +8,9 @@ namespace InstructionSetProject.Backend.StaticFrontend
 {
     public static class FrontendVariables
     {
-        public static string currentCodeDisassembler = "";
-        public static string currentCodeAssembler = "";
-
-
-        public static string getCurrentCodeDisassembler()
-        {
-            return currentCodeDisassembler;
-        }
-
-        public static void setCurrentCodeDisassembler(string currentCodeDis)
-        {
-            currentCodeDisassembler = currentCodeDis;
-        }
-
-        public static string getCurrentCodeAssembler()
-        {
-            return currentCodeAssembler;
-        }
-
-        public static void setCurrentCodeAssembler(string currentCodeAssem)
-        {
-            currentCodeAssembler = currentCodeAssem;
-        }
+        public static string currentCodeDisassembler { get; set; } = "";
+        public static string currentCodeAssembler { get; set; } = "";
+        public static string currentMachineCodeExecuter { get; set; } = "";
+        public static string currentAssemblyCodeExecuter { get; set; } = "";
     }
 }

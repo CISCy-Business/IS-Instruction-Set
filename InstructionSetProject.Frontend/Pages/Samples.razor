@@ -15,7 +15,7 @@
 
     textarea {
         height: 250px; 
-        width: 350px;
+        width: 100%;
         font-size: 22px;
     }
 
@@ -36,6 +36,14 @@
         font-style: oblique;
         font-size: 44px;
     }
+
+    .sample_btns1 {
+        transform: translateX(-36px);
+    }
+
+    .sample_btns2 {
+        transform: translateX(-33px);
+    }
 </style>
 
 <div class="code_input" style="width:100%">
@@ -52,13 +60,19 @@
         <div class="col-sm-3">
             <label>Assembly Code</label><br />
             <textarea id="idAddSubAssem1" readonly>@addSubAssem1</textarea><br />
-            <button class="btn btn-primary btn-lg" @onclick="() => NavigateAssemblerSample(addSubAssem1)">Open Source</button>
+            <div class="sample_btns1">
+                <button class="btn btn-primary btn-lg" @onclick="() => NavigateAssemblerSample(addSubAssem1)">Open Source</button>
+                <button @onclick="() => NavigateExecuterAssemblySample(addSubAssem1)" type="button" class="btn btn-primary btn-lg float-end">Open Executer</button>
+            </div>
         </div>
         <div class="col-sm-2"><img src="arrow-left-right.svg"/></div>
         <div class="col-sm-3">
             <label>Machine Code</label><br />
             <textarea id="idAddSubMach1" readonly>@addSubMach1</textarea>
-            <button class="btn btn-primary btn-lg" @onclick="() => NavigateDisassemblerSample(addSubMach1)">Open Machine</button>
+            <div class="sample_btns2">
+                <button class="btn btn-primary btn-lg" @onclick="() => NavigateDisassemblerSample(addSubMach1)">Open Machine</button>
+                <button @onclick="() => NavigateExecuterMachineSample(addSubMach1)" type="button" class="btn btn-primary btn-lg float-end">Open Executer</button>
+            </div>
         </div>
         <div class="col-sm-2"></div>
     </div>
@@ -71,7 +85,7 @@
                 <p>
                     This code contains 3 lines and starting from the first line <strong>ADD r1, r2, r3</strong> it takes
                     the values in r2 and r3 and adds them together and stores that output in r1. The second line containing
-                    <strong>SUB r1, r2, r3</strong> takes the values located in r2 and r3 and subtracts the two values and 
+                    <strong>SUB r1, r3, r5</strong> takes the values located in r3 and r5 and subtracts the two values and 
                     the output is stored back into r1. The final line <strong>HLT</strong> is used to end the execution
                     of the program.
                 </p>
@@ -90,13 +104,19 @@
         <div class="col-sm-3">
             <label>Assembly Code</label><br />
             <textarea id="idLoadStoreAssem1" readonly>@loadStoreAssem1</textarea>
-            <button class="btn btn-primary btn-lg" @onclick="() => NavigateAssemblerSample(loadStoreAssem1)">Open Source</button>
+            <div class="sample_btns1">
+                <button class="btn btn-primary btn-lg" @onclick="() => NavigateAssemblerSample(loadStoreAssem1)">Open Source</button>
+                <button @onclick="() => NavigateExecuterAssemblySample(loadStoreAssem1)" type="button" class="btn btn-primary btn-lg float-end">Open Executer</button>
+            </div>
         </div>
         <div class="col-sm-2"><img src="arrow-left-right.svg"/></div>
         <div class="col-sm-3">
             <label>Machine Code</label><br />
             <textarea id="idLoadStoreMach1" readonly>@loadStoreMach1</textarea>
-            <button class="btn btn-primary btn-lg" @onclick="() => NavigateDisassemblerSample(loadStoreMach1)">Open Machine</button>
+            <div class="sample_btns2">
+                <button class="btn btn-primary btn-lg" @onclick="() => NavigateDisassemblerSample(loadStoreMach1)">Open Machine</button>
+                <button @onclick="() => NavigateExecuterMachineSample(loadStoreMach1)" type="button" class="btn btn-primary btn-lg float-end">Open Executer</button>
+            </div>
         </div>
         <div class="col-sm-2"></div>
     </div>
@@ -107,9 +127,9 @@
             <div class="col-sm-8">
                 <label>What does this code do?</label>
                 <p>
-                    This code contains 3 lines and starting from the first line <strong>LDW r1, r2, r</strong> it takes
+                    This code contains 3 lines and starting from the first line <strong>LDW r1, r2, rd</strong> it takes
                     the value located in r2 and goes to that point in memory and grabs what is there and stores it in r1. 
-                    The second line containing <strong>STW r1, 1AB2, d</strong> takes the value located in r1 and stores it
+                    The second line containing <strong>STW r1, 1AB2, id</strong> takes the value located in r1 and stores it
                     at the memory location of the label, in this case <strong>1AB2</strong>. The final line <strong>HLT</strong> 
                     is used to end the execution of the program.
                 </p>
@@ -128,13 +148,19 @@
         <div class="col-sm-3">
             <label>Assembly Code</label><br />
             <textarea id="idJumpAssem1" readonly>@jumpAssem1</textarea><br />
-            <button class="btn btn-primary btn-lg" @onclick="() => NavigateAssemblerSample(jumpAssem1)">Open Source</button>
+            <div class="sample_btns1">
+                <button class="btn btn-primary btn-lg" @onclick="() => NavigateAssemblerSample(jumpAssem1)">Open Source</button>
+                <button @onclick="() => NavigateExecuterAssemblySample(jumpAssem1)" type="button" class="btn btn-primary btn-lg float-end">Open Executer</button>
+            </div>
         </div>
         <div class="col-sm-2"><img src="arrow-left-right.svg"/></div>
         <div class="col-sm-3">
             <label>Machine Code</label><br />
             <textarea id="idJumpMach1" readonly>@jumpMach1</textarea>
-            <button class="btn btn-primary btn-lg" @onclick="() => NavigateDisassemblerSample(jumpMach1)">Open Machine</button>
+            <div class="sample_btns2">
+                <button class="btn btn-primary btn-lg" @onclick="() => NavigateDisassemblerSample(jumpMach1)">Open Machine</button>
+                <button @onclick="() => NavigateExecuterMachineSample(jumpMach1)" type="button" class="btn btn-primary btn-lg float-end">Open Executer</button>
+            </div>
         </div>
         <div class="col-sm-2"></div>
     </div>
@@ -145,10 +171,11 @@
             <div class="col-sm-8">
                 <label>What does this code do?</label>
                 <p>
-                    This code contains 4 lines and starting from the first line <strong>JMP 0006</strong> it <i>jumps</i> in execution
-                    to the address of the label given, in this case <strong>0006</strong> which is the line of the STW instruction.
-                    The second line containing <strong>XOR r1, r2, r3</strong> does get the chance to do anything in this example
-                    because as previously stated it is <i>jumped</i> over by the JMP instruction. The third line <strong>STW r1, 001A, d</strong> 
+                    This code contains 4 lines and starting from the first line <strong>JEQ r1, r2, 0006</strong> it <i>jumps</i> in execution
+                    to the address of the label given, in this case <strong>0006</strong> in the event that r1 and r2 are <strong>equal</strong>.
+                    Let us say <strong>r1 == 5</strong> and <strong>r2 == 5</strong>, they are equal therefore we jump to address 0006.
+                    The second line containing <strong>XOR r1, r2, r3</strong> does not get the chance to do anything in this example
+                    because as previously stated it is <i>jumped</i> over by the JEQ instruction. The third line <strong>STW r1, 001A, id</strong> 
                     is then executed storing r1 in memory location 001A. The final line <strong>HLT</strong> is used to end the execution
                     of the program.
                 </p>
@@ -167,13 +194,19 @@
         <div class="col-sm-3">
             <label>Assembly Code</label><br />
             <textarea id="idPushPopAssem1" readonly>@pushPopAssem1</textarea><br />
-            <button class="btn btn-primary btn-lg" @onclick="() => NavigateAssemblerSample(pushPopAssem1)">Open Source</button>
+            <div class="sample_btns1">
+                <button class="btn btn-primary btn-lg" @onclick="() => NavigateAssemblerSample(pushPopAssem1)">Open Source</button>
+                <button @onclick="() => NavigateExecuterAssemblySample(pushPopAssem1)" type="button" class="btn btn-primary btn-lg float-end">Open Executer</button>
+            </div>
         </div>
         <div class="col-sm-2"><img src="arrow-left-right.svg"/></div>
         <div class="col-sm-3">
             <label>Machine Code</label><br />
             <textarea id="idPushPopMach1" readonly>@pushPopMach1</textarea>
-            <button class="btn btn-primary btn-lg" @onclick="() => NavigateDisassemblerSample(pushPopMach1)">Open Machine</button>
+            <div class="sample_btns2">
+                <button class="btn btn-primary btn-lg" @onclick="() => NavigateDisassemblerSample(pushPopMach1)">Open Machine</button>
+                <button @onclick="() => NavigateExecuterMachineSample(pushPopMach1)" type="button" class="btn btn-primary btn-lg float-end">Open Executer</button>
+            </div>
         </div>
         <div class="col-sm-2"></div>
     </div>
@@ -184,10 +217,10 @@
             <div class="col-sm-8">
                 <label>What does this code do?</label>
                 <p>
-                    This code contains 4 lines and starting from the first line <strong>PUSH r1</strong> which takes r1 and <i>pushes</i>
+                    This code contains 4 lines and starting from the first line <strong>PSW r1</strong> which takes r1 and <i>pushes</i>
                     it onto the stack for use later or if r1 need to be used by another instruction right now. The second line containing 
-                    <strong>POP r1</strong> <i>pops</i> r1 off the stack by moving the stack to the memory location of r1. The third line
-                    <strong>STW r1, 01AA, d</strong> is then executed storing r1 in memory location 01AA. The final line <strong>HLT</strong>
+                    <strong>PPW r1</strong> <i>pops</i> r1 off the stack by moving the stack to the memory location of r1. The third line
+                    <strong>STW r1, 01AA, id</strong> is then executed storing r1 in memory location 01AA. The final line <strong>HLT</strong>
                     is used to end the execution of the program.
                 </p>
             </div>
@@ -199,24 +232,37 @@
 
 
 @code {
-    private string addSubAssem1 = "ADD r1, r2, r3\nSUB r1, r2, r3\nHLT";
-    private string addSubMach1 = "62 D1 64 D1 00 00";
-    private string loadStoreAssem1 = "LDW r1, r2, r\nSTW r1, 1AB2, d\nHLT";
-    private string loadStoreMach1 = "80 31 00 02 82 11 1A B2 00 00";
-    private string jumpAssem1 = "JMP 0006\nXOR r1, r2, r3\nSTW r1, 001A, d\nHLT";
-    private string jumpMach1 = "C0 00 00 06 6A D1 82 11 00 1A 00 00";
-    private string pushPopAssem1 = "PUSH r1\nPOP r1\nSTW r1, 01AA, d\nHLT";
-    private string pushPopMach1 = "20 21 20 41 82 11 01 AA 00 00";
+    private string addSubAssem1 = "ADD r1, r2, r3\nSUB r1, r3, r5\nHLT";
+    private string addSubMach1 = "60 D1 65 59 00 00";
+    private string loadStoreAssem1 = "LDW r1, r2, rd\nSTW r1, 1AB2, id\nHLT";
+    private string loadStoreMach1 = "80 19 00 02 80 89 1A B2 00 00";
+    private string jumpAssem1 = "JEQ r1, r2, 0006\nXOR r1, r2, r3\nSTW r1, 001A, id\nHLT";
+    private string jumpMach1 = "A0 51 A0 1B 6C D1 80 89 00 1A 00 00";
+    private string pushPopAssem1 = "PSW r1\nPPW r1\nSTW r1, 01AA, id\nHLT";
+    private string pushPopMach1 = "20 11 20 29 80 89 01 AA 00 00";
 
     void NavigateAssemblerSample(string textToPush)
     {
-        FrontendVariables.setCurrentCodeAssembler(textToPush);
+        FrontendVariables.currentCodeAssembler = textToPush;
         UriHelper.NavigateTo("assembler");
     }
 
     void NavigateDisassemblerSample(string textToPush)
     {
-        FrontendVariables.setCurrentCodeDisassembler(textToPush);
+        FrontendVariables.currentCodeDisassembler = textToPush;
         UriHelper.NavigateTo("disassembler");
     }
+
+    void NavigateExecuterAssemblySample(string textToPush)
+    {
+        FrontendVariables.currentAssemblyCodeExecuter = textToPush;
+        UriHelper.NavigateTo("executer");
+    }
+
+    void NavigateExecuterMachineSample(string textToPush)
+    {
+        FrontendVariables.currentMachineCodeExecuter = textToPush;
+        UriHelper.NavigateTo("executer");
+    }
+
 }
