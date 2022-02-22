@@ -124,7 +124,7 @@ R3-Type Instructions (3 registers involved):
 Name                    Mnemonic    Type    Op Code             Example                 Example Pseudo Code         Example Binary
 -------------------------------------------------------------------------------------------------------------------------------------------------
 Halt Program            HLT         r0      0000 0000 0000 0    HLT                     /* Stop program */          0000 0000 0000 0000
-No Operation            NOP         r0      0000 0000 0000 1    NOP                     /* No operation */          0000 0000 0000 0001
+No Operation            NOP         r0      0000 0000 0000 1    NOP                     /* No operation */          0000 0000 0000 1000
 
 Load Word               LDW         m       1000 0000 0         LDW r1, r2, rd          r1 = Mem[r2]                1000 0000 0001 1001 | 0000 0000 0000 0010
 Store Word              STW         m       1000 0000 1         STW r1, label, id       Mem[label] = r1             1000 0000 1000 1001 | ???? ? label ? ????
@@ -233,8 +233,14 @@ Pop Word from stack     PPW         r1      0010 0000 0010 1    PPW r1          
 Pop Byte (low)          PPL         r1      0010 0000 0011 0    PPL r1                  pop from stack to r1<8..0>  0010 0000 0011 0001
 Pop Byte (high)         PPH         r1      0010 0000 0011 1    PPH r1                  pop from stack to r1<16..9> 0010 0000 0011 1001
 
+Load from PC            LPC         r1      0010 0000 0100 0    LPC r1                  r1 = PC                     0010 0000 0100 0001
+Store to PC             SPC         r1      0010 0000 0100 1    SPC r1                  PC = r1                     0010 0000 0100 1001
+
+Push PC                 PSPC        r0      0000 0000 0001 0    PSPC                    push PC to stack            0000 0000 0001 0000
+Pop PC                  PPPC        r0      0000 0000 0001 1    PPPC                    pop stack to PC             0000 0000 0001 1000
+
 Call Proc               CAL         j       1010 0101 10        CAL label               push PC to stack, goto      1010 0101 1000 0000 | ???? ? label ? ????
-Return from Proc        RET         j       1010 0101 11        RET                     pop stack to PC, goto PC    1010 0101 1100 0000 | ???? ???? ???? ????
+Return from Proc        RET         /*      Use PPPC    */      RET                     pop stack to PC, goto PC
 
 -------------------------------------------------------------------------------------------------------------------------------------------------
   � The MUL and DIV instructions use an implied register scheme

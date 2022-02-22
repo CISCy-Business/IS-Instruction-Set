@@ -27,6 +27,8 @@ namespace InstructionSetProject.Backend.Utilities
 
             Add(Halt.OpCode, Halt.Mnemonic, () => new Halt());
             Add(NoOperation.OpCode, NoOperation.Mnemonic, () => new NoOperation());
+            Add(PushPC.OpCode, PushPC.Mnemonic, () => new PushPC());
+            Add(PopPC.OpCode, PopPC.Mnemonic, () => new PopPC());
 
             // R1 Instructions
 
@@ -38,6 +40,8 @@ namespace InstructionSetProject.Backend.Utilities
             Add(PushWord.OpCode, PushWord.Mnemonic, () => new PushWord());
             Add(SetFlagsExplicit.OpCode, SetFlagsExplicit.Mnemonic, () => new SetFlagsExplicit());
             Add(SetFlagsRegister.OpCode, SetFlagsRegister.Mnemonic, () => new SetFlagsRegister());
+            Add(LoadFromPC.OpCode, LoadFromPC.Mnemonic, () => new LoadFromPC());
+            Add(StoreToPC.OpCode, StoreToPC.Mnemonic, () => new StoreToPC());
 
             // R2 Instructions
 
@@ -110,7 +114,7 @@ namespace InstructionSetProject.Backend.Utilities
 
             // Jump Instructions
 
-            Add(Call.OpCode, Call.Mnemonic, () => new Call());
+            Add(null, Call.Mnemonic, () => new Call());
             Add(JumpAboveEqual.OpCode, JumpAboveEqual.Mnemonic, () => new JumpAboveEqual());
             Add(JumpAboveThan.OpCode, JumpAboveThan.Mnemonic, () => new JumpAboveThan());
             Add(JumpBelowEqual.OpCode, JumpBelowEqual.Mnemonic, () => new JumpBelowEqual());
@@ -133,7 +137,7 @@ namespace InstructionSetProject.Backend.Utilities
             Add(JumpUnconditional.OpCode, JumpUnconditional.Mnemonic, () => new JumpUnconditional());
             Add(JumpZero.OpCode, JumpZero.Mnemonic, () => new JumpZero());
             Add(null, Loop.Mnemonic, () => new Loop());
-            Add(Return.OpCode, Return.Mnemonic, () => new Return());
+            Add(null, Return.Mnemonic, () => new Return());
         }
 
         public void Add(ushort? opcode, string mnemonic, Func<IInstruction> constructor)
