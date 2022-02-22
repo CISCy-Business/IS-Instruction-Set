@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using InstructionSetProject.Backend.InstructionTypes;
 
-namespace InstructionSetProject.Backend.Instructions.JumpTypes
+namespace InstructionSetProject.Backend.Instructions.R1Types
 {
-    public class Return : JumpInstruction
+    public class LoadFromPC : R1Instruction
     {
-        public const string Mnemonic = "RET";
+        public const string Mnemonic = "LPC";
 
-        public const ushort OpCode = 0b1010_0101_1100_0000;
+        public const ushort OpCode = 0b0010_0000_0100_0000;
 
         public override string GetMnemonic()
         {
