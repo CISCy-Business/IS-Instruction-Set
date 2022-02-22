@@ -4,14 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using InstructionSetProject.Backend.InstructionTypes;
+using InstructionSetProject.Backend.Utilities;
 
-namespace InstructionSetProject.Backend.Instructions.JumpTypes
+namespace InstructionSetProject.Backend.Instructions.R2ITypes
 {
-    public class JumpUnconditional : JumpInstruction
+    public class MoveImmediate : R2IInstruction
     {
-        public const string Mnemonic = "JMP";
-
-        public const ushort OpCode = 0b1010_0000_0000_0000;
+        public const string Mnemonic = "MVI";
 
         public override string GetMnemonic()
         {
@@ -20,15 +19,18 @@ namespace InstructionSetProject.Backend.Instructions.JumpTypes
 
         public override ushort GetOpCode()
         {
-            return OpCode;
+            // Instruction is an alias for BitwiseAddImmediate, so return it's Op Code
+            return BitwiseAddImmediate.OpCode;
         }
 
         public override string Disassemble()
         {
             string assembly = "";
 
-            assembly += GetMnemonic();
+            assembly = GetMnemonic();
             assembly += " ";
+            assembly += Register.ParseDestination(DestinationRegister);
+            assembly += ", ";
             assembly += Immediate.ToString("X2");
 
             return assembly;
@@ -38,13 +40,14 @@ namespace InstructionSetProject.Backend.Instructions.JumpTypes
         {
             var tokens = assemblyCode.Split(' ');
 
-            if (tokens.Length != 2)
+            if (tokens.Length != 3)
                 throw new Exception("Incorrect number of tokens obtained from assembly instruction");
 
-            Immediate = Convert.ToInt16(tokens[1], 16);
+            DestinationRegister = Register.ParseDestination(tokens[1].TrimEnd(','));
 
-            DestinationRegister = 0;
-            SourceRegister = 0;
+            SourceRegister = Register.ParseFirstSource("R0");
+
+            Immediate = Convert.ToInt16(tokens[2], 16);
         }
     }
 }
