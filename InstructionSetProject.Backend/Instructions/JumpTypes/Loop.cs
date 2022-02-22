@@ -3,35 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InstructionSetProject.Backend.Instructions.R2ITypes;
 using InstructionSetProject.Backend.InstructionTypes;
 using InstructionSetProject.Backend.Utilities;
 
 namespace InstructionSetProject.Backend.Instructions.JumpTypes
 {
-    public class Loop : JumpInstruction
+    public class Loop : JumpInstruction, ICISCInstruction
     {
-        public new const string Mnemonic = "LOP";
-
-        public new const ushort OpCode = 0x187;
-
-        public Loop(JumpInstruction instr)
-        {
-            base.OpCode = instr.OpCode;
-            base.Mnemonic = instr.Mnemonic;
-            DestinationRegister = instr.DestinationRegister;
-            HighLowBit = instr.HighLowBit;
-            SourceRegister = instr.SourceRegister;
-            Immediate = instr.Immediate;
-        }
+        public const string Mnemonic = "LOP";
 
         public override string GetMnemonic()
         {
-            return Loop.Mnemonic;
+            return Mnemonic;
         }
 
         public override ushort GetOpCode()
         {
-            return Loop.OpCode;
+            throw new Exception("The Loop instruction does not have an op code as it is a CISC instruction.");
         }
 
         public override string Disassemble()
@@ -47,26 +36,47 @@ namespace InstructionSetProject.Backend.Instructions.JumpTypes
             return assembly;
         }
 
-        public new static Loop ParseInstruction(string assemblyCode)
+        public override (ushort opcode, ushort? operand) Assemble()
+        {
+            throw new Exception("The Loop instruction does not have an op code as it is a CISC instruction.");
+        }
+
+        public List<ushort> CISCAssemble()
+        {
+            // Loop instruction:
+            // SBI DestinationRegister, DestinationRegister, 1
+            // JNZ r0, r0, Immediate
+
+            var subtractImmediate = new BitwiseSubtractImmediate();
+            subtractImmediate.DestinationRegister = DestinationRegister;
+            subtractImmediate.SourceRegister = (ushort)(DestinationRegister << 3);
+            subtractImmediate.Immediate = 1;
+
+            var jumpNotZero = new JumpNotZero();
+            jumpNotZero.DestinationRegister = Register.ParseDestination("R0");
+            jumpNotZero.SourceRegister = Register.ParseFirstSource("R0");
+            jumpNotZero.Immediate = Immediate;
+
+            var subtractCode = subtractImmediate.Assemble();
+            var jumpCode = jumpNotZero.Assemble();
+
+            var machineCode = new List<ushort>(){ subtractCode.opcode, (ushort)subtractCode.operand, jumpCode.opcode, (ushort)jumpCode.operand };
+
+            return machineCode;
+        }
+
+        public override void ParseInstruction(string assemblyCode)
         {
             var tokens = assemblyCode.Split(' ');
 
             if (tokens.Length != 3)
                 throw new Exception("Incorrect number of tokens obtained from assembly instruction");
 
-            var instr = new JumpInstruction();
+            DestinationRegister = Register.ParseDestination(tokens[1].Trim(','));
 
-            instr.Mnemonic = tokens[0];
+            SourceRegister = 0;
 
-            instr.DestinationRegister = Register.FromString(tokens[1].TrimEnd(','));
-
-            instr.SourceRegister = 0;
-
-            instr.HighLowBit = false;
-
-            instr.Immediate = Convert.ToUInt16(tokens[2], 16);
-
-            return new Loop(instr);
+            Immediate = Convert.ToInt16(tokens[2], 16);
         }
     }
 }
