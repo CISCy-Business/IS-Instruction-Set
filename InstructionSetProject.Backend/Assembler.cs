@@ -14,28 +14,23 @@ namespace InstructionSetProject.Backend
     {
         public static List<byte> Assemble(string assemblyCode)
         {
-            var assemblyLines = assemblyCode.Split("\n");
+            var instructions = GenerateInstructionList.FromString(assemblyCode);
             var machineCode = new List<byte>();
-            foreach (var line in assemblyLines)
+            foreach (var instr in instructions)
             {
-                if (line != String.Empty)
-                {
-                    var machineLine = ConvertLineToMachineCode(line);
+                var machineLine = AssembleInstruction(instr);
 
-                    foreach (var codePiece in machineLine)
-                    {
-                        machineCode.Add((byte) (codePiece >> 8));
-                        machineCode.Add((byte) (codePiece >> 0));
-                    }
+                foreach (var codePiece in machineLine)
+                {
+                    machineCode.Add((byte) (codePiece >> 8));
+                    machineCode.Add((byte) (codePiece >> 0));
                 }
             }
             return machineCode;
         }
         
-        public static List<ushort> ConvertLineToMachineCode(string instructionLine)
+        public static List<ushort> AssembleInstruction(IInstruction instr)
         {
-            var instr = InstructionManager.Instance.Get(InstructionUtilities.GetMnemonic(instructionLine));
-            instr.ParseInstruction(instructionLine);
             if (instr is ICISCInstruction)
             {
                 return ((ICISCInstruction) instr).CISCAssemble();
