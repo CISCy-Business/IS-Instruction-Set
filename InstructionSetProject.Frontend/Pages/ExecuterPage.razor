@@ -199,8 +199,8 @@
         <div>
             <SfToolbar Height="65px">
                 <ToolbarItems>
-                    <ToolbarItem PrefixIcon="e-icons e-settings" Text="Build" TooltipText="Build the source/machine code prior to running"></ToolbarItem>
-                    <ToolbarItem PrefixIcon="e-icons e-chevron-right-fill" Text="Run" Type="ItemType.Button" OnClick="navigate" TooltipText="Run the code"></ToolbarItem>
+                    <ToolbarItem PrefixIcon="e-icons e-settings" Text="Build" OnClick="buildCode" TooltipText="Build the source/machine code prior to running"></ToolbarItem>
+                    <ToolbarItem PrefixIcon="e-icons e-chevron-right-fill" Text="Run" Type="ItemType.Button" OnClick="runCode" TooltipText="Run the code"></ToolbarItem>
                     <ToolbarItem PrefixIcon="e-icons e-properties-1" Text="Debug" TooltipText="Start debugging the code" OnClick="Debug"></ToolbarItem>
                     <ToolbarItem Type="ItemType.Separator"></ToolbarItem>
                     <ToolbarItem PrefixIcon="e-icons e-text-wrap" Text="Step" TooltipText="Step through each line of code upon debugging" Disabled="@ShowItem"></ToolbarItem>
@@ -219,6 +219,14 @@
                     <Content> I will be used to show case the data path instructions take inside the "CPU" </Content>
                 </DialogTemplates>
                 <DialogEvents OnOpen="@DialogOpen" Closed="@DialogClose"></DialogEvents>
+            </SfDialog>
+
+            <SfDialog Target="#target" Width="600px" Height="350px" AllowDragging="false" EnableResize="false" ShowCloseIcon="true" @bind-Visible="errorVis">
+                <DialogTemplates>
+                    <Header>CROSS CODING ERROR</Header>
+                    <Content>Your source code and machine code sections have conflicting code. Please clear the contents of one of them in order to build.</Content>
+                </DialogTemplates>
+                <DialogEvents Closed="@errorClose"></DialogEvents>
             </SfDialog>
         </div>
         <div class="grid-container">
@@ -345,8 +353,14 @@
 @code {
     private string ExecMachineCode = "";
     private string ExecAssemblyCode = "";
+
+    private List<byte> machineCode = new List<byte>();
+    private string output { get; set; }
+    private string machineCodeString { get; set; }
+
     public bool ShowItem { get; set; } = true;
     private bool Visibility { get; set; } = false;
+    private bool errorVis { get; set; } = false;
     private bool ShowButton { get; set; } = false;
     private ResizeDirection[] dialogResizeDirections { get; set; } = new ResizeDirection[] { ResizeDirection.All };
 
@@ -368,7 +382,42 @@
         FrontendVariables.currentAssemblyCodeExecuter = "";
     }
 
-    void navigate()
+    void buildCode()
+    {
+        if (ExecAssemblyCode.Length != 0 && ExecMachineCode.Length == 0)
+        {
+            machineCode = Assembler.Assemble(ExecAssemblyCode);
+            string hexCode = BitConverter.ToString(machineCode.ToArray());
+            ExecMachineCode = hexCode.Replace("-", " ");
+        }
+        else if (ExecMachineCode.Length != 0 && ExecAssemblyCode.Length == 0)
+        {
+            machineCodeString = ExecMachineCode.Replace(" ", string.Empty);
+            machineCode = HexStringToByteList(machineCodeString);
+            ExecAssemblyCode = Disassembler.Disassemble(machineCode);
+        }
+        else
+        {
+            errorVis = true;
+        }
+    }
+
+    private static List<byte> HexStringToByteList(string machineCodeString) 
+    {
+        if (machineCodeString.Length % 2 == 1)
+            throw new Exception("Cannot have an odd number of digits!!");
+
+        int numChars = machineCodeString.Length;
+        byte[] bytes = new byte[numChars / 2];
+        for (int i = 0; i < numChars; i += 2)
+            bytes[i / 2] = Convert.ToByte(machineCodeString.Substring(i, 2), 16);
+
+        List<byte> mCode = new List<byte>(bytes);
+
+        return mCode;
+    }
+
+    void runCode()
     {
         ExecAssemblyCode = "It sorta worked";
     }
@@ -394,6 +443,11 @@
     private void OnClicked()
     {
         this.Visibility = true;
+    }
+
+    private void errorClose(Object args)
+    {
+        this.errorVis = false;
     }
 
 

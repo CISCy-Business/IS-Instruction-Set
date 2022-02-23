@@ -31,7 +31,7 @@
 
         <div class="row">
             <div class="col-sm-5">
-                <textarea @bind="currentCodeAss" id="assemble" name="assemble"></textarea>
+                <textarea @bind="currentCodeAss" id="assemble" name="assemble" placeholder="@assemblyPlaceholder"></textarea>
                 <p>
                     <button @onclick="SaveAssemblyCode" type="button" name="ass_btn" class="btn btn-primary btn-lg">Save Code</button>
                     <button @onclick="OpenAssemblyCodeExecuter" type="button" name="ass_btn" class="btn btn-primary btn-lg float-end">Open Executer</button>
@@ -60,6 +60,8 @@
 
     private string currentCodeAss { get; set; }
     private string currentCodeOutAss { get; set; }
+
+    private string assemblyPlaceholder = "ADD r1, r2, r3\nSUB r1, r3, r5\n...";
 
     private List<byte> machineCode = new List<byte>();
 
