@@ -3,34 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InstructionSetProject.Backend.Instructions.R0Types;
 using InstructionSetProject.Backend.InstructionTypes;
 
 namespace InstructionSetProject.Backend.Instructions.JumpTypes
 {
-    public class Call : JumpInstruction
+    public class Call : JumpInstruction, ICISCInstruction
     {
-        public new const string Mnemonic = "CAL";
-
-        public new const ushort OpCode = 0x1C0;
-
-        public Call(JumpInstruction instr)
-        {
-            base.OpCode = instr.OpCode;
-            base.Mnemonic = instr.Mnemonic;
-            DestinationRegister = instr.DestinationRegister;
-            HighLowBit = instr.HighLowBit;
-            SourceRegister = instr.SourceRegister;
-            Immediate = instr.Immediate;
-        }
+        public const string Mnemonic = "CAL";
 
         public override string GetMnemonic()
         {
-            return Call.Mnemonic;
+            return Mnemonic;
         }
 
         public override ushort GetOpCode()
         {
-            return Call.OpCode;
+            throw new Exception("The Call instruction does not have an op code as it is a CISC instruction.");
         }
 
         public override string Disassemble()
@@ -44,26 +33,44 @@ namespace InstructionSetProject.Backend.Instructions.JumpTypes
             return assembly;
         }
 
-        public new static Call ParseInstruction(string assemblyCode)
+        public override (ushort opcode, ushort? operand) Assemble()
+        {
+            throw new Exception("The Call instruction does not have an op code as it is a CISC instruction.");
+        }
+
+        public List<ushort> CISCAssemble()
+        {
+            // Call instruction:
+            // PUPC
+            // JMP Immediate
+
+            var pushPC = new PushPC();
+
+            var jmp = new JumpUnconditional();
+            jmp.DestinationRegister = 0;
+            jmp.SourceRegister = 0;
+            jmp.Immediate = Immediate;
+
+            var pushCode = pushPC.Assemble();
+            var jumpCode = jmp.Assemble();
+
+            var machineCode = new List<ushort>() { pushCode.opcode, jumpCode.opcode, (ushort)jumpCode.operand };
+
+            return machineCode;
+        }
+
+        public override void ParseInstruction(string assemblyCode)
         {
             var tokens = assemblyCode.Split(' ');
 
             if (tokens.Length != 2)
                 throw new Exception("Incorrect number of tokens obtained from assembly instruction");
 
-            var instr = new JumpInstruction();
+            DestinationRegister = 0;
 
-            instr.Mnemonic = tokens[0];
+            SourceRegister = 0;
 
-            instr.DestinationRegister = 0;
-
-            instr.SourceRegister = 0;
-
-            instr.HighLowBit = false;
-
-            instr.Immediate = Convert.ToUInt16(tokens[1], 16);
-
-            return new Call(instr);
+            Immediate = Convert.ToInt16(tokens[1], 16);
         }
     }
 }

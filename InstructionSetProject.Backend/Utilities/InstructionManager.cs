@@ -27,6 +27,8 @@ namespace InstructionSetProject.Backend.Utilities
 
             Add(Halt.OpCode, Halt.Mnemonic, () => new Halt());
             Add(NoOperation.OpCode, NoOperation.Mnemonic, () => new NoOperation());
+            Add(PushPC.OpCode, PushPC.Mnemonic, () => new PushPC());
+            Add(PopPC.OpCode, PopPC.Mnemonic, () => new PopPC());
 
             // R1 Instructions
 
@@ -38,6 +40,8 @@ namespace InstructionSetProject.Backend.Utilities
             Add(PushWord.OpCode, PushWord.Mnemonic, () => new PushWord());
             Add(SetFlagsExplicit.OpCode, SetFlagsExplicit.Mnemonic, () => new SetFlagsExplicit());
             Add(SetFlagsRegister.OpCode, SetFlagsRegister.Mnemonic, () => new SetFlagsRegister());
+            Add(LoadFromPC.OpCode, LoadFromPC.Mnemonic, () => new LoadFromPC());
+            Add(StoreToPC.OpCode, StoreToPC.Mnemonic, () => new StoreToPC());
 
             // R2 Instructions
 
@@ -76,6 +80,7 @@ namespace InstructionSetProject.Backend.Utilities
             Add(BitwiseSubtractImmediate.OpCode, BitwiseSubtractImmediate.Mnemonic, () => new BitwiseSubtractImmediate());
             Add(BitwiseSubtractImmediateBorrow.OpCode, BitwiseSubtractImmediateBorrow.Mnemonic, () => new BitwiseSubtractImmediateBorrow());
             Add(BitwiseXorImmediate.OpCode, BitwiseXorImmediate.Mnemonic, () => new BitwiseXorImmediate());
+            Add(null, MoveImmediate.Mnemonic, () => new MoveImmediate());
 
             // R3 Instructions
 
@@ -90,7 +95,9 @@ namespace InstructionSetProject.Backend.Utilities
             Add(BitwiseSubtract.OpCode, BitwiseSubtract.Mnemonic, () => new BitwiseSubtract());
             Add(BitwiseSubtractBorrow.OpCode, BitwiseSubtractBorrow.Mnemonic, () => new BitwiseSubtractBorrow());
             Add(BitwiseXor.OpCode, BitwiseXor.Mnemonic, () => new BitwiseXor());
+            Add(null, LogicalShiftLeft.Mnemonic, () => new LogicalShiftLeft());
             Add(LogicalShiftRight.OpCode, LogicalShiftRight.Mnemonic, () => new LogicalShiftRight());
+            Add(null, MoveRegister.Mnemonic, () => new MoveRegister());
             Add(RotateLeft.OpCode, RotateLeft.Mnemonic, () => new RotateLeft());
             Add(RotateLeftCarry.OpCode, RotateLeftCarry.Mnemonic, () => new RotateLeftCarry());
             Add(RotateRight.OpCode, RotateRight.Mnemonic, () => new RotateRight());
@@ -107,6 +114,7 @@ namespace InstructionSetProject.Backend.Utilities
 
             // Jump Instructions
 
+            Add(null, Call.Mnemonic, () => new Call());
             Add(JumpAboveEqual.OpCode, JumpAboveEqual.Mnemonic, () => new JumpAboveEqual());
             Add(JumpAboveThan.OpCode, JumpAboveThan.Mnemonic, () => new JumpAboveThan());
             Add(JumpBelowEqual.OpCode, JumpBelowEqual.Mnemonic, () => new JumpBelowEqual());
@@ -126,12 +134,17 @@ namespace InstructionSetProject.Backend.Utilities
             Add(JumpOverflow.OpCode, JumpOverflow.Mnemonic, () => new JumpOverflow());
             Add(JumpParity.OpCode, JumpParity.Mnemonic, () => new JumpParity());
             Add(JumpSign.OpCode, JumpSign.Mnemonic, () => new JumpSign());
+            Add(JumpUnconditional.OpCode, JumpUnconditional.Mnemonic, () => new JumpUnconditional());
             Add(JumpZero.OpCode, JumpZero.Mnemonic, () => new JumpZero());
+            Add(null, Loop.Mnemonic, () => new Loop());
+            Add(null, Return.Mnemonic, () => new Return());
         }
 
-        public void Add(ushort opcode, string mnemonic, Func<IInstruction> constructor)
+        public void Add(ushort? opcode, string mnemonic, Func<IInstruction> constructor)
         {
-            keyDictionary[opcode] = mnemonic;
+            // Op Code will be null if Mnemonic is an alias for another instruction
+            if (opcode != null)
+                keyDictionary[(ushort)opcode] = mnemonic;
             valueDictionary[mnemonic] = constructor;
         }
 

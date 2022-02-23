@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using InstructionSetProject.Backend.Instructions;
+using InstructionSetProject.Backend.InstructionTypes;
 using InstructionSetProject.Backend.Utilities;
 
 namespace InstructionSetProject.Backend
@@ -13,32 +14,33 @@ namespace InstructionSetProject.Backend
     {
         public static List<byte> Assemble(string assemblyCode)
         {
-            var assemblyLines = assemblyCode.Split("\n");
+            var instructions = GenerateInstructionList.FromString(assemblyCode);
             var machineCode = new List<byte>();
-            foreach (var line in assemblyLines)
+            foreach (var instr in instructions)
             {
-                if (line.Trim() != String.Empty && !line.Trim().StartsWith('#'))
+                var machineLine = AssembleInstruction(instr);
+
+                foreach (var codePiece in machineLine)
                 {
-                    var machineLine = ConvertLineToMachineCode(line);
-
-                    machineCode.Add((byte)(machineLine.opcode >> 8));
-                    machineCode.Add((byte)(machineLine.opcode >> 0));
-
-                    if (machineLine.operand != null)
-                    {
-                        machineCode.Add((byte)(machineLine.operand >> 8));
-                        machineCode.Add((byte)(machineLine.operand >> 0));
-                    }
+                    machineCode.Add((byte) (codePiece >> 8));
+                    machineCode.Add((byte) (codePiece >> 0));
                 }
             }
             return machineCode;
         }
         
-        public static (ushort opcode, ushort? operand) ConvertLineToMachineCode(string instructionLine)
+        public static List<ushort> AssembleInstruction(IInstruction instr)
         {
-            var instr = InstructionManager.Instance.Get(InstructionUtilities.GetMnemonic(instructionLine));
-            instr.ParseInstruction(instructionLine);
-            return instr.Assemble();
+            if (instr is ICISCInstruction)
+            {
+                return ((ICISCInstruction) instr).CISCAssemble();
+            }
+
+            var normalAssembly = instr.Assemble();
+            var assemblyReturn = new List<ushort>() { normalAssembly.opcode };
+            if (normalAssembly.operand != null)
+                assemblyReturn.Add((ushort)normalAssembly.operand);
+            return assemblyReturn;
         }
     }
 }

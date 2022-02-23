@@ -123,118 +123,124 @@ R3-Type Instructions (3 registers involved):
     
 Name                    Mnemonic    Type    Op Code             Example                 Example Pseudo Code         Example Binary
 -------------------------------------------------------------------------------------------------------------------------------------------------
-*Halt Program            HLT         r0      0000 0000 0000 0    HLT                     /* Stop program */          0000 0000 0000 0000
-*No Operation            NOP         r0      0000 0000 0000 1    NOP                     /* No operation */          0000 0000 0000 0001
+Halt Program            HLT         r0      0000 0000 0000 0    HLT                     /* Stop program */          0000 0000 0000 0000
+No Operation            NOP         r0      0000 0000 0000 1    NOP                     /* No operation */          0000 0000 0000 1000
 
-*Load Word               LDW         m       1000 0000 0         LDW r1, r2, rd          r1 = Mem[r2]                1000 0000 0001 1001 | 0000 0000 0000 0010
-*Store Word              STW         m       1000 0000 1         STW r1, label, id       Mem[label] = r1             1000 0000 1000 1001 | ???? ? label ? ????
-*Load Low Byte           LDL         m       1000 0001 0         LDL r1, 15, i           r1<8..0> = 15               1000 0001 0000 0001 | 0000 0000 0000 1111
-*Store Low Byte          STL         m       1000 0001 1         STL r1, label, id       Mem[label]<8..0> = r1       1000 0001 1000 1001 | ???? ? label ? ????
-*Load High Byte          LDH         m       1000 0010 0         LDH r1, 15, i           r1<16..9> = 15              1000 0010 0000 0001 | 0000 0000 0000 1111
-*Store High Byte         STH         m       1000 0010 1         STH r1, label, id       Mem[label]<16..9> = r1      1000 0010 1000 1001 | ???? ? label ? ????
+Load Word               LDW         m       1000 0000 0         LDW r1, r2, rd          r1 = Mem[r2]                1000 0000 0001 1001 | 0000 0000 0000 0010
+Store Word              STW         m       1000 0000 1         STW r1, label, id       Mem[label] = r1             1000 0000 1000 1001 | ???? ? label ? ????
+Load Low Byte           LDL         m       1000 0001 0         LDL r1, 15, i           r1<8..0> = 15               1000 0001 0000 0001 | 0000 0000 0000 1111
+Store Low Byte          STL         m       1000 0001 1         STL r1, label, id       Mem[label]<8..0> = r1       1000 0001 1000 1001 | ???? ? label ? ????
+Load High Byte          LDH         m       1000 0010 0         LDH r1, 15, i           r1<16..9> = 15              1000 0010 0000 0001 | 0000 0000 0000 1111
+Store High Byte         STH         m       1000 0010 1         STH r1, label, id       Mem[label]<16..9> = r1      1000 0010 1000 1001 | ???? ? label ? ????
 
 Move reg to reg         MOV         /* 'ADD r#, r#, r0' */      MOV r1, r2              r1 = r2                     
 Move imm to reg         MVI         /* 'ADI r#, r0, imm' */     MVI r1, 15              r1 = 15
 
-*Exchange                XCH         r2      0100 0000 00        XCH r1, r2              (r1,r2) = (r2,r1) (python)  0100 0000 0001 0001
+Exchange                XCH         r2      0100 0000 00        XCH r1, r2              (r1,r2) = (r2,r1) (python)  0100 0000 0001 0001
 
-*Exchange Equal          XEQ         r2      0100 0000 01        XEQ r1, r2              r1 = r2 if [Z]              0100 0000 0101 0001
-*Exchange Not Equal      XNE         r2      0100 0000 10        XNE r1, r2              r1 = r2 if [!Z]             0100 0000 1001 0001
+Exchange Equal          XEQ         r2      0100 0000 01        XEQ r1, r2              r1 = r2 if [Z]              0100 0000 0101 0001
+Exchange Not Equal      XNE         r2      0100 0000 10        XNE r1, r2              r1 = r2 if [!Z]             0100 0000 1001 0001
 
-*Exchange Less Than      XLT         r2      0100 0001 11        XLT r1, r2              r1 = r2 if [S != O]         0100 0000 1101 0001
-*Exchange Greater Than   XGT         r2      0100 0001 00        XGT r1, r2              r1 = r2 if [!Z & (S==F)]    0100 0001 0001 0001
-*Exchange Less Equal     XLE         r2      0100 0001 01        XLE r1, r2              r1 = r2 if [Z | (S!=O)]     0100 0001 0101 0001
-*Exchange Greater Equal  XGE         r2      0100 0001 10        XGE r1, r2              r1 = r2 if [S==O]           0100 0001 1001 0001
+Exchange Less Than      XLT         r2      0100 0001 11        XLT r1, r2              r1 = r2 if [S != O]         0100 0000 1101 0001
+Exchange Greater Than   XGT         r2      0100 0001 00        XGT r1, r2              r1 = r2 if [!Z & (S==F)]    0100 0001 0001 0001
+Exchange Less Equal     XLE         r2      0100 0001 01        XLE r1, r2              r1 = r2 if [Z | (S!=O)]     0100 0001 0101 0001
+Exchange Greater Equal  XGE         r2      0100 0001 10        XGE r1, r2              r1 = r2 if [S==O]           0100 0001 1001 0001
 
-*Exchange Above Than     XAT         r2      0100 0001 11        XAT r1, r2              r1 = r2 if [!C & !Z]        0100 0001 1101 0001
-*Exchange Below Than     XBT         r2      0100 0010 00        XBT r1, r2              r1 = r2 if [C]              0100 0010 0001 0001
-*Exchange Above Equal    XAE         r2      0100 0010 01        XAE r1, r2              r1 = r2 if [!C]             0100 0010 0101 0001
-*Exchange Below Equal    XBE         r2      0100 0010 10        XBE r1, r2              r1 = r2 if [C | Z]          0100 0010 1001 0001
+Exchange Above Than     XAT         r2      0100 0001 11        XAT r1, r2              r1 = r2 if [!C & !Z]        0100 0001 1101 0001
+Exchange Below Than     XBT         r2      0100 0010 00        XBT r1, r2              r1 = r2 if [C]              0100 0010 0001 0001
+Exchange Above Equal    XAE         r2      0100 0010 01        XAE r1, r2              r1 = r2 if [!C]             0100 0010 0101 0001
+Exchange Below Equal    XBE         r2      0100 0010 10        XBE r1, r2              r1 = r2 if [C | Z]          0100 0010 1001 0001
 
-*Exchange Zero           XYZ         r2      0100 0010 11        XYZ r1, r2              r1 = r2 if [Z]              0100 0010 1101 0001
-*Exchange Not Zero       XNZ         r2      0100 0011 00        XNZ r1, r2              r1 = r2 if [!Z]             0100 0011 0001 0001
-*Exchange Carry          XYC         r2      0100 0011 01        XYC r1, r2              r1 = r2 if [C]              0100 0011 0101 0001
-*Exchange Not Carry      XNC         r2      0100 0011 10        XNC r1, r2              r1 = r2 if [!C]             0100 0011 1001 0001
-*Exchange Overflow       XYO         r2      0100 0011 11        XYO r1, r2              r1 = r2 if [O]              0100 0011 1101 0001
-*Exchange Not Overflow   XNO         r2      0100 0100 00        XNO r1, r2              r1 = r2 if [!O]             0100 0100 0001 0001
-*Exchange Sign           XYS         r2      0100 0100 01        XYS r1, r2              r1 = r2 if [S]              0100 0100 0101 0001
-*Exchange Not Sign       XNS         r2      0100 0100 10        XNS r1, r2              r1 = r2 if [!S]             0100 0100 1001 0001
-*Exchange Parity         XYP         r2      0100 0100 11        XYP r1, r2              r1 = r2 if [P]              0100 0100 1101 0001
-*Exchange Not Parity     XNP         r2      0100 0101 00        XNP r1, r2              r1 = r2 if [!P]             0100 0101 0001 0001
+Exchange Zero           XYZ         r2      0100 0010 11        XYZ r1, r2              r1 = r2 if [Z]              0100 0010 1101 0001
+Exchange Not Zero       XNZ         r2      0100 0011 00        XNZ r1, r2              r1 = r2 if [!Z]             0100 0011 0001 0001
+Exchange Carry          XYC         r2      0100 0011 01        XYC r1, r2              r1 = r2 if [C]              0100 0011 0101 0001
+Exchange Not Carry      XNC         r2      0100 0011 10        XNC r1, r2              r1 = r2 if [!C]             0100 0011 1001 0001
+Exchange Overflow       XYO         r2      0100 0011 11        XYO r1, r2              r1 = r2 if [O]              0100 0011 1101 0001
+Exchange Not Overflow   XNO         r2      0100 0100 00        XNO r1, r2              r1 = r2 if [!O]             0100 0100 0001 0001
+Exchange Sign           XYS         r2      0100 0100 01        XYS r1, r2              r1 = r2 if [S]              0100 0100 0101 0001
+Exchange Not Sign       XNS         r2      0100 0100 10        XNS r1, r2              r1 = r2 if [!S]             0100 0100 1001 0001
+Exchange Parity         XYP         r2      0100 0100 11        XYP r1, r2              r1 = r2 if [P]              0100 0100 1101 0001
+Exchange Not Parity     XNP         r2      0100 0101 00        XNP r1, r2              r1 = r2 if [!P]             0100 0101 0001 0001
 
-*Bitwise Add             ADD         r3      0110 000            ADD r1, r2, r3          r1 = r2 + r3                0110 0000 1101 0001
-*Bitwise Add w/ Carry    ADC         r3      0110 001            ADC r1, r2, r3          r1 = r2 + r3 + CF           0110 0010 1101 0001
-*Bitwise Subtract        SUB         r3      0110 010            SUB r1, r2, r3          r1 = r2 - r3                0110 0100 1101 0001
-*Bitwise Sub w/ Borrow   SBB         r3      0110 011            SBC r1, r2, r3          r1 = r2 - r3 - CF           0110 0110 1101 0001
-*Bitwise And             AND         r3      0110 100            AND r1, r2, r3          r1 = r2 & r3                0110 1000 1101 0001
-*Bitwise Or              ORR         r3      0110 101            OR  r1, r2, r3          r1 = r2 | r3                0110 1010 1101 0001
-*Bitwise Xor             XOR         r3      0110 110            XOR r1, r2, r3          r1 = r2 ^ r3                0110 1100 1101 0001
-*Bitwise Multiply�       MUL         r3      0110 111            MUL r2, r3, r4          [r(2-1),r1] = r3 * r4       0110 1111 0001 1010
-*Bitwise Divide�         DIV         r3      0111 000            DIV r2, r3, r4          r2 = r3/r4, r(2-1) = r3%r4  0111 0001 0001 1010            
+Bitwise Add             ADD         r3      0110 000            ADD r1, r2, r3          r1 = r2 + r3                0110 0000 1101 0001
+Bitwise Add w/ Carry    ADC         r3      0110 001            ADC r1, r2, r3          r1 = r2 + r3 + CF           0110 0010 1101 0001
+Bitwise Subtract        SUB         r3      0110 010            SUB r1, r2, r3          r1 = r2 - r3                0110 0100 1101 0001
+Bitwise Sub w/ Borrow   SBB         r3      0110 011            SBC r1, r2, r3          r1 = r2 - r3 - CF           0110 0110 1101 0001
+Bitwise And             AND         r3      0110 100            AND r1, r2, r3          r1 = r2 & r3                0110 1000 1101 0001
+Bitwise Or              ORR         r3      0110 101            OR  r1, r2, r3          r1 = r2 | r3                0110 1010 1101 0001
+Bitwise Xor             XOR         r3      0110 110            XOR r1, r2, r3          r1 = r2 ^ r3                0110 1100 1101 0001
+Bitwise Multiply�       MUL         r3      0110 111            MUL r2, r3, r4          [r(2-1),r1] = r3 * r4       0110 1111 0001 1010
+Bitwise Divide�         DIV         r3      0111 000            DIV r2, r3, r4          r2 = r3/r4, r(2-1) = r3%r4  0111 0001 0001 1010            
 
-*Bitwise Not             NOT         r2      0100 0101 01        NOT r1, r2              r1 = ~r2                    0100 0101 0101 0001
-*Bitwise Neg             NEG         r2      0100 0101 10        NEG r1, r2              r1 = -r2                    0100 0101 1001 0001
+Bitwise Not             NOT         r2      0100 0101 01        NOT r1, r2              r1 = ~r2                    0100 0101 0101 0001
+Bitwise Neg             NEG         r2      0100 0101 10        NEG r1, r2              r1 = -r2                    0100 0101 1001 0001
 
-*Bitwise Add Imm         ADI         r2i     1100 0000 00        ADI r1, r2, 15          r1 = r2 + 15                1100 0000 0001 0001 | 0000 0000 0000 1111
-*Bitwise Subtract Imm    SBI         r2i     1100 0000 01        SBI r1, r2, 15          r1 = r2 - 15                1100 0000 0101 0001 | 0000 0000 0000 1111
-*Bit. Add Imm w/ Carry   ACI         r2i     1100 0000 10        ACI r1, r2, 15          r1 = r2 + 15 + CF           1100 0000 1001 0001 | 0000 0000 0000 1111
-*Bit. Sub Imm w/ Borrow  SIB         r2i     1100 0000 11        SBI r1, r2, 15          r1 = r2 - 15 - CF           1100 0000 1101 0001 | 0000 0000 0000 1111
-*Bitwise And Imm         ANI         r2i     1100 0001 00        ANI r1, r2, 15          r1 = r2 & 15                1100 0001 0001 0001 | 0000 0000 0000 1111
-*Bitwise Or Imm          ORI         r2i     1100 0001 01        ORI r1, r2, 15          r1 = r2 | 15                1100 0001 0101 0001 | 0000 0000 0000 1111
-*Bitwise Xor Imm         XRI         r2i     1100 0001 10        XRI r1, r2, 15          r1 = r2 ^ 15                1100 0001 1001 0001 | 0000 0000 0000 1111
+Bitwise Add Imm         ADI         r2i     1100 0000 00        ADI r1, r2, 15          r1 = r2 + 15                1100 0000 0001 0001 | 0000 0000 0000 1111
+Bitwise Subtract Imm    SBI         r2i     1100 0000 01        SBI r1, r2, 15          r1 = r2 - 15                1100 0000 0101 0001 | 0000 0000 0000 1111
+Bit. Add Imm w/ Carry   ACI         r2i     1100 0000 10        ACI r1, r2, 15          r1 = r2 + 15 + CF           1100 0000 1001 0001 | 0000 0000 0000 1111
+Bit. Sub Imm w/ Borrow  SIB         r2i     1100 0000 11        SBI r1, r2, 15          r1 = r2 - 15 - CF           1100 0000 1101 0001 | 0000 0000 0000 1111
+Bitwise And Imm         ANI         r2i     1100 0001 00        ANI r1, r2, 15          r1 = r2 & 15                1100 0001 0001 0001 | 0000 0000 0000 1111
+Bitwise Or Imm          ORI         r2i     1100 0001 01        ORI r1, r2, 15          r1 = r2 | 15                1100 0001 0101 0001 | 0000 0000 0000 1111
+Bitwise Xor Imm         XRI         r2i     1100 0001 10        XRI r1, r2, 15          r1 = r2 ^ 15                1100 0001 1001 0001 | 0000 0000 0000 1111
 
-*Arith. Shift Left       ASL         r3      0111 001            ASL r1, r2, r3          r1 = r2 << r3               0111 0010 1101 0001
-*Arith. Shift Right      ASR         r3      0111 010            ASR r1, r2, r3          r1 = r2 >> r3               0111 0100 1101 0001
+Arith. Shift Left       ASL         r3      0111 001            ASL r1, r2, r3          r1 = r2 << r3               0111 0010 1101 0001
+Arith. Shift Right      ASR         r3      0111 010            ASR r1, r2, r3          r1 = r2 >> r3               0111 0100 1101 0001
 Logic Shift Left        LSL         /* Use ASL  r#, r#, r# */   LSL r1, r2, r3          r1 = r2 << r3                            
-*Logic Shift Right       LSR         r3      0111 011            LSR r1, r2, r3          r1 = r2 >>> r3 (java)       0111 0110 1101 0001
-*Rotate Left             RTL         r3      0111 100            RTL r1, r2, r3          r1 = r2 rotated by r3       0111 1000 1101 0001
-*Rotate Right            RTR         r3      0111 101            RTR r1, r2, r3          r1 = r2 rotated by r3       0111 1010 1101 0001
-*Rotate Left w/ Carry    RLC         r3      0111 110            RLC r1, r2, r3          r1 = [CF,r2] rotated by r3  0111 1100 1101 0001
-*Rotate Right w/ Carry   RRC         r3      0111 111            RRC r1, r2, r3          r1 = [r2,CF] rotated by r3  0111 1110 1101 0001
+Logic Shift Right       LSR         r3      0111 011            LSR r1, r2, r3          r1 = r2 >>> r3 (java)       0111 0110 1101 0001
+Rotate Left             RTL         r3      0111 100            RTL r1, r2, r3          r1 = r2 rotated by r3       0111 1000 1101 0001
+Rotate Right            RTR         r3      0111 101            RTR r1, r2, r3          r1 = r2 rotated by r3       0111 1010 1101 0001
+Rotate Left w/ Carry    RLC         r3      0111 110            RLC r1, r2, r3          r1 = [CF,r2] rotated by r3  0111 1100 1101 0001
+Rotate Right w/ Carry   RRC         r3      0111 111            RRC r1, r2, r3          r1 = [r2,CF] rotated by r3  0111 1110 1101 0001
 
-*Compare                 CMP         r2      0100 0101 11        CMP r1, r2              flags set by r1 - r2        0100 0101 1110 0001
-*Test                    TST         r2      0100 0110 00        TST r1, r2              flags set by r1 & r2        0100 0110 0010 0001
+Compare                 CMP         r2      0100 0101 11        CMP r1, r2              flags set by r1 - r2        0100 0101 1110 0001
+Test                    TST         r2      0100 0110 00        TST r1, r2              flags set by r1 & r2        0100 0110 0010 0001
 
-*Set Flags explicit      FLG         r1      0010 0000 0000 0    FLG r1                  flags set with r1<5..0>     0010 0000 0000 0001    
-*Set Flags w/ reg val    FLR         r1      0010 0000 0000 1    FLR r1                  flags set by r1             0010 0000 0000 1001
+Set Flags explicit      FLG         r1      0010 0000 0000 0    FLG r1                  flags set with r1<5..0>     0010 0000 0000 0001    
+Set Flags w/ reg val    FLR         r1      0010 0000 0000 1    FLR r1                  flags set by r1             0010 0000 0000 1001
 
 Jump Unconditional      JMP         j       1010 0000 00        JMP label               jump to label               1010 0000 0000 0000 | ???? ? label ? ????
 
-*Jump Equal              JEQ         j       1010 0000 01        JEQ r1, r2, label       jump if [Z]                 1010 0000 0101 0001 | ???? ? label ? ????
-*Jump Not Equal          JNE         j       1010 0000 10        JNE r1, r2, label       jump if [!Z]                1010 0000 1001 0001 | ???? ? label ? ????             
+Jump Equal              JEQ         j       1010 0000 01        JEQ r1, r2, label       jump if [Z]                 1010 0000 0101 0001 | ???? ? label ? ????
+Jump Not Equal          JNE         j       1010 0000 10        JNE r1, r2, label       jump if [!Z]                1010 0000 1001 0001 | ???? ? label ? ????             
 
-*Jump Less Than          JLT         j       1010 0000 11        JLT r1, r2, label       jump if [S!=O]              1010 0000 1101 0001 | ???? ? label ? ????
-*Jump Greater Than       JGT         j       1010 0001 00        JGT r1, r2, label       jump if [!Z & !S]           1010 0001 0001 0001 | ???? ? label ? ????
-*Jump Less Equal         JLE         j       1010 0001 01        JLE r1, r2, label       jump if [Z | (S != O)]      1010 0001 0101 0001 | ???? ? label ? ????
-*Jump Greater Equal      JGE         j       1010 0001 10        JGE r1, r2, label       jump if [S==O]              1010 0001 1001 0001 | ???? ? label ? ????
+Jump Less Than          JLT         j       1010 0000 11        JLT r1, r2, label       jump if [S!=O]              1010 0000 1101 0001 | ???? ? label ? ????
+Jump Greater Than       JGT         j       1010 0001 00        JGT r1, r2, label       jump if [!Z & !S]           1010 0001 0001 0001 | ???? ? label ? ????
+Jump Less Equal         JLE         j       1010 0001 01        JLE r1, r2, label       jump if [Z | (S != O)]      1010 0001 0101 0001 | ???? ? label ? ????
+Jump Greater Equal      JGE         j       1010 0001 10        JGE r1, r2, label       jump if [S==O]              1010 0001 1001 0001 | ???? ? label ? ????
 
-*Jump Above Than         JAT         j       1010 0001 11        JAT r1, r2, label       jump if [!C & !Z]           1010 0001 1101 0001 | ???? ? label ? ????
-*Jump Below Than         JBT         j       1010 0010 00        JBT r1, r2, label       jump if [C]                 1010 0010 0001 0001 | ???? ? label ? ????
-*Jump Above Equal        JAE         j       1010 0010 01        JAE r1, r2, label       jump if [!C]                1010 0010 0101 0001 | ???? ? label ? ????
-*Jump Below Equal        JBE         j       1010 0010 10        JBE r1, r2, label       jump if [C | Z]             1010 0010 1001 0001 | ???? ? label ? ????
+Jump Above Than         JAT         j       1010 0001 11        JAT r1, r2, label       jump if [!C & !Z]           1010 0001 1101 0001 | ???? ? label ? ????
+Jump Below Than         JBT         j       1010 0010 00        JBT r1, r2, label       jump if [C]                 1010 0010 0001 0001 | ???? ? label ? ????
+Jump Above Equal        JAE         j       1010 0010 01        JAE r1, r2, label       jump if [!C]                1010 0010 0101 0001 | ???? ? label ? ????
+Jump Below Equal        JBE         j       1010 0010 10        JBE r1, r2, label       jump if [C | Z]             1010 0010 1001 0001 | ???? ? label ? ????
 
-*Jump Zero               JYZ         j       1010 0010 11        JYZ r1, r2, label       jump if [Z]                 1010 0010 1101 0001 | ???? ? label ? ????
-*Jump Not Zero           JNZ         j       1010 0011 00        JNZ r1, r2, label       jump if [!Z]                1010 0011 0001 0001 | ???? ? label ? ????
-*Jump Carry              JYC         j       1010 0011 01        JYC r1, r2, label       jump if [C]                 1010 0011 0101 0001 | ???? ? label ? ????
-*Jump Not Carry          JNC         j       1010 0011 10        JNC r1, r2, label       jump if [!C]                1010 0011 1001 0001 | ???? ? label ? ????
-*Jump Overflow           JYO         j       1010 0011 11        JYO r1, r2, label       jump if [O]                 1010 0011 1101 0001 | ???? ? label ? ????
-*Jump Not Overflow       JNO         j       1010 0100 00        JNO r1, r2, label       jump if [!O]                1010 0100 0001 0001 | ???? ? label ? ????
-*Jump Sign               JYS         j       1010 0100 01        JYS r1, r2, label       jump if [S]                 1010 0100 0101 0001 | ???? ? label ? ????
-*Jump Not Sign           JNS         j       1010 0100 10        JNS r1, r2, label       jump if [!S]                1010 0100 1001 0001 | ???? ? label ? ????
-*Jump Parity             JYP         j       1010 0100 11        JYP r1, r2, label       jump if [P]                 1010 0100 1101 0001 | ???? ? label ? ????
-*Jump Not Parity         JNP         j       1010 0101 00        JNP r1, r2, label       jump if [!P]                1010 0101 0001 0001 | ???? ? label ? ????
+Jump Zero               JYZ         j       1010 0010 11        JYZ r1, r2, label       jump if [Z]                 1010 0010 1101 0001 | ???? ? label ? ????
+Jump Not Zero           JNZ         j       1010 0011 00        JNZ r1, r2, label       jump if [!Z]                1010 0011 0001 0001 | ???? ? label ? ????
+Jump Carry              JYC         j       1010 0011 01        JYC r1, r2, label       jump if [C]                 1010 0011 0101 0001 | ???? ? label ? ????
+Jump Not Carry          JNC         j       1010 0011 10        JNC r1, r2, label       jump if [!C]                1010 0011 1001 0001 | ???? ? label ? ????
+Jump Overflow           JYO         j       1010 0011 11        JYO r1, r2, label       jump if [O]                 1010 0011 1101 0001 | ???? ? label ? ????
+Jump Not Overflow       JNO         j       1010 0100 00        JNO r1, r2, label       jump if [!O]                1010 0100 0001 0001 | ???? ? label ? ????
+Jump Sign               JYS         j       1010 0100 01        JYS r1, r2, label       jump if [S]                 1010 0100 0101 0001 | ???? ? label ? ????
+Jump Not Sign           JNS         j       1010 0100 10        JNS r1, r2, label       jump if [!S]                1010 0100 1001 0001 | ???? ? label ? ????
+Jump Parity             JYP         j       1010 0100 11        JYP r1, r2, label       jump if [P]                 1010 0100 1101 0001 | ???? ? label ? ????
+Jump Not Parity         JNP         j       1010 0101 00        JNP r1, r2, label       jump if [!P]                1010 0101 0001 0001 | ???? ? label ? ????
 
-Loop Not Zero & Dec     LOP         j       1010 0101 01        LOP r1, r2, label       jump if [!Z]; r1 = r1 - 1   1010 0101 0101 0001 | ???? ? label ? ????
+Loop Not Zero & Dec     LOP         j        1010 0101 01        LOP r1, label           jump if [!Z]; r1 = r1 - 1   1010 0101 0101 0001 | ???? ? label ? ????
 
-*Push Word to stack      PSW         r1      0010 0000 0001 0    PSW r1                  push r1 to stack            0010 0000 0001 0001
-*Push Byte (low)         PSL         r1      0010 0000 0001 1    PSL r1                  push r1<8..0> to stack      0010 0000 0001 1001
-*Push Byte (high)        PSH         r1      0010 0000 0010 0    PSH r1                  push r1<16..9> to stack     0010 0000 0010 0001
-*Pop Word from stack     PPW         r1      0010 0000 0010 1    PPW r1                  pop from stack to r1        0010 0000 0010 1001
-*Pop Byte (low)          PPL         r1      0010 0000 0011 0    PPL r1                  pop from stack to r1<8..0>  0010 0000 0011 0001
-*Pop Byte (high)         PPH         r1      0010 0000 0011 1    PPH r1                  pop from stack to r1<16..9> 0010 0000 0011 1001
+Push Word to stack      PSW         r1      0010 0000 0001 0    PSW r1                  push r1 to stack            0010 0000 0001 0001
+Push Byte (low)         PSL         r1      0010 0000 0001 1    PSL r1                  push r1<8..0> to stack      0010 0000 0001 1001
+Push Byte (high)        PSH         r1      0010 0000 0010 0    PSH r1                  push r1<16..9> to stack     0010 0000 0010 0001
+Pop Word from stack     PPW         r1      0010 0000 0010 1    PPW r1                  pop from stack to r1        0010 0000 0010 1001
+Pop Byte (low)          PPL         r1      0010 0000 0011 0    PPL r1                  pop from stack to r1<8..0>  0010 0000 0011 0001
+Pop Byte (high)         PPH         r1      0010 0000 0011 1    PPH r1                  pop from stack to r1<16..9> 0010 0000 0011 1001
+
+Load from PC            LPC         r1      0010 0000 0100 0    LPC r1                  r1 = PC                     0010 0000 0100 0001
+Store to PC             SPC         r1      0010 0000 0100 1    SPC r1                  PC = r1                     0010 0000 0100 1001
+
+Push PC                 PSPC        r0      0000 0000 0001 0    PSPC                    push PC to stack            0000 0000 0001 0000
+Pop PC                  PPPC        r0      0000 0000 0001 1    PPPC                    pop stack to PC             0000 0000 0001 1000
 
 Call Proc               CAL         j       1010 0101 10        CAL label               push PC to stack, goto      1010 0101 1000 0000 | ???? ? label ? ????
-Return from Proc        RET         j       1010 0101 11        RET                     pop stack to PC, goto PC    1010 0101 1100 0000 | ???? ???? ???? ????
+Return from Proc        RET         /*      Use PPPC    */      RET                     pop stack to PC, goto PC
 
 -------------------------------------------------------------------------------------------------------------------------------------------------
   � The MUL and DIV instructions use an implied register scheme

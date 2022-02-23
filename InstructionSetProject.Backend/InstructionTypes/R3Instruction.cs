@@ -20,7 +20,7 @@ namespace InstructionSetProject.Backend.InstructionTypes
             return (opcode, null);
         }
 
-        public string Disassemble()
+        public virtual string Disassemble()
         {
             string assembly = "";
 
@@ -42,7 +42,7 @@ namespace InstructionSetProject.Backend.InstructionTypes
             SourceRegister2 = (ushort)(machineCode.opcode & 0b1_1100_0000);
         }
 
-        public void ParseInstruction(string assemblyCode)
+        public virtual void ParseInstruction(string assemblyCode)
         {
             var tokens = assemblyCode.Split(' ');
 

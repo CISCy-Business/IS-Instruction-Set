@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InstructionSetProject.Backend.Instructions.R0Types;
 using InstructionSetProject.Backend.InstructionTypes;
 
-namespace InstructionSetProject.Backend.Instructions.R3Types
+namespace InstructionSetProject.Backend.Instructions.R0Types
 {
-    public class LogicalShiftLeft : R3Instruction
+    public class Return : R0Instruction
     {
-        public static string Mnemonic = "LSL";
+        public const string Mnemonic = "RET";
 
         public override string GetMnemonic()
         {
@@ -18,8 +19,8 @@ namespace InstructionSetProject.Backend.Instructions.R3Types
 
         public override ushort GetOpCode()
         {
-            // This mnemonic is an alias for ArithmeticShiftLeft. So it returns that Op Code
-            return ArithmeticShiftLeft.OpCode;
+            // This mnemonic is an alias for PopPC. So it returns that Op Code
+            return PopPC.OpCode;
         }
     }
 }
