@@ -33,7 +33,7 @@
 
         <div class="row">
             <div class="col-sm-5">
-                <textarea @bind="currentCodeDis" id="disassemble" name="disassemble"></textarea>
+                <textarea @bind="currentCodeDis" id="disassemble" name="disassemble" placeholder="@machinePlaceholder"></textarea>
                 <p>
                     <button @onclick="SaveMachineCode" type="button" name="dis_btn" class="btn btn-primary btn-lg">Save Code</button>
                     <button @onclick="OpenMachineCodeExecuter" type="button" name="dis_exec_btn" class="btn btn-primary btn-lg float-end">Open Executer</button>
@@ -62,6 +62,7 @@
 
     public string currentCodeDis { get; set; }
     private string currentCodeOutDis { get; set; }
+    private string machinePlaceholder = "60 D1 64 D1...";
 
     private string output { get; set; }
 

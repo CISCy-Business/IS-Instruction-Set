@@ -17,7 +17,7 @@ namespace InstructionSetProject.Backend
             var machineCode = new List<byte>();
             foreach (var line in assemblyLines)
             {
-                if (line != String.Empty)
+                if (line.Trim() != String.Empty && !line.Trim().StartsWith('#'))
                 {
                     var machineLine = ConvertLineToMachineCode(line);
 
