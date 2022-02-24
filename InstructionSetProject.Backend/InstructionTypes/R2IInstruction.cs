@@ -25,7 +25,7 @@ namespace InstructionSetProject.Backend.InstructionTypes
             return (opcode, (ushort)Immediate);
         }
 
-        public string Disassemble()
+        public virtual string Disassemble()
         {
             string assembly = "";
 
@@ -51,7 +51,7 @@ namespace InstructionSetProject.Backend.InstructionTypes
             Immediate = (short) machineCode.operand;
         }
 
-        public void ParseInstruction(string assemblyCode)
+        public virtual void ParseInstruction(string assemblyCode)
         {
             var tokens = assemblyCode.Split(' ');
 

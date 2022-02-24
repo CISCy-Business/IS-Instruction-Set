@@ -6,18 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Instructions\JumpTypes\Call.cs" />
-    <Compile Remove="Instructions\JumpTypes\JumpUnconditional.cs" />
-    <Compile Remove="Instructions\JumpTypes\Loop.cs" />
-    <Compile Remove="Instructions\JumpTypes\Return.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Instructions\JumpTypes\Call.cs" />
-    <None Include="Instructions\JumpTypes\JumpUnconditional.cs" />
-    <None Include="Instructions\JumpTypes\Loop.cs" />
-    <None Include="Instructions\JumpTypes\Return.cs" />
-  </ItemGroup>
-
 </Project>

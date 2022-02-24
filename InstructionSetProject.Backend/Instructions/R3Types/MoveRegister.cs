@@ -4,14 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using InstructionSetProject.Backend.InstructionTypes;
+using InstructionSetProject.Backend.Utilities;
 
-namespace InstructionSetProject.Backend.Instructions.JumpTypes
+namespace InstructionSetProject.Backend.Instructions.R3Types
 {
-    public class JumpUnconditional : JumpInstruction
+    public class MoveRegister : R3Instruction
     {
-        public const string Mnemonic = "JMP";
-
-        public const ushort OpCode = 0b1010_0000_0000_0000;
+        public const string Mnemonic = "MOV";
 
         public override string GetMnemonic()
         {
@@ -20,16 +19,20 @@ namespace InstructionSetProject.Backend.Instructions.JumpTypes
 
         public override ushort GetOpCode()
         {
-            return OpCode;
+            // Instruction is an alias for Bitwise Add. Return the Add op code instead
+            return BitwiseAdd.OpCode;
         }
 
         public override string Disassemble()
         {
             string assembly = "";
 
+
             assembly += GetMnemonic();
             assembly += " ";
-            assembly += Immediate.ToString("X2");
+            assembly += Register.ParseDestination(DestinationRegister);
+            assembly += ", ";
+            assembly += Register.ParseFirstSource(SourceRegister1);
 
             return assembly;
         }
@@ -38,13 +41,14 @@ namespace InstructionSetProject.Backend.Instructions.JumpTypes
         {
             var tokens = assemblyCode.Split(' ');
 
-            if (tokens.Length != 2)
+            if (tokens.Length != 3)
                 throw new Exception("Incorrect number of tokens obtained from assembly instruction");
 
-            Immediate = Convert.ToInt16(tokens[1], 16);
+            DestinationRegister = Register.ParseDestination(tokens[1].TrimEnd(','));
 
-            DestinationRegister = 0;
-            SourceRegister = 0;
+            SourceRegister1 = Register.ParseFirstSource(tokens[2]);
+
+            SourceRegister2 = Register.ParseSecondSource("R0");
         }
     }
 }

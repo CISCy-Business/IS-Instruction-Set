@@ -19,7 +19,7 @@ namespace InstructionSetProject.Backend.InstructionTypes
 
         public abstract ushort GetOpCode();
 
-        public (ushort opcode, ushort? operand) Assemble()
+        public virtual (ushort opcode, ushort? operand) Assemble()
         {
             var opcode = (ushort)(GetOpCode() | DestinationRegister | SourceRegister);
             return (opcode, (ushort)Immediate);
@@ -51,7 +51,7 @@ namespace InstructionSetProject.Backend.InstructionTypes
             Immediate = (short) machineCode.operand;
         }
 
-        public void ParseInstruction(string assemblyCode)
+        public virtual void ParseInstruction(string assemblyCode)
         {
             var tokens = assemblyCode.Split(' ');
 
