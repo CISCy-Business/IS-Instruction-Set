@@ -82,12 +82,12 @@
         transform: translateY(5px);
     }
 
-    .executerTabContent > div, .debuggerTabContent > div, .statsTabContent > div {
+    .executerTabContent > div, .debugLabel, .statsTabContent > div {
         text-align: center;
         align-content: center;
     }
 
-    .debuggerTabContent > textarea, .statsTabContent > textarea {
+    .statsTabContent > textarea {
         width: 100%;
         height: 757px;
         margin-top: 0px;
@@ -108,8 +108,7 @@
     .inputBox > textarea, .outputBox > textarea {
         width: 100%;
         height: 185px;
-        margin-top: 0px;
-        margin-bottom: 0px;
+        margin: 0px 0px 0px 3px;
         transform: translateY(5px);
     }
 
@@ -136,8 +135,7 @@
     .memoryDumpContent > textarea {
         width: 100%;
         height: 813px;
-        margin-top: 0px;
-        margin-bottom: 0px;
+        margin: 0px 0px 0px 3px;
         transform: translateY(5px);
     }
 
@@ -192,6 +190,29 @@
     .e-toolbar {
         border: 2px solid gray;
     }
+
+    .debugContainer {
+        border: 2px solid rgb(100, 100, 100);
+        font-family: "Source Code Pro", monospace;
+        font-size: 15px;
+        width: 100%;
+        height: 757px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+        overflow-y: auto;
+        transform: translateY(5px);
+        background-color: white;
+        color: black;
+    }
+
+    .debuggerTabContent {
+        height: 814px;
+    }
+
+    p {
+        margin: 0px 0px 0px 0px;
+        padding: 2px 0px 0px 0px;
+    }
 </style>
 
 <div class="code_input_executer">
@@ -203,7 +224,7 @@
                     <ToolbarItem PrefixIcon="e-icons e-chevron-right-fill" Text="Run" Type="ItemType.Button" OnClick="runCode" TooltipText="Run the code"></ToolbarItem>
                     <ToolbarItem PrefixIcon="e-icons e-properties-1" Text="Debug" TooltipText="Start debugging the code" OnClick="Debug"></ToolbarItem>
                     <ToolbarItem Type="ItemType.Separator"></ToolbarItem>
-                    <ToolbarItem PrefixIcon="e-icons e-text-wrap" Text="Step" TooltipText="Step through each line of code upon debugging" Disabled="@ShowItem"></ToolbarItem>
+                    <ToolbarItem PrefixIcon="e-icons e-text-wrap" Text="Step" OnClick="step" TooltipText="Step through each line of code upon debugging" Disabled="@ShowItem"></ToolbarItem>
                     <ToolbarItem PrefixIcon="e-icons e-check" Text="Continue" TooltipText="Continue through the rest of the program" Disabled="@ShowItem"></ToolbarItem>
                     <ToolbarItem Type="ItemType.Separator"></ToolbarItem>
                     <ToolbarItem PrefixIcon="e-icons e-bullet-3" Text="Stop" TooltipText="Stop the program"></ToolbarItem>
@@ -221,10 +242,10 @@
                 <DialogEvents OnOpen="@DialogOpen" Closed="@DialogClose"></DialogEvents>
             </SfDialog>
 
-            <SfDialog Target="#target" Width="600px" Height="350px" AllowDragging="false" EnableResize="false" ShowCloseIcon="true" @bind-Visible="errorVis">
+            <SfDialog Target="#target" Width="350px" Height="140px" AllowDragging="false" EnableResize="false" ShowCloseIcon="true" @bind-Visible="errorVis">
                 <DialogTemplates>
-                    <Header>CROSS CODING ERROR</Header>
-                    <Content>Your source code and machine code sections have conflicting code. Please clear the contents of one of them in order to build.</Content>
+                    <Header>EMPTY SOURCE CODE ERROR</Header>
+                    <Content>Your source code cannot build if there is no code there to build! Add some code first then try again.</Content>
                 </DialogTemplates>
                 <DialogEvents Closed="@errorClose"></DialogEvents>
             </SfDialog>
@@ -233,7 +254,7 @@
             <div class="codeDiv">
                 <div class="tab">
                     <button class="tablinks" onclick="swapTab(event, 'Executer')" id="defaultOpen">Executer</button>
-                    <button class="tablinks" onclick="swapTab(event, 'Debugger')">Debugger</button>
+                    <button class="tablinks" onclick="swapTab(event, 'Debugger')" id="debuggerTab">Debugger</button>
                     <button class="tablinks" onclick="swapTab(event, 'Stats')">Statistics</button>
                 </div>
 
@@ -246,16 +267,22 @@
                         <div>
                             <label id="exLabel"><b>Machine Code</b></label>
                         </div>
-                        <textarea @bind="ExecMachineCode" id="machineTextBox"></textarea>
+                        <textarea @bind="ExecMachineCode" id="machineTextBox" readonly></textarea>
                     </div>
                 </div>
 
                 <div id="Debugger" class="tabcontent">
                     <div class="debuggerTabContent">
-                        <div>
+                        <div class="debugLabel">
                             <label id="exLabel"><b>Stack Trace</b></label>
                         </div>
-                        <textarea>Debugged Code</textarea>
+                        <div class="debugContainer" id="debugCodeId">
+                            @foreach (string line in assemblyCodeDebug)
+                            {
+                                <p class="@DivCSS(line)">@line</p>
+                            }
+                            <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+                        </div>
                     </div>
                 </div>
 
@@ -354,6 +381,13 @@
     private string ExecMachineCode = "";
     private string ExecAssemblyCode = "";
 
+    private bool debugRender = false;
+
+    private List<string> assemblyCodeDebug = new List<string>();
+    private List<string> assemblyCodeDebugSelected = new List<string>();
+    private int assemblyCodeDebugCounter = 0;
+    private bool initialDebugStep = true;
+
     private List<byte> machineCode = new List<byte>();
     private string output { get; set; }
     private string machineCodeString { get; set; }
@@ -366,7 +400,15 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await JSRuntime.InvokeVoidAsync("autoSelectFirstTab");
+        if (debugRender)
+        {
+            await JSRuntime.InvokeVoidAsync("selectDebugTab");
+        }
+        else
+        {
+            await JSRuntime.InvokeVoidAsync("autoSelectFirstTab");
+        }
+        debugRender = false;
     }
 
     protected override async Task OnInitializedAsync()
@@ -380,26 +422,6 @@
         FrontendVariables.currentMachineCodeExecuter = "";
         ExecAssemblyCode = FrontendVariables.currentAssemblyCodeExecuter;
         FrontendVariables.currentAssemblyCodeExecuter = "";
-    }
-
-    void buildCode()
-    {
-        if (ExecAssemblyCode.Length != 0 && ExecMachineCode.Length == 0)
-        {
-            machineCode = Assembler.Assemble(ExecAssemblyCode);
-            string hexCode = BitConverter.ToString(machineCode.ToArray());
-            ExecMachineCode = hexCode.Replace("-", " ");
-        }
-        else if (ExecMachineCode.Length != 0 && ExecAssemblyCode.Length == 0)
-        {
-            machineCodeString = ExecMachineCode.Replace(" ", string.Empty);
-            machineCode = HexStringToByteList(machineCodeString);
-            ExecAssemblyCode = Disassembler.Disassemble(machineCode);
-        }
-        else
-        {
-            errorVis = true;
-        }
     }
 
     private static List<byte> HexStringToByteList(string machineCodeString) 
@@ -417,6 +439,20 @@
         return mCode;
     }
 
+    void buildCode()
+    {
+        if (ExecAssemblyCode.Length != 0)
+        {
+            machineCode = Assembler.Assemble(ExecAssemblyCode);
+            string hexCode = BitConverter.ToString(machineCode.ToArray());
+            ExecMachineCode = hexCode.Replace("-", " ");
+        }
+        else
+        {
+            errorVis = true;
+        }
+    }
+
     void runCode()
     {
         ExecAssemblyCode = "It sorta worked";
@@ -424,7 +460,51 @@
 
     void Debug()
     {
+        assemblyCodeDebug.Clear();
         OnItemClick();
+        List<string> temp = new List<string>();
+        temp = ExecAssemblyCode.Split("\n").ToList();
+        for (int i = 0; i < temp.Count; i++)
+        {
+            assemblyCodeDebug.Add(":   " + temp.ElementAt(i));
+        }
+        temp.Clear();
+
+        if (initialDebugStep)
+        {
+            assemblyCodeDebugSelected.Clear();
+            assemblyCodeDebugSelected.Add(assemblyCodeDebug.ElementAt(assemblyCodeDebugCounter));
+            assemblyCodeDebugCounter++;
+            initialDebugStep = false;
+        }
+        debugRender = true;
+    }
+
+    bool IsSelected(string code) => assemblyCodeDebugSelected.Any(line => line == code);
+
+    string DivCSS(string line) => IsSelected(line) ? "bg-primary text-white" : "bg-white";
+
+    void step()
+    {
+        assemblyCodeDebugSelected.Clear();
+        if (assemblyCodeDebugCounter == assemblyCodeDebug.Count)
+        {
+            ShowItem = true;
+            assemblyCodeDebugSelected.Clear();
+            assemblyCodeDebugCounter = 0;
+            initialDebugStep = true;
+        }
+        else
+        {
+            assemblyCodeDebugSelected.Clear();
+            assemblyCodeDebugSelected.Add(assemblyCodeDebug.ElementAt(assemblyCodeDebugCounter));
+            assemblyCodeDebugCounter++;
+        }
+        debugRender = true;
+        if (assemblyCodeDebugCounter > 15 && assemblyCodeDebugCounter % 10 == 0)
+        {
+            JSRuntime.InvokeVoidAsync("stepScroll");
+        }
     }
 
     public void OnItemClick()

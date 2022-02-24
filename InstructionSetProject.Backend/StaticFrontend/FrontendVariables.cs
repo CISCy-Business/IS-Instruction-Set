@@ -12,5 +12,6 @@ namespace InstructionSetProject.Backend.StaticFrontend
         public static string currentCodeAssembler { get; set; } = "";
         public static string currentMachineCodeExecuter { get; set; } = "";
         public static string currentAssemblyCodeExecuter { get; set; } = "";
+        
     }
 }
