@@ -277,11 +277,21 @@
                             <label id="exLabel"><b>Stack Trace</b></label>
                         </div>
                         <div class="debugContainer" id="debugCodeId">
-                            @foreach (string line in assemblyCodeDebug)
+                            @foreach (var line in assemblyDic)
                             {
-                                <p class="@DivCSS(line)">@line</p>
+                                <p class="@DivCSS(line.Value, line.Key)">@line.Value</p>
                             }
-                            <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+                            <br /><br /><br /><br /><br /><br /><br /><br />
+                            <p>Counter = @assemblyCodeDebugCounter</p>
+                            @foreach (var item in assemblyDic)
+                            {
+                                <p>@item.Key   @item.Value</p>
+                            }
+
+                            @foreach (var item in assemblyDicSelected)
+                            {
+                                <p>@item.Key   @item.Value</p>
+                            }
                         </div>
                     </div>
                 </div>
@@ -380,11 +390,12 @@
 @code {
     private string ExecMachineCode = "";
     private string ExecAssemblyCode = "";
+    private ushort progCounter = 0x0000;
 
     private bool debugRender = false;
 
-    private List<string> assemblyCodeDebug = new List<string>();
-    private List<string> assemblyCodeDebugSelected = new List<string>();
+    private Dictionary<int, string> assemblyDic = new Dictionary<int, string>();
+    private Dictionary<int, string> assemblyDicSelected = new Dictionary<int, string>();
     private int assemblyCodeDebugCounter = 0;
     private bool initialDebugStep = true;
 
@@ -460,44 +471,47 @@
 
     void Debug()
     {
-        assemblyCodeDebug.Clear();
+        progCounter = 0;
+        assemblyDic.Clear();
         OnItemClick();
         List<string> temp = new List<string>();
         temp = ExecAssemblyCode.Split("\n").ToList();
         for (int i = 0; i < temp.Count; i++)
         {
-            assemblyCodeDebug.Add(":   " + temp.ElementAt(i));
+            assemblyDic.Add(i, progCounter.ToString("X2") + ":   " + temp.ElementAt(i));
+            progCounter += 2;
         }
         temp.Clear();
 
         if (initialDebugStep)
         {
-            assemblyCodeDebugSelected.Clear();
-            assemblyCodeDebugSelected.Add(assemblyCodeDebug.ElementAt(assemblyCodeDebugCounter));
+            assemblyDicSelected.Clear();
+            assemblyDicSelected.Add(assemblyCodeDebugCounter, assemblyDic.Values.ElementAt(assemblyCodeDebugCounter));
             assemblyCodeDebugCounter++;
             initialDebugStep = false;
         }
         debugRender = true;
     }
 
-    bool IsSelected(string code) => assemblyCodeDebugSelected.Any(line => line == code);
+    bool IsSelected(string code, int key) => assemblyDicSelected.Any(line => (line.Key == assemblyCodeDebugCounter-1 && line.Value == code));
 
-    string DivCSS(string line) => IsSelected(line) ? "bg-primary text-white" : "bg-white";
+    string DivCSS(string line, int key) => IsSelected(line, key) ? "bg-primary text-white" : "bg-white";
 
     void step()
     {
-        assemblyCodeDebugSelected.Clear();
-        if (assemblyCodeDebugCounter == assemblyCodeDebug.Count)
+        debugRender = true;
+        assemblyDicSelected.Clear();
+        if (assemblyCodeDebugCounter == assemblyDic.Count)
         {
             ShowItem = true;
-            assemblyCodeDebugSelected.Clear();
+            assemblyDicSelected.Clear();
             assemblyCodeDebugCounter = 0;
             initialDebugStep = true;
         }
         else
         {
-            assemblyCodeDebugSelected.Clear();
-            assemblyCodeDebugSelected.Add(assemblyCodeDebug.ElementAt(assemblyCodeDebugCounter));
+            assemblyDicSelected.Clear();
+            assemblyDicSelected.Add(assemblyCodeDebugCounter, assemblyDic.Values.ElementAt(assemblyCodeDebugCounter));
             assemblyCodeDebugCounter++;
         }
         debugRender = true;
