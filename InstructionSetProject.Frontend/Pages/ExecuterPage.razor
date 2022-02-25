@@ -63,7 +63,7 @@
 
     .grid-container {
         display: grid;
-        grid-template-columns: auto auto auto;
+        grid-template-columns: 35% 35% 30%;
     }
 
     .grid-container > div {
@@ -79,12 +79,14 @@
         height: 350px;
         margin-top: 0px;
         margin-bottom: 0px;
+        padding: 0px;
         transform: translateY(5px);
     }
 
     .executerTabContent > div, .debugLabel, .statsTabContent > div {
         text-align: center;
         align-content: center;
+        padding: 0px;
     }
 
     .statsTabContent > textarea {
@@ -101,6 +103,10 @@
         color: black;
     }
 
+    .statsClass {
+        transform: translateX(35px);
+    }
+
     .inputBox, .outputBox, .memoryDumpContent {
         margin: 0px 5px 0px 5px;
     }
@@ -108,7 +114,6 @@
     .inputBox > textarea, .outputBox > textarea {
         width: 100%;
         height: 185px;
-        margin: 0px 0px 0px 3px;
         transform: translateY(5px);
     }
 
@@ -135,7 +140,6 @@
     .memoryDumpContent > textarea {
         width: 100%;
         height: 813px;
-        margin: 0px 0px 0px 3px;
         transform: translateY(5px);
     }
 
@@ -213,6 +217,41 @@
         margin: 0px 0px 0px 0px;
         padding: 2px 0px 0px 0px;
     }
+
+    #inputFile {
+        transform: translateY(10px);
+        font-size: 14px;
+        margin-left: 5px;
+        width: 93px;
+        border: 1px solid black;
+    }
+
+    #saveButton {
+        transform: translateY(10px);
+        font-size: 14px;
+        margin-right: 5px;
+        background-color: rgb(240, 240, 240);
+    }
+
+    .bg-fetch {
+        background-color: rgb(115, 0, 255);
+    }
+
+    .bg-decode {
+        background-color: rgb(0, 4, 255);
+    }
+
+    .bg-execute {
+        background-color: rgb(0, 153, 255);
+    }
+
+    .bg-memory {
+        background-color: rgb(0, 204, 68);
+    }
+
+    .bg-write {
+        background-color: rgb(182, 191, 2);
+    }
 </style>
 
 <div class="code_input_executer">
@@ -231,8 +270,10 @@
                     <ToolbarItem PrefixIcon="e-icons e-repeat" Text="ReRun" TooltipText="Re-build and Re-run the program"></ToolbarItem>
                     <ToolbarItem Type="ItemType.Separator"></ToolbarItem>
                     <ToolbarItem Text="DataPath" TooltipText="Show the data path of instructions" Disabled="@ShowButton" OnClick="OnClicked"></ToolbarItem>
-                </ToolbarItems>
+                    <ToolbarItem Type="ItemType.Separator"></ToolbarItem>
+                </ToolbarItems> 
             </SfToolbar>
+            
 
             <SfDialog Target="#target" Width="600px" Height="350px" ResizeHandles="@dialogResizeDirections" AllowDragging="true" EnableResize="true" ShowCloseIcon="true" @bind-Visible="Visibility">
                 <DialogTemplates>
@@ -261,13 +302,15 @@
                 <div id="Executer" class="tabcontent">
                     <div class="executerTabContent">
                         <div>
+                            <InputFile OnChange="@LoadFile" id="inputFile" class="float-start" accept=".txt"></InputFile>
                             <label id="exLabel"><b>Source Code</b></label>
+                            <button @onclick="SaveAssemblyCode" type="button" class="float-end" id="saveButton">Save File</button>
                         </div>
-                        <textarea @bind="ExecAssemblyCode"></textarea><br />
+                        <textarea @bind="ExecAssemblyCode" placeholder="Write your assembly code here..."></textarea><br />
                         <div>
                             <label id="exLabel"><b>Machine Code</b></label>
                         </div>
-                        <textarea @bind="ExecMachineCode" id="machineTextBox" readonly></textarea>
+                        <textarea @bind="ExecMachineCode" id="machineTextBox" readonly placeholder="Machine code output will appear here after building code..."></textarea>
                     </div>
                 </div>
 
@@ -281,17 +324,7 @@
                             {
                                 <p class="@DivCSS(line.Value, line.Key)">@line.Value</p>
                             }
-                            <br /><br /><br /><br /><br /><br /><br /><br />
-                            <p>Counter = @assemblyCodeDebugCounter</p>
-                            @foreach (var item in assemblyDic)
-                            {
-                                <p>@item.Key   @item.Value</p>
-                            }
-
-                            @foreach (var item in assemblyDicSelected)
-                            {
-                                <p>@item.Key   @item.Value</p>
-                            }
+                            <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
                         </div>
                     </div>
                 </div>
@@ -299,9 +332,10 @@
                 <div id="Stats" class="tabcontent">
                     <div class="statsTabContent">
                         <div>
-                            <label id="exLabel"><b>Statistics</b></label>
+                            <label id="exLabel" class="statsClass"><b>Statistics</b></label>
+                            <button @onclick="SaveStats" type="button" class="float-end" id="saveButton">Save Stats</button>
                         </div>
-                        <textarea>Statistics</textarea>
+                        <textarea @bind="statsString" placeholder="Statistics will appear after running the code..."></textarea>
                     </div>
                 </div>
             </div>
@@ -363,13 +397,13 @@
                         <div>
                             <label id="exLabel"><b>Input</b></label>
                         </div>
-                        <textarea>Input</textarea><br />
+                        <textarea placeholder="Input stuff here for the code to use..."></textarea><br />
                     </div>
                     <div class="outputBox">
                         <div>
                             <label id="exLabel"><b>Output</b></label>
                         </div>
-                        <textarea>Output</textarea>
+                        <textarea placeholder="Ouput will appear here after running code...">@assemblyCodeDebugCounterFetch @assemblyCodeDebugCounterDecode @assemblyCodeDebugCounterExecute @assemblyCodeDebugCounterMemory @assemblyCodeDebugCounterWrite</textarea>
                     </div>
                 </div>
             </div>
@@ -379,7 +413,7 @@
                         <div>
                             <label id="exLabel"><b>Memory Dump</b></label>
                         </div>
-                        <textarea>Memory Dump</textarea><br />
+                        <textarea placeholder="Memory will begin to appear once the code begins execution..."></textarea><br />
                     </div>
                 </div>
             </div>
@@ -390,24 +424,62 @@
 @code {
     private string ExecMachineCode = "";
     private string ExecAssemblyCode = "";
+    private string statsString = "";
     private ushort progCounter = 0x0000;
 
     private bool debugRender = false;
 
     private Dictionary<int, string> assemblyDic = new Dictionary<int, string>();
-    private Dictionary<int, string> assemblyDicSelected = new Dictionary<int, string>();
-    private int assemblyCodeDebugCounter = 0;
-    private bool initialDebugStep = true;
+    private Dictionary<int, string> assemblyDicSelectedFetch = new Dictionary<int, string>();
+    private Dictionary<int, string> assemblyDicSelectedDecode = new Dictionary<int, string>();
+    private Dictionary<int, string> assemblyDicSelectedExecute = new Dictionary<int, string>();
+    private Dictionary<int, string> assemblyDicSelectedMemory = new Dictionary<int, string>();
+    private Dictionary<int, string> assemblyDicSelectedWrite = new Dictionary<int, string>();
+    private int assemblyCodeDebugCounterFetch = 0;
+    private int assemblyCodeDebugCounterDecode = 0;
+    private int assemblyCodeDebugCounterExecute = 0;
+    private int assemblyCodeDebugCounterMemory = 0;
+    private int assemblyCodeDebugCounterWrite = 0;
+    private bool initialDebugStepFetch = true;
+    private bool initialDebugStepDecode = true;
+    private bool initialDebugStepExecute = true;
+    private bool initialDebugStepMemory = true;
+    private bool initialDebugStepWrite = true;
 
     private List<byte> machineCode = new List<byte>();
     private string output { get; set; }
     private string machineCodeString { get; set; }
+
+    private string fileContent = "";
 
     public bool ShowItem { get; set; } = true;
     private bool Visibility { get; set; } = false;
     private bool errorVis { get; set; } = false;
     private bool ShowButton { get; set; } = false;
     private ResizeDirection[] dialogResizeDirections { get; set; } = new ResizeDirection[] { ResizeDirection.All };
+
+    private async Task LoadFile(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        long maxsize = 512000;
+
+        var buffer = new byte[file.Size];
+        await file.OpenReadStream(maxsize).ReadAsync(buffer);
+        fileContent = System.Text.Encoding.UTF8.GetString(buffer);
+        ExecAssemblyCode = fileContent;
+    }
+
+    private async Task SaveAssemblyCode()
+    {
+        byte[] file = System.Text.Encoding.UTF8.GetBytes(ExecAssemblyCode);
+        await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "assemblyCode.txt", "text/plain", file);
+    }
+    private async Task SaveStats()
+    {
+        byte[] file = System.Text.Encoding.UTF8.GetBytes(statsString);
+        await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "assemblyStats.txt", "text/plain", file);
+    }
+
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -483,39 +555,134 @@
         }
         temp.Clear();
 
-        if (initialDebugStep)
+        if (initialDebugStepFetch)
         {
-            assemblyDicSelected.Clear();
-            assemblyDicSelected.Add(assemblyCodeDebugCounter, assemblyDic.Values.ElementAt(assemblyCodeDebugCounter));
-            assemblyCodeDebugCounter++;
-            initialDebugStep = false;
+            assemblyDicSelectedFetch.Clear();
+            assemblyDicSelectedFetch.Add(assemblyCodeDebugCounterFetch, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterFetch));
+            assemblyCodeDebugCounterFetch++;
+            initialDebugStepFetch = false;
         }
         debugRender = true;
+        JSRuntime.InvokeVoidAsync("debugScrollToTop");
     }
 
-    bool IsSelected(string code, int key) => assemblyDicSelected.Any(line => (line.Key == assemblyCodeDebugCounter-1 && line.Value == code));
+    bool IsSelectedFetch(string code, int key) => assemblyDicSelectedFetch.Any(line => (line.Key == assemblyCodeDebugCounterFetch-1 && line.Value == code));
+    bool IsSelectedDecode(string code, int key) => assemblyDicSelectedDecode.Any(line => (line.Key == assemblyCodeDebugCounterDecode-1 && line.Value == code));
+    bool IsSelectedExecute(string code, int key) => assemblyDicSelectedExecute.Any(line => (line.Key == assemblyCodeDebugCounterExecute-1 && line.Value == code));
+    bool IsSelectedMemory(string code, int key) => assemblyDicSelectedMemory.Any(line => (line.Key == assemblyCodeDebugCounterMemory-1 && line.Value == code));
+    bool IsSelectedWrite(string code, int key) => assemblyDicSelectedWrite.Any(line => (line.Key == assemblyCodeDebugCounterWrite-1 && line.Value == code));
 
-    string DivCSS(string line, int key) => IsSelected(line, key) ? "bg-primary text-white" : "bg-white";
-
+    string DivCSS(string line, int key) => IsSelectedFetch(line, key) ? "bg-fetch text-white" : (IsSelectedDecode(line, key) ? "bg-decode text-white" : (IsSelectedExecute(line, key) ? "bg-execute text-white" : (IsSelectedMemory(line, key) ? "bg-memory text-white" : (IsSelectedWrite(line, key) ? "bg-write text-white" : "bg-white"))));
+    
     void step()
     {
         debugRender = true;
-        assemblyDicSelected.Clear();
-        if (assemblyCodeDebugCounter == assemblyDic.Count)
+        // Fetch Instructions Highlight
+        assemblyDicSelectedFetch.Clear();
+        if (assemblyCodeDebugCounterFetch == assemblyDic.Count)
+        {
+            assemblyDicSelectedFetch.Clear();
+            assemblyCodeDebugCounterFetch = 0;
+        }
+        else if (assemblyCodeDebugCounterFetch >= 1)
+        {
+            assemblyDicSelectedFetch.Clear();
+            assemblyDicSelectedFetch.Add(assemblyCodeDebugCounterFetch, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterFetch));
+            assemblyCodeDebugCounterFetch++;
+        }
+
+        // Decode Instructions Highlight
+        assemblyDicSelectedDecode.Clear();
+        if (assemblyCodeDebugCounterDecode == assemblyDic.Count)
+        {
+            assemblyDicSelectedDecode.Clear();
+            assemblyCodeDebugCounterDecode = 0;
+        }
+        else if (initialDebugStepDecode && (assemblyCodeDebugCounterFetch >= 1 || assemblyCodeDebugCounterDecode > 0))
+        {
+            assemblyDicSelectedDecode.Clear();
+            assemblyDicSelectedDecode.Add(assemblyCodeDebugCounterDecode, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterDecode));
+            assemblyCodeDebugCounterDecode++;
+            initialDebugStepDecode = false;
+        }
+        else if (assemblyCodeDebugCounterFetch >= 1 || assemblyCodeDebugCounterDecode > 0)
+        {
+            assemblyDicSelectedDecode.Clear();
+            assemblyDicSelectedDecode.Add(assemblyCodeDebugCounterDecode, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterDecode));
+            assemblyCodeDebugCounterDecode++;
+        }
+
+        // Execute Instructions Highlight
+        assemblyDicSelectedExecute.Clear();
+        if (assemblyCodeDebugCounterExecute == assemblyDic.Count)
+        {
+            assemblyDicSelectedExecute.Clear();
+            assemblyCodeDebugCounterExecute = 0;
+        }
+        else if (initialDebugStepExecute && (assemblyCodeDebugCounterDecode >= 2 || assemblyCodeDebugCounterExecute > 0))
+        {
+            assemblyDicSelectedExecute.Clear();
+            assemblyDicSelectedExecute.Add(assemblyCodeDebugCounterExecute, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterExecute));
+            assemblyCodeDebugCounterExecute++;
+            initialDebugStepExecute = false;
+        }
+        else if (assemblyCodeDebugCounterExecute >= 1 || assemblyCodeDebugCounterExecute > 0)
+        {
+            assemblyDicSelectedExecute.Clear();
+            assemblyDicSelectedExecute.Add(assemblyCodeDebugCounterExecute, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterExecute));
+            assemblyCodeDebugCounterExecute++;
+        }
+
+        // Memory Instructions Highlight
+        assemblyDicSelectedMemory.Clear();
+        if (assemblyCodeDebugCounterMemory == assemblyDic.Count)
+        {
+            assemblyDicSelectedMemory.Clear();
+            assemblyCodeDebugCounterMemory = 0;
+        }
+        else if (initialDebugStepMemory && (assemblyCodeDebugCounterExecute >= 2 || assemblyCodeDebugCounterMemory > 0))
+        {
+            assemblyDicSelectedMemory.Clear();
+            assemblyDicSelectedMemory.Add(assemblyCodeDebugCounterMemory, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterMemory));
+            assemblyCodeDebugCounterMemory++;
+            initialDebugStepMemory = false;
+        }
+        else if (assemblyCodeDebugCounterMemory >= 1 || assemblyCodeDebugCounterMemory > 0)
+        {
+            assemblyDicSelectedMemory.Clear();
+            assemblyDicSelectedMemory.Add(assemblyCodeDebugCounterMemory, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterMemory));
+            assemblyCodeDebugCounterMemory++;
+        }
+
+        // Write Instructions Highlight
+        assemblyDicSelectedWrite.Clear();
+        if (assemblyCodeDebugCounterWrite == assemblyDic.Count)
         {
             ShowItem = true;
-            assemblyDicSelected.Clear();
-            assemblyCodeDebugCounter = 0;
-            initialDebugStep = true;
+            assemblyDicSelectedWrite.Clear();
+            assemblyCodeDebugCounterWrite = 0;
+            initialDebugStepFetch = true;
+            initialDebugStepDecode = true;
+            initialDebugStepExecute = true;
+            initialDebugStepMemory = true;
+            initialDebugStepWrite = true;
         }
-        else
+        else if (initialDebugStepWrite && (assemblyCodeDebugCounterMemory >= 2 || assemblyCodeDebugCounterWrite > 0))
         {
-            assemblyDicSelected.Clear();
-            assemblyDicSelected.Add(assemblyCodeDebugCounter, assemblyDic.Values.ElementAt(assemblyCodeDebugCounter));
-            assemblyCodeDebugCounter++;
+            assemblyDicSelectedWrite.Clear();
+            assemblyDicSelectedWrite.Add(assemblyCodeDebugCounterWrite, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterWrite));
+            assemblyCodeDebugCounterWrite++;
+            initialDebugStepWrite = false;
         }
+        else if (assemblyCodeDebugCounterWrite >= 1 || assemblyCodeDebugCounterWrite > 0)
+        {
+            assemblyDicSelectedWrite.Clear();
+            assemblyDicSelectedWrite.Add(assemblyCodeDebugCounterWrite, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterWrite));
+            assemblyCodeDebugCounterWrite++;
+        }
+
         debugRender = true;
-        if (assemblyCodeDebugCounter > 15 && assemblyCodeDebugCounter % 10 == 0)
+        if (assemblyCodeDebugCounterFetch > 15 && assemblyCodeDebugCounterFetch % 10 == 0)
         {
             JSRuntime.InvokeVoidAsync("stepScroll");
         }
