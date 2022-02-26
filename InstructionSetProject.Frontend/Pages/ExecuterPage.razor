@@ -1,6 +1,10 @@
 ﻿@page "/executer"
 @using InstructionSetProject.Backend;
 @using InstructionSetProject.Backend.StaticFrontend;
+@using Syncfusion.Blazor.Diagram
+@using System.Collections.ObjectModel
+@using DiagramShapes = Syncfusion.Blazor.Diagram.Shapes
+@using DiagramSegments = Syncfusion.Blazor.Diagram.ConnectorSegmentType
 @inject NavigationManager UriHelper
 @inject IJSRuntime JSRuntime
 
@@ -278,7 +282,9 @@
             <SfDialog Target="#target" Width="600px" Height="350px" ResizeHandles="@dialogResizeDirections" AllowDragging="true" EnableResize="true" ShowCloseIcon="true" @bind-Visible="Visibility">
                 <DialogTemplates>
                     <Header> I am a resizeable and moveable within window modal!!</Header>
-                    <Content> I will be used to show case the data path instructions take inside the "CPU" </Content>
+                    <Content>
+                        <SfDiagramComponent Height="600px" Nodes="@NodeCollection" Connectors="@ConnectorCollection" @ref="@diagram"></SfDiagramComponent>
+                    </Content>
                 </DialogTemplates>
                 <DialogEvents OnOpen="@DialogOpen" Closed="@DialogClose"></DialogEvents>
             </SfDialog>
@@ -446,6 +452,15 @@
     private bool initialDebugStepMemory = true;
     private bool initialDebugStepWrite = true;
 
+    private int connectorCount = 0;
+    // Reference to diagram
+    SfDiagramComponent diagram;
+    // Defines diagram's nodes collection
+    public DiagramObjectCollection<Node> NodeCollection { get; set; }
+    // Defines diagram's connector collection
+    public DiagramObjectCollection<Connector> ConnectorCollection { get; set; }
+
+
     private List<byte> machineCode = new List<byte>();
     private string output { get; set; }
     private string machineCodeString { get; set; }
@@ -497,6 +512,7 @@
     protected override async Task OnInitializedAsync()
     {
         StartupMethod();
+        InitDiagramModel();
     }
 
     void StartupMethod()
@@ -686,6 +702,99 @@
         {
             JSRuntime.InvokeVoidAsync("stepScroll");
         }
+    }
+
+    private void InitDiagramModel()
+    {
+        NodeCollection = new DiagramObjectCollection<Node>();
+        ConnectorCollection = new DiagramObjectCollection<Connector>();
+        CreateNode("Start", 50, FlowShapeType.Terminator, "Start");
+        CreateNode("Init", 140, FlowShapeType.Process, "var i = 0;'");
+        CreateNode("Condition", 230, FlowShapeType.Decision, "i < 10?");
+        CreateNode("Print", 320, FlowShapeType.PreDefinedProcess, "print(\'Hello!!\');");
+        CreateNode("Increment", 410, FlowShapeType.Process, "i++;");
+        CreateNode("End", 500, FlowShapeType.Terminator, "End");
+        OrthogonalSegment segment1 = new OrthogonalSegment()
+        {
+            Type = DiagramSegments.Orthogonal,
+            Length = 30,
+            Direction = Direction.Right
+        };
+        OrthogonalSegment segment2 = new OrthogonalSegment()
+        {
+            Type = DiagramSegments.Orthogonal,
+            Length = 300,
+            Direction = Direction.Bottom
+        };
+        OrthogonalSegment segment3 = new OrthogonalSegment()
+        {
+            Type = DiagramSegments.Orthogonal,
+            Length = 30,
+            Direction = Direction.Left
+        };
+        OrthogonalSegment segment4 = new OrthogonalSegment()
+        {
+            Type = DiagramSegments.Orthogonal,
+            Length = 200,
+            Direction = Direction.Top
+        };
+        CreateConnector("Start", "Init");
+        CreateConnector("Init", "Condition");
+        CreateConnector("Condition", "Print");
+        CreateConnector("Condition", "End", "Yes", segment1, segment2);
+        CreateConnector("Print", "Increment", "No");
+        CreateConnector("Increment", "Condition", null, segment3, segment4);
+    }
+
+    private void CreateConnector(string sourceId, string targetId, string label = default(string), OrthogonalSegment segment1 = null, OrthogonalSegment segment2 = null)
+    {
+        Connector diagramConnector = new Connector()
+        {
+            ID = string.Format("connector{0}", ++connectorCount),
+            SourceID = sourceId,
+            TargetID = targetId
+        };
+ 
+        diagramConnector.Type = DiagramSegments.Orthogonal;
+        if (segment1 != null)
+        {
+            diagramConnector.Segments = new DiagramObjectCollection<ConnectorSegment>() { segment1, segment2 };
+        }
+        if (label != default(string))
+        {
+            var annotation = new PathAnnotation()
+            {
+                Content = label,
+                Style = new TextStyle() { Fill = "transparent" }
+            };
+            diagramConnector.Annotations = new DiagramObjectCollection<PathAnnotation>() { annotation };
+        }
+ 
+        ConnectorCollection.Add(diagramConnector);
+    }
+
+    private void CreateNode(string id, double y, FlowShapeType shape, string label, bool positionLabel = false)
+    {
+        ShapeAnnotation annotation = new ShapeAnnotation() { Content = label,
+            Style = new TextStyle()
+            {
+                Color = "white",
+                Fill = "transparent"
+            }
+        };
+        if (positionLabel)
+        {
+            annotation.Margin = new Margin() { Left = 25, Right = 25 };
+        };
+ 
+        Node diagramNode = new Node()
+        {
+            ID = id,
+            OffsetY = y,
+            Shape = new FlowShape() { Type = Shapes.Flow, Shape = shape },
+            Annotations = new DiagramObjectCollection<ShapeAnnotation>() { annotation }
+        };
+        NodeCollection.Add(diagramNode);
     }
 
     public void OnItemClick()
