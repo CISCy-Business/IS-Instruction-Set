@@ -39,12 +39,14 @@ namespace InstructionSetProject.Backend
         public static int stackIndexOffsetAddrMode { get; set; } = 0;
         public static int stackIndexDefferedAddrMode { get; set; } = 0;
 
-        public static string Disassemble(List<byte> machineCode)
+        public static string Disassemble(List<byte> machineCode) =>
+            Disassemble(GenerateInstructionList.FromBytes(machineCode));
+
+        public static string Disassemble(InstructionList instructions)
         {
             var disassembly = "";
-            var instructions = GenerateInstructionList.FromBytes(machineCode);
 
-            foreach (var instr in instructions)
+            foreach (var instr in instructions.Instructions)
             {
                 disassembly += instr.Disassemble() + "\n";
             }

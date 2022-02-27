@@ -29,7 +29,7 @@ namespace InstructionSetProject.Backend.Instructions.JumpTypes
 
             assembly += GetMnemonic();
             assembly += " ";
-            assembly += Register.ParseDestination(DestinationRegister);
+            assembly += Registers.ParseDestination(DestinationRegister);
             assembly += ", ";
             assembly += Immediate.ToString("X2");
 
@@ -53,8 +53,8 @@ namespace InstructionSetProject.Backend.Instructions.JumpTypes
             subtractImmediate.Immediate = 1;
 
             var jumpNotZero = new JumpNotZero();
-            jumpNotZero.DestinationRegister = Register.ParseDestination("R0");
-            jumpNotZero.SourceRegister = Register.ParseFirstSource("R0");
+            jumpNotZero.DestinationRegister = Registers.ParseDestination("R0");
+            jumpNotZero.SourceRegister = Registers.ParseFirstSource("R0");
             jumpNotZero.Immediate = Immediate;
 
             var subtractCode = subtractImmediate.Assemble();
@@ -72,7 +72,7 @@ namespace InstructionSetProject.Backend.Instructions.JumpTypes
             if (tokens.Length != 3)
                 throw new Exception("Incorrect number of tokens obtained from assembly instruction");
 
-            DestinationRegister = Register.ParseDestination(tokens[1].Trim(','));
+            DestinationRegister = Registers.ParseDestination(tokens[1].Trim(','));
 
             SourceRegister = 0;
 

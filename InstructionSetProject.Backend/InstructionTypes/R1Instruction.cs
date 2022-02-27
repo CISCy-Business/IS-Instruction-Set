@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InstructionSetProject.Backend.StaticPipeline;
 using InstructionSetProject.Backend.Utilities;
 
 namespace InstructionSetProject.Backend.InstructionTypes
@@ -11,11 +12,16 @@ namespace InstructionSetProject.Backend.InstructionTypes
     {
         public ushort DestinationRegister;
 
+        public ushort lengthInBytes => 2;
+        public abstract FunctionBits functionBits { get; }
+
         public const ushort BitwiseMask = 0b1111_1111_1111_1000;
 
         public abstract string GetMnemonic();
 
         public abstract ushort GetOpCode();
+
+        public abstract ushort AluOperation(ushort firstOperand, ushort secondOperand);
 
         public (ushort opcode, ushort? operand) Assemble()
         {
@@ -29,7 +35,7 @@ namespace InstructionSetProject.Backend.InstructionTypes
 
             assembly += GetMnemonic();
             assembly += " ";
-            assembly += Register.ParseDestination(DestinationRegister);
+            assembly += Registers.ParseDestination(DestinationRegister);
 
             return assembly;
         }
@@ -46,7 +52,7 @@ namespace InstructionSetProject.Backend.InstructionTypes
             if (tokens.Length != 2)
                 throw new Exception("Incorrect number of tokens obtained from assembly instruction");
 
-            DestinationRegister = Register.ParseDestination(tokens[1]);
+            DestinationRegister = Registers.ParseDestination(tokens[1]);
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InstructionSetProject.Backend.StaticPipeline;
 using InstructionSetProject.Backend.Utilities;
 
 namespace InstructionSetProject.Backend.InstructionTypes
@@ -13,11 +14,16 @@ namespace InstructionSetProject.Backend.InstructionTypes
         public ushort SourceRegister;
         public short Immediate;
 
+        public ushort lengthInBytes => 4;
+        public abstract FunctionBits functionBits { get; }
+
         public const ushort BitwiseMask = 0b1111_1111_1100_0000;
 
         public abstract string GetMnemonic();
 
         public abstract ushort GetOpCode();
+
+        public abstract ushort AluOperation(ushort firstOperand, ushort secondOperand);
 
         public (ushort opcode, ushort? operand) Assemble()
         {
@@ -31,9 +37,9 @@ namespace InstructionSetProject.Backend.InstructionTypes
 
             assembly += GetMnemonic();
             assembly += " ";
-            assembly += Register.ParseDestination(DestinationRegister);
+            assembly += Registers.ParseDestination(DestinationRegister);
             assembly += ", ";
-            assembly += Register.ParseFirstSource(SourceRegister);
+            assembly += Registers.ParseFirstSource(SourceRegister);
             assembly += ", ";
             assembly += Immediate.ToString("X2");
 
@@ -58,9 +64,9 @@ namespace InstructionSetProject.Backend.InstructionTypes
             if (tokens.Length != 4)
                 throw new Exception("Incorrect number of tokens obtained from assembly instruction");
 
-            DestinationRegister = Register.ParseDestination(tokens[1].TrimEnd(','));
+            DestinationRegister = Registers.ParseDestination(tokens[1].TrimEnd(','));
 
-            SourceRegister = Register.ParseFirstSource(tokens[2].TrimEnd(','));
+            SourceRegister = Registers.ParseFirstSource(tokens[2].TrimEnd(','));
 
             Immediate = Convert.ToInt16(tokens[3], 16);
         }

@@ -29,7 +29,7 @@ namespace InstructionSetProject.Backend.Instructions.R2ITypes
 
             assembly = GetMnemonic();
             assembly += " ";
-            assembly += Register.ParseDestination(DestinationRegister);
+            assembly += Registers.ParseDestination(DestinationRegister);
             assembly += ", ";
             assembly += Immediate.ToString("X2");
 
@@ -43,9 +43,9 @@ namespace InstructionSetProject.Backend.Instructions.R2ITypes
             if (tokens.Length != 3)
                 throw new Exception("Incorrect number of tokens obtained from assembly instruction");
 
-            DestinationRegister = Register.ParseDestination(tokens[1].TrimEnd(','));
+            DestinationRegister = Registers.ParseDestination(tokens[1].TrimEnd(','));
 
-            SourceRegister = Register.ParseFirstSource("R0");
+            SourceRegister = Registers.ParseFirstSource("R0");
 
             Immediate = Convert.ToInt16(tokens[2], 16);
         }
