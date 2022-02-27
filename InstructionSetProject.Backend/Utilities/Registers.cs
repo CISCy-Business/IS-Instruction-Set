@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace InstructionSetProject.Backend.Utilities
 {
-    public static class Register
+    public static class Registers
     {
         public static string ParseDestination(ushort value)
         {
@@ -31,5 +31,17 @@ namespace InstructionSetProject.Backend.Utilities
 
         public static ushort ParseFirstSource(string registerName) => (ushort) (ParseDestination(registerName) << 3);
         public static ushort ParseSecondSource(string registerName) => (ushort) (ParseDestination(registerName) << 6);
+    }
+
+    public enum IntRegister
+    {
+        R0 = 0,
+        R1 = 1,
+        R2 = 2,
+        R3 = 3,
+        R4 = 4,
+        R5 = 5,
+        R6 = 6,
+        R7 = 7
     }
 }

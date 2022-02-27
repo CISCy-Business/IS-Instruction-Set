@@ -87,20 +87,20 @@ namespace InstructionSetProject.Backend.Utilities
         {
             switch (instruction >> 13)
             {
-                case 0b000:
-                    return (ushort)(R0Instruction.BitwiseMask & instruction);
-                case 0b001:
-                    return (ushort)(R1Instruction.BitwiseMask & instruction);
-                case 0b010:
-                    return (ushort)(R2Instruction.BitwiseMask & instruction);
+                // case 0b000:
+                //     return (ushort)(R0Instruction.BitwiseMask & instruction);
+                // case 0b001:
+                //     return (ushort)(R1Instruction.BitwiseMask & instruction);
+                // case 0b010:
+                //     return (ushort)(R2Instruction.BitwiseMask & instruction);
                 case 0b011:
                     return (ushort)(R3Instruction.BitwiseMask & instruction);
-                case 0b100:
-                    return (ushort)(MemoryInstruction.BitwiseMask & instruction);
-                case 0b101:
-                    return (ushort)(JumpInstruction.BitwiseMask & instruction);
-                case 0b110:
-                    return (ushort)(R2IInstruction.BitwiseMask & instruction);
+                // case 0b100:
+                //     return (ushort)(MemoryInstruction.BitwiseMask & instruction);
+                // case 0b101:
+                //     return (ushort)(JumpInstruction.BitwiseMask & instruction);
+                // case 0b110:
+                //     return (ushort)(R2IInstruction.BitwiseMask & instruction);
                 default:
                     throw new Exception("Instruction does not match any instruction type pattern.");
             }

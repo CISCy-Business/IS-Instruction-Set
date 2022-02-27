@@ -2,22 +2,30 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using InstructionSetProject.Backend.StaticPipeline;
 using InstructionSetProject.Backend.Utilities;
 
 namespace InstructionSetProject.Backend.InstructionTypes
 {
-    public abstract class MemoryInstruction : IInstruction
+    public abstract class MemoryInstruction : IInstruction, IImmediateInstruction
     {
         public ushort AddressingMode;
         public ushort DestinationRegister;
         public short Immediate;
+
+        public ushort lengthInBytes => 4;
+
+        public abstract FunctionBits functionBits { get; }
 
         public const ushort BitwiseMask = 0b1111_1111_1000_0000;
 
         public abstract string GetMnemonic();
 
         public abstract ushort GetOpCode();
+
+        public abstract ushort AluOperation(ushort firstOperand, ushort secondOperand);
 
         public (ushort opcode, ushort? operand) Assemble()
         {
@@ -31,11 +39,11 @@ namespace InstructionSetProject.Backend.InstructionTypes
 
             assembly += GetMnemonic();
             assembly += " ";
-            assembly += Register.ParseDestination(DestinationRegister);
+            assembly += Registers.ParseDestination(DestinationRegister);
             assembly += ", ";
             if (AddressingMode == 0b001_1000 || AddressingMode == 0b010_0000)
             {
-                assembly += Register.ParseDestination((ushort)Immediate);
+                assembly += Registers.ParseDestination((ushort)Immediate);
             }
             else
             {
@@ -65,18 +73,35 @@ namespace InstructionSetProject.Backend.InstructionTypes
             if (tokens.Length != 4)
                 throw new Exception("Incorrect number of tokens obtained from assembly instruction");
 
-            DestinationRegister = Register.ParseDestination(tokens[1].TrimEnd(','));
+            DestinationRegister = Registers.ParseDestination(tokens[1].TrimEnd(','));
 
             AddressingMode = Utilities.AddressingMode.Get(tokens[3]);
 
             if (AddressingMode == 0b001_1000 || AddressingMode == 0b010_0000)
             {
-                Immediate = (short)Register.ParseDestination(tokens[2].TrimEnd(','));
+                Immediate = (short)Registers.ParseDestination(tokens[2].TrimEnd(','));
             }
             else
             {
                 Immediate = Convert.ToInt16(tokens[2].TrimEnd(','), 16);
             }
+        }
+
+        public ushort GenerateImmediate()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool CheckForLabel(string line)
+        {
+            var tokens = line.Split(' ');
+            if (tokens.Length != 4)
+                return false;
+            var possibleLabel = tokens[2].Trim(',');
+            var registerRegEx = new Regex("^[RrFf][0-7]$");
+            if (registerRegEx.IsMatch(possibleLabel))
+                return false;
+            return !UInt16.TryParse(possibleLabel, out var result);
         }
     }
 }

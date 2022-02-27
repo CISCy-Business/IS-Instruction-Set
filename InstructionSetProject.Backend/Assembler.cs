@@ -12,11 +12,13 @@ namespace InstructionSetProject.Backend
 {
     public static class Assembler
     {
-        public static List<byte> Assemble(string assemblyCode)
+        public static List<byte> Assemble(string assemblyCode) =>
+            Assemble(GenerateInstructionList.FromString(assemblyCode));
+
+        public static List<byte> Assemble(InstructionList instructions)
         {
-            var instructions = GenerateInstructionList.FromString(assemblyCode);
             var machineCode = new List<byte>();
-            foreach (var instr in instructions)
+            foreach (var instr in instructions.Instructions)
             {
                 var machineLine = AssembleInstruction(instr);
 

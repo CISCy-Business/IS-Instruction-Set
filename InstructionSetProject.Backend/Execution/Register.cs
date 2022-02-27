@@ -8,22 +8,24 @@ namespace InstructionSetProject.Backend.Execution
 {
     public class Register<T>
     {
-        public T value
+        public T? value
         {
-            get => value;
+            get => _value;
             set
             {
                 if (_modifiable)
-                    this.value = value;
+                    _value = value;
             }
         }
 
+        private T? _value;
+
         private readonly bool _modifiable = true;
 
-        public Register(T? value = default(T), bool modifiable = true)
+        public Register(T? value = default, bool modifiable = true)
         {
-            this.value = value;
-            this._modifiable = modifiable;
+            _modifiable = modifiable;
+            _value = value;
         }
     }
 }
