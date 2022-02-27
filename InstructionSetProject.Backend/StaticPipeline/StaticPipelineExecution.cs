@@ -239,12 +239,12 @@ namespace InstructionSetProject.Backend.StaticPipeline
 
         private Register<ushort>? GetFirstReadRegister(IInstruction instr)
         {
-            // if (instr is JumpInstruction jumpInstr)
-            //     return ConvertRegisterIndexToRegister((ushort) (jumpInstr.SourceRegister >> 3));
-            // if (instr is R2Instruction r2Instr)
-            //     return ConvertRegisterIndexToRegister((ushort) (r2Instr.SourceRegister >> 3));
-            // if (instr is R2IInstruction r2iInstr)
-            //     return ConvertRegisterIndexToRegister((ushort) (r2iInstr.SourceRegister >> 3));
+            if (instr is JumpInstruction jumpInstr)
+                return ConvertRegisterIndexToRegister((ushort) (jumpInstr.SourceRegister >> 3));
+            if (instr is R2Instruction r2Instr)
+                return ConvertRegisterIndexToRegister((ushort) (r2Instr.SourceRegister >> 3));
+            if (instr is R2IInstruction r2iInstr)
+                return ConvertRegisterIndexToRegister((ushort) (r2iInstr.SourceRegister >> 3));
             if (instr is R3Instruction r3Instr)
                 return ConvertRegisterIndexToRegister((ushort) (r3Instr.SourceRegister1 >> 3));
             return null;
@@ -259,16 +259,16 @@ namespace InstructionSetProject.Backend.StaticPipeline
 
         private Register<ushort>? GetDestinationRegister(IInstruction instr)
         {
-            // if (instr is JumpInstruction jumpInstr)
-            //     return ConvertRegisterIndexToRegister(jumpInstr.DestinationRegister);
-            // if (instr is MemoryInstruction memInstr)
-            //     return ConvertRegisterIndexToRegister(memInstr.DestinationRegister);
-            // if (instr is R1Instruction r1Instr)
-            //     return ConvertRegisterIndexToRegister(r1Instr.DestinationRegister);
-            // if (instr is R2IInstruction r2iInstr)
-            //     return ConvertRegisterIndexToRegister(r2iInstr.DestinationRegister);
-            // if (instr is R2Instruction r2Instr)
-            //     return ConvertRegisterIndexToRegister(r2Instr.DestinationRegister);
+            if (instr is JumpInstruction jumpInstr)
+                return ConvertRegisterIndexToRegister(jumpInstr.DestinationRegister);
+            if (instr is MemoryInstruction memInstr)
+                return ConvertRegisterIndexToRegister(memInstr.DestinationRegister);
+            if (instr is R1Instruction r1Instr)
+                return ConvertRegisterIndexToRegister(r1Instr.DestinationRegister);
+            if (instr is R2IInstruction r2iInstr)
+                return ConvertRegisterIndexToRegister(r2iInstr.DestinationRegister);
+            if (instr is R2Instruction r2Instr)
+                return ConvertRegisterIndexToRegister(r2Instr.DestinationRegister);
             if (instr is R3Instruction r3Instr)
                 return ConvertRegisterIndexToRegister(r3Instr.DestinationRegister);
             return null;
