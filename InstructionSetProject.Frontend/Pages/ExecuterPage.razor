@@ -1,6 +1,7 @@
 ﻿@page "/executer"
 @using InstructionSetProject.Backend;
 @using InstructionSetProject.Backend.StaticFrontend;
+@using InstructionSetProject.Backend.StaticPipeline;
 @using Syncfusion.Blazor.Diagram
 @using System.Collections.ObjectModel
 @using DiagramShapes = Syncfusion.Blazor.Diagram.Shapes
@@ -350,28 +351,28 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <label class="registerLabel"><b>R0:</b></label>
-                            <textarea readonly class="registerTextArea">0x0000</textarea><br />
+                            <textarea readonly class="registerTextArea">@r0</textarea><br />
 
                             <label class="registerLabel"><b>R1:</b></label>
-                            <textarea readonly class="registerTextArea">0x0000</textarea><br />
+                            <textarea readonly class="registerTextArea">@r1</textarea><br />
 
                             <label class="registerLabel"><b>R2:</b></label>
-                            <textarea readonly class="registerTextArea">0x0000</textarea><br />
+                            <textarea readonly class="registerTextArea">@r2</textarea><br />
 
                             <label class="registerLabel"><b>R3:</b></label>
-                            <textarea readonly class="registerTextArea">0x0000</textarea><br />
+                            <textarea readonly class="registerTextArea">@r3</textarea><br />
 
                             <label class="registerLabel"><b>R4:</b></label>
-                            <textarea readonly class="registerTextArea">0x0000</textarea><br />
+                            <textarea readonly class="registerTextArea">@r4</textarea><br />
 
                             <label class="registerLabel"><b>R5:</b></label>
-                            <textarea readonly class="registerTextArea">0x0000</textarea><br />
+                            <textarea readonly class="registerTextArea">@r5</textarea><br />
 
                             <label class="registerLabel"><b>R6:</b></label>
-                            <textarea readonly class="registerTextArea">0x0000</textarea><br />
+                            <textarea readonly class="registerTextArea">@r6</textarea><br />
 
                             <label class="registerLabel"><b>R7:</b></label>
-                            <textarea readonly class="registerTextArea">0x0000</textarea>
+                            <textarea readonly class="registerTextArea">@r7</textarea>
                         </div>
 
                         <div class="col-sm-6">
@@ -432,6 +433,17 @@
     private string ExecAssemblyCode = "";
     private string statsString = "";
     private ushort progCounter = 0x0000;
+
+    private StaticPipelineExecution SPEx;
+
+    public ushort r0 => SPEx != null ? SPEx.DataStructures.R0.value : (ushort)0;
+    public ushort r1 => SPEx != null ? SPEx.DataStructures.R1.value : (ushort)0;
+    public ushort r2 => SPEx != null ? SPEx.DataStructures.R2.value : (ushort)0;
+    public ushort r3 => SPEx != null ? SPEx.DataStructures.R3.value : (ushort)0;
+    public ushort r4 => SPEx != null ? SPEx.DataStructures.R4.value : (ushort)0;
+    public ushort r5 => SPEx != null ? SPEx.DataStructures.R5.value : (ushort)0;
+    public ushort r6 => SPEx != null ? SPEx.DataStructures.R6.value : (ushort)0;
+    public ushort r7 => SPEx != null ? SPEx.DataStructures.R7.value : (ushort)0;
 
     private bool debugRender = false;
 
@@ -559,7 +571,7 @@
 
     void Debug()
     {
-        StaticPipelineExecutor.Execute(ExecAssemblyCode);
+        SPEx = (StaticPipelineExecution)StaticPipelineExecutor.Execute(ExecAssemblyCode);
         progCounter = 0;
         assemblyDic.Clear();
         OnItemClick();
