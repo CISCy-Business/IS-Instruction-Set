@@ -1,0 +1,239 @@
+﻿/* Style the tab */
+.tab {
+    overflow: hidden;
+    background-color: #20639B;
+    margin: 0px;
+}
+
+    /* Style the buttons inside the tab */
+    .tab button {
+        position: relative;
+        border-radius: 17px 17px 0px 0px;
+        color: black;
+        background-color: white;
+        margin: 0px;
+        float: left;
+        border-top: 1px solid black;
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+        outline: none;
+        cursor: pointer;
+        padding: 12px 16px;
+        transition: 0.3s;
+        font-size: 24px;
+        transform: translateY(6px);
+    }
+
+        /* Change background color of buttons on hover */
+        .tab button:hover {
+            background-color: rgb(200, 200, 200);
+        }
+
+        /* Create an active/current tablink class */
+        .tab button.active {
+            color: black;
+            background-color: darkgray;
+            border-top: 1px solid black;
+            border-left: 1px solid black;
+            border-right: 1px solid black;
+            transform: scale(1.05);
+            transform: translateY(3px);
+            z-index: 2;
+        }
+
+/* Style the tab content */
+.tabcontent {
+    position: relative;
+    display: none;
+    border-bottom: 1px solid black;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    border-radius: 0px 5px 5px 5px;
+    background-color: darkgray;
+    z-index: 1;
+}
+
+.executerTabContent, .debuggerTabContent, .statsTabContent {
+    margin: 0px 5px 0px 5px;
+}
+
+.executerTabContent {
+    margin-bottom: 5px;
+}
+
+    .executerTabContent > textarea {
+        width: 100%;
+        height: 348px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+        padding: 0px;
+        transform: translateY(5px);
+    }
+
+    .executerTabContent > div, .debugLabel, .statsTabContent > div {
+        text-align: center;
+        align-content: center;
+        padding: 0px;
+    }
+
+    .statsTabContent > textarea {
+        width: 100%;
+        height: 735px;
+        margin-top: 0px;
+        margin-bottom: 5px;
+        transform: translateY(5px);
+    }
+
+#exLabel {
+    font-size: 22px;
+    padding-top: 0px;
+    color: black;
+}
+
+.statsClass {
+    transform: translateX(35px);
+}
+
+.inputBox, .outputBox, .memoryDumpContent {
+    margin: 0px 5px 0px 5px;
+}
+
+    .inputBox > textarea, .outputBox > textarea {
+        width: 100%;
+        height: 183px;
+        transform: translateY(5px);
+    }
+
+.outputBox > textarea {
+    margin-bottom: 4px;
+}
+
+        .inputBox > div, .outputBox > div, .memoryDumpContent > div {
+            text-align: center;
+            align-content: center;
+        }
+
+.memoryDumpContent {
+    margin: 0px 5px 0px 5px;
+}
+
+    .ioContent, .memDump {
+        border-radius: 5px 5px 5px 5px;
+        border: 1px solid black;
+        background-color: darkgray;
+    }
+
+.memDump {
+    margin-top: 5px;
+    margin-left: 5px;
+}
+
+.memoryDumpContent > textarea {
+    width: 100%;
+    height: 800px;
+    margin-bottom: 4px;
+    transform: translateY(5px);
+}
+
+.container {
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.registerTextArea {
+    max-width: 150px;
+    height: 35px;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    text-align: center;
+    font-size: 18px;
+    color: black;
+    transform: translateY(10px);
+}
+
+.registerLabel {
+    font-family: "Source Code Pro", monospace;
+    font-size: 20px;
+    padding: 0px;
+    margin: 0px;
+    color: black;
+}
+
+.instLabel {
+    font-family: "Source Code Pro", monospace;
+    font-size: 29px;
+    padding: 0px;
+    margin: 0px;
+    color: black;
+}
+
+hr {
+    margin-top: 30px;
+    max-width: 195px;
+}
+
+.ioContent {
+    /*Remove the comments around the next line of code if input/output are not used*/
+    /*display: none;*/
+}
+
+#target {
+    min-width: 600px;
+    min-height: 350px;
+    max-width: 1000px;
+    max-height: 700px;
+}
+
+.e-toolbar {
+    border: 2px solid gray;
+}
+
+.debugContainer {
+    border: 2px solid rgb(100, 100, 100);
+    font-family: "Source Code Pro", monospace;
+    font-size: 15px;
+    width: 100%;
+    height: 744px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    overflow-y: auto;
+    transform: translateY(5px);
+    background-color: white;
+    color: black;
+}
+
+.debuggerTabContent {
+    height: 788px;
+}
+
+p {
+    margin: 0px 0px 0px 0px;
+    padding: 2px 0px 0px 0px;
+}
+
+#saveButton {
+    transform: translateY(10px);
+    font-size: 14px;
+    margin-right: 5px;
+    background-color: rgb(240, 240, 240);
+}
+
+.bg-fetch {
+    background-color: rgb(115, 0, 255);
+}
+
+.bg-decode {
+    background-color: rgb(0, 4, 255);
+}
+
+.bg-execute {
+    background-color: rgb(0, 153, 255);
+}
+
+.bg-memory {
+    background-color: rgb(0, 204, 68);
+}
+
+.bg-write {
+    background-color: rgb(182, 191, 2);
+}

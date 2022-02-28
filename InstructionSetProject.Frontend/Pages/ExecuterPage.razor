@@ -11,219 +11,6 @@
 @inject IJSRuntime JSRuntime
 
 <style>
-
-    /* Style the tab */
-    .tab {
-        overflow: hidden;
-        background-color: #20639B;
-        margin: 0px;
-    }
-
-    /* Style the buttons inside the tab */
-    .tab button {
-        position: relative;
-        border-radius: 17px 17px 0px 0px;
-        color: black;
-        background-color: white;
-        margin: 0px;
-        float: left;
-        border-top: 1px solid black;
-        border-left: 1px solid black;
-        border-right: 1px solid black;
-        outline: none;
-        cursor: pointer;
-        padding: 12px 16px;
-        transition: 0.3s;
-        font-size: 24px;
-        transform: translateY(6px);
-    }
-
-    /* Change background color of buttons on hover */
-    .tab button:hover {
-        background-color: rgb(200, 200, 200);
-    }
-
-    /* Create an active/current tablink class */
-    .tab button.active {
-        color: black;
-        background-color: darkgray;
-        border-top: 1px solid black;
-        border-left: 1px solid black;
-        border-right: 1px solid black;
-        transform: scale(1.05);
-        transform: translateY(3px);
-        z-index: 2;
-    }
-
-    /* Style the tab content */
-    .tabcontent {
-        position: relative;
-        display: none;
-        border-bottom: 1px solid black;
-        border-left: 1px solid black;
-        border-right: 1px solid black;
-        border-radius: 0px 5px 5px 5px;
-        background-color: darkgray;
-        z-index: 1;
-    }
-
-    .grid-container {
-        display: grid;
-        grid-template-columns: 35% 35% 30%;
-    }
-
-    .grid-container > div {
-        font-size: 30px;
-    }
-
-    .executerTabContent, .debuggerTabContent, .statsTabContent {
-        margin: 0px 5px 0px 5px;
-    }
-
-    .executerTabContent > textarea {
-        width: 100%;
-        height: 350px;
-        margin-top: 0px;
-        margin-bottom: 0px;
-        padding: 0px;
-        transform: translateY(5px);
-    }
-
-    .executerTabContent > div, .debugLabel, .statsTabContent > div {
-        text-align: center;
-        align-content: center;
-        padding: 0px;
-    }
-
-    .statsTabContent > textarea {
-        width: 100%;
-        height: 757px;
-        margin-top: 0px;
-        margin-bottom: 0px;
-        transform: translateY(5px);
-    }
-
-    #exLabel {
-        font-size: 22px;
-        padding-top: 0px;
-        color: black;
-    }
-
-    .statsClass {
-        transform: translateX(35px);
-    }
-
-    .inputBox, .outputBox, .memoryDumpContent {
-        margin: 0px 5px 0px 5px;
-    }
-
-    .inputBox > textarea, .outputBox > textarea {
-        width: 100%;
-        height: 185px;
-        transform: translateY(5px);
-    }
-
-    .inputBox > div, .outputBox > div, .memoryDumpContent > div {
-        text-align: center;
-        align-content: center;
-    }
-
-    .middleGridCol {
-        margin: 0px 10px 0px 10px;
-        text-align: center;
-    }
-
-    .ioContent, .memDump {
-        border-radius: 5px 5px 5px 5px;
-        border: 1px solid black;
-        background-color: darkgray;
-    }
-
-    .memDump {
-        margin-top: 5px;
-    }
-
-    .memoryDumpContent > textarea {
-        width: 100%;
-        height: 813px;
-        transform: translateY(5px);
-    }
-
-    .container {
-        margin-bottom: 16px;
-    }
-
-    .registerTextArea {
-        max-width: 150px;
-        height: 35px;
-        overflow-x: hidden;
-        overflow-y: hidden;
-        text-align: center;
-        font-size: 18px;
-        color: black;
-        transform: translateY(10px);
-    }
-
-    .registerLabel {
-        font-family: "Source Code Pro", monospace;
-        font-size: 20px;
-        padding: 0px;
-        margin: 0px;
-        color: black;
-    }
-
-    .instLabel {
-        font-family: "Source Code Pro", monospace;
-        font-size: 29px;
-        padding: 0px;
-        margin: 0px;
-        color: black;
-    }
-
-    hr {
-        margin-top: 30px;
-        max-width: 195px;
-    }
-
-    .ioContent {
-        /*Remove the comments around the next line of code if input/output are not used*/
-        /*display: none;*/
-    }
-
-    #target {
-        min-width: 600px;
-        min-height: 350px;
-        max-width: 1000px;
-        max-height: 700px;
-    }
-
-    .e-toolbar {
-        border: 2px solid gray;
-    }
-
-    .debugContainer {
-        border: 2px solid rgb(100, 100, 100);
-        font-family: "Source Code Pro", monospace;
-        font-size: 15px;
-        width: 100%;
-        height: 757px;
-        margin-top: 0px;
-        margin-bottom: 0px;
-        overflow-y: auto;
-        transform: translateY(5px);
-        background-color: white;
-        color: black;
-    }
-
-    .debuggerTabContent {
-        height: 814px;
-    }
-
-    p {
-        margin: 0px 0px 0px 0px;
-        padding: 2px 0px 0px 0px;
-    }
-
     #inputFile {
         transform: translateY(10px);
         font-size: 14px;
@@ -232,32 +19,40 @@
         border: 1px solid black;
     }
 
-    #saveButton {
-        transform: translateY(10px);
-        font-size: 14px;
-        margin-right: 5px;
-        background-color: rgb(240, 240, 240);
+    SfSplitter {
+        border: none;
     }
 
-    .bg-fetch {
-        background-color: rgb(115, 0, 255);
+    #innerSplitter {
+        border: none;
     }
 
-    .bg-decode {
-        background-color: rgb(0, 4, 255);
+    #mainSplitter {
+        border: none;
     }
 
-    .bg-execute {
-        background-color: rgb(0, 153, 255);
+    .codeDiv {
+        padding-right: 5px;
     }
 
-    .bg-memory {
-        background-color: rgb(0, 204, 68);
+    .registerPane {
+        padding: 0px 5px 0px 5px;
+        margin-bottom: 50px;
     }
 
-    .bg-write {
-        background-color: rgb(182, 191, 2);
+    .ioPane {
+        padding: 5px 5px 0px 5px;
     }
+
+    .e-splitter .e-split-bar.e-split-bar-horizontal.e-split-bar-hover,
+    .e-splitter .e-split-bar.e-split-bar-horizontal.e-split-bar-active {
+        background: blue;
+    }
+
+    .e-splitter .e-split-bar.e-split-bar-horizontal{
+        background: #20639B;
+    }
+
 </style>
 
 <div class="code_input_executer">
@@ -270,7 +65,7 @@
                     <ToolbarItem PrefixIcon="e-icons e-properties-1" Text="Debug" TooltipText="Start debugging the code" OnClick="Debug"></ToolbarItem>
                     <ToolbarItem Type="ItemType.Separator"></ToolbarItem>
                     <ToolbarItem PrefixIcon="e-icons e-text-wrap" Text="Step" OnClick="step" TooltipText="Step through each line of code upon debugging" Disabled="@ShowItem"></ToolbarItem>
-                    <ToolbarItem PrefixIcon="e-icons e-check" Text="Continue" TooltipText="Continue through the rest of the program" Disabled="@ShowItem"></ToolbarItem>
+                    <ToolbarItem PrefixIcon="e-icons e-check" Text="Continue" OnClick="Continue" TooltipText="Continue through the rest of the program" Disabled="@ShowItem"></ToolbarItem>
                     <ToolbarItem Type="ItemType.Separator"></ToolbarItem>
                     <ToolbarItem PrefixIcon="e-icons e-bullet-3" Text="Stop" TooltipText="Stop the program"></ToolbarItem>
                     <ToolbarItem PrefixIcon="e-icons e-repeat" Text="ReRun" TooltipText="Re-build and Re-run the program"></ToolbarItem>
@@ -281,9 +76,9 @@
             </SfToolbar>
             
 
-            <SfDialog Target="#target" Width="600px" Height="350px" ResizeHandles="@dialogResizeDirections" AllowDragging="true" EnableResize="true" ShowCloseIcon="true" @bind-Visible="Visibility">
+            <SfDialog Target="#target" Width="800px" Height="710px" ResizeHandles="@dialogResizeDirections" AllowDragging="true" EnableResize="true" ShowCloseIcon="true" @bind-Visible="Visibility">
                 <DialogTemplates>
-                    <Header> I am a resizeable and moveable within window modal!!</Header>
+                    <Header>Datapath Emulation of Our ISA in the CPU</Header>
                     <Content>
                         <SfDiagramComponent Height="600px" Nodes="@NodeCollection" Connectors="@ConnectorCollection" @ref="@diagram"></SfDiagramComponent>
                     </Content>
@@ -299,544 +94,151 @@
                 <DialogEvents Closed="@errorClose"></DialogEvents>
             </SfDialog>
         </div>
-        <div class="grid-container">
-            <div class="codeDiv">
-                <div class="tab">
-                    <button class="tablinks" onclick="swapTab(event, 'Executer')" id="defaultOpen">Executer</button>
-                    <button class="tablinks" onclick="swapTab(event, 'Debugger')" id="debuggerTab">Debugger</button>
-                    <button class="tablinks" onclick="swapTab(event, 'Stats')">Statistics</button>
-                </div>
+        <SfSplitter Height="860px" Width="100%" ID="mainSplitter">
+            <SplitterPanes>
+                <SplitterPane Min="25%">
+                    <ContentTemplate>
+                        <div class="codeDiv">
+                            <div class="tab">
+                                <button class="tablinks" onclick="swapTab(event, 'Executer')" id="defaultOpen">Executer</button>
+                                <button class="tablinks" onclick="swapTab(event, 'Debugger')" id="debuggerTab">Debugger</button>
+                                <button class="tablinks" onclick="swapTab(event, 'Stats')">Statistics</button>
+                            </div>
 
-                <div id="Executer" class="tabcontent">
-                    <div class="executerTabContent">
+                            <div id="Executer" class="tabcontent">
+                                <div class="executerTabContent">
+                                    <div>
+                                        <InputFile OnChange="@LoadFile" id="inputFile" class="float-start" accept=".txt"></InputFile>
+                                        <label id="exLabel"><b>Source Code</b></label>
+                                        <button @onclick="SaveAssemblyCode" type="button" class="float-end" id="saveButton">Save File</button>
+                                    </div>
+                                    <textarea @bind="ExecAssemblyCode" placeholder="Write your assembly code here..."></textarea><br />
+                                    <div>
+                                        <label id="exLabel"><b>Machine Code</b></label>
+                                    </div>
+                                    <textarea @bind="ExecMachineCode" id="machineTextBox" readonly placeholder="Machine code output will appear here after building code..."></textarea>
+                                </div>
+                            </div>
+
+                            <div id="Debugger" class="tabcontent">
+                                <div class="debuggerTabContent">
+                                    <div class="debugLabel">
+                                        <label id="exLabel"><b>Stack Trace</b></label>
+                                    </div>
+                                    <div class="debugContainer" id="debugCodeId">
+                                        @if (SPEx != null)
+                                        {
+                                            @foreach (var instr in SPEx.InstrList.InstructionOffsetDictionary)
+                                            {
+                                                <p class="@DivCSS(instr.Value)">@instr.Key.ToString("X4"):     @instr.Value.Disassemble()</p>
+                                            }
+                                        }
+                                        <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="Stats" class="tabcontent">
+                                <div class="statsTabContent">
+                                    <div>
+                                        <label id="exLabel" class="statsClass"><b>Statistics</b></label>
+                                        <button @onclick="SaveStats" type="button" class="float-end" id="saveButton">Save Stats</button>
+                                    </div>
+                                    <textarea @bind="statsString" placeholder="Statistics will appear after running the code..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </ContentTemplate>
+                </SplitterPane>
+                <SplitterPane Min="25%">
+                    <ContentTemplate>
+                        <div class="registerPane">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label class="registerLabel"><b>R0:</b></label>
+                                        <textarea readonly class="registerTextArea">@r0</textarea><br/>
+
+                                        <label class="registerLabel"><b>R1:</b></label>
+                                        <textarea readonly class="registerTextArea">@r1</textarea><br/>
+
+                                        <label class="registerLabel"><b>R2:</b></label>
+                                        <textarea readonly class="registerTextArea">@r2</textarea><br/>
+
+                                        <label class="registerLabel"><b>R3:</b></label>
+                                        <textarea readonly class="registerTextArea">@r3</textarea><br/>
+
+                                        <label class="registerLabel"><b>R4:</b></label>
+                                        <textarea readonly class="registerTextArea">@r4</textarea><br/>
+
+                                        <label class="registerLabel"><b>R5:</b></label>
+                                        <textarea readonly class="registerTextArea">@r5</textarea><br/>
+
+                                        <label class="registerLabel"><b>R6:</b></label>
+                                        <textarea readonly class="registerTextArea">@r6</textarea><br/>
+
+                                        <label class="registerLabel"><b>R7:</b></label>
+                                        <textarea readonly class="registerTextArea">@r7</textarea>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label class="registerLabel"><b>IP:</b></label>
+                                        <textarea readonly class="registerTextArea">@IP</textarea><br/>
+
+                                        <label class="registerLabel"><b>SP:</b></label>
+                                        <textarea readonly class="registerTextArea">@SP</textarea><br/>
+
+                                        <label class="registerLabel"><b>FL:</b></label>
+                                        <textarea readonly class="registerTextArea">@FL</textarea><br/>
+
+                                        <label class="registerLabel"><b>PC:</b></label>
+                                        <textarea readonly class="registerTextArea">@PC</textarea><br/><hr/>
+
+                                        <label class="instLabel"><b>Instruction</b></label><br/>
+
+                                        <label class="registerLabel"><b>OC:</b></label>
+                                        <textarea readonly class="registerTextArea">0x00</textarea><br/>
+
+                                        <label class="registerLabel"><b>OP:</b></label>
+                                        <textarea readonly class="registerTextArea">0x0000</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ioPane">
+                            <div class="ioContent">
+                                <div class="inputBox">
+                                    <div>
+                                        <label id="exLabel"><b>Input</b></label>
+                                    </div>
+                                    <textarea placeholder="Input stuff here for the code to use..."></textarea><br/>
+                                </div>
+                                <div class="outputBox">
+                                    <div>
+                                        <label id="exLabel"><b>Output</b></label>
+                                    </div>
+                                    <textarea placeholder="Ouput will appear here after running code..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </ContentTemplate>
+                </SplitterPane>
+                <SplitterPane Min="25%">
+                    <ContentTemplate>
                         <div>
-                            <InputFile OnChange="@LoadFile" id="inputFile" class="float-start" accept=".txt"></InputFile>
-                            <label id="exLabel"><b>Source Code</b></label>
-                            <button @onclick="SaveAssemblyCode" type="button" class="float-end" id="saveButton">Save File</button>
+                            <div class="memDump">
+                                <div class="memoryDumpContent">
+                                    <div>
+                                        <label id="exLabel"><b>Memory Dump</b></label>
+                                    </div>
+                                    <textarea placeholder="Memory will begin to appear once the code begins execution...">@MemoryBytesUpdate(MemoryBytes)</textarea><br />
+                                </div>
+                            </div>
                         </div>
-                        <textarea @bind="ExecAssemblyCode" placeholder="Write your assembly code here..."></textarea><br />
-                        <div>
-                            <label id="exLabel"><b>Machine Code</b></label>
-                        </div>
-                        <textarea @bind="ExecMachineCode" id="machineTextBox" readonly placeholder="Machine code output will appear here after building code..."></textarea>
-                    </div>
-                </div>
-
-                <div id="Debugger" class="tabcontent">
-                    <div class="debuggerTabContent">
-                        <div class="debugLabel">
-                            <label id="exLabel"><b>Stack Trace</b></label>
-                        </div>
-                        <div class="debugContainer" id="debugCodeId">
-                            @if (SPEx != null)
-                            {
-                                @foreach (var instr in SPEx.InstrList.InstructionOffsetDictionary)
-                                {
-                                    <p class="@DivCSS(instr.Value)">@instr.Key: @instr.Value.Disassemble()</p>
-                                }
-                            }
-                            <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="Stats" class="tabcontent">
-                    <div class="statsTabContent">
-                        <div>
-                            <label id="exLabel" class="statsClass"><b>Statistics</b></label>
-                            <button @onclick="SaveStats" type="button" class="float-end" id="saveButton">Save Stats</button>
-                        </div>
-                        <textarea @bind="statsString" placeholder="Statistics will appear after running the code..."></textarea>
-                    </div>
-                </div>
-            </div>
-            <div class="middleGridCol">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <label class="registerLabel"><b>R0:</b></label>
-                            <textarea readonly class="registerTextArea">@r0</textarea><br />
-
-                            <label class="registerLabel"><b>R1:</b></label>
-                            <textarea readonly class="registerTextArea">@r1</textarea><br />
-
-                            <label class="registerLabel"><b>R2:</b></label>
-                            <textarea readonly class="registerTextArea">@r2</textarea><br />
-
-                            <label class="registerLabel"><b>R3:</b></label>
-                            <textarea readonly class="registerTextArea">@r3</textarea><br />
-
-                            <label class="registerLabel"><b>R4:</b></label>
-                            <textarea readonly class="registerTextArea">@r4</textarea><br />
-
-                            <label class="registerLabel"><b>R5:</b></label>
-                            <textarea readonly class="registerTextArea">@r5</textarea><br />
-
-                            <label class="registerLabel"><b>R6:</b></label>
-                            <textarea readonly class="registerTextArea">@r6</textarea><br />
-
-                            <label class="registerLabel"><b>R7:</b></label>
-                            <textarea readonly class="registerTextArea">@r7</textarea>
-                        </div>
-
-                        <div class="col-sm-6">
-                            <label class="registerLabel"><b>IP:</b></label>
-                            <textarea readonly class="registerTextArea">0x0000</textarea><br />
-
-                            <label class="registerLabel"><b>SP:</b></label>
-                            <textarea readonly class="registerTextArea">0x0000</textarea><br />
-
-                            <label class="registerLabel"><b>FL:</b></label>
-                            <textarea readonly class="registerTextArea">0x0000</textarea><br />
-
-                            <label class="registerLabel"><b>PC:</b></label>
-                            <textarea readonly class="registerTextArea">0x00000000</textarea><br /><hr />
-
-                            <label class="instLabel"><b>Instruction</b></label><br />
-
-                            <label class="registerLabel"><b>OC:</b></label>
-                            <textarea readonly class="registerTextArea">0x00</textarea><br />
-
-                            <label class="registerLabel"><b>OP:</b></label>
-                            <textarea readonly class="registerTextArea">0x0000</textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="ioContent">
-                    <div class="inputBox">
-                        <div>
-                            <label id="exLabel"><b>Input</b></label>
-                        </div>
-                        <textarea placeholder="Input stuff here for the code to use..."></textarea><br />
-                    </div>
-                    <div class="outputBox">
-                        <div>
-                            <label id="exLabel"><b>Output</b></label>
-                        </div>
-                        <textarea placeholder="Ouput will appear here after running code...">@assemblyCodeDebugCounterFetch @assemblyCodeDebugCounterDecode @assemblyCodeDebugCounterExecute @assemblyCodeDebugCounterMemory @assemblyCodeDebugCounterWrite</textarea>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <div class="memDump">
-                    <div class="memoryDumpContent">
-                        <div>
-                            <label id="exLabel"><b>Memory Dump</b></label>
-                        </div>
-                        <textarea placeholder="Memory will begin to appear once the code begins execution..."></textarea><br />
-                    </div>
-                </div>
-            </div>
-        </div>
+                    </ContentTemplate>
+                </SplitterPane>
+            </SplitterPanes>
+        </SfSplitter>
+        <!--<div class="grid-container"></div>-->
     </div>
 </div>
-
-@code {
-    private string ExecMachineCode = "";
-    private string ExecAssemblyCode = "";
-    private string statsString = "";
-    private ushort progCounter = 0x0000;
-
-    private StaticPipelineExecution? SPEx;
-
-    public ushort r0 => SPEx != null ? SPEx.DataStructures.R0.value : (ushort)0;
-    public ushort r1 => SPEx != null ? SPEx.DataStructures.R1.value : (ushort)0;
-    public ushort r2 => SPEx != null ? SPEx.DataStructures.R2.value : (ushort)0;
-    public ushort r3 => SPEx != null ? SPEx.DataStructures.R3.value : (ushort)0;
-    public ushort r4 => SPEx != null ? SPEx.DataStructures.R4.value : (ushort)0;
-    public ushort r5 => SPEx != null ? SPEx.DataStructures.R5.value : (ushort)0;
-    public ushort r6 => SPEx != null ? SPEx.DataStructures.R6.value : (ushort)0;
-    public ushort r7 => SPEx != null ? SPEx.DataStructures.R7.value : (ushort)0;
-
-    private bool debugRender = false;
-
-    private Dictionary<int, string> assemblyDic = new Dictionary<int, string>();
-    private Dictionary<int, string> assemblyDicSelectedFetch = new Dictionary<int, string>();
-    private Dictionary<int, string> assemblyDicSelectedDecode = new Dictionary<int, string>();
-    private Dictionary<int, string> assemblyDicSelectedExecute = new Dictionary<int, string>();
-    private Dictionary<int, string> assemblyDicSelectedMemory = new Dictionary<int, string>();
-    private Dictionary<int, string> assemblyDicSelectedWrite = new Dictionary<int, string>();
-    private int assemblyCodeDebugCounterFetch = 0;
-    private int assemblyCodeDebugCounterDecode = 0;
-    private int assemblyCodeDebugCounterExecute = 0;
-    private int assemblyCodeDebugCounterMemory = 0;
-    private int assemblyCodeDebugCounterWrite = 0;
-    private bool initialDebugStepFetch = true;
-    private bool initialDebugStepDecode = true;
-    private bool initialDebugStepExecute = true;
-    private bool initialDebugStepMemory = true;
-    private bool initialDebugStepWrite = true;
-
-    private int connectorCount = 0;
-    // Reference to diagram
-    SfDiagramComponent diagram;
-    // Defines diagram's nodes collection
-    public DiagramObjectCollection<Node> NodeCollection { get; set; }
-    // Defines diagram's connector collection
-    public DiagramObjectCollection<Connector> ConnectorCollection { get; set; }
-
-
-    private List<byte> machineCode = new List<byte>();
-    private string output { get; set; }
-    private string machineCodeString { get; set; }
-
-    private string fileContent = "";
-
-    public bool ShowItem { get; set; } = true;
-    private bool Visibility { get; set; } = false;
-    private bool errorVis { get; set; } = false;
-    private bool ShowButton { get; set; } = false;
-    private ResizeDirection[] dialogResizeDirections { get; set; } = new ResizeDirection[] { ResizeDirection.All };
-
-    private async Task LoadFile(InputFileChangeEventArgs e)
-    {
-        var file = e.File;
-        long maxsize = 512000;
-
-        var buffer = new byte[file.Size];
-        await file.OpenReadStream(maxsize).ReadAsync(buffer);
-        fileContent = System.Text.Encoding.UTF8.GetString(buffer);
-        ExecAssemblyCode = fileContent;
-    }
-
-    private async Task SaveAssemblyCode()
-    {
-        byte[] file = System.Text.Encoding.UTF8.GetBytes(ExecAssemblyCode);
-        await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "assemblyCode.txt", "text/plain", file);
-    }
-    private async Task SaveStats()
-    {
-        byte[] file = System.Text.Encoding.UTF8.GetBytes(statsString);
-        await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "assemblyStats.txt", "text/plain", file);
-    }
-
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (debugRender)
-        {
-            await JSRuntime.InvokeVoidAsync("selectDebugTab");
-        }
-        else
-        {
-            await JSRuntime.InvokeVoidAsync("autoSelectFirstTab");
-        }
-        debugRender = false;
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        StartupMethod();
-        InitDiagramModel();
-    }
-
-    void StartupMethod()
-    {
-        ExecMachineCode = FrontendVariables.currentMachineCodeExecuter;
-        FrontendVariables.currentMachineCodeExecuter = "";
-        ExecAssemblyCode = FrontendVariables.currentAssemblyCodeExecuter;
-        FrontendVariables.currentAssemblyCodeExecuter = "";
-    }
-
-    private static List<byte> HexStringToByteList(string machineCodeString) 
-    {
-        if (machineCodeString.Length % 2 == 1)
-            throw new Exception("Cannot have an odd number of digits!!");
-
-        int numChars = machineCodeString.Length;
-        byte[] bytes = new byte[numChars / 2];
-        for (int i = 0; i < numChars; i += 2)
-            bytes[i / 2] = Convert.ToByte(machineCodeString.Substring(i, 2), 16);
-
-        List<byte> mCode = new List<byte>(bytes);
-
-        return mCode;
-    }
-
-    void buildCode()
-    {
-        if (ExecAssemblyCode.Length != 0)
-        {
-            machineCode = Assembler.Assemble(ExecAssemblyCode);
-            string hexCode = BitConverter.ToString(machineCode.ToArray());
-            ExecMachineCode = hexCode.Replace("-", " ");
-        }
-        else
-        {
-            errorVis = true;
-        }
-    }
-
-    void runCode()
-    {
-        ExecAssemblyCode = "It sorta worked";
-    }
-
-    void Debug()
-    {
-        SPEx = (StaticPipelineExecution)StaticPipelineExecutor.Execute(ExecAssemblyCode);
-        progCounter = 0;
-        assemblyDic.Clear();
-        OnItemClick();
-        List<string> temp = new List<string>();
-        temp = ExecAssemblyCode.Split("\n").ToList();
-        for (int i = 0; i < temp.Count; i++)
-        {
-            assemblyDic.Add(i, progCounter.ToString("X2") + ":   " + temp.ElementAt(i));
-            progCounter += 2;
-        }
-        temp.Clear();
-
-        if (initialDebugStepFetch)
-        {
-            assemblyDicSelectedFetch.Clear();
-            assemblyDicSelectedFetch.Add(assemblyCodeDebugCounterFetch, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterFetch));
-            assemblyCodeDebugCounterFetch++;
-            initialDebugStepFetch = false;
-        }
-        debugRender = true;
-        JSRuntime.InvokeVoidAsync("debugScrollToTop");
-    }
-
-    bool IsSelectedFetch(IInstruction instr) => instr == SPEx.fetchingInstruction;
-    bool IsSelectedDecode(IInstruction instr) => instr == SPEx.decodingInstruction;
-    bool IsSelectedExecute(IInstruction instr) => instr == SPEx.executingInstruction;
-    bool IsSelectedMemory(IInstruction instr) => instr == SPEx.memoryInstruction;
-    bool IsSelectedWrite(IInstruction instr) => instr == SPEx.writingBackInstruction;
-
-    string DivCSS(IInstruction instr) => IsSelectedFetch(instr) ? "bg-fetch text-white" : (IsSelectedDecode(instr) ? "bg-decode text-white" : (IsSelectedExecute(instr) ? "bg-execute text-white" : (IsSelectedMemory(instr) ? "bg-memory text-white" : (IsSelectedWrite(instr) ? "bg-write text-white" : "bg-white"))));
-    
-    void step()
-    {
-        SPEx.Step();
-        // debugRender = true;
-        // // Fetch Instructions Highlight
-        // assemblyDicSelectedFetch.Clear();
-        // if (assemblyCodeDebugCounterFetch == assemblyDic.Count)
-        // {
-        //     assemblyDicSelectedFetch.Clear();
-        //     assemblyCodeDebugCounterFetch = 0;
-        // }
-        // else if (assemblyCodeDebugCounterFetch >= 1)
-        // {
-        //     assemblyDicSelectedFetch.Clear();
-        //     assemblyDicSelectedFetch.Add(assemblyCodeDebugCounterFetch, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterFetch));
-        //     assemblyCodeDebugCounterFetch++;
-        // }
-        //
-        // // Decode Instructions Highlight
-        // assemblyDicSelectedDecode.Clear();
-        // if (assemblyCodeDebugCounterDecode == assemblyDic.Count)
-        // {
-        //     assemblyDicSelectedDecode.Clear();
-        //     assemblyCodeDebugCounterDecode = 0;
-        // }
-        // else if (initialDebugStepDecode && (assemblyCodeDebugCounterFetch >= 1 || assemblyCodeDebugCounterDecode > 0))
-        // {
-        //     assemblyDicSelectedDecode.Clear();
-        //     assemblyDicSelectedDecode.Add(assemblyCodeDebugCounterDecode, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterDecode));
-        //     assemblyCodeDebugCounterDecode++;
-        //     initialDebugStepDecode = false;
-        // }
-        // else if (assemblyCodeDebugCounterFetch >= 1 || assemblyCodeDebugCounterDecode > 0)
-        // {
-        //     assemblyDicSelectedDecode.Clear();
-        //     assemblyDicSelectedDecode.Add(assemblyCodeDebugCounterDecode, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterDecode));
-        //     assemblyCodeDebugCounterDecode++;
-        // }
-        //
-        // // Execute Instructions Highlight
-        // assemblyDicSelectedExecute.Clear();
-        // if (assemblyCodeDebugCounterExecute == assemblyDic.Count)
-        // {
-        //     assemblyDicSelectedExecute.Clear();
-        //     assemblyCodeDebugCounterExecute = 0;
-        // }
-        // else if (initialDebugStepExecute && (assemblyCodeDebugCounterDecode >= 2 || assemblyCodeDebugCounterExecute > 0))
-        // {
-        //     assemblyDicSelectedExecute.Clear();
-        //     assemblyDicSelectedExecute.Add(assemblyCodeDebugCounterExecute, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterExecute));
-        //     assemblyCodeDebugCounterExecute++;
-        //     initialDebugStepExecute = false;
-        // }
-        // else if (assemblyCodeDebugCounterExecute >= 1 || assemblyCodeDebugCounterExecute > 0)
-        // {
-        //     assemblyDicSelectedExecute.Clear();
-        //     assemblyDicSelectedExecute.Add(assemblyCodeDebugCounterExecute, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterExecute));
-        //     assemblyCodeDebugCounterExecute++;
-        // }
-        //
-        // // Memory Instructions Highlight
-        // assemblyDicSelectedMemory.Clear();
-        // if (assemblyCodeDebugCounterMemory == assemblyDic.Count)
-        // {
-        //     assemblyDicSelectedMemory.Clear();
-        //     assemblyCodeDebugCounterMemory = 0;
-        // }
-        // else if (initialDebugStepMemory && (assemblyCodeDebugCounterExecute >= 2 || assemblyCodeDebugCounterMemory > 0))
-        // {
-        //     assemblyDicSelectedMemory.Clear();
-        //     assemblyDicSelectedMemory.Add(assemblyCodeDebugCounterMemory, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterMemory));
-        //     assemblyCodeDebugCounterMemory++;
-        //     initialDebugStepMemory = false;
-        // }
-        // else if (assemblyCodeDebugCounterMemory >= 1 || assemblyCodeDebugCounterMemory > 0)
-        // {
-        //     assemblyDicSelectedMemory.Clear();
-        //     assemblyDicSelectedMemory.Add(assemblyCodeDebugCounterMemory, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterMemory));
-        //     assemblyCodeDebugCounterMemory++;
-        // }
-        //
-        // // Write Instructions Highlight
-        // assemblyDicSelectedWrite.Clear();
-        // if (assemblyCodeDebugCounterWrite == assemblyDic.Count)
-        // {
-        //     ShowItem = true;
-        //     assemblyDicSelectedWrite.Clear();
-        //     assemblyCodeDebugCounterWrite = 0;
-        //     initialDebugStepFetch = true;
-        //     initialDebugStepDecode = true;
-        //     initialDebugStepExecute = true;
-        //     initialDebugStepMemory = true;
-        //     initialDebugStepWrite = true;
-        // }
-        // else if (initialDebugStepWrite && (assemblyCodeDebugCounterMemory >= 2 || assemblyCodeDebugCounterWrite > 0))
-        // {
-        //     assemblyDicSelectedWrite.Clear();
-        //     assemblyDicSelectedWrite.Add(assemblyCodeDebugCounterWrite, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterWrite));
-        //     assemblyCodeDebugCounterWrite++;
-        //     initialDebugStepWrite = false;
-        // }
-        // else if (assemblyCodeDebugCounterWrite >= 1 || assemblyCodeDebugCounterWrite > 0)
-        // {
-        //     assemblyDicSelectedWrite.Clear();
-        //     assemblyDicSelectedWrite.Add(assemblyCodeDebugCounterWrite, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterWrite));
-        //     assemblyCodeDebugCounterWrite++;
-        // }
-        //
-        // debugRender = true;
-        // if (assemblyCodeDebugCounterFetch > 15 && assemblyCodeDebugCounterFetch % 10 == 0)
-        // {
-        //     JSRuntime.InvokeVoidAsync("stepScroll");
-        // }
-    }
-
-    private void InitDiagramModel()
-    {
-        NodeCollection = new DiagramObjectCollection<Node>();
-        ConnectorCollection = new DiagramObjectCollection<Connector>();
-        CreateNode("Start", 50, FlowShapeType.Terminator, "Start");
-        CreateNode("Init", 140, FlowShapeType.Process, "var i = 0;'");
-        CreateNode("Condition", 230, FlowShapeType.Decision, "i < 10?");
-        CreateNode("Print", 320, FlowShapeType.PreDefinedProcess, "print(\'Hello!!\');");
-        CreateNode("Increment", 410, FlowShapeType.Process, "i++;");
-        CreateNode("End", 500, FlowShapeType.Terminator, "End");
-        OrthogonalSegment segment1 = new OrthogonalSegment()
-        {
-            Type = DiagramSegments.Orthogonal,
-            Length = 30,
-            Direction = Direction.Right
-        };
-        OrthogonalSegment segment2 = new OrthogonalSegment()
-        {
-            Type = DiagramSegments.Orthogonal,
-            Length = 300,
-            Direction = Direction.Bottom
-        };
-        OrthogonalSegment segment3 = new OrthogonalSegment()
-        {
-            Type = DiagramSegments.Orthogonal,
-            Length = 30,
-            Direction = Direction.Left
-        };
-        OrthogonalSegment segment4 = new OrthogonalSegment()
-        {
-            Type = DiagramSegments.Orthogonal,
-            Length = 200,
-            Direction = Direction.Top
-        };
-        CreateConnector("Start", "Init");
-        CreateConnector("Init", "Condition");
-        CreateConnector("Condition", "Print");
-        CreateConnector("Condition", "End", "Yes", segment1, segment2);
-        CreateConnector("Print", "Increment", "No");
-        CreateConnector("Increment", "Condition", null, segment3, segment4);
-    }
-
-    private void CreateConnector(string sourceId, string targetId, string label = default(string), OrthogonalSegment segment1 = null, OrthogonalSegment segment2 = null)
-    {
-        Connector diagramConnector = new Connector()
-        {
-            ID = string.Format("connector{0}", ++connectorCount),
-            SourceID = sourceId,
-            TargetID = targetId
-        };
- 
-        diagramConnector.Type = DiagramSegments.Orthogonal;
-        if (segment1 != null)
-        {
-            diagramConnector.Segments = new DiagramObjectCollection<ConnectorSegment>() { segment1, segment2 };
-        }
-        if (label != default(string))
-        {
-            var annotation = new PathAnnotation()
-            {
-                Content = label,
-                Style = new TextStyle() { Fill = "transparent" }
-            };
-            diagramConnector.Annotations = new DiagramObjectCollection<PathAnnotation>() { annotation };
-        }
- 
-        ConnectorCollection.Add(diagramConnector);
-    }
-
-    private void CreateNode(string id, double y, FlowShapeType shape, string label, bool positionLabel = false)
-    {
-        ShapeAnnotation annotation = new ShapeAnnotation() { Content = label,
-            Style = new TextStyle()
-            {
-                Color = "white",
-                Fill = "transparent"
-            }
-        };
-        if (positionLabel)
-        {
-            annotation.Margin = new Margin() { Left = 25, Right = 25 };
-        };
- 
-        Node diagramNode = new Node()
-        {
-            ID = id,
-            OffsetY = y,
-            Shape = new FlowShape() { Type = Shapes.Flow, Shape = shape },
-            Annotations = new DiagramObjectCollection<ShapeAnnotation>() { annotation }
-        };
-        NodeCollection.Add(diagramNode);
-    }
-
-    public void OnItemClick()
-    {
-        ShowItem = !ShowItem;
-    }
-
-    private void DialogOpen(Object args)
-    {
-        this.ShowButton = true;
-    }
-    private void DialogClose(Object args)
-    {
-        this.ShowButton = false;
-    }
-    private void OnClicked()
-    {
-        this.Visibility = true;
-    }
-
-    private void errorClose(Object args)
-    {
-        this.errorVis = false;
-    }
-
-
-}
