@@ -9,16 +9,17 @@ using InstructionSetProject.Backend.Utilities;
 
 namespace InstructionSetProject.Backend.InstructionTypes
 {
-    public abstract class JumpInstruction : IInstruction
+    public abstract class FmInstruction : IInstruction, IImmediateInstruction
     {
+        public ushort AddressingModeOrRegister;
         public ushort DestinationRegister;
-        public ushort SourceRegister;
         public short Immediate;
 
         public ushort lengthInBytes => 4;
+
         public abstract FunctionBits functionBits { get; }
 
-        public const ushort BitwiseMask = 0b1111_1111_1100_0000;
+        public const ushort BitwiseMask = 0b1111_1111_1000_0000;
 
         public abstract string GetMnemonic();
 
@@ -26,58 +27,66 @@ namespace InstructionSetProject.Backend.InstructionTypes
 
         public abstract ushort AluOperation(ushort firstOperand, ushort secondOperand);
 
-        public virtual (ushort opcode, ushort? operand) Assemble()
+        public (ushort opcode, ushort? operand) Assemble()
         {
-            var opcode = (ushort)(GetOpCode() | DestinationRegister | SourceRegister);
+            var opcode = (ushort)(GetOpCode() | DestinationRegister | AddressingModeOrRegister);
             return (opcode, (ushort)Immediate);
         }
 
-        public virtual string Disassemble()
+        public string Disassemble()
         {
             string assembly = "";
 
             assembly += GetMnemonic();
             assembly += " ";
-            assembly += Registers.ParseDestination(DestinationRegister);
-            assembly += ", ";
-            assembly += Registers.ParseFirstSource(SourceRegister);
+            assembly += Registers.ParseFloatDestination(DestinationRegister);
             assembly += ", ";
             assembly += Immediate.ToString("X2");
+            assembly += ", ";
+            assembly += AddressingMode.Get(AddressingModeOrRegister);
 
             return assembly;
         }
 
         public void ParseInstruction((ushort opcode, ushort? operand) machineCode)
         {
+            AddressingModeOrRegister = (ushort)(machineCode.opcode & 0b111_1000);
             DestinationRegister = (ushort)(machineCode.opcode & 0b111);
-            SourceRegister = (ushort)(machineCode.opcode & 0b11_1000);
 
             if (machineCode.operand == null)
-                throw new ArgumentException("Operand to jump instruction cannot be null.");
+                throw new ArgumentException("Operand to memory instruction cannot be null.");
 
-            Immediate = (short) machineCode.operand;
+            Immediate = (short)machineCode.operand;
         }
 
-        public virtual void ParseInstruction(string assemblyCode)
+        public void ParseInstruction(string assemblyCode)
         {
             var tokens = assemblyCode.Split(' ');
 
             if (tokens.Length != 4)
                 throw new Exception("Incorrect number of tokens obtained from assembly instruction");
 
-            DestinationRegister = Registers.ParseDestination(tokens[1].TrimEnd(','));
+            DestinationRegister = Registers.ParseFloatDestination(tokens[1].TrimEnd(','));
 
-            SourceRegister = Registers.ParseFirstSource(tokens[2].TrimEnd(','));
+            AddressingModeOrRegister = AddressingMode.Get(tokens[3]);
 
-            Immediate = Convert.ToInt16(tokens[3], 16);
+            Immediate = Convert.ToInt16(tokens[2].TrimEnd(','), 16);
         }
 
-        public virtual bool CheckForLabel(string line)
+        public ushort GenerateImmediate()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool CheckForLabel(string line)
         {
             var tokens = line.Split(' ');
             if (tokens.Length != 4)
                 return false;
-            var possibleLabel = tokens[3];
+            var possibleLabel = tokens[2].Trim(',');
+            var registerRegEx = new Regex("^[RrFf][0-7]$");
+            if (registerRegEx.IsMatch(possibleLabel))
+                return false;
             return !UInt16.TryParse(possibleLabel, out var result);
         }
     }

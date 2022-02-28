@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InstructionSetProject.Backend.Instructions.JumpTypes;
+// using InstructionSetProject.Backend.Instructions.JumpTypes;
 // using InstructionSetProject.Backend.Instructions.MemoryTypes;
 // using InstructionSetProject.Backend.Instructions.R0Types;
 // using InstructionSetProject.Backend.Instructions.R1Types;
@@ -120,7 +120,7 @@ namespace InstructionSetProject.Backend.Utilities
             // Add(JumpBelowEqual.OpCode, JumpBelowEqual.Mnemonic, () => new JumpBelowEqual());
             // Add(JumpBelowThan.OpCode, JumpBelowThan.Mnemonic, () => new JumpBelowThan());
             // Add(JumpCarry.OpCode, JumpCarry.Mnemonic, () => new JumpCarry());
-            Add(JumpEqual.OpCode, JumpEqual.Mnemonic, () => new JumpEqual());
+            // Add(JumpEqual.OpCode, JumpEqual.Mnemonic, () => new JumpEqual());
             // Add(JumpGreaterEqual.OpCode, JumpGreaterEqual.Mnemonic, () => new JumpGreaterEqual());
             // Add(JumpGreaterThan.OpCode, JumpGreaterThan.Mnemonic, () => new JumpGreaterThan());
             // Add(JumpLessEqual.OpCode, JumpLessEqual.Mnemonic, () => new JumpLessEqual());

@@ -13,20 +13,20 @@ namespace InstructionSetProject.Backend.Utilities
         {
             var firstByte = machineCode[0];
 
-            if (firstByte >> 5 == 0)
-                return InstructionType.R0;
-            if (firstByte >> 5 == 1)
-                return InstructionType.R1;
-            if (firstByte >> 5 == 2)
+            if (firstByte >> 5 == 0b000)
                 return InstructionType.R2;
-            if (firstByte >> 5 == 6)
-                return InstructionType.R2I;
-            if (firstByte >> 5 == 3)
+            if (firstByte >> 5 == 0b001)
+                return InstructionType.F2;
+            if (firstByte >> 5 == 0b010)
                 return InstructionType.R3;
-            if (firstByte >> 5 == 4)
-                return InstructionType.Memory;
-            if (firstByte >> 5 == 5)
-                return InstructionType.Jump;
+            if (firstByte >> 5 == 0b011)
+                return InstructionType.F3;
+            if (firstByte >> 5 == 0b100 || firstByte >> 5 == 0b101)
+                return InstructionType.Rs;
+            if (firstByte >> 5 == 0b110)
+                return InstructionType.Rm;
+            if (firstByte >> 5 == 0b111)
+                return InstructionType.Fm;
             
             throw new Exception("Instruction does not match any instruction type pattern.");
         }
@@ -87,20 +87,21 @@ namespace InstructionSetProject.Backend.Utilities
         {
             switch (instruction >> 13)
             {
-                // case 0b000:
-                //     return (ushort)(R0Instruction.BitwiseMask & instruction);
-                // case 0b001:
-                //     return (ushort)(R1Instruction.BitwiseMask & instruction);
-                // case 0b010:
-                //     return (ushort)(R2Instruction.BitwiseMask & instruction);
-                case 0b011:
+                case 0b000:
+                    return (ushort)(R2Instruction.BitwiseMask & instruction);
+                case 0b001:
+                    return (ushort)(F2Instruction.BitwiseMask & instruction);
+                case 0b010:
                     return (ushort)(R3Instruction.BitwiseMask & instruction);
-                // case 0b100:
-                //     return (ushort)(MemoryInstruction.BitwiseMask & instruction);
-                // case 0b101:
-                //     return (ushort)(JumpInstruction.BitwiseMask & instruction);
-                // case 0b110:
-                //     return (ushort)(R2IInstruction.BitwiseMask & instruction);
+                case 0b011:
+                    return (ushort)(F3Instruction.BitwiseMask & instruction);
+                case 0b100:
+                case 0b101:
+                    return (ushort)(RsInstruction.BitwiseMask & instruction);
+                case 0b110:
+                    return (ushort)(RmInstruction.BitwiseMask & instruction);
+                case 0b111:
+                    return (ushort)(FmInstruction.BitwiseMask & instruction);
                 default:
                     throw new Exception("Instruction does not match any instruction type pattern.");
             }
@@ -109,12 +110,12 @@ namespace InstructionSetProject.Backend.Utilities
 
     public enum InstructionType
     {
-        R0,
-        R1,
         R2,
-        R2I,
+        F2,
         R3,
-        Memory,
-        Jump
+        F3,
+        Rs,
+        Rm,
+        Fm
     }
 }

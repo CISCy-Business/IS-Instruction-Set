@@ -13,12 +13,12 @@ namespace InstructionSetProject.Backend.Instructions.R3Types
 
         public override string GetMnemonic()
         {
-            return BitwiseAdd.Mnemonic;
+            return Mnemonic;
         }
 
         public override ushort GetOpCode()
         {
-            return BitwiseAdd.OpCode;
+            return OpCode;
         }
 
         public override ushort AluOperation(ushort firstOperand, ushort secondOperand)

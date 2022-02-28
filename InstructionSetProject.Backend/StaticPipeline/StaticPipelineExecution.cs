@@ -27,13 +27,13 @@ namespace InstructionSetProject.Backend.StaticPipeline
         private int _memoryStageOffset = -1;
         private int _writeBackStageOffset = -1;
 
-        public IInstruction? fetchingInstruction => (_fetchStageOffset >= 0 && _fetchStageOffset < InstrList.MaxOffset) ? InstrList.GetFromOffset(_fetchStageOffset) : null;
-        public IInstruction? decodingInstruction => (_decodeStageOffset >= 0 && _decodeStageOffset < InstrList.MaxOffset) ? InstrList.GetFromOffset(_decodeStageOffset) : null;
-        public IInstruction? executingInstruction => (_executeStageOffset >= 0 && _executeStageOffset < InstrList.MaxOffset) ? InstrList.GetFromOffset(_executeStageOffset) : null;
-        public IInstruction? memoryInstruction => (_memoryStageOffset >= 0 && _memoryStageOffset < InstrList.MaxOffset) ? InstrList.GetFromOffset(_memoryStageOffset) : null;
-        public IInstruction? writingBackInstruction => (_writeBackStageOffset >= 0 && _writeBackStageOffset < InstrList.MaxOffset) ? InstrList.GetFromOffset(_writeBackStageOffset) : null;
+        public IInstruction? fetchingInstruction => (_fetchStageOffset >= 0 && _fetchStageOffset <= InstrList.MaxOffset) ? InstrList.GetFromOffset(_fetchStageOffset) : null;
+        public IInstruction? decodingInstruction => (_decodeStageOffset >= 0 && _decodeStageOffset <= InstrList.MaxOffset) ? InstrList.GetFromOffset(_decodeStageOffset) : null;
+        public IInstruction? executingInstruction => (_executeStageOffset >= 0 && _executeStageOffset <= InstrList.MaxOffset) ? InstrList.GetFromOffset(_executeStageOffset) : null;
+        public IInstruction? memoryInstruction => (_memoryStageOffset >= 0 && _memoryStageOffset <= InstrList.MaxOffset) ? InstrList.GetFromOffset(_memoryStageOffset) : null;
+        public IInstruction? writingBackInstruction => (_writeBackStageOffset >= 0 && _writeBackStageOffset <= InstrList.MaxOffset) ? InstrList.GetFromOffset(_writeBackStageOffset) : null;
 
-        public IInstruction? nextInstructionToFinish => writingBackInstruction ?? (memoryInstruction ?? (executingInstruction ?? (decodingInstruction ?? (fetchingInstruction ?? InstrList.Instructions.FirstOrDefault()))));
+        public IInstruction? nextInstructionToFinish => writingBackInstruction ?? (memoryInstruction ?? (executingInstruction ?? (decodingInstruction ?? (fetchingInstruction ?? null))));
 
 
         public StaticPipelineExecution(InstructionList instrList)
@@ -44,7 +44,7 @@ namespace InstructionSetProject.Backend.StaticPipeline
 
         public void Continue()
         {
-            while (InstrList.GetFromOffset(DataStructures.InstructionPointer.value) != null)
+            while (fetchingInstruction != null || decodingInstruction != null || executingInstruction != null || memoryInstruction != null || writingBackInstruction != null)
                 Step();
         }
 
@@ -144,7 +144,7 @@ namespace InstructionSetProject.Backend.StaticPipeline
             }
 
             ExecuteMemory.WriteRegister = DecodeExecute.WriteRegister;
-            
+
             ushort? aluSource2 = instr.functionBits.ALUSrc ? DecodeExecute.Immediate : DecodeExecute.ReadData2;
             if (DecodeExecute.ReadData1 == null || aluSource2 == null)
                 ExecuteMemory.AluResult = null;
@@ -232,49 +232,59 @@ namespace InstructionSetProject.Backend.StaticPipeline
                         throw new Exception("Attempt to write null value to register");
                     }
 
-                    MemoryWriteBack.WriteRegister.value = (ushort) MemoryWriteBack.AluResult;
+                    MemoryWriteBack.WriteRegister.value = (ushort)MemoryWriteBack.AluResult;
                 }
             }
         }
 
         private Register<ushort>? GetFirstReadRegister(IInstruction instr)
         {
-            if (instr is JumpInstruction jumpInstr)
-                return ConvertRegisterIndexToRegister((ushort) (jumpInstr.SourceRegister >> 3));
+            if (instr is F2Instruction f2Instr)
+                return ConvertRegisterIndexToIntRegister((ushort)(f2Instr.SourceRegister >> 3));
             if (instr is R2Instruction r2Instr)
-                return ConvertRegisterIndexToRegister((ushort) (r2Instr.SourceRegister >> 3));
-            if (instr is R2IInstruction r2iInstr)
-                return ConvertRegisterIndexToRegister((ushort) (r2iInstr.SourceRegister >> 3));
+                return ConvertRegisterIndexToFloatRegister((ushort)(r2Instr.SourceRegister >> 3));
+            if (instr is F3Instruction f3Instr)
+                return ConvertRegisterIndexToIntRegister((ushort)(f3Instr.SourceRegister1 >> 3));
             if (instr is R3Instruction r3Instr)
-                return ConvertRegisterIndexToRegister((ushort) (r3Instr.SourceRegister1 >> 3));
+                return ConvertRegisterIndexToFloatRegister((ushort)(r3Instr.SourceRegister1 >> 3));
+            if (instr is RsInstruction rsInstr)
+                return ConvertRegisterIndexToIntRegister((ushort)(rsInstr.SourceRegister >> 3));
+            if (instr is RmInstruction rmInstr)
+                return ConvertRegisterIndexToIntRegister((ushort)(rmInstr.AddressingModeOrRegister >> 3));
+            if (instr is FmInstruction fmInstr)
+                return ConvertRegisterIndexToFloatRegister((ushort)(fmInstr.AddressingModeOrRegister >> 3));
             return null;
         }
 
         private Register<ushort>? GetSecondReadRegister(IInstruction instr)
         {
             if (instr is R3Instruction r3Instr)
-                return ConvertRegisterIndexToRegister((ushort) (r3Instr.SourceRegister2 >> 6));
+                return ConvertRegisterIndexToIntRegister((ushort)(r3Instr.SourceRegister2 >> 6));
+            if (instr is F3Instruction f3Instr)
+                return ConvertRegisterIndexToFloatRegister((ushort)(f3Instr.SourceRegister2 >> 6));
             return null;
         }
 
         private Register<ushort>? GetDestinationRegister(IInstruction instr)
         {
-            if (instr is JumpInstruction jumpInstr)
-                return ConvertRegisterIndexToRegister(jumpInstr.DestinationRegister);
-            if (instr is MemoryInstruction memInstr)
-                return ConvertRegisterIndexToRegister(memInstr.DestinationRegister);
-            if (instr is R1Instruction r1Instr)
-                return ConvertRegisterIndexToRegister(r1Instr.DestinationRegister);
-            if (instr is R2IInstruction r2iInstr)
-                return ConvertRegisterIndexToRegister(r2iInstr.DestinationRegister);
+            if (instr is F2Instruction f2Instr)
+                return ConvertRegisterIndexToFloatRegister(f2Instr.DestinationRegister);
             if (instr is R2Instruction r2Instr)
-                return ConvertRegisterIndexToRegister(r2Instr.DestinationRegister);
+                return ConvertRegisterIndexToIntRegister(r2Instr.DestinationRegister);
+            if (instr is F3Instruction f3Instr)
+                return ConvertRegisterIndexToFloatRegister(f3Instr.DestinationRegister);
             if (instr is R3Instruction r3Instr)
-                return ConvertRegisterIndexToRegister(r3Instr.DestinationRegister);
+                return ConvertRegisterIndexToIntRegister(r3Instr.DestinationRegister);
+            if (instr is RsInstruction rsInstr)
+                return ConvertRegisterIndexToIntRegister(rsInstr.DestinationRegister);
+            if (instr is RmInstruction rmInstr)
+                return ConvertRegisterIndexToIntRegister(rmInstr.DestinationRegister);
+            if (instr is FmInstruction fmInstr)
+                return ConvertRegisterIndexToFloatRegister(fmInstr.DestinationRegister);
             return null;
         }
 
-        private Register<ushort> ConvertRegisterIndexToRegister(ushort index)
+        private Register<ushort> ConvertRegisterIndexToIntRegister(ushort index)
         {
             switch (index)
             {
@@ -294,6 +304,29 @@ namespace InstructionSetProject.Backend.StaticPipeline
                     return DataStructures.R7;
                 default:
                     return DataStructures.R0;
+            }
+        }
+
+        private Register<ushort> ConvertRegisterIndexToFloatRegister(ushort index)
+        {
+            switch (index)
+            {
+                case 1:
+                    return DataStructures.F1;
+                case 2:
+                    return DataStructures.F2;
+                case 3:
+                    return DataStructures.F3;
+                case 4:
+                    return DataStructures.F4;
+                case 5:
+                    return DataStructures.F5;
+                case 6:
+                    return DataStructures.F6;
+                case 7:
+                    return DataStructures.F7;
+                default:
+                    return DataStructures.F0;
             }
         }
     }

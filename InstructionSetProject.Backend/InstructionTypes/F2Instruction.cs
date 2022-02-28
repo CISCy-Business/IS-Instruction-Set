@@ -8,7 +8,7 @@ using InstructionSetProject.Backend.Utilities;
 
 namespace InstructionSetProject.Backend.InstructionTypes
 {
-    public abstract class R2Instruction : IInstruction
+    public abstract class F2Instruction : IInstruction
     {
         public ushort DestinationRegister;
         public ushort SourceRegister;
@@ -36,9 +36,9 @@ namespace InstructionSetProject.Backend.InstructionTypes
 
             assembly += GetMnemonic();
             assembly += " ";
-            assembly += Registers.ParseIntDestination(DestinationRegister);
+            assembly += Registers.ParseFloatDestination(DestinationRegister);
             assembly += ", ";
-            assembly += Registers.ParseIntFirstSource(SourceRegister);
+            assembly += Registers.ParseFloatFirstSource(SourceRegister);
 
             return assembly;
         }
@@ -56,9 +56,9 @@ namespace InstructionSetProject.Backend.InstructionTypes
             if (tokens.Length != 3)
                 throw new Exception("Incorrect number fo tokens obtained from assembly instruction");
 
-            DestinationRegister = Registers.ParseIntDestination(tokens[1].TrimEnd(','));
+            DestinationRegister = Registers.ParseFloatDestination(tokens[1].TrimEnd(','));
 
-            SourceRegister = Registers.ParseIntFirstSource(tokens[2]);
+            SourceRegister = Registers.ParseFloatFirstSource(tokens[2]);
         }
     }
 }
