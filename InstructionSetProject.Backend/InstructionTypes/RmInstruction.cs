@@ -9,9 +9,9 @@ using InstructionSetProject.Backend.Utilities;
 
 namespace InstructionSetProject.Backend.InstructionTypes
 {
-    public abstract class MemoryInstruction : IInstruction, IImmediateInstruction
+    public abstract class RmInstruction : IInstruction, IImmediateInstruction
     {
-        public ushort AddressingMode;
+        public ushort AddressingModeOrRegister;
         public ushort DestinationRegister;
         public short Immediate;
 
@@ -29,7 +29,7 @@ namespace InstructionSetProject.Backend.InstructionTypes
 
         public (ushort opcode, ushort? operand) Assemble()
         {
-            var opcode = (ushort)(GetOpCode() | DestinationRegister | AddressingMode);
+            var opcode = (ushort)(GetOpCode() | DestinationRegister | AddressingModeOrRegister);
             return (opcode, (ushort)Immediate);
         }
 
@@ -39,25 +39,25 @@ namespace InstructionSetProject.Backend.InstructionTypes
 
             assembly += GetMnemonic();
             assembly += " ";
-            assembly += Registers.ParseDestination(DestinationRegister);
+            assembly += Registers.ParseIntDestination(DestinationRegister);
             assembly += ", ";
-            if (AddressingMode == 0b001_1000 || AddressingMode == 0b010_0000)
+            if (AddressingModeOrRegister == 0b001_1000 || AddressingModeOrRegister == 0b010_0000)
             {
-                assembly += Registers.ParseDestination((ushort)Immediate);
+                assembly += Registers.ParseIntDestination((ushort)Immediate);
             }
             else
             {
                 assembly += Immediate.ToString("X2");
             }
             assembly += ", ";
-            assembly += Utilities.AddressingMode.Get(AddressingMode);
+            assembly += AddressingMode.Get(AddressingModeOrRegister);
 
             return assembly;
         }
 
         public void ParseInstruction((ushort opcode, ushort? operand) machineCode)
         {
-            AddressingMode = (ushort)(machineCode.opcode & 0b111_1000);
+            AddressingModeOrRegister = (ushort)(machineCode.opcode & 0b111_1000);
             DestinationRegister = (ushort)(machineCode.opcode & 0b111);
 
             if (machineCode.operand == null)
@@ -73,13 +73,13 @@ namespace InstructionSetProject.Backend.InstructionTypes
             if (tokens.Length != 4)
                 throw new Exception("Incorrect number of tokens obtained from assembly instruction");
 
-            DestinationRegister = Registers.ParseDestination(tokens[1].TrimEnd(','));
+            DestinationRegister = Registers.ParseIntDestination(tokens[1].TrimEnd(','));
 
-            AddressingMode = Utilities.AddressingMode.Get(tokens[3]);
+            AddressingModeOrRegister = AddressingMode.Get(tokens[3]);
 
-            if (AddressingMode == 0b001_1000 || AddressingMode == 0b010_0000)
+            if (AddressingModeOrRegister == 0b001_1000 || AddressingModeOrRegister == 0b010_0000)
             {
-                Immediate = (short)Registers.ParseDestination(tokens[2].TrimEnd(','));
+                Immediate = (short)Registers.ParseIntDestination(tokens[2].TrimEnd(','));
             }
             else
             {

@@ -13,6 +13,7 @@
     <Compile Remove="Instructions\JumpTypes\JumpBelowEqual.cs" />
     <Compile Remove="Instructions\JumpTypes\JumpBelowThan.cs" />
     <Compile Remove="Instructions\JumpTypes\JumpCarry.cs" />
+    <Compile Remove="Instructions\JumpTypes\JumpEqual.cs" />
     <Compile Remove="Instructions\JumpTypes\JumpGreaterEqual.cs" />
     <Compile Remove="Instructions\JumpTypes\JumpGreaterThan.cs" />
     <Compile Remove="Instructions\JumpTypes\JumpLessEqual.cs" />
@@ -103,6 +104,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Instructions\JumpTypes\JumpEqual.cs" />
     <None Include="Instructions\R2ITypes\BitwiseAddImmediate.cs" />
     <None Include="Instructions\R2ITypes\BitwiseAddImmediateCarry.cs" />
     <None Include="Instructions\R2ITypes\BitwiseAndImmediate.cs" />

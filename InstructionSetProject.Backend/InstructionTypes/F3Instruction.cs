@@ -8,16 +8,16 @@ using InstructionSetProject.Backend.Utilities;
 
 namespace InstructionSetProject.Backend.InstructionTypes
 {
-    public abstract class R2IInstruction : IInstruction
+    public abstract class F3Instruction : IInstruction
     {
         public ushort DestinationRegister;
-        public ushort SourceRegister;
-        public short Immediate;
+        public ushort SourceRegister1;
+        public ushort SourceRegister2;
 
-        public ushort lengthInBytes => 4;
+        public ushort lengthInBytes => 2;
         public abstract FunctionBits functionBits { get; }
 
-        public const ushort BitwiseMask = 0b1111_1111_1100_0000;
+        public const ushort BitwiseMask = 0b1111_1110_0000_0000;
 
         public abstract string GetMnemonic();
 
@@ -27,8 +27,8 @@ namespace InstructionSetProject.Backend.InstructionTypes
 
         public (ushort opcode, ushort? operand) Assemble()
         {
-            var opcode = (ushort)(GetOpCode() | DestinationRegister | SourceRegister);
-            return (opcode, (ushort)Immediate);
+            var opcode = (ushort)(GetOpCode() | DestinationRegister | SourceRegister1 | SourceRegister2);
+            return (opcode, null);
         }
 
         public virtual string Disassemble()
@@ -37,24 +37,20 @@ namespace InstructionSetProject.Backend.InstructionTypes
 
             assembly += GetMnemonic();
             assembly += " ";
-            assembly += Registers.ParseDestination(DestinationRegister);
+            assembly += Registers.ParseFloatDestination(DestinationRegister);
             assembly += ", ";
-            assembly += Registers.ParseFirstSource(SourceRegister);
+            assembly += Registers.ParseFloatFirstSource(SourceRegister1);
             assembly += ", ";
-            assembly += Immediate.ToString("X2");
+            assembly += Registers.ParseFloatSecondSource(SourceRegister2);
 
             return assembly;
         }
 
         public void ParseInstruction((ushort opcode, ushort? operand) machineCode)
         {
-            DestinationRegister = (ushort) (machineCode.opcode & 0b111);
-            SourceRegister = (ushort) (machineCode.opcode & 0b11_1000);
-
-            if (machineCode.operand == null)
-                throw new ArgumentException("Operand to R2 Instruction cannot be null.");
-
-            Immediate = (short) machineCode.operand;
+            DestinationRegister = (ushort)(machineCode.opcode & 0b111);
+            SourceRegister1 = (ushort)(machineCode.opcode & 0b11_1000);
+            SourceRegister2 = (ushort)(machineCode.opcode & 0b1_1100_0000);
         }
 
         public virtual void ParseInstruction(string assemblyCode)
@@ -64,11 +60,11 @@ namespace InstructionSetProject.Backend.InstructionTypes
             if (tokens.Length != 4)
                 throw new Exception("Incorrect number of tokens obtained from assembly instruction");
 
-            DestinationRegister = Registers.ParseDestination(tokens[1].TrimEnd(','));
+            DestinationRegister = Registers.ParseFloatDestination(tokens[1].TrimEnd(','));
 
-            SourceRegister = Registers.ParseFirstSource(tokens[2].TrimEnd(','));
+            SourceRegister1 = Registers.ParseFloatFirstSource(tokens[2].TrimEnd(','));
 
-            Immediate = Convert.ToInt16(tokens[3], 16);
+            SourceRegister2 = Registers.ParseFloatSecondSource(tokens[3]);
         }
     }
 }

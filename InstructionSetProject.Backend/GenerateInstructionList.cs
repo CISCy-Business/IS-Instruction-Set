@@ -22,8 +22,7 @@ namespace InstructionSetProject.Backend
                 instruction.Add(machineCode[i + 1]);
 
                 var instrType = InstructionUtilities.GetInstructionType(instruction);
-                if (instrType == InstructionType.Memory || instrType == InstructionType.Jump ||
-                    instrType == InstructionType.R2I)
+                if (instrType == InstructionType.Rm || instrType == InstructionType.Fm)
                 {
                     instruction.Add(machineCode[i + 2]);
                     instruction.Add(machineCode[i + 3]);
@@ -92,14 +91,14 @@ namespace InstructionSetProject.Backend
 
         private static bool InstructionHasLabel(IInstruction instr, string instructionLine)
         {
-            if (instr is MemoryInstruction memInstr)
+            if (instr is RmInstruction intImmInstr)
             {
-                return memInstr.CheckForLabel(instructionLine);
+                return intImmInstr.CheckForLabel(instructionLine);
             }
 
-            if (instr is JumpInstruction jumpInstr)
+            if (instr is FmInstruction floatImmInstr)
             {
-                return jumpInstr.CheckForLabel(instructionLine);
+                return floatImmInstr.CheckForLabel(instructionLine);
             }
 
             return false;
