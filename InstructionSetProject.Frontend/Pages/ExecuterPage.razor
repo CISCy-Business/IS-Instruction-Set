@@ -4,6 +4,7 @@
 @using InstructionSetProject.Backend.StaticPipeline;
 @using Syncfusion.Blazor.Diagram
 @using System.Collections.ObjectModel
+@using InstructionSetProject.Backend.InstructionTypes
 @using DiagramShapes = Syncfusion.Blazor.Diagram.Shapes
 @using DiagramSegments = Syncfusion.Blazor.Diagram.ConnectorSegmentType
 @inject NavigationManager UriHelper
@@ -327,11 +328,14 @@
                             <label id="exLabel"><b>Stack Trace</b></label>
                         </div>
                         <div class="debugContainer" id="debugCodeId">
-                            @foreach (var line in assemblyDic)
+                            @if (SPEx != null)
                             {
-                                <p class="@DivCSS(line.Value, line.Key)">@line.Value</p>
+                                @foreach (var instr in SPEx.InstrList.InstructionOffsetDictionary)
+                                {
+                                    <p class="@DivCSS(instr.Value)">@instr.Key: @instr.Value.Disassemble()</p>
+                                }
                             }
-                            <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+                            <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
                         </div>
                     </div>
                 </div>
@@ -434,7 +438,7 @@
     private string statsString = "";
     private ushort progCounter = 0x0000;
 
-    private StaticPipelineExecution SPEx;
+    private StaticPipelineExecution? SPEx;
 
     public ushort r0 => SPEx != null ? SPEx.DataStructures.R0.value : (ushort)0;
     public ushort r1 => SPEx != null ? SPEx.DataStructures.R1.value : (ushort)0;
@@ -595,126 +599,127 @@
         JSRuntime.InvokeVoidAsync("debugScrollToTop");
     }
 
-    bool IsSelectedFetch(string code, int key) => assemblyDicSelectedFetch.Any(line => (line.Key == assemblyCodeDebugCounterFetch-1 && line.Value == code));
-    bool IsSelectedDecode(string code, int key) => assemblyDicSelectedDecode.Any(line => (line.Key == assemblyCodeDebugCounterDecode-1 && line.Value == code));
-    bool IsSelectedExecute(string code, int key) => assemblyDicSelectedExecute.Any(line => (line.Key == assemblyCodeDebugCounterExecute-1 && line.Value == code));
-    bool IsSelectedMemory(string code, int key) => assemblyDicSelectedMemory.Any(line => (line.Key == assemblyCodeDebugCounterMemory-1 && line.Value == code));
-    bool IsSelectedWrite(string code, int key) => assemblyDicSelectedWrite.Any(line => (line.Key == assemblyCodeDebugCounterWrite-1 && line.Value == code));
+    bool IsSelectedFetch(IInstruction instr) => instr == SPEx.fetchingInstruction;
+    bool IsSelectedDecode(IInstruction instr) => instr == SPEx.decodingInstruction;
+    bool IsSelectedExecute(IInstruction instr) => instr == SPEx.executingInstruction;
+    bool IsSelectedMemory(IInstruction instr) => instr == SPEx.memoryInstruction;
+    bool IsSelectedWrite(IInstruction instr) => instr == SPEx.writingBackInstruction;
 
-    string DivCSS(string line, int key) => IsSelectedFetch(line, key) ? "bg-fetch text-white" : (IsSelectedDecode(line, key) ? "bg-decode text-white" : (IsSelectedExecute(line, key) ? "bg-execute text-white" : (IsSelectedMemory(line, key) ? "bg-memory text-white" : (IsSelectedWrite(line, key) ? "bg-write text-white" : "bg-white"))));
+    string DivCSS(IInstruction instr) => IsSelectedFetch(instr) ? "bg-fetch text-white" : (IsSelectedDecode(instr) ? "bg-decode text-white" : (IsSelectedExecute(instr) ? "bg-execute text-white" : (IsSelectedMemory(instr) ? "bg-memory text-white" : (IsSelectedWrite(instr) ? "bg-write text-white" : "bg-white"))));
     
     void step()
     {
-        debugRender = true;
-        // Fetch Instructions Highlight
-        assemblyDicSelectedFetch.Clear();
-        if (assemblyCodeDebugCounterFetch == assemblyDic.Count)
-        {
-            assemblyDicSelectedFetch.Clear();
-            assemblyCodeDebugCounterFetch = 0;
-        }
-        else if (assemblyCodeDebugCounterFetch >= 1)
-        {
-            assemblyDicSelectedFetch.Clear();
-            assemblyDicSelectedFetch.Add(assemblyCodeDebugCounterFetch, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterFetch));
-            assemblyCodeDebugCounterFetch++;
-        }
-
-        // Decode Instructions Highlight
-        assemblyDicSelectedDecode.Clear();
-        if (assemblyCodeDebugCounterDecode == assemblyDic.Count)
-        {
-            assemblyDicSelectedDecode.Clear();
-            assemblyCodeDebugCounterDecode = 0;
-        }
-        else if (initialDebugStepDecode && (assemblyCodeDebugCounterFetch >= 1 || assemblyCodeDebugCounterDecode > 0))
-        {
-            assemblyDicSelectedDecode.Clear();
-            assemblyDicSelectedDecode.Add(assemblyCodeDebugCounterDecode, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterDecode));
-            assemblyCodeDebugCounterDecode++;
-            initialDebugStepDecode = false;
-        }
-        else if (assemblyCodeDebugCounterFetch >= 1 || assemblyCodeDebugCounterDecode > 0)
-        {
-            assemblyDicSelectedDecode.Clear();
-            assemblyDicSelectedDecode.Add(assemblyCodeDebugCounterDecode, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterDecode));
-            assemblyCodeDebugCounterDecode++;
-        }
-
-        // Execute Instructions Highlight
-        assemblyDicSelectedExecute.Clear();
-        if (assemblyCodeDebugCounterExecute == assemblyDic.Count)
-        {
-            assemblyDicSelectedExecute.Clear();
-            assemblyCodeDebugCounterExecute = 0;
-        }
-        else if (initialDebugStepExecute && (assemblyCodeDebugCounterDecode >= 2 || assemblyCodeDebugCounterExecute > 0))
-        {
-            assemblyDicSelectedExecute.Clear();
-            assemblyDicSelectedExecute.Add(assemblyCodeDebugCounterExecute, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterExecute));
-            assemblyCodeDebugCounterExecute++;
-            initialDebugStepExecute = false;
-        }
-        else if (assemblyCodeDebugCounterExecute >= 1 || assemblyCodeDebugCounterExecute > 0)
-        {
-            assemblyDicSelectedExecute.Clear();
-            assemblyDicSelectedExecute.Add(assemblyCodeDebugCounterExecute, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterExecute));
-            assemblyCodeDebugCounterExecute++;
-        }
-
-        // Memory Instructions Highlight
-        assemblyDicSelectedMemory.Clear();
-        if (assemblyCodeDebugCounterMemory == assemblyDic.Count)
-        {
-            assemblyDicSelectedMemory.Clear();
-            assemblyCodeDebugCounterMemory = 0;
-        }
-        else if (initialDebugStepMemory && (assemblyCodeDebugCounterExecute >= 2 || assemblyCodeDebugCounterMemory > 0))
-        {
-            assemblyDicSelectedMemory.Clear();
-            assemblyDicSelectedMemory.Add(assemblyCodeDebugCounterMemory, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterMemory));
-            assemblyCodeDebugCounterMemory++;
-            initialDebugStepMemory = false;
-        }
-        else if (assemblyCodeDebugCounterMemory >= 1 || assemblyCodeDebugCounterMemory > 0)
-        {
-            assemblyDicSelectedMemory.Clear();
-            assemblyDicSelectedMemory.Add(assemblyCodeDebugCounterMemory, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterMemory));
-            assemblyCodeDebugCounterMemory++;
-        }
-
-        // Write Instructions Highlight
-        assemblyDicSelectedWrite.Clear();
-        if (assemblyCodeDebugCounterWrite == assemblyDic.Count)
-        {
-            ShowItem = true;
-            assemblyDicSelectedWrite.Clear();
-            assemblyCodeDebugCounterWrite = 0;
-            initialDebugStepFetch = true;
-            initialDebugStepDecode = true;
-            initialDebugStepExecute = true;
-            initialDebugStepMemory = true;
-            initialDebugStepWrite = true;
-        }
-        else if (initialDebugStepWrite && (assemblyCodeDebugCounterMemory >= 2 || assemblyCodeDebugCounterWrite > 0))
-        {
-            assemblyDicSelectedWrite.Clear();
-            assemblyDicSelectedWrite.Add(assemblyCodeDebugCounterWrite, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterWrite));
-            assemblyCodeDebugCounterWrite++;
-            initialDebugStepWrite = false;
-        }
-        else if (assemblyCodeDebugCounterWrite >= 1 || assemblyCodeDebugCounterWrite > 0)
-        {
-            assemblyDicSelectedWrite.Clear();
-            assemblyDicSelectedWrite.Add(assemblyCodeDebugCounterWrite, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterWrite));
-            assemblyCodeDebugCounterWrite++;
-        }
-
-        debugRender = true;
-        if (assemblyCodeDebugCounterFetch > 15 && assemblyCodeDebugCounterFetch % 10 == 0)
-        {
-            JSRuntime.InvokeVoidAsync("stepScroll");
-        }
+        SPEx.Step();
+        // debugRender = true;
+        // // Fetch Instructions Highlight
+        // assemblyDicSelectedFetch.Clear();
+        // if (assemblyCodeDebugCounterFetch == assemblyDic.Count)
+        // {
+        //     assemblyDicSelectedFetch.Clear();
+        //     assemblyCodeDebugCounterFetch = 0;
+        // }
+        // else if (assemblyCodeDebugCounterFetch >= 1)
+        // {
+        //     assemblyDicSelectedFetch.Clear();
+        //     assemblyDicSelectedFetch.Add(assemblyCodeDebugCounterFetch, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterFetch));
+        //     assemblyCodeDebugCounterFetch++;
+        // }
+        //
+        // // Decode Instructions Highlight
+        // assemblyDicSelectedDecode.Clear();
+        // if (assemblyCodeDebugCounterDecode == assemblyDic.Count)
+        // {
+        //     assemblyDicSelectedDecode.Clear();
+        //     assemblyCodeDebugCounterDecode = 0;
+        // }
+        // else if (initialDebugStepDecode && (assemblyCodeDebugCounterFetch >= 1 || assemblyCodeDebugCounterDecode > 0))
+        // {
+        //     assemblyDicSelectedDecode.Clear();
+        //     assemblyDicSelectedDecode.Add(assemblyCodeDebugCounterDecode, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterDecode));
+        //     assemblyCodeDebugCounterDecode++;
+        //     initialDebugStepDecode = false;
+        // }
+        // else if (assemblyCodeDebugCounterFetch >= 1 || assemblyCodeDebugCounterDecode > 0)
+        // {
+        //     assemblyDicSelectedDecode.Clear();
+        //     assemblyDicSelectedDecode.Add(assemblyCodeDebugCounterDecode, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterDecode));
+        //     assemblyCodeDebugCounterDecode++;
+        // }
+        //
+        // // Execute Instructions Highlight
+        // assemblyDicSelectedExecute.Clear();
+        // if (assemblyCodeDebugCounterExecute == assemblyDic.Count)
+        // {
+        //     assemblyDicSelectedExecute.Clear();
+        //     assemblyCodeDebugCounterExecute = 0;
+        // }
+        // else if (initialDebugStepExecute && (assemblyCodeDebugCounterDecode >= 2 || assemblyCodeDebugCounterExecute > 0))
+        // {
+        //     assemblyDicSelectedExecute.Clear();
+        //     assemblyDicSelectedExecute.Add(assemblyCodeDebugCounterExecute, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterExecute));
+        //     assemblyCodeDebugCounterExecute++;
+        //     initialDebugStepExecute = false;
+        // }
+        // else if (assemblyCodeDebugCounterExecute >= 1 || assemblyCodeDebugCounterExecute > 0)
+        // {
+        //     assemblyDicSelectedExecute.Clear();
+        //     assemblyDicSelectedExecute.Add(assemblyCodeDebugCounterExecute, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterExecute));
+        //     assemblyCodeDebugCounterExecute++;
+        // }
+        //
+        // // Memory Instructions Highlight
+        // assemblyDicSelectedMemory.Clear();
+        // if (assemblyCodeDebugCounterMemory == assemblyDic.Count)
+        // {
+        //     assemblyDicSelectedMemory.Clear();
+        //     assemblyCodeDebugCounterMemory = 0;
+        // }
+        // else if (initialDebugStepMemory && (assemblyCodeDebugCounterExecute >= 2 || assemblyCodeDebugCounterMemory > 0))
+        // {
+        //     assemblyDicSelectedMemory.Clear();
+        //     assemblyDicSelectedMemory.Add(assemblyCodeDebugCounterMemory, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterMemory));
+        //     assemblyCodeDebugCounterMemory++;
+        //     initialDebugStepMemory = false;
+        // }
+        // else if (assemblyCodeDebugCounterMemory >= 1 || assemblyCodeDebugCounterMemory > 0)
+        // {
+        //     assemblyDicSelectedMemory.Clear();
+        //     assemblyDicSelectedMemory.Add(assemblyCodeDebugCounterMemory, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterMemory));
+        //     assemblyCodeDebugCounterMemory++;
+        // }
+        //
+        // // Write Instructions Highlight
+        // assemblyDicSelectedWrite.Clear();
+        // if (assemblyCodeDebugCounterWrite == assemblyDic.Count)
+        // {
+        //     ShowItem = true;
+        //     assemblyDicSelectedWrite.Clear();
+        //     assemblyCodeDebugCounterWrite = 0;
+        //     initialDebugStepFetch = true;
+        //     initialDebugStepDecode = true;
+        //     initialDebugStepExecute = true;
+        //     initialDebugStepMemory = true;
+        //     initialDebugStepWrite = true;
+        // }
+        // else if (initialDebugStepWrite && (assemblyCodeDebugCounterMemory >= 2 || assemblyCodeDebugCounterWrite > 0))
+        // {
+        //     assemblyDicSelectedWrite.Clear();
+        //     assemblyDicSelectedWrite.Add(assemblyCodeDebugCounterWrite, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterWrite));
+        //     assemblyCodeDebugCounterWrite++;
+        //     initialDebugStepWrite = false;
+        // }
+        // else if (assemblyCodeDebugCounterWrite >= 1 || assemblyCodeDebugCounterWrite > 0)
+        // {
+        //     assemblyDicSelectedWrite.Clear();
+        //     assemblyDicSelectedWrite.Add(assemblyCodeDebugCounterWrite, assemblyDic.Values.ElementAt(assemblyCodeDebugCounterWrite));
+        //     assemblyCodeDebugCounterWrite++;
+        // }
+        //
+        // debugRender = true;
+        // if (assemblyCodeDebugCounterFetch > 15 && assemblyCodeDebugCounterFetch % 10 == 0)
+        // {
+        //     JSRuntime.InvokeVoidAsync("stepScroll");
+        // }
     }
 
     private void InitDiagramModel()
