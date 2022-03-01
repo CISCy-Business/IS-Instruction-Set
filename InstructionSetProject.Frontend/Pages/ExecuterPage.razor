@@ -76,11 +76,14 @@
             </SfToolbar>
             
 
-            <SfDialog Target="#target" Width="800px" Height="710px" ResizeHandles="@dialogResizeDirections" AllowDragging="true" EnableResize="true" ShowCloseIcon="true" @bind-Visible="Visibility">
+            <SfDialog Target="#target" Width="1200px" Height="800px" ResizeHandles="@dialogResizeDirections" AllowDragging="true" EnableResize="true" ShowCloseIcon="true" @bind-Visible="Visibility">
                 <DialogTemplates>
                     <Header>Datapath Emulation of Our ISA in the CPU</Header>
                     <Content>
-                        <SfDiagramComponent Height="600px" Nodes="@NodeCollection" Connectors="@ConnectorCollection" @ref="@diagram"></SfDiagramComponent>
+                        <SfDiagramComponent Height="800px" Nodes="@NodeCollection" Connectors="@ConnectorCollection" @ref="@diagram">
+                            <SnapSettings Constraints=SnapConstraints.None>
+                            </SnapSettings>
+                        </SfDiagramComponent>
                     </Content>
                 </DialogTemplates>
                 <DialogEvents OnOpen="@DialogOpen" Closed="@DialogClose"></DialogEvents>

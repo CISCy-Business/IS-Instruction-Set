@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.JSInterop;
+using Syncfusion.Blazor.Inputs;
 using Syncfusion.Blazor.Popups;
 using DiagramShapes = Syncfusion.Blazor.Diagram.Shapes;
 using DiagramSegments = Syncfusion.Blazor.Diagram.ConnectorSegmentType;
@@ -193,6 +194,7 @@ namespace InstructionSetProject.Frontend.Pages
             ConnectorCollection = new DiagramObjectCollection<Connector>();
 
             #region Ports
+            // Fetch Ports
             List<PointPort> FetchMuxPorts = new List<PointPort>();
             FetchMuxPorts.Add(AddPort("portFetchMuxIn0", 0.15, 0.01));
             FetchMuxPorts.Add(AddPort("portFetchMuxIn1", 0.85, 0.01));
@@ -203,29 +205,185 @@ namespace InstructionSetProject.Frontend.Pages
             List<PointPort> InstrMemPorts = new List<PointPort>();
             InstrMemPorts.Add(AddPort("portInstrMemIn", 0.01, 0.1));
             InstrMemPorts.Add(AddPort("portInstrMemOut", 1, 0.5));
+            InstrMemPorts.Add(AddPort("portInstrMemOut1", 0.76, 0.01));
             List<PointPort> AddPCPorts = new List<PointPort>();
             AddPCPorts.Add(AddPort("portAddPCIn0", 0.15, 0.01));
             AddPCPorts.Add(AddPort("portAddPCIn1", 0.85, 0.01));
             AddPCPorts.Add(AddPort("portAddPCOut0", 0.5, 1));
+
             List<PointPort> ifidPorts = new List<PointPort>();
-            ifidPorts.Add(AddPort("portIfidIn0", 0.01, 0.30));
+            ifidPorts.Add(AddPort("portIfidIn0", 0.01, 0.15));
             ifidPorts.Add(AddPort("portIfidIn1", 0.01, 0.5));
             ifidPorts.Add(AddPort("portIfidOut0", 1, 0.15));
             ifidPorts.Add(AddPort("portIfidOut1", 1, 0.5));
+
+            // Decode Ports
+            List<PointPort> regPorts = new List<PointPort>();
+            regPorts.Add(AddPort("portRegIn0", 0.01, 0.1));
+            regPorts.Add(AddPort("portRegIn1", 0.01, 0.35));
+            regPorts.Add(AddPort("portRegIn2", 0.01, 0.7));
+            regPorts.Add(AddPort("portRegIn3", 0.01, 0.9));
+            regPorts.Add(AddPort("portRegOut0", 1, 0.15));
+            regPorts.Add(AddPort("portRegOut1", 1, 0.5));
+            List<PointPort> ImmGenPorts = new List<PointPort>();
+            ImmGenPorts.Add(AddPort("portImmGenIn", 0.01, 0.5));
+            ImmGenPorts.Add(AddPort("portImmGenOut", 1, 0.5));
+            List<PointPort> ControlPorts = new List<PointPort>();
+            ControlPorts.Add(AddPort("portControlIn", 0.01, 0.5));
+            ControlPorts.Add(AddPort("portControlOut1", 1, 0.5));
+
+            List<PointPort> idexPorts = new List<PointPort>();
+            idexPorts.Add(AddPort("portIdexIn0", 0.01, 0.15));
+            idexPorts.Add(AddPort("portIdexIn1", 0.01, 0.438));
+            idexPorts.Add(AddPort("portIdexIn2", 0.01, 0.515));
+            idexPorts.Add(AddPort("portIdexIn3", 0.01, 0.738));
+            idexPorts.Add(AddPort("portIdexIn4", 0.01, 0.87));
+            idexPorts.Add(AddPort("portIdexOut0", 1, 0.15));
+            idexPorts.Add(AddPort("portIdexOut1", 1, 0.438));
+            idexPorts.Add(AddPort("portIdexOut2", 1, 0.515));
+            idexPorts.Add(AddPort("portIdexOut3", 1, 0.738));
+            idexPorts.Add(AddPort("portIdexOut4", 1, 0.87));
+            List<PointPort> RWPorts = new List<PointPort>();
+            RWPorts.Add(AddPort("portRWIn", 0.01, 0.5));
+            RWPorts.Add(AddPort("portRWOut", 1, 0.5));
+            List<PointPort> MTRPorts = new List<PointPort>();
+            MTRPorts.Add(AddPort("portMTRIn", 0.01, 0.5));
+            MTRPorts.Add(AddPort("portMTROut", 1, 0.5));
+            List<PointPort> MRPorts = new List<PointPort>();
+            MRPorts.Add(AddPort("portMRIn", 0.01, 0.5));
+            MRPorts.Add(AddPort("portMROut", 1, 0.5));
+            List<PointPort> MWPorts = new List<PointPort>();
+            MWPorts.Add(AddPort("portMWIn", 0.01, 0.5));
+            MWPorts.Add(AddPort("portMWOut", 1, 0.5));
+            List<PointPort> PCSPorts = new List<PointPort>();
+            PCSPorts.Add(AddPort("portPCSIn", 0.01, 0.5));
+            PCSPorts.Add(AddPort("portPCSOut", 1, 0.5));
+            List<PointPort> ALUSPorts = new List<PointPort>();
+            ALUSPorts.Add(AddPort("portALUSIn", 0.01, 0.5));
+            ALUSPorts.Add(AddPort("portALUSOut", 1, 0.5));
+
+            // Execute Ports
+            List<PointPort> ExecuteMuxPorts = new List<PointPort>();
+            ExecuteMuxPorts.Add(AddPort("portExecuteMuxIn0", 0.15, 0.01));
+            ExecuteMuxPorts.Add(AddPort("portExecuteMuxIn1", 0.85, 0.01));
+            ExecuteMuxPorts.Add(AddPort("portExecuteMuxOut0", 0.5, 1));
+            ExecuteMuxPorts.Add(AddPort("portExecuteMuxOut1", 1, 0.5));
+            List<PointPort> AddSumPorts = new List<PointPort>();
+            AddSumPorts.Add(AddPort("portAddSumIn0", 0.15, 0.01));
+            AddSumPorts.Add(AddPort("portAddSumIn1", 0.85, 0.01));
+            AddSumPorts.Add(AddPort("portAddSumOut0", 0.5, 1));
+            List<PointPort> ALUPorts = new List<PointPort>();
+            ALUPorts.Add(AddPort("portALUIn0", 0.15, 0.01));
+            ALUPorts.Add(AddPort("portALUIn1", 0.85, 0.01));
+            ALUPorts.Add(AddPort("portALUOut0", 0.5, 1));
+
+            List<PointPort> exmemPorts = new List<PointPort>();
+            exmemPorts.Add(AddPort("portExmemIn0", 0.01, 0.16));
+            exmemPorts.Add(AddPort("portExmemIn1", 0.01, 0.39));
+            exmemPorts.Add(AddPort("portExmemIn2", 0.01, 0.738));
+            exmemPorts.Add(AddPort("portExmemIn3", 0.01, 0.87));
+            exmemPorts.Add(AddPort("portExmemOut0", 1, 0.16));
+            exmemPorts.Add(AddPort("portExmemOut1", 1, 0.39));
+            exmemPorts.Add(AddPort("portExmemOut2", 1, 0.738));
+            exmemPorts.Add(AddPort("portExmemOut3", 1, 0.87));
+            List<PointPort> RW1Ports = new List<PointPort>();
+            RW1Ports.Add(AddPort("portRW1In", 0.01, 0.5));
+            RW1Ports.Add(AddPort("portRW1Out", 1, 0.5));
+            List<PointPort> MTR1Ports = new List<PointPort>();
+            MTR1Ports.Add(AddPort("portMTR1In", 0.01, 0.5));
+            MTR1Ports.Add(AddPort("portMTR1Out", 1, 0.5));
+            List<PointPort> MR1Ports = new List<PointPort>();
+            MR1Ports.Add(AddPort("portMR1In", 0.01, 0.5));
+            MR1Ports.Add(AddPort("portMR1Out", 1, 0.5));
+            List<PointPort> MW1Ports = new List<PointPort>();
+            MW1Ports.Add(AddPort("portMW1In", 0.01, 0.5));
+            MW1Ports.Add(AddPort("portMW1Out", 1, 0.5));
+            List<PointPort> PCS1Ports = new List<PointPort>();
+            PCS1Ports.Add(AddPort("portPCS1In", 0.01, 0.5));
+            PCS1Ports.Add(AddPort("portPCS1Out", 1, 0.5));
+
+            // Memory Ports
+            List<PointPort> dataMemPorts = new List<PointPort>();
+            dataMemPorts.Add(AddPort("portDataMemIn0", 0.01, 0.25));
+            dataMemPorts.Add(AddPort("portDataMemIn1", 0.01, 0.75));
+            dataMemPorts.Add(AddPort("portDataMemIn2", 0.25, 0.01));
+            dataMemPorts.Add(AddPort("portDataMemIn3", 0.75, 0.01));
+            dataMemPorts.Add(AddPort("portDataMemOut", 1, 0.25));
+
+            List<PointPort> memwbPorts = new List<PointPort>();
+            memwbPorts.Add(AddPort("portMemwbIn0", 0.01, 0.39));
+            memwbPorts.Add(AddPort("portMemwbIn1", 0.01, 0.80));
+            memwbPorts.Add(AddPort("portMemwbIn2", 0.01, 0.87));
+            memwbPorts.Add(AddPort("portMemwbOut0", 1, 0.39));
+            memwbPorts.Add(AddPort("portMemwbOut1", 1, 0.80));
+            memwbPorts.Add(AddPort("portMemwbOut2", 1, 0.87));
+            List<PointPort> RW2Ports = new List<PointPort>();
+            RW2Ports.Add(AddPort("portRW2In", 0.01, 0.5));
+            RW2Ports.Add(AddPort("portRW2Out", 1, 0.5));
+            List<PointPort> MTR2Ports = new List<PointPort>();
+            MTR2Ports.Add(AddPort("portMTR2In", 0.01, 0.5));
+            MTR2Ports.Add(AddPort("portMTR2Out", 1, 0.5));
+
+            // Write Ports
+            List<PointPort> WriteMuxPorts = new List<PointPort>();
+            WriteMuxPorts.Add(AddPort("portWriteMuxIn0", 0.15, 0.01));
+            WriteMuxPorts.Add(AddPort("portWriteMuxIn1", 0.85, 0.01));
+            WriteMuxPorts.Add(AddPort("portWriteMuxOut0", 0.5, 1));
+            WriteMuxPorts.Add(AddPort("portWriteMuxOut1", 1, 0.5));
 
             // Window Sizing Ports
             List<PointPort> WinSizePorts = new List<PointPort>();
             #endregion
 
+            string blueColor = "#0875F5";
+
             #region Nodes
-            CreateNode("FetchMux", 60, 233, 60, 27, -90, 90, FetchMuxPorts, FlowShapeType.Terminator, "Mux", "white", "black");
-            CreateNode("PC", 110, 233, 25, 55, 0, 0, PCPorts, FlowShapeType.Process, "PC", "white", "black");
-            CreateNode("InstrMem", 200, 273, 100, 100, 0, 0, InstrMemPorts, FlowShapeType.Process, "Instruction Memory", "white", "black");
-            CreateNode("AddPC", 200, 143, 75, 50, -90, 90, AddPCPorts, BasicShapeType.Trapezoid, "Add", "white", "black");
-            CreateNode("IFID", 300, 273, 30, 400, 0, -90, ifidPorts, FlowShapeType.Process, "IF/ID", "white", "black");
+            // Fetch Nodes
+            CreateNode("FetchMux", 60, 273, 60, 27, -90, 90, FetchMuxPorts, FlowShapeType.Terminator, "Mux", "white", "black");
+            CreateNode("PC", 110, 273, 25, 55, 0, 0, PCPorts, FlowShapeType.Process, "PC", "white", "black");
+            CreateNode("InstrMem", 200, 330, 100, 100, 0, 0, InstrMemPorts, FlowShapeType.Process, "Instruction Memory", "white", "black");
+            CreateNode("AddPC", 200, 215, 75, 50, 180, 180, AddPCPorts, BasicShapeType.Trapezoid, "Add", "white", "black");
+
+            CreateNode("IFID", 300, 323, 30, 450, 0, -90, ifidPorts, FlowShapeType.Process, "IF/ID", "white", "black");
+            
+            // Decode Nodes
+            CreateNode("Registers", 450, 330, 100, 100, 0, 0, regPorts, FlowShapeType.Process, "Registers", "white", "black");
+            CreateNode("ImmGen", 470, 430, 40, 75, 0, 0, ImmGenPorts, BasicShapeType.Ellipse, "Imm Gen", "white", "black");
+            CreateNode("Control", 480, 50, 45, 100, 0, 0, ControlPorts, BasicShapeType.Ellipse, "Control", "white", blueColor, blueColor);
+
+            CreateNode("IDEX", 560, 323, 30, 450, 0, -90, idexPorts, FlowShapeType.Process, "ID/EX", "white", "black");
+            CreateNode("RW", 560, 13, 35, 15, 0, 0, RWPorts, FlowShapeType.Process, "RW", "white", blueColor, blueColor);
+            CreateNode("MTR", 560, 28, 35, 15, 0, 0, MTRPorts, FlowShapeType.Process, "MTR", "white", blueColor, blueColor);
+            CreateNode("MR", 560, 43, 35, 15, 0, 0, MRPorts, FlowShapeType.Process, "MR", "white", blueColor, blueColor);
+            CreateNode("MW", 560, 58, 35, 15, 0, 0, MWPorts, FlowShapeType.Process, "MW", "white", blueColor, blueColor);
+            CreateNode("PCS", 560, 73, 35, 15, 0, 0, PCSPorts, FlowShapeType.Process, "PCS", "white", blueColor, blueColor);
+            CreateNode("ALUS", 560, 88, 35, 15, 0, 0, ALUSPorts, FlowShapeType.Process, "ALUS", "white", blueColor, blueColor);
+
+            // Execute Nodes
+            CreateNode("ExecuteMux", 630, 350, 60, 27, -90, 90, ExecuteMuxPorts, FlowShapeType.Terminator, "Mux", "white", "black");
+            CreateNode("AddSum", 660, 170, 75, 50, -90, 90, AddSumPorts, BasicShapeType.Trapezoid, "Add", "white", "black");
+            CreateNode("ALU", 700, 270, 75, 50, -90, 90, ALUPorts, BasicShapeType.Trapezoid, "ALU", "white", "black");
+            //CreateNode("ALUControl", 640, 490, 45, 75, 0, 0, ImmGenPorts, BasicShapeType.Ellipse, "ALU Control", "white", blueColor, blueColor);
+
+            CreateNode("EXMEM", 800, 323, 30, 450, 0, -90, exmemPorts, FlowShapeType.Process, "EX/MEM", "white", "black");
+            CreateNode("RW1", 800, 28, 35, 15, 0, 0, RW1Ports, FlowShapeType.Process, "RW", "white", blueColor, blueColor);
+            CreateNode("MTR1", 800, 43, 35, 15, 0, 0, MTR1Ports, FlowShapeType.Process, "MTR", "white", blueColor, blueColor);
+            CreateNode("MR1", 800, 58, 35, 15, 0, 0, MR1Ports, FlowShapeType.Process, "MR", "white", blueColor, blueColor);
+            CreateNode("MW1", 800, 73, 35, 15, 0, 0, MW1Ports, FlowShapeType.Process, "MW", "white", blueColor, blueColor);
+            CreateNode("PCS1", 800, 88, 35, 15, 0, 0, PCS1Ports, FlowShapeType.Process, "PCS", "white", blueColor, blueColor);
+
+            // Memory Nodes
+            CreateNode("DataMem", 940, 300, 100, 100, 0, 0, dataMemPorts, FlowShapeType.Process, "Data Memory", "white", "black");
+
+            CreateNode("MEMWB", 1050, 323, 30, 450, 0, -90, memwbPorts, FlowShapeType.Process, "MEM/WB", "white", "black");
+            CreateNode("RW2", 1050, 73, 35, 15, 0, 0, RW2Ports, FlowShapeType.Process, "RW", "white", blueColor, blueColor);
+            CreateNode("MTR2", 1050, 88, 35, 15, 0, 0, MTR2Ports, FlowShapeType.Process, "MTR", "white", blueColor, blueColor);
+
+            // Write Nodes
+            CreateNode("WriteMux", 1120, 295, 60, 27, -90, 90, WriteMuxPorts, FlowShapeType.Terminator, "Mux", "white", "black");
 
             // Window Sizing Node
-            CreateNode("sizeNodeYX", 500, 500, 1, 1, 0, 0, WinSizePorts, FlowShapeType.Process, "", "white", "white");
+            CreateNode("sizeNodeYX", 1200, 700, 1, 1, 0, 0, WinSizePorts, FlowShapeType.Process, "", "white", "white");
             #endregion
 
             #region Segments
@@ -256,16 +414,40 @@ namespace InstructionSetProject.Frontend.Pages
             #endregion
 
             #region Connectors
-            CreateConnector("FetchMux", "portFetchMuxOut0", "PC", "portPCIn");
-            CreateConnector("PC", "portPCOut", "InstrMem", "portInstrMemIn");
-            CreateConnector("PC", "portPCOut", "AddPC", "portAddPCIn1");
-            CreateConnector("AddPC", "portAddPCOut0", "FetchMux", "portFetchMuxIn1");
-            CreateConnector("PC", "portPCOut", "IFID", "portIfidIn0");
-            CreateConnector("InstrMem", "portInstrMemOut", "IFID", "portIfidIn1");
+            // Fetch Connectors
+            CreateConnector("FetchMux", "portFetchMuxOut0", "PC", "portPCIn", "black");
+            CreateConnector("PC", "portPCOut", "InstrMem", "portInstrMemIn", "black");
+            CreateConnector("PC", "portPCOut", "AddPC", "portAddPCIn1", "black");
+            CreateConnector("AddPC", "portAddPCOut0", "FetchMux", "portFetchMuxIn1", "black", "0", AnnotationAlignment.Center, .5);
+            CreateConnector("PC", "portPCOut", "IFID", "portIfidIn0", "black", "PC");
+            CreateConnector("InstrMem", "portInstrMemOut", "IFID", "portIfidIn1", "black");
+            CreateConnector("InstrMem", "portInstrMemOut1", "AddPC", "portAddPCIn0", "black", "Instr Size", AnnotationAlignment.Center, 0);
+
+            // Decode Connectors
+            CreateConnector("IFID", "portIfidOut1", "Registers", "portRegIn0", "black", "Rs1");
+            CreateConnector("IFID", "portIfidOut1", "Registers", "portRegIn1", "black", "Rs2");
+            CreateConnector("Registers", "portRegOut0", "IDEX", "portIdexIn1", "black", "RsD1", AnnotationAlignment.Before);
+            CreateConnector("Registers", "portRegOut1", "IDEX", "portIdexIn2", "black", "RsD2", AnnotationAlignment.Before);
+            CreateConnector("IFID", "portIfidOut1", "ImmGen", "portImmGenIn", "black", "Imm/Address Mode");
+            CreateConnector("IFID", "portIfidOut0", "IDEX", "portIdexIn0", "black", "PC", AnnotationAlignment.Before);
+            CreateConnector("ImmGen", "portImmGenOut", "IDEX", "portIdexIn3", "black", "Result", AnnotationAlignment.Before);
+            CreateConnector("IFID", "portIfidOut1", "IDEX", "portIdexIn4", "black", "Rd");
+            CreateConnector("IFID", "portIfidOut1", "Control", "portControlIn", "black", "Control Bits", AnnotationAlignment.Center, .85);
+            CreateConnector("Control", "portControlOut1", "RW", "portRWIn", "black");
+            CreateConnector("Control", "portControlOut1", "MTR", "portMTRIn", "black");
+            CreateConnector("Control", "portControlOut1", "MR", "portMRIn", "black");
+            CreateConnector("Control", "portControlOut1", "MW", "portMWIn", "black");
+            CreateConnector("Control", "portControlOut1", "PCS", "portPCSIn", "black");
+            CreateConnector("Control", "portControlOut1", "ALUS", "portALUSIn", "black");
+
+            // Execute Connectors
+
+
+
             #endregion
         }
 
-        private void CreateConnector(string sourceId, string sourcePortId, string targetId, string targetPortId, string label = default(string), OrthogonalSegment segment1 = null, OrthogonalSegment segment2 = null)
+        private void CreateConnector(string sourceId, string sourcePortId, string targetId, string targetPortId, string strokeColor, string label = default, AnnotationAlignment align = AnnotationAlignment.Before, double offset = 1, OrthogonalSegment segment1 = null, OrthogonalSegment segment2 = null)
         {
             Connector diagramConnector = new Connector()
             {
@@ -273,7 +455,12 @@ namespace InstructionSetProject.Frontend.Pages
                 SourceID = sourceId,
                 SourcePortID = sourcePortId,
                 TargetID = targetId,
-                TargetPortID = targetPortId
+                TargetPortID = targetPortId,
+                Style = new ShapeStyle() { StrokeWidth = 1, StrokeColor = strokeColor },
+                TargetDecorator = new DecoratorSettings()
+                {
+                    Style = new ShapeStyle() { StrokeColor = strokeColor, Fill = strokeColor }
+                }
             };
 
             diagramConnector.Type = DiagramSegments.Orthogonal;
@@ -288,8 +475,10 @@ namespace InstructionSetProject.Frontend.Pages
                     Content = label,
                     Style = new TextStyle() { Fill = "transparent" },
                     HorizontalAlignment = HorizontalAlignment.Center,
-                    VerticalAlignment = VerticalAlignment.Bottom
+                    VerticalAlignment = VerticalAlignment.Bottom,
+                    Alignment = align
                 };
+                annotation.Offset = offset;
                 diagramConnector.Annotations = new DiagramObjectCollection<PathAnnotation>() { annotation };
             }
 
@@ -312,7 +501,7 @@ namespace InstructionSetProject.Frontend.Pages
         }
 
         private void CreateNode(string id, double xOffset, double yOffset, int xSize, int ySize, int rAngleNode, int rAngleAnnotation,
-            List<PointPort> ports, FlowShapeType shape, string label, string fillColor, string stroke)
+            List<PointPort> ports, FlowShapeType shape, string label, string fillColor, string stroke, string? labelColor = default)
         {
             ShapeAnnotation annotation = new ShapeAnnotation()
             {
@@ -323,7 +512,7 @@ namespace InstructionSetProject.Frontend.Pages
             };
             annotation.Style = new TextStyle()
             {
-                Color = "black",
+                Color = labelColor != default ? labelColor : "black",
                 Fill = "transparent"
             };
             Node diagramNode = new Node()
@@ -348,7 +537,7 @@ namespace InstructionSetProject.Frontend.Pages
         }
 
         private void CreateNode(string id, double xOffset, double yOffset, int xSize, int ySize, int rAngleNode, int rAngleAnnotation,
-            List<PointPort> ports, BasicShapeType shape, string label, string fillColor, string stroke)
+            List<PointPort> ports, BasicShapeType shape, string label, string fillColor, string stroke, string labelColor = default)
         {
             ShapeAnnotation annotation = new ShapeAnnotation()
             {
@@ -359,7 +548,7 @@ namespace InstructionSetProject.Frontend.Pages
             };
             annotation.Style = new TextStyle()
             {
-                Color = "black",
+                Color = labelColor != default ? labelColor : "black",
                 Fill = "transparent"
             };
             Node diagramNode = new Node()
