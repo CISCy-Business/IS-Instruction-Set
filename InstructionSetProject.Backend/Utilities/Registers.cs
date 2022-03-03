@@ -56,4 +56,38 @@ namespace InstructionSetProject.Backend.Utilities
         public static ushort ParseFloatFirstSource(string registerName) => (ushort)(ParseFloatDestination(registerName) << 3);
         public static ushort ParseFloatSecondSource(string registerName) => (ushort)(ParseFloatDestination(registerName) << 6);
     }
+
+    public struct FlagsRegister
+    {
+        public bool Sign;
+        public bool Parity;
+        public bool Overflow;
+        public bool Carry;
+        public bool Zero;
+
+        public ushort AsRegisterValue()
+        {
+            ushort flags = 0;
+            if (Sign) flags += (ushort)Flags.Sign;
+            if (Parity) flags += (ushort)Flags.Parity;
+            if (Overflow) flags += (ushort)Flags.Overflow;
+            if (Carry) flags += (ushort)Flags.Carry;
+            if (Zero) flags += (ushort)Flags.Zero;
+            return flags;
+        }
+
+        public bool IsFlagSet(Flags flag)
+        {
+            return ((ushort) flag & AsRegisterValue()) != 0;
+        }
+    }
+
+    public enum Flags
+    {
+        Sign = 0b00001,
+        Parity = 0b00010,
+        Overflow = 0b00100,
+        Carry = 0b010000,
+        Zero = 0b10000
+    }
 }

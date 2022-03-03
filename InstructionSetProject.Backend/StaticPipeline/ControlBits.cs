@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace InstructionSetProject.Backend.StaticPipeline
 {
-    public class FunctionBits
+    public class ControlBits
     {
         public bool RegWrite;
         public bool ALUSrc;
@@ -14,8 +14,9 @@ namespace InstructionSetProject.Backend.StaticPipeline
         public bool MemWrite;
         public bool MemToReg;
         public bool PCSrc;
+        public bool UpdateFlags;
 
-        public FunctionBits(bool regWrite, bool aluSrc, bool memRead, bool memWrite, bool memToReg, bool pcSrc)
+        public ControlBits(bool regWrite, bool aluSrc, bool memRead, bool memWrite, bool memToReg, bool pcSrc, bool updateFlags)
         {
             RegWrite = regWrite;
             ALUSrc = aluSrc;
@@ -23,6 +24,7 @@ namespace InstructionSetProject.Backend.StaticPipeline
             MemWrite = memWrite;
             MemToReg = memToReg;
             PCSrc = pcSrc;
+            UpdateFlags = updateFlags;
         }
     }
 }
