@@ -37,7 +37,7 @@ namespace InstructionSetProject.Frontend.Pages
         public string r7 => SPEx != null ? SPEx.DataStructures.R7.value.ToString("X4") : "0000";
         public string IP => SPEx != null ? SPEx.DataStructures.InstructionPointer.value.ToString("X4") : "0000";
         public string SP => SPEx != null ? SPEx.DataStructures.StackPointer.value.ToString("X4") : "0000";
-        public string FL => SPEx != null ? SPEx.DataStructures.Flags.value.ToString("X4") : "0000";
+        public string FL => SPEx != null ? SPEx.DataStructures.Flags.AsRegisterValue().ToString("X4") : "0000";
         public string PC => SPEx != null ? SPEx.DataStructures.InstructionPointer.value.ToString("X4") : "0000";
 
         private bool debugRender = false;
@@ -67,7 +67,7 @@ namespace InstructionSetProject.Frontend.Pages
         {
             if (bytes != null)
             {
-                return String.Join(" ", bytes);
+                return String.Join(" ", bytes.Select(i => i.ToString("X2")));
             }
             else
             {

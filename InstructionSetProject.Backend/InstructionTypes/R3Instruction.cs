@@ -1,4 +1,5 @@
-﻿using InstructionSetProject.Backend.StaticPipeline;
+﻿using InstructionSetProject.Backend.Execution;
+using InstructionSetProject.Backend.StaticPipeline;
 using InstructionSetProject.Backend.Utilities;
 
 namespace InstructionSetProject.Backend.InstructionTypes
@@ -10,7 +11,7 @@ namespace InstructionSetProject.Backend.InstructionTypes
         public ushort SourceRegister2;
 
         public ushort lengthInBytes => 2;
-        public abstract FunctionBits functionBits { get; }
+        public abstract ControlBits controlBits { get; }
 
         public const ushort BitwiseMask = 0b1111_1110_0000_0000;
 
@@ -18,8 +19,8 @@ namespace InstructionSetProject.Backend.InstructionTypes
 
         public abstract ushort GetOpCode();
 
-        public abstract ushort AluOperation(ushort firstOperand, ushort secondOperand);
-        
+        public abstract AluOperation? aluOperation { get; }
+
         public (ushort opcode, ushort? operand) Assemble()
         {
             var opcode = (ushort)(GetOpCode() | DestinationRegister | SourceRegister1 | SourceRegister2);

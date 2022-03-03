@@ -14,7 +14,8 @@ namespace InstructionSetProject.Backend.StaticPipeline
         public StaticPipelineDataStructures DataStructures = new();
         public List<byte> MachineCode;
 
-        public FetchDecode FetchDecode = new();
+        public Alu Alu = new();
+        
         public DecodeExecute DecodeExecute = new();
         public ExecuteMemory ExecuteMemory = new();
         public MemoryWriteBack MemoryWriteBack = new();
@@ -40,6 +41,7 @@ namespace InstructionSetProject.Backend.StaticPipeline
         {
             InstrList = instrList;
             MachineCode = Assembler.Assemble(instrList);
+            DataStructures.Memory.AddInstructionCode(MachineCode);
         }
 
         public void Continue()
@@ -82,15 +84,9 @@ namespace InstructionSetProject.Backend.StaticPipeline
         private void Fetch()
         {
             var instr = fetchingInstruction;
-            if (instr == null)
-            {
-                FetchDecode.ProgramCounter = null;
-                return;
-            }
-
-            FetchDecode.ProgramCounter = DataStructures.InstructionPointer.value;
-            if (!instr.functionBits.PCSrc)
-                DataStructures.InstructionPointer.value += instr.lengthInBytes;
+            if (instr == null) return;
+            
+            DataStructures.InstructionPointer.value += instr.lengthInBytes;
         }
 
         private void Decode()
@@ -99,14 +95,12 @@ namespace InstructionSetProject.Backend.StaticPipeline
             if (instr == null)
             {
                 DecodeExecute.Immediate = null;
-                DecodeExecute.ProgramCounter = null;
                 DecodeExecute.ReadData1 = null;
                 DecodeExecute.ReadData2 = null;
                 DecodeExecute.WriteRegister = null;
                 return;
             }
-
-            DecodeExecute.ProgramCounter = FetchDecode.ProgramCounter;
+            
             if (instr is IImmediateInstruction immediateInstr)
             {
                 DecodeExecute.Immediate = immediateInstr.GenerateImmediate();
@@ -139,21 +133,25 @@ namespace InstructionSetProject.Backend.StaticPipeline
                 ExecuteMemory.ReadData2 = null;
                 ExecuteMemory.WriteRegister = null;
                 ExecuteMemory.AluResult = null;
-                ExecuteMemory.CalculatedProgramCounter = null;
                 return;
             }
 
             ExecuteMemory.WriteRegister = DecodeExecute.WriteRegister;
 
-            ushort? aluSource2 = instr.functionBits.ALUSrc ? DecodeExecute.Immediate : DecodeExecute.ReadData2;
-            if (DecodeExecute.ReadData1 == null || aluSource2 == null)
+            ushort? aluSource2 = instr.controlBits.ALUSrc ? DecodeExecute.Immediate : DecodeExecute.ReadData2;
+            if ((DecodeExecute.ReadData1 == null || aluSource2 == null) || instr.aluOperation == null)
                 ExecuteMemory.AluResult = null;
             else
-                ExecuteMemory.AluResult = instr.AluOperation((ushort)DecodeExecute.ReadData1, (ushort)aluSource2);
+            {
+                var aluOutput = Alu.Execute((AluOperation)instr.aluOperation, DecodeExecute.ReadData1, (ushort) aluSource2);
+                ExecuteMemory.AluResult = aluOutput.result;
+                if (instr.controlBits.UpdateFlags)
+                    DataStructures.Flags = aluOutput.flags;
+            }
 
             ExecuteMemory.ReadData2 = DecodeExecute.ReadData2;
 
-            if (instr.functionBits.PCSrc && DecodeExecute.Immediate != null)
+            if (instr.controlBits.PCSrc && DecodeExecute.Immediate != null)
             {
                 DataStructures.InstructionPointer.value = (ushort)DecodeExecute.Immediate;
             }
@@ -174,7 +172,7 @@ namespace InstructionSetProject.Backend.StaticPipeline
 
             MemoryWriteBack.AluResult = ExecuteMemory.AluResult;
 
-            if (instr.functionBits.MemRead)
+            if (instr.controlBits.MemRead)
             {
                 if (ExecuteMemory.AluResult == null)
                 {
@@ -183,7 +181,7 @@ namespace InstructionSetProject.Backend.StaticPipeline
 
                 MemoryWriteBack.ReadData = DataStructures.Memory.Read((ushort)ExecuteMemory.AluResult);
             }
-            else if (instr.functionBits.MemWrite)
+            else if (instr.controlBits.MemWrite)
             {
                 if (ExecuteMemory.AluResult == null)
                 {
@@ -209,14 +207,14 @@ namespace InstructionSetProject.Backend.StaticPipeline
             var instr = writingBackInstruction;
             if (instr == null) return;
 
-            if (instr.functionBits.RegWrite && MemoryWriteBack.WriteRegister != DataStructures.R0)
+            if (instr.controlBits.RegWrite && MemoryWriteBack.WriteRegister != DataStructures.R0)
             {
                 if (MemoryWriteBack.WriteRegister == null)
                 {
                     throw new Exception("Attempt to write to null register");
                 }
 
-                if (instr.functionBits.MemToReg)
+                if (instr.controlBits.MemToReg)
                 {
                     if (MemoryWriteBack.ReadData == null)
                     {
@@ -331,14 +329,8 @@ namespace InstructionSetProject.Backend.StaticPipeline
         }
     }
 
-    public struct FetchDecode
-    {
-        public ushort? ProgramCounter;
-    }
-
     public struct DecodeExecute
     {
-        public ushort? ProgramCounter;
         public ushort? ReadData1;
         public ushort? ReadData2;
         public ushort? Immediate;
@@ -347,7 +339,6 @@ namespace InstructionSetProject.Backend.StaticPipeline
 
     public struct ExecuteMemory
     {
-        public ushort? CalculatedProgramCounter;
         public ushort? AluResult;
         public ushort? ReadData2;
         public Register<ushort>? WriteRegister;

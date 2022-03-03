@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using InstructionSetProject.Backend.Execution;
+using InstructionSetProject.Backend.Utilities;
 
 namespace InstructionSetProject.Backend.StaticPipeline
 {
@@ -29,7 +30,7 @@ namespace InstructionSetProject.Backend.StaticPipeline
 
         public Register<ushort> InstructionPointer = new();
         public Register<ushort> StackPointer = new();
-        public Register<ushort> Flags = new();
+        public FlagsRegister Flags = new();
 
         public Memory Memory = new();
     }

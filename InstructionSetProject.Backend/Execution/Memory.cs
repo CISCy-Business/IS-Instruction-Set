@@ -19,5 +19,13 @@ namespace InstructionSetProject.Backend.Execution
         {
             throw new NotImplementedException();
         }
+
+        public void AddInstructionCode(List<byte> machineCode)
+        {
+            for (int i = 0; i < machineCode.Count; i++)
+            {
+                Bytes[i] = machineCode[i];
+            }
+        }
     }
 }
