@@ -67,7 +67,7 @@ namespace InstructionSetProject.Frontend.Pages
         {
             if (bytes != null)
             {
-                return String.Join(" ", bytes);
+                return String.Join(" ", bytes.Select(i => i.ToString("X2")));
             }
             else
             {
