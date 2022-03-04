@@ -86,7 +86,7 @@ namespace InstructionSetProject.Backend.Utilities
             //
             // Add(ArithmeticShiftLeft.OpCode, ArithmeticShiftLeft.Mnemonic, () => new ArithmeticShiftLeft());
             // Add(ArithmeticShiftRight.OpCode, ArithmeticShiftRight.Mnemonic, () => new ArithmeticShiftRight());
-            Add(BitwiseAdd.OpCode, BitwiseAdd.Mnemonic, () => new BitwiseAdd());
+            Add(Instructions.R3Types.Add.OpCode, Instructions.R3Types.Add.Mnemonic, () => new Add());
             // Add(BitwiseAddCarry.OpCode, BitwiseAddCarry.Mnemonic, () => new BitwiseAddCarry());
             // Add(BitwiseAnd.OpCode, BitwiseAnd.Mnemonic, () => new BitwiseAnd());
             // Add(BitwiseDivide.OpCode, BitwiseDivide.Mnemonic, () => new BitwiseDivide());

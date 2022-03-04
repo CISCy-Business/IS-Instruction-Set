@@ -12,6 +12,11 @@ namespace InstructionSetProject.Backend.InstructionTypes
 {
     public interface IInstruction
     {
+        public ushort? destinationRegister { get; set; }
+        public ushort? sourceRegister1 { get; set; }
+        public ushort? sourceRegister2 { get; set; }
+        public ushort? addressingMode { get; set; }
+        public ushort? immediate { get; set; }
         public ControlBits controlBits { get; }
         public AluOperation? aluOperation { get; }
         public ushort lengthInBytes { get; }

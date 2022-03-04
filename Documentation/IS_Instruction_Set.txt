@@ -89,11 +89,11 @@ Name                            Mnemonic    Type    Opcode                  Exam
 
 /* ----- Process Control ------------------------------------------------------------- */
 
-Halt                            HLT         r2      0000 0000 00.. ....     HLT
-No Operation                    NOP         r2      0000 0000 01.. ....     NOP
+*Halt                            HLT         r2      0000 0000 00.. ....     HLT
+*No Operation                    NOP         r2      0000 0000 01.. ....     NOP
 
-Call procedure                  CAL         r2      0000 0000 10.. ....     CAL proc                Push IP; Load IP with proc; Jump
-Return from procedure           RET         r2      0000 0000 11.. ....     RET                     Pop IP; Jump
+Call procedure                  CAL         rm      1101 0000 0... ....     CAL proc                Push IP; Load IP with proc; Jump
+*Return from procedure           RET         r2      0000 0000 11.. ....     RET                     Pop IP; Jump
 
 
 /* ----- Memory Management ----------------------------------------------------------- */
@@ -111,13 +111,13 @@ Store Float                     STF         fm      1110 0001 1ccc crrr     STF 
 
 Load Effective Address          LEA         rm      1100 0011 0... .rrr     LEA r1, label           r1 = address that label is mapped to
 
-Push Word                       PSW         r2      0000 0001 00.. .rrr     PSW r1                  Stack pointer auto adjusted
-Push Low Byte                   PSL         r2      0000 0001 01.. .rrr     PSL r1                  "     "       "    "
-Push High Byte                  PSH         r2      0000 0001 10.. .rrr     PSH r1                  "     "       "    "
+*Push Word                       PSW         r2      0000 0001 00.. .rrr     PSW r1                  Stack pointer auto adjusted
+*Push Low Byte                   PSL         r2      0000 0001 01.. .rrr     PSL r1                  "     "       "    "
+*Push High Byte                  PSH         r2      0000 0001 10.. .rrr     PSH r1                  "     "       "    "
 
-Pop Word                        PPW         r2      0000 0001 11.. .rrr     PPW r1                  Stack pointer auto adjusted
-Pop Low Byte                    PPL         r2      0000 0010 00.. .rrr     PPL r1                  "     "       "    "
-Pop High Byte                   PPH         r2      0000 0010 01.. .rrr     PPH r1                  "     "       "    "
+*Pop Word                        PPW         r2      0000 0001 11.. .rrr     PPW r1                  Stack pointer auto adjusted
+*Pop Low Byte                    PPL         r2      0000 0010 00.. .rrr     PPL r1                  "     "       "    "
+*Pop High Byte                   PPH         r2      0000 0010 01.. .rrr     PPH r1                  "     "       "    "
 
 Push Float                      PSF         f2      0010 0001 00.. .rrr     PSF f1                  Opcode matches PSW except type bits
 Pop Float                       PPF         f2      0010 0001 11.. .rrr     PPF f1                  Opcode matches PPW except type bits
@@ -130,57 +130,57 @@ Copy into Float, from Float     CFF         f2      /*    Use MOV    */     CFF 
 Copy into Reg, from Float       CRF         r2      0000 0010 10tt tsss     CRF r1, f1              Truncates to integer
 Copy into Float, from Reg       CFR¹        f2      0010 0010 10tt tsss     CFR f1, r1              Opcode matches CRF except type bits. See note.
 
-Exchange registers              XCH         r2/f2   00?0 0010 11tt tsss     XCH r1, r2              Swaps contents of both registers
+*Exchange registers              XCH         r2/f2   00?0 0010 11tt tsss     XCH r1, r2              Swaps contents of both registers
 
-Extend low byte into word       EXT         r2      0000 0011 00tt tsss     EXT r1, r2              Sign extends r2<8..0> into r1
+*Extend low byte into word       EXT         r2      0000 0011 00tt tsss     EXT r1, r2              Sign extends r2<8..0> into r1
 
 
 /* ----- Pure Register Mathematics --------------------------------------------------- */
 
-Add                             ADD         r3/f3   01?0 000t ttss srrr     ADD r1, r2, r3
-Add with Carry                  ADC         r3/f3   01?0 001t ttss srrr     ADC r1, r2, r3
-Subtract                        SUB         r3/f3   01?0 010t ttss srrr     SUB r1, r2, r3
-Subtract with Borrow            SBB         r3/f3   01?0 011t ttss srrr     SBB r1, r2, r3
-Multiply                        MUL²        r3/f3   01?0 100t ttss srrr     MUL r1, r2, r3          See note.
-Divide                          DIV²        r3/f3   01?0 101t ttss srrr     DIV r1, r2, r3          See note.
+**Add                             ADD         r3/f3   01?0 000t ttss srrr     ADD r1, r2, r3
+**Add with Carry                  ADC         r3/f3   01?0 001t ttss srrr     ADC r1, r2, r3
+**Subtract                        SUB         r3/f3   01?0 010t ttss srrr     SUB r1, r2, r3
+**Subtract with Borrow            SBB         r3/f3   01?0 011t ttss srrr     SBB r1, r2, r3
+**Multiply                        MUL²        r3/f3   01?0 100t ttss srrr     MUL r1, r2, r3          See note.
+**Divide                          DIV²        r3/f3   01?0 101t ttss srrr     DIV r1, r2, r3          See note.
 
-Negate                          NEG         r2/f2   00?0 0011 01tt tsss     NEG r1, r2
-Bitwise Not                     NOT         r2      0000 0011 10tt tsss     NOT r1, r2
-Bitwise And                     AND         r3      0100 110t ttss srrr     AND r1, r2, r3
-Bitwise Or                      ORR         r3      0100 111t ttss srrr     ORR r1, r2, r3
-Bitwise Xor                     XOR         r3      0101 000t ttss srrr     XOR r1, r2, r3
+*Negate                          NEG         r2/f2   00?0 0011 01tt tsss     NEG r1, r2
+*Bitwise Not                     NOT         r2      0000 0011 10tt tsss     NOT r1, r2
+*Bitwise And                     AND         r3      0100 110t ttss srrr     AND r1, r2, r3
+*Bitwise Or                      ORR         r3      0100 111t ttss srrr     ORR r1, r2, r3
+*Bitwise Xor                     XOR         r3      0101 000t ttss srrr     XOR r1, r2, r3
 
-Arith. Shift Left               ASL         r3      0101 001t ttss srrr     ASL r1, r2, r3
-Arith. Shift Right              ASR         r3      0101 010t ttss srrr     ASR r1, r2, r3
+*Arith. Shift Left               ASL         r3      0101 001t ttss srrr     ASL r1, r2, r3
+*Arith. Shift Right              ASR         r3      0101 010t ttss srrr     ASR r1, r2, r3
 Logic Shift Left                LSL         r3      /*    Use ASL    */     LSL r1, r2, r3          Converts to 'ASL r1, r2, r3'
-Logic Shift Right               LSR         r3      0101 011t ttss srrr     LSR r1, r2, r3
-Rotate Left                     RTL         r3      0101 100t ttss srrr     RTL r1, r2, r3
-Rotate Right                    RTR         r3      0101 101t ttss srrr     RTR r1, r2, r3
-Rotate with Carry Left          RCL         r3      0101 110t ttss srrr     RCL r1, r2, r3
-Rotate with Carry Right         RCR         r3      0101 111t ttss srrr     RCR r1, r2, r3
+*Logic Shift Right               LSR         r3      0101 011t ttss srrr     LSR r1, r2, r3
+*Rotate Left                     RTL         r3      0101 100t ttss srrr     RTL r1, r2, r3
+*Rotate Right                    RTR         r3      0101 101t ttss srrr     RTR r1, r2, r3
+*Rotate with Carry Left          RCL         r3      0101 110t ttss srrr     RCL r1, r2, r3
+*Rotate with Carry Right         RCR         r3      0101 111t ttss srrr     RCR r1, r2, r3
 
 Floor                           FLR         f2      0010 0000 00tt tsss     FLR f1, f2
 Ceiling                         CEL         f2      0010 0000 01tt tsss     CEL f1, f2
 Round                           RND         f2      0010 0000 10tt tsss     RND f1, f2
-Absolute Value                  ABS³        r2/f2   00?0 0011 11tt tsss     ABS f1, f2              See note.
+*Absolute Value                  ABS³        r2/f2   00?0 0011 11tt tsss     ABS f1, f2              See note.
 
-Bit Scan Forward                BSF         r2      0000 0100 00tt tsss     BSF r1, r2
-Bit Scan Reverse                BSR         r2      0000 0100 01tt tsss     BSR r1, r2
+*Bit Scan Forward                BSF         r2      0000 0100 00tt tsss     BSF r1, r2
+*Bit Scan Reverse                BSR         r2      0000 0100 01tt tsss     BSR r1, r2
 
 
 /* ----- Small Immediate Mathematics ------------------------------------------------- */
 
-Increment                       INC         rs      1000 00ii iiss srrr     INC r1, r2              Defaults to adding 1: r1 = r2 + 1
-Decrement                       DEC         rs      1000 01ii iiss srrr     DEC r1, r2, 4           Can specify amount. r1 = r2 - 4
+*Increment                       INC         rs      1000 00ii iiss srrr     INC r1, r2              Defaults to adding 1: r1 = r2 + 1
+*Decrement                       DEC         rs      1000 01ii iiss srrr     DEC r1, r2, 4           Can specify amount. r1 = r2 - 4
 
-Shift Arithmetically Left       SAL         rs      1000 10ii iiss srrr     SAL r1, r2
-Shift Arithmetically Right      SAR         rs      1000 11ii iiss srrr     SAR r1, r2, 4
+*Shift Arithmetically Left       SAL         rs      1000 10ii iiss srrr     SAL r1, r2
+*Shift Arithmetically Right      SAR         rs      1000 11ii iiss srrr     SAR r1, r2, 4
 Shift Logically Left            SLL         rs      /*    Use SAL    */     SLL r1, r2
-Shift Logically Right           SLR         rs      1001 00ii iiss srrr     SLR r1, r2, 4
-Rotate Left                     RTL         rs      1001 01ii iiss srrr     RTL r1, r2
-Rotate Right                    RTR         rs      1001 10ii iiss srrr     RTR r1, r2, 4
-Rotate with Carry Left          RCL         rs      1001 11ii iiss srrr     RCL r1, r2
-Rotate with Carry Right         RCR         rs      1010 00ii iiss srrr     RCL r1, r2, 4
+*Shift Logically Right           SLR         rs      1001 00ii iiss srrr     SLR r1, r2, 4
+*Rotate Left                     RTL         rs      1001 01ii iiss srrr     RTL r1, r2
+*Rotate Right                    RTR         rs      1001 10ii iiss srrr     RTR r1, r2, 4
+*Rotate with Carry Left          RCL         rs      1001 11ii iiss srrr     RCL r1, r2
+*Rotate with Carry Right         RCR         rs      1010 00ii iiss srrr     RCL r1, r2, 4
 
 
 /* ----- Large Immediate Mathematics ------------------------------------------------- */
@@ -196,51 +196,50 @@ Xor Immediate                   XRI         rm/fm   11?0 0110 1.cc crrr     XRI 
 
 /* ----- Decision Making ------------------------------------------------------------- */
 
-Compare                         CMP         r2/f2   00?0 0100 10tt tsss     CMP r1, r2
-Test                            TST         r2/f2   00?0 0100 11tt tsss     TST r1, r2
+*Compare                         CMP         r2/f2   00?0 0100 10tt tsss     CMP r1, r2
+*Test                            TST         r2/f2   00?0 0100 11tt tsss     TST r1, r2
 
-Set Sign flag                   STS         r2      0000 0101 00.. ....     STS
-Clear Sign flag                 CLS         r2      0000 0101 01.. ....     CLS
-Set Parity flag                 STP         r2      0000 0101 10.. ....     STP
-Clear Parity flag               CLP         r2      0000 0101 11.. ....     CLP
-Set Overflow flag               STO         r2      0000 0110 00.. ....     STO
-Clear Overflow flag             CLO         r2      0000 0110 01.. ....     CLO
-Set Carry flag                  STC         r2      0000 0110 10.. ....     STC
-Clear Carry flag                CLC         r2      0000 0110 11.. ....     CLC
-Set Zero flag                   STZ         r2      0000 0111 00.. ....     STZ
-Clear Zero flag                 CLZ         r2      0000 0111 01.. ....     CLZ
+*Set Sign flag                   STS         r2      0000 0101 00.. ....     STS
+*Clear Sign flag                 CLS         r2      0000 0101 01.. ....     CLS
+*Set Parity flag                 STP         r2      0000 0101 10.. ....     STP
+*Clear Parity flag               CLP         r2      0000 0101 11.. ....     CLP
+*Set Overflow flag               STO         r2      0000 0110 00.. ....     STO
+*Clear Overflow flag             CLO         r2      0000 0110 01.. ....     CLO
+*Set Carry flag                  STC         r2      0000 0110 10.. ....     STC
+*Clear Carry flag                CLC         r2      0000 0110 11.. ....     CLC
+*Set Zero flag                   STZ         r2      0000 0111 00.. ....     STZ
+*Clear Zero flag                 CLZ         r2      0000 0111 01.. ....     CLZ
 
-Load flags into low byte        LFL         r2      0000 0111 10.. .rrr     LFL r1                  r1<8..0> = 000SPOCZ
-Store low byte into flags       SFL         r2      0000 0111 11.. .rrr     SFL r1                  000SPOCZ = r1<8..0>
+*Load flags into low byte        LFL         r2      0000 0111 10.. .rrr     LFL r1                  r1<8..0> = 000SPOCZ
+*Store low byte into flags       SFL         r2      0000 0111 11.. .rrr     SFL r1                  000SPOCZ = r1<8..0>
 
-Move (unconditional)            MOV         r2/f2   00?0 1000 00ss srrr     MOV r1, r2
+*Move (unconditional)            MOV         r2/f2   00?0 1000 00ss srrr     MOV r1, r2
 
 Move if Equal                   MEQ         r2/f2   /*    Use MYZ    */     MEQ r1, r2
 Move if Not Equal               MNE         r2/f2   /*    Use MNZ    */     MNE r1, r2
 
-Move if Less Than               MLT         r2/f2   00?0 1000 01ss srrr     MLT r1, r2
-Move if Greater Than            MGT         r2/f2   00?0 1000 10ss srrr     MGT r1, r2
-Move if Less or Equal           MLE         r2/f2   00?0 1000 11ss srrr     MLE r1, r2
-Move if Greater or Equal        MGE         r2/f2   00?0 1001 00ss srrr     MGE r1, r2
+*Move if Less Than               MLT         r2/f2   00?0 1000 01ss srrr     MLT r1, r2
+*Move if Greater Than            MGT         r2/f2   00?0 1000 10ss srrr     MGT r1, r2
+*Move if Less or Equal           MLE         r2/f2   00?0 1000 11ss srrr     MLE r1, r2
+*Move if Greater or Equal        MGE         r2/f2   00?0 1001 00ss srrr     MGE r1, r2
 
-Move if Above Than              MAT         r2/f2   00?0 1001 01ss srrr     MAT r1, r2
+*Move if Above Than              MAT         r2/f2   00?0 1001 01ss srrr     MAT r1, r2
 Move if Below Than              MBT         r2/f2   /*    Use MYC    */     MBT r1, r2
 Move if Above or Equal          MAE         r2/f2   /*    Use MNC    */     MAE r1, r2
-Move if Below or Equal          MBE         r2/f2   00?0 1001 10ss srrr     MBE r1, r2
+*Move if Below or Equal          MBE         r2/f2   00?0 1001 10ss srrr     MBE r1, r2
 
-Move if (Yes) Sign flag         MYS         r2/f2   00?0 1001 11ss srrr     MYS r1, r2
-Move if not (No) Sign flag      MNS         r2/f2   00?0 1010 00ss srrr     MNS r1, r2
-Move if (Yes) Parity flag       MYP         r2/f2   00?0 1010 01ss srrr     MYP r1, r2
-Move if not (No) Parity flag    MNP         r2/f2   00?0 1010 10ss srrr     MNP r1, r2
-Move if (Yes) Overflow flag     MYO         r2/f2   00?0 1010 11ss srrr     MYO r1, r2
-Move if not (No) Overflow flag  MNO         r2/f2   00?0 1011 00ss srrr     MNO r1, r2
-Move if (Yes) Carry flag        MYC         r2/f2   00?0 1011 01ss srrr     MYC r1, r2
-Move if not (No) Carry flag     MNC         r2/f2   00?0 1011 10ss srrr     MNC r1, r2
-Move if (Yes) Zero flag         MYZ         r2/f2   00?0 1011 11ss srrr     MYZ r1, r2
-Move if not (No) Zero flag      MNZ         r2/f2   00?0 1100 00ss srrr     MNZ r1, r2
-Move (unconditional)            MOV         r2/f2   00?0 1100 01ss srrr     MOV r1, r2
+*Move if (Yes) Sign flag         MYS         r2/f2   00?0 1001 11ss srrr     MYS r1, r2
+*Move if not (No) Sign flag      MNS         r2/f2   00?0 1010 00ss srrr     MNS r1, r2
+*Move if (Yes) Parity flag       MYP         r2/f2   00?0 1010 01ss srrr     MYP r1, r2
+*Move if not (No) Parity flag    MNP         r2/f2   00?0 1010 10ss srrr     MNP r1, r2
+*Move if (Yes) Overflow flag     MYO         r2/f2   00?0 1010 11ss srrr     MYO r1, r2
+*Move if not (No) Overflow flag  MNO         r2/f2   00?0 1011 00ss srrr     MNO r1, r2
+*Move if (Yes) Carry flag        MYC         r2/f2   00?0 1011 01ss srrr     MYC r1, r2
+*Move if not (No) Carry flag     MNC         r2/f2   00?0 1011 10ss srrr     MNC r1, r2
+*Move if (Yes) Zero flag         MYZ         r2/f2   00?0 1011 11ss srrr     MYZ r1, r2
+*Move if not (No) Zero flag      MNZ         r2/f2   00?0 1100 00ss srrr     MNZ r1, r2
 
-Jump (unconditional)            JMP         rm/fm   11?0 0111 0.cc crrr     JMP Label
+Jump (unconditional)            JMP         rm   11?0 0111 0.cc crrr     JMP Label
 
 Jump if Equal                   JEQ⁴        rm/fm   /*    Use JYZ    */     JEQ r1, r2, Label       See note.
 Jump if Not Equal               JNE⁴        rm/fm   /*    Use JNZ    */     JNE r1, r2, Label       "   "
