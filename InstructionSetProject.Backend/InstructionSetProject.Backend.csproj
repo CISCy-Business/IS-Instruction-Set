@@ -6,10 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Instructions\F2Types\" />
-    <Folder Include="Instructions\FmTypes\" />
-    <Folder Include="Instructions\RmTypes\" />
-  </ItemGroup>
-
 </Project>
