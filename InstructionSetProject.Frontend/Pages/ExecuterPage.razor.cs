@@ -22,6 +22,7 @@ namespace InstructionSetProject.Frontend.Pages
         private string ExecMachineCode = "";
         private string ExecAssemblyCode = "";
         private string statsString = "";
+        public string MemDumpStart { get; set; } = "";
 
         private StaticPipelineExecution? SPEx;
 
@@ -63,16 +64,9 @@ namespace InstructionSetProject.Frontend.Pages
         private bool ShowButton { get; set; } = false;
         private ResizeDirection[] dialogResizeDirections { get; set; } = new ResizeDirection[] { ResizeDirection.All };
 
-        private string MemoryBytesUpdate(byte[] bytes)
+        private string StartMemDumpLimit()
         {
-            if (bytes != null)
-            {
-                return String.Join(" ", bytes);
-            }
-            else
-            {
-                return "No Bytes To Display in Memory";
-            }
+            return "Need to implement";
         }
 
         private async Task LoadFile(InputFileChangeEventArgs e)

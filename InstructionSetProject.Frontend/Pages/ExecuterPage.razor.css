@@ -130,9 +130,28 @@
 
 .memoryDumpContent > textarea {
     width: 100%;
-    height: 800px;
+    height: 786px;
     margin-bottom: 4px;
     transform: translateY(5px);
+}
+
+.byteAddressLabel {
+    font-size: 16px;
+    padding: 0px;
+    color: black;
+    margin-top: 5px;
+    width: 70px;
+}
+
+.byteAddressInput {
+    max-width: 70px;
+    margin-top: 5px;
+    height: 28px;
+}
+
+.memDumpLabel > label {
+    transform: translateX(-40px);
+    margin-top: 10px;
 }
 
 .container {

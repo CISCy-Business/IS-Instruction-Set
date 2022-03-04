@@ -232,9 +232,13 @@
                             <div class="memDump">
                                 <div class="memoryDumpContent">
                                     <div>
-                                        <label id="exLabel"><b>Memory Dump</b></label>
+                                        <button class="byteAddressLabel float-start" onclick="StartMemDumpLimit"> Jump To </button>
+                                        <input id="MemDumpStart" class="byteAddressInput float-start" placeholder="ex. 00AB" @bind-value="@MemDumpStart">
+                                        <div class="memDumpLabel">
+                                            <label id="exLabel"><b>Memory Dump</b></label>
+                                        </div>
                                     </div>
-                                    <textarea placeholder="Memory will begin to appear once the code begins execution...">@MemoryBytesUpdate(MemoryBytes)</textarea><br />
+                                    <textarea placeholder="Memory will begin to appear once the code begins execution...">@MemDumpStart</textarea><br />
                                 </div>
                             </div>
                         </div>
@@ -242,6 +246,5 @@
                 </SplitterPane>
             </SplitterPanes>
         </SfSplitter>
-        <!--<div class="grid-container"></div>-->
     </div>
 </div>
