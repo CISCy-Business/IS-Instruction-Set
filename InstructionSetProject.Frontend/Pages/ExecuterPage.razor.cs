@@ -17,6 +17,13 @@ namespace InstructionSetProject.Frontend.Pages
         private string statsString = "";
         public string MemDumpStart { get; set; } = "";
 
+        public string MemDumpContent => SPEx != null
+            ? String.Join(" ",
+                SPEx.DataStructures.Memory
+                    .GetBytesAtAddress(MemDumpStart != string.Empty ? Convert.ToUInt16(MemDumpStart, 16) : (ushort) 0)
+                    .Select((memByte) => memByte.ToString("X2")))
+            : "";
+
         private StaticPipelineExecution? SPEx;
 
         public byte[]? MemoryBytes => SPEx != null ? SPEx.DataStructures.Memory.Bytes : null;

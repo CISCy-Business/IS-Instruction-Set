@@ -232,13 +232,13 @@
                             <div class="memDump">
                                 <div class="memoryDumpContent">
                                     <div>
-                                        <button class="byteAddressLabel float-start" onclick="StartMemDumpLimit"> Jump To </button>
+                                        <button class="byteAddressLabel float-start"> Jump To </button>
                                         <input id="MemDumpStart" class="byteAddressInput float-start" placeholder="ex. 00AB" @bind-value="@MemDumpStart">
                                         <div class="memDumpLabel">
                                             <label id="exLabel"><b>Memory Dump</b></label>
                                         </div>
                                     </div>
-                                    <textarea placeholder="Memory will begin to appear once the code begins execution...">@MemDumpStart</textarea><br />
+                                    <textarea placeholder="Memory will begin to appear once the code begins execution...">@MemDumpContent</textarea><br />
                                 </div>
                             </div>
                         </div>
