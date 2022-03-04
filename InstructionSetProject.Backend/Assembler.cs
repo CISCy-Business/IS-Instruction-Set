@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using InstructionSetProject.Backend.Instructions;
-using InstructionSetProject.Backend.InstructionTypes;
-using InstructionSetProject.Backend.Utilities;
+﻿using InstructionSetProject.Backend.InstructionTypes;
 
 namespace InstructionSetProject.Backend
 {
@@ -24,18 +16,18 @@ namespace InstructionSetProject.Backend
 
                 foreach (var codePiece in machineLine)
                 {
-                    machineCode.Add((byte) (codePiece >> 8));
-                    machineCode.Add((byte) (codePiece >> 0));
+                    machineCode.Add((byte)(codePiece >> 8));
+                    machineCode.Add((byte)(codePiece >> 0));
                 }
             }
             return machineCode;
         }
-        
+
         public static List<ushort> AssembleInstruction(IInstruction instr)
         {
             if (instr is ICISCInstruction)
             {
-                return ((ICISCInstruction) instr).CISCAssemble();
+                return ((ICISCInstruction)instr).CISCAssemble();
             }
 
             var normalAssembly = instr.Assemble();

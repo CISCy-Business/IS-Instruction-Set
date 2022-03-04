@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using InstructionSetProject.Backend.Execution;
+﻿using InstructionSetProject.Backend.Execution;
 using InstructionSetProject.Backend.InstructionTypes;
 
 namespace InstructionSetProject.Backend.StaticPipeline
@@ -15,7 +10,7 @@ namespace InstructionSetProject.Backend.StaticPipeline
         public List<byte> MachineCode;
 
         public Alu Alu = new();
-        
+
         public DecodeExecute DecodeExecute = new();
         public ExecuteMemory ExecuteMemory = new();
         public MemoryWriteBack MemoryWriteBack = new();
@@ -85,7 +80,7 @@ namespace InstructionSetProject.Backend.StaticPipeline
         {
             var instr = fetchingInstruction;
             if (instr == null) return;
-            
+
             DataStructures.InstructionPointer.value += instr.lengthInBytes;
         }
 
@@ -100,7 +95,7 @@ namespace InstructionSetProject.Backend.StaticPipeline
                 DecodeExecute.WriteRegister = null;
                 return;
             }
-            
+
             if (instr is IImmediateInstruction immediateInstr)
             {
                 DecodeExecute.Immediate = immediateInstr.GenerateImmediate();
@@ -143,7 +138,7 @@ namespace InstructionSetProject.Backend.StaticPipeline
                 ExecuteMemory.AluResult = null;
             else
             {
-                var aluOutput = Alu.Execute((AluOperation)instr.aluOperation, DecodeExecute.ReadData1, (ushort) aluSource2);
+                var aluOutput = Alu.Execute((AluOperation)instr.aluOperation, DecodeExecute.ReadData1, (ushort)aluSource2);
                 ExecuteMemory.AluResult = aluOutput.result;
                 if (instr.controlBits.UpdateFlags)
                     DataStructures.Flags = aluOutput.flags;
@@ -238,47 +233,47 @@ namespace InstructionSetProject.Backend.StaticPipeline
         private Register<ushort>? GetFirstReadRegister(IInstruction instr)
         {
             if (instr is F2Instruction f2Instr)
-                return ConvertRegisterIndexToIntRegister((ushort)(f2Instr.SourceRegister >> 3));
+                return ConvertRegisterIndexToIntRegister((ushort)((f2Instr.sourceRegister1 ?? 0) >> 3));
             if (instr is R2Instruction r2Instr)
-                return ConvertRegisterIndexToFloatRegister((ushort)(r2Instr.SourceRegister >> 3));
+                return ConvertRegisterIndexToFloatRegister((ushort)((r2Instr.sourceRegister1 ?? 0) >> 3));
             if (instr is F3Instruction f3Instr)
-                return ConvertRegisterIndexToIntRegister((ushort)(f3Instr.SourceRegister1 >> 3));
+                return ConvertRegisterIndexToIntRegister((ushort)((f3Instr.sourceRegister1 ?? 0) >> 3));
             if (instr is R3Instruction r3Instr)
-                return ConvertRegisterIndexToFloatRegister((ushort)(r3Instr.SourceRegister1 >> 3));
+                return ConvertRegisterIndexToFloatRegister((ushort)((r3Instr.sourceRegister1 ?? 0) >> 3));
             if (instr is RsInstruction rsInstr)
-                return ConvertRegisterIndexToIntRegister((ushort)(rsInstr.SourceRegister >> 3));
+                return ConvertRegisterIndexToIntRegister((ushort)((rsInstr.sourceRegister1 ?? 0) >> 3));
             if (instr is RmInstruction rmInstr)
-                return ConvertRegisterIndexToIntRegister((ushort)(rmInstr.AddressingModeOrRegister >> 3));
+                return ConvertRegisterIndexToIntRegister((ushort)((rmInstr.sourceRegister1 ?? 0) >> 3));
             if (instr is FmInstruction fmInstr)
-                return ConvertRegisterIndexToFloatRegister((ushort)(fmInstr.AddressingModeOrRegister >> 3));
+                return ConvertRegisterIndexToFloatRegister((ushort)((fmInstr.sourceRegister1 ?? 0) >> 3));
             return null;
         }
 
         private Register<ushort>? GetSecondReadRegister(IInstruction instr)
         {
             if (instr is R3Instruction r3Instr)
-                return ConvertRegisterIndexToIntRegister((ushort)(r3Instr.SourceRegister2 >> 6));
+                return ConvertRegisterIndexToIntRegister((ushort)((r3Instr.sourceRegister2 ?? 0) >> 6));
             if (instr is F3Instruction f3Instr)
-                return ConvertRegisterIndexToFloatRegister((ushort)(f3Instr.SourceRegister2 >> 6));
+                return ConvertRegisterIndexToFloatRegister((ushort)((f3Instr.sourceRegister2 ?? 0) >> 6));
             return null;
         }
 
         private Register<ushort>? GetDestinationRegister(IInstruction instr)
         {
             if (instr is F2Instruction f2Instr)
-                return ConvertRegisterIndexToFloatRegister(f2Instr.DestinationRegister);
+                return ConvertRegisterIndexToFloatRegister(f2Instr.destinationRegister ?? 0);
             if (instr is R2Instruction r2Instr)
-                return ConvertRegisterIndexToIntRegister(r2Instr.DestinationRegister);
+                return ConvertRegisterIndexToIntRegister(r2Instr.destinationRegister ?? 0);
             if (instr is F3Instruction f3Instr)
-                return ConvertRegisterIndexToFloatRegister(f3Instr.DestinationRegister);
+                return ConvertRegisterIndexToFloatRegister(f3Instr.destinationRegister ?? 0);
             if (instr is R3Instruction r3Instr)
-                return ConvertRegisterIndexToIntRegister(r3Instr.DestinationRegister);
+                return ConvertRegisterIndexToIntRegister(r3Instr.destinationRegister ?? 0);
             if (instr is RsInstruction rsInstr)
-                return ConvertRegisterIndexToIntRegister(rsInstr.DestinationRegister);
+                return ConvertRegisterIndexToIntRegister(rsInstr.destinationRegister ?? 0);
             if (instr is RmInstruction rmInstr)
-                return ConvertRegisterIndexToIntRegister(rmInstr.DestinationRegister);
+                return ConvertRegisterIndexToIntRegister(rmInstr.destinationRegister ?? 0);
             if (instr is FmInstruction fmInstr)
-                return ConvertRegisterIndexToFloatRegister(fmInstr.DestinationRegister);
+                return ConvertRegisterIndexToFloatRegister(fmInstr.destinationRegister ?? 0);
             return null;
         }
 

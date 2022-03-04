@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using InstructionSetProject.Backend.Utilities;
+﻿using InstructionSetProject.Backend.Utilities;
 
 namespace InstructionSetProject.Backend.InstructionTypes.RsFormats
 {
@@ -35,7 +30,7 @@ namespace InstructionSetProject.Backend.InstructionTypes.RsFormats
 
             sourceRegister1 = Registers.ParseIntFirstSource(tokens[2].TrimEnd(','));
 
-            immediate = tokens.Length == 4 ? Convert.ToUInt16(tokens[3], 16) : (ushort?) 1;
+            immediate = tokens.Length == 4 ? Convert.ToUInt16(tokens[3], 16) : (ushort?)1;
         }
 
         public override ushort GenerateImmediate()

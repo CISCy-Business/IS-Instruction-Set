@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using InstructionSetProject.Backend.Utilities;
+﻿using InstructionSetProject.Backend.Utilities;
 
 namespace InstructionSetProject.Backend.InstructionTypes.RmFormats
 {
     public abstract class RmRegisterRegisterImmediate : RmInstruction, IImmediateInstruction
     {
-        public override ushort? addressingMode { get => sourceRegister1; set {} }
+        public override ushort? addressingMode { get => sourceRegister1; set { } }
 
         public override string Disassemble()
         {

@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using InstructionSetProject.Backend.Utilities;
-
-namespace InstructionSetProject.Backend.InstructionTypes.RmFormats
+﻿namespace InstructionSetProject.Backend.InstructionTypes.RmFormats
 {
     public abstract class RmLabel : RmInstruction, IImmediateInstruction, ILabelInstruction
     {
         public override ushort? addressingMode { get => null; set { } }
-        public override ushort? sourceRegister1 {get => null; set { } }
+        public override ushort? sourceRegister1 { get => null; set { } }
         public override ushort? destinationRegister { get => null; set { } }
 
         public override string Disassemble()

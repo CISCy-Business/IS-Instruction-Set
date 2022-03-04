@@ -1,6 +1,5 @@
 ﻿using InstructionSetProject.Backend.Execution;
 using InstructionSetProject.Backend.StaticPipeline;
-using InstructionSetProject.Backend.Utilities;
 
 namespace InstructionSetProject.Backend.InstructionTypes
 {
@@ -23,7 +22,7 @@ namespace InstructionSetProject.Backend.InstructionTypes
 
         public (ushort opcode, ushort? operand) Assemble()
         {
-            var opcode = (ushort)(GetOpCode() | destinationRegister ?? 0 | sourceRegister1 ?? 0 | sourceRegister2 ?? 0);
+            var opcode = (ushort)(GetOpCode() | (destinationRegister ?? 0) | (sourceRegister1 ?? 0) | (sourceRegister2 ?? 0));
             return (opcode, null);
         }
 

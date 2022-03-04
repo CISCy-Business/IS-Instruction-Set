@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using InstructionSetProject.Backend.Utilities;
+﻿using InstructionSetProject.Backend.Utilities;
 
 namespace InstructionSetProject.Backend.InstructionTypes.F2Formats
 {
     public abstract class F2Register : F2Instruction
     {
-        public override ushort? sourceRegister1 { get => null; set {} }
+        public override ushort? sourceRegister1 { get => null; set { } }
 
         public override string Disassemble()
         {

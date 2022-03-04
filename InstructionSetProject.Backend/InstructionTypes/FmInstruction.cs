@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using InstructionSetProject.Backend.Execution;
+﻿using InstructionSetProject.Backend.Execution;
 using InstructionSetProject.Backend.StaticPipeline;
-using InstructionSetProject.Backend.Utilities;
 
 namespace InstructionSetProject.Backend.InstructionTypes
 {
@@ -29,7 +22,7 @@ namespace InstructionSetProject.Backend.InstructionTypes
 
         public (ushort opcode, ushort? operand) Assemble()
         {
-            var opcode = (ushort)(GetOpCode() | destinationRegister ?? 0 | addressingMode ?? 0);
+            var opcode = (ushort)(GetOpCode() | (destinationRegister ?? 0) | (addressingMode ?? 0));
             return (opcode, immediate);
         }
 
@@ -37,10 +30,12 @@ namespace InstructionSetProject.Backend.InstructionTypes
         {
             addressingMode = (ushort)(machineCode.opcode & 0b111_1000);
             destinationRegister = (ushort)(machineCode.opcode & 0b111);
-            sourceRegister1 = (ushort) (machineCode.opcode & 0b11_1000);
 
             if (machineCode.operand == null)
                 throw new ArgumentException("Operand to memory instruction cannot be null.");
+
+            if (addressingMode == 0b001_0000 || addressingMode == 0b001_1000)
+                sourceRegister1 = machineCode.operand;
 
             immediate = machineCode.operand;
         }

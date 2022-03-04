@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using InstructionSetProject.Backend.Execution;
+﻿using InstructionSetProject.Backend.Execution;
 using InstructionSetProject.Backend.StaticPipeline;
-using InstructionSetProject.Backend.Utilities;
 
 namespace InstructionSetProject.Backend.InstructionTypes
 {
@@ -17,7 +11,7 @@ namespace InstructionSetProject.Backend.InstructionTypes
         public abstract AluOperation? aluOperation { get; }
         public virtual ushort? destinationRegister { get; set; }
         public virtual ushort? sourceRegister1 { get; set; }
-        public ushort? sourceRegister2 { get => null; set {} }
+        public ushort? sourceRegister2 { get => null; set { } }
         public ushort? addressingMode { get => null; set { } }
         public ushort? immediate { get => null; set { } }
 
@@ -28,7 +22,7 @@ namespace InstructionSetProject.Backend.InstructionTypes
 
         public (ushort opcode, ushort? operand) Assemble()
         {
-            var opcode = (ushort)(GetOpCode() | destinationRegister ?? 0 | sourceRegister1 ?? 0);
+            var opcode = (ushort)(GetOpCode() | (destinationRegister ?? 0) | (sourceRegister1 ?? 0));
             return (opcode, null);
         }
 

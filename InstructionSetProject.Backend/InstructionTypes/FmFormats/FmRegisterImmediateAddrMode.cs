@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using InstructionSetProject.Backend.Utilities;
+﻿using InstructionSetProject.Backend.Utilities;
 
 namespace InstructionSetProject.Backend.InstructionTypes.FmFormats
 {
@@ -18,7 +13,7 @@ namespace InstructionSetProject.Backend.InstructionTypes.FmFormats
             assembly += Registers.ParseFloatDestination(destinationRegister ?? 0);
             assembly += ", ";
             if (addressingMode == 0b001_0000 || addressingMode == 0b001_1000)
-                assembly += Registers.ParseFloatFirstSource(sourceRegister1 ?? 0);
+                assembly += Registers.ParseFloatDestination(sourceRegister1 ?? 0);
             else
                 assembly += (immediate ?? 0).ToString("X2");
             assembly += ", ";
@@ -41,7 +36,7 @@ namespace InstructionSetProject.Backend.InstructionTypes.FmFormats
             if (addressingMode == 0b001_0000 || addressingMode == 0b001_1000)
             {
                 sourceRegister1 = Registers.ParseFloatDestination(tokens[2].TrimEnd(','));
-                immediate = null;
+                immediate = sourceRegister1;
             }
             else
             {

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using InstructionSetProject.Backend.InstructionTypes;
+﻿using InstructionSetProject.Backend.InstructionTypes;
 using InstructionSetProject.Backend.Utilities;
+using System.Text.RegularExpressions;
 
 namespace InstructionSetProject.Backend
 {
@@ -29,8 +24,8 @@ namespace InstructionSetProject.Backend
                     i += 2;
                 }
 
-                ushort opcode = (ushort) (instruction[0] << 8 | instruction[1]);
-                ushort? operand = (instruction.Count == 2) ? null : (ushort?) (instruction[2] << 8 | instruction[3]);
+                ushort opcode = (ushort)(instruction[0] << 8 | instruction[1]);
+                ushort? operand = (instruction.Count == 2) ? null : (ushort?)(instruction[2] << 8 | instruction[3]);
 
                 var code = (opcode, operand);
 
@@ -79,7 +74,8 @@ namespace InstructionSetProject.Backend
 
         private static IInstruction InstructionFromString(string instructionLine)
         {
-            var instr = InstructionManager.Singleton.Get(InstructionUtilities.GetMnemonic(instructionLine));
+            var isFloat = InstructionUtilities.IsFloatInstruction(instructionLine);
+            var instr = isFloat ? InstructionManager.Singleton.GetFloat(InstructionUtilities.GetMnemonic(instructionLine)) : InstructionManager.Singleton.Get(InstructionUtilities.GetMnemonic(instructionLine));
             if (InstructionHasLabel(instr, instructionLine))
             {
                 instrWithLabel.Add((instr, instructionLine));
@@ -91,14 +87,9 @@ namespace InstructionSetProject.Backend
 
         private static bool InstructionHasLabel(IInstruction instr, string instructionLine)
         {
-            if (instr is RmInstruction intImmInstr)
+            if (instr is ILabelInstruction labelInstr)
             {
-                return intImmInstr.CheckForLabel(instructionLine);
-            }
-
-            if (instr is FmInstruction floatImmInstr)
-            {
-                return floatImmInstr.CheckForLabel(instructionLine);
+                return labelInstr.CheckForLabel(instructionLine);
             }
 
             return false;

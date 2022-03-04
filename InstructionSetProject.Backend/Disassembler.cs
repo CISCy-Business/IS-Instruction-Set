@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using InstructionSetProject.Backend.Instructions;
-using InstructionSetProject.Backend.InstructionTypes;
-using InstructionSetProject.Backend.Utilities;
-
-namespace InstructionSetProject.Backend
+﻿namespace InstructionSetProject.Backend
 {
     public static class Disassembler
     {

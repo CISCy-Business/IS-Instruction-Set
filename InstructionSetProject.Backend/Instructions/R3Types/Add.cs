@@ -1,5 +1,4 @@
 ﻿using InstructionSetProject.Backend.Execution;
-using InstructionSetProject.Backend.InstructionTypes;
 using InstructionSetProject.Backend.InstructionTypes.R3Formats;
 using InstructionSetProject.Backend.StaticPipeline;
 

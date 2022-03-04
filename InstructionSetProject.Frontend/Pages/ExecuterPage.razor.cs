@@ -1,18 +1,11 @@
-﻿using InstructionSetProject.Backend.StaticPipeline;
-using InstructionSetProject.Backend;
-using InstructionSetProject.Backend.StaticFrontend;
-using Syncfusion.Blazor.Diagram;
-using System.Collections.ObjectModel;
-using System.Text;
-using InstructionSetProject.Backend.Execution;
+﻿using InstructionSetProject.Backend;
 using InstructionSetProject.Backend.InstructionTypes;
+using InstructionSetProject.Backend.StaticFrontend;
+using InstructionSetProject.Backend.StaticPipeline;
 using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.JSInterop;
-using Syncfusion.Blazor.Inputs;
+using Syncfusion.Blazor.Diagram;
 using Syncfusion.Blazor.Popups;
-using DiagramShapes = Syncfusion.Blazor.Diagram.Shapes;
 using DiagramSegments = Syncfusion.Blazor.Diagram.ConnectorSegmentType;
 
 namespace InstructionSetProject.Frontend.Pages
@@ -358,7 +351,7 @@ namespace InstructionSetProject.Frontend.Pages
             CreateNode("AddPC", 205, 250, 75, 70, -90, 90, AddPCPorts, BasicShapeType.Trapezoid, "Add", "white", "black");
 
             CreateNode("IFID", 300, 343, 30, 450, 0, -90, ifidPorts, FlowShapeType.Process, "IF/ID", "white", "black");
-            
+
             // Decode Nodes
             CreateNode("Registers", 450, 350, 100, 100, 0, 0, regPorts, FlowShapeType.Process, "Registers", "white", "black");
             CreateNode("ImmGen", 470, 450, 40, 75, 0, 0, ImmGenPorts, BasicShapeType.Ellipse, "Imm Gen", "white", "black");
