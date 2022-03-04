@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace InstructionSetProject.Backend.Utilities
+﻿namespace InstructionSetProject.Backend.Utilities
 {
     public static class Registers
     {
@@ -26,11 +20,11 @@ namespace InstructionSetProject.Backend.Utilities
                 registerName[1] < '0' || registerName[1] > '7')
                 throw new ArgumentException($"Invalid Register: '{registerName}'");
 
-            return (ushort) (registerName[1] - '0');
+            return (ushort)(registerName[1] - '0');
         }
 
-        public static ushort ParseIntFirstSource(string registerName) => (ushort) (ParseIntDestination(registerName) << 3);
-        public static ushort ParseIntSecondSource(string registerName) => (ushort) (ParseIntDestination(registerName) << 6);
+        public static ushort ParseIntFirstSource(string registerName) => (ushort)(ParseIntDestination(registerName) << 3);
+        public static ushort ParseIntSecondSource(string registerName) => (ushort)(ParseIntDestination(registerName) << 6);
 
         public static string ParseFloatDestination(ushort value)
         {
@@ -78,7 +72,7 @@ namespace InstructionSetProject.Backend.Utilities
 
         public bool IsFlagSet(Flags flag)
         {
-            return ((ushort) flag & AsRegisterValue()) != 0;
+            return ((ushort)flag & AsRegisterValue()) != 0;
         }
     }
 

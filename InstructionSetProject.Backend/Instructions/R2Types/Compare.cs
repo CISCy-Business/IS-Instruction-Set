@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using InstructionSetProject.Backend.InstructionTypes;
+﻿using InstructionSetProject.Backend.Execution;
+using InstructionSetProject.Backend.InstructionTypes.R2Formats;
+using InstructionSetProject.Backend.StaticPipeline;
 
 namespace InstructionSetProject.Backend.Instructions.R2Types
 {
-    public class Compare : R2Instruction
+    public class Compare : R2RegisterRegister
     {
         public const string Mnemonic = "CMP";
 
-        public const ushort OpCode = 0b0100_0101_1100_0000;
+        public const ushort OpCode = 0b0000_0100_1000_0000;
+
+        public override ControlBits controlBits => throw new NotImplementedException();
+
+        public override AluOperation? aluOperation => null;
 
         public override string GetMnemonic()
         {

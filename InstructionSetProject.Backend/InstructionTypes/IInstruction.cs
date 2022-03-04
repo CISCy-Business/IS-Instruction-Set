@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using InstructionSetProject.Backend.Execution;
+﻿using InstructionSetProject.Backend.Execution;
 using InstructionSetProject.Backend.StaticPipeline;
 
 namespace InstructionSetProject.Backend.InstructionTypes
 {
     public interface IInstruction
     {
+        public ushort? destinationRegister { get; set; }
+        public ushort? sourceRegister1 { get; set; }
+        public ushort? sourceRegister2 { get; set; }
+        public ushort? addressingMode { get; set; }
+        public ushort? immediate { get; set; }
         public ControlBits controlBits { get; }
         public AluOperation? aluOperation { get; }
         public ushort lengthInBytes { get; }

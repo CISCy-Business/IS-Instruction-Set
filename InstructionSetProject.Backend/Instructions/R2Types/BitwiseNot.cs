@@ -1,26 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using InstructionSetProject.Backend.InstructionTypes;
+﻿using InstructionSetProject.Backend.Execution;
+using InstructionSetProject.Backend.InstructionTypes.R2Formats;
+using InstructionSetProject.Backend.StaticPipeline;
 
 namespace InstructionSetProject.Backend.Instructions.R2Types
 {
-    public class BitwiseNot : R2Instruction
+    public class BitwiseNot : R2RegisterRegister
     {
         public const string Mnemonic = "NOT";
 
-        public const ushort OpCode = 0b0100_0101_0100_0000;
+        public const ushort OpCode = 0b0000_0011_1000_0000;
+
+        public override ControlBits controlBits => throw new NotImplementedException();
+
+        public override AluOperation? aluOperation => null;
 
         public override string GetMnemonic()
         {
-            return BitwiseNot.Mnemonic;
+            return Mnemonic;
         }
 
         public override ushort GetOpCode()
         {
-            return BitwiseNot.OpCode;
+            return OpCode;
         }
     }
 }

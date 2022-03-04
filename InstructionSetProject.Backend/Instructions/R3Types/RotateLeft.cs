@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using InstructionSetProject.Backend.InstructionTypes;
+﻿using InstructionSetProject.Backend.Execution;
+using InstructionSetProject.Backend.InstructionTypes.R3Formats;
+using InstructionSetProject.Backend.StaticPipeline;
 
 namespace InstructionSetProject.Backend.Instructions.R3Types
 {
-    public class RotateLeft : R3Instruction
+    public class RotateLeft : R3RegisterRegisterRegister
     {
         public const string Mnemonic = "RTL";
 
-        public const ushort OpCode = 0b0111_1000_0000_0000;
+        public const ushort OpCode = 0b0101_1000_0000_0000;
+
+        public override ControlBits controlBits => throw new NotImplementedException();
+
+        public override AluOperation? aluOperation => null;
 
         public override string GetMnemonic()
         {

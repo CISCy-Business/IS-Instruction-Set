@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using InstructionSetProject.Backend.InstructionTypes;
+﻿using InstructionSetProject.Backend.InstructionTypes;
 
 namespace InstructionSetProject.Backend.Utilities
 {
@@ -27,7 +22,7 @@ namespace InstructionSetProject.Backend.Utilities
                 return InstructionType.Rm;
             if (firstByte >> 5 == 0b111)
                 return InstructionType.Fm;
-            
+
             throw new Exception("Instruction does not match any instruction type pattern.");
         }
 
@@ -81,6 +76,18 @@ namespace InstructionSetProject.Backend.Utilities
         {
             var tokens = instruction.Split(' ');
             return tokens[0];
+        }
+
+        public static bool IsFloatInstruction(string instruction)
+        {
+            var tokens = instruction.Split(' ');
+            tokens = tokens.Select(token => token.TrimEnd(',')).ToArray();
+
+            if (tokens.Length <= 1) return false;
+
+            if (tokens[1].StartsWith('f') || tokens[1].StartsWith('F')) return true;
+
+            return false;
         }
 
         public static ushort GetOpCode(ushort instruction)
