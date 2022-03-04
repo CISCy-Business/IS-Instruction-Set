@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using InstructionSetProject.Backend.Execution;
+using InstructionSetProject.Backend.Utilities;
 
 namespace InstructionSetProject.Backend.StaticPipeline
 {
@@ -18,9 +19,18 @@ namespace InstructionSetProject.Backend.StaticPipeline
         public Register<ushort> R6 = new(6);
         public Register<ushort> R7 = new(7);
 
+        public Register<ushort> F0 = new(0, false);
+        public Register<ushort> F1 = new(1);
+        public Register<ushort> F2 = new(2);
+        public Register<ushort> F3 = new(4);
+        public Register<ushort> F4 = new(4);
+        public Register<ushort> F5 = new(5);
+        public Register<ushort> F6 = new(6);
+        public Register<ushort> F7 = new(7);
+
         public Register<ushort> InstructionPointer = new();
         public Register<ushort> StackPointer = new();
-        public Register<ushort> Flags = new();
+        public FlagsRegister Flags = new();
 
         public Memory Memory = new();
     }

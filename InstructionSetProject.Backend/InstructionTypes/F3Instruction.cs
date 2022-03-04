@@ -1,10 +1,15 @@
-﻿using InstructionSetProject.Backend.Execution;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using InstructionSetProject.Backend.Execution;
 using InstructionSetProject.Backend.StaticPipeline;
 using InstructionSetProject.Backend.Utilities;
 
 namespace InstructionSetProject.Backend.InstructionTypes
 {
-    public abstract class R3Instruction : IInstruction
+    public abstract class F3Instruction : IInstruction
     {
         public ushort DestinationRegister;
         public ushort SourceRegister1;
@@ -33,11 +38,11 @@ namespace InstructionSetProject.Backend.InstructionTypes
 
             assembly += GetMnemonic();
             assembly += " ";
-            assembly += Registers.ParseIntDestination(DestinationRegister);
+            assembly += Registers.ParseFloatDestination(DestinationRegister);
             assembly += ", ";
-            assembly += Registers.ParseIntFirstSource(SourceRegister1);
+            assembly += Registers.ParseFloatFirstSource(SourceRegister1);
             assembly += ", ";
-            assembly += Registers.ParseIntSecondSource(SourceRegister2);
+            assembly += Registers.ParseFloatSecondSource(SourceRegister2);
 
             return assembly;
         }
@@ -56,11 +61,11 @@ namespace InstructionSetProject.Backend.InstructionTypes
             if (tokens.Length != 4)
                 throw new Exception("Incorrect number of tokens obtained from assembly instruction");
 
-            DestinationRegister = Registers.ParseIntDestination(tokens[1].TrimEnd(','));
+            DestinationRegister = Registers.ParseFloatDestination(tokens[1].TrimEnd(','));
 
-            SourceRegister1 = Registers.ParseIntFirstSource(tokens[2].TrimEnd(','));
+            SourceRegister1 = Registers.ParseFloatFirstSource(tokens[2].TrimEnd(','));
 
-            SourceRegister2 = Registers.ParseIntSecondSource(tokens[3]);
+            SourceRegister2 = Registers.ParseFloatSecondSource(tokens[3]);
         }
     }
 }

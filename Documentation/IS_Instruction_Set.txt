@@ -1,258 +1,345 @@
 
+
+
+
+
+// ==================================================================
+// ============/  Addressing Modes  /==========================================
+// ==================================================================
+
+
+
+General Notes:
+    All operands must be integers (cannot have a floating-point address)
+
+Name                    Letters     Binary      How operand is treated          Notes
+------------------------------------------------------------------------------------------------------------------
+immediate               i           ----        operand                         Convert to: ADI r#, r0, imm or ADI f#, f0, imm
+immediate direct        id          0000        Mem[operand]
+immediate indirect      in          0001        Mem[Mem[operand]]
+
+register                r           ----        register operand                Convert to: ADD r#, r0, r# or ADD f#, f0, f#
+register direct         rd          0010        Mem[register operand]           Can only accept integer registers (cannot have a floating-point address)
+register indirect       rn          0011        Mem[Mem[register operand]]      Can only accept integer registers (cannot have a floating-point address)
+
+indexed direct          xd          0100        Mem[r7 + operand]
+indexed indirect        xn          0101        Mem[Mem[r7 + operand]]
+indexed offset          xo          0110        Mem[Mem[r7] + operand]
+indexed deffered        xf          0111        Mem[Mem[operand] + r7]
+
+stack direct            sd          1000        Mem[SP + operand]
+stack indirect          sn          1001        Mem[Mem[SP + operand]]
+stack offset            so          1010        Mem[Mem[SP] + operand]
+stack deffered          sf          1011        Mem[SP + Mem[operand]]
+
+stack indexed direct    sxd         1100        Mem[SP + r7 + operand]
+stack indexed indirect  sxn         1101        Mem[Mem[SP + r7 + operand]]
+stack indexed offset    sxo         1110        Mem[Mem[SP + r7] + operand]
+stack indexed deffered  sxf         1111        Mem[Mem[SP + operand] + r7]
+------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+// ==================================================================
+// ============/  Instruction Types  /=========================================
+// ==================================================================
+
+
+
 Legend:
-    t: bit that defines the instruction type, and how the rest of the instruction's
-        bits are to be interpreted
-    o: opcode bit
-    r: primary register bit
-    s: secondary register bit
-    t: tertiary register bit
-    i: immediate bit
-    b: binary bit - flip to logically inverse instruction if supported (such as JEQ to JNE)
-    a: addressing mode bit
-                
+    0,1:    set bits, not changed per instruction
+    o:      operand bits, encode each instruction
+    c:      bits to encode conditions, such as address modes and jump conditions
+    i:      bits to encode immediates
+    r:      primary register, often destination register
+    s:      secondary register, often source 1
+    t:      tertiary register, often source 2
 
+Type    Name            Encoding                                        Purpose
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+00  0   r2-type         000o oooo ooss srrr                             Involves 2 Integer Registers
+00  1   f2-type         001o oooo ooss srrr                             Involves 2 Floating Point Registers
 
-Address Modes:
-   Name                     Letters   Binary   How operand is treated
-   ---------------------------------------------------------------------------
-   immediate                i         0000     operand
-   immediate direct         id        0001     Mem[operand]
-   immediate indirect       in        0010     Mem[Mem[operand]]
+01  0   r3-type         010o ooot ttss srrr                             Involves 3 Integer Registers
+01  1   f3-type         011o ooot ttss srrr                             Involves 3 Floating Point Registers
 
-   register direct          rd        0011     Mem[register]
-   register indirect        rn        0100     Mem[Mem[register]]
+10  0   rs-type²        100o ooii iiss srrr                             See note. Involves 2 Integer Registers and a Small immediate (1-16)
+10  1   rs-type²        101o ooii iiss srrr                             See note. Involves 2 Integer Registers and a Small immediate (1-16)
 
-   indexed direct           xd        0101     Mem[r7 + operand]
-   indexed indirect         xn        0110     Mem[Mem[r7 + operand]]
-   indexed offset           xo        0111     Mem[Mem[r7] + operand]
-   indexed deffered         xf        1000     Mem[Mem[operand] + r7]
-
-   stack direct             sd        1001     Mem[SP + operand]
-   stack indirect           sn        1010     Mem[Mem[SP + operand]]
-   stack offset             so        1011     Mem[Mem[SP] + operand]
-
-   stack indexed direct     sxd       1100     Mem[SP + r7 + operand]
-   stack indexed indirect   sxn       1101     Mem[Mem[SP + r7 + operand]]
-   stack indexed offset     sxo       1110     Mem[Mem[SP + r7] + operand]
-   stack indexed deffered   sxf       1111     Mem[Mem[SP + operand] + r7]
-   ---------------------------------------------------------------------------
-
-
-Registers:
-    Accessible:
-        r0 - cannot be assigned to, hardcoded zero
-        r1 - general purpose
-        r2 - general purpose
-        r3 - general purpose
-        r4 - general purpose
-        r5 - general purpose
-        r6 - general purpose
-        r7 - address mode index register
-    
-    Inaccessible:
-        IP - instruction pointer
-        SP - stack pointer
-        FL - flags register
-
-
-All Instructions:
-    ttt0 0000 0000 brrr
-
-    - All instruction codes will start with three type bits
-    - All except r3-type will end with 'brrr'
-
-
-Memory-Type Instructions:
-    100o oooo oaaa arrr | iiii iiii iiii iiii
-
-    - Five opcode bits allow for 32 Memory-Type instructions
-    - Binary bit doubles that to 64 (if logically inversable instructions exist)
-    - Uses operand and address mode to load the chosen register with a value from memory
-
-
-Jump-Type Instructions:
-    101o oooo ooss srrr | iiii iiii iiii iiii
-
-    - Six opcode bits allow for 64 Jump-Type instructions (doubled by binary bit)
-    - Typically compares the primary register against the secondary register, jumps if the
-        condition is true
-    - Treats the operand as an offset into memory
-
-    ! IMPORTANT ! - Jump instruction require two registers and an offset. If the registers are
-        both r0, then the jump DOES NOT change the flags, rather the jump is calculated based on
-        the flags present just before the jump instruction. If either of the registers is not r0,
-        then the flags are updated with the value generated by subtracting the second register from
-        the first.
-
-
-R2I-Type Instructions:
-    110o oooo ooss srrr | iiii iiii iiii iiii
-
-    - Six opcode bits allow for 64 R2I-Type instructions (doubled by binary bit)
-    - Typically used to merge a register and an immediate
-    - Treats the operand as an immediate
-
-
-R0-Type Instructions (0 registers involved):
-    000o oooo oooo orrr
-
-    - 10 opcode bits allow for 1024 R0-Type instructions
-    - Very few no-register opcodes, used for program control (Halt, No op, etc)
-    - Although the register bits are reserved, they are unused (mimics R1-type to reduce hardware complexity)
-
-
-R1-Type Instructions (1 register involved):
-    001o oooo oooo orrr
-
-    - Nine opcode bits allow for 512 R1-Type instructions
-
-
-R2-Type Instructions (2 registers involved):
-    010o oooo ooss srrr
-
-    - Six opcode bits allow for 64 R2-Type instructions
-
-
-R3-Type Instructions (3 registers involved):
-    011o ooot ttss srrr
-
-    - Four opcode bits allow for 16 R3-Type instructions
+11  0   rm-type¹        110o oooo occc crrr | iiii iiii iiii iiii       See note. 1 or 2 Registers with large immediate, possibly with addressing mode
+11  1   fm-type¹        111o oooo occc crrr | iiii iiii iiii iiii       See note. 1 or 2 Registers with large immediate, possibly with addressing mode
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+    ¹ Note: type will interpret the 'cccc' bits according to the opcode, either as addressing mode or as a second register
+    ² Note: since encoding 0 is useless for the immediate in most instructions, '0000' encodes a 16. So the range of possible immediates is [1-16].
 
 
 
-    
-Name                    Mnemonic    Type    Op Code             Example                 Example Pseudo Code         Example Binary
--------------------------------------------------------------------------------------------------------------------------------------------------
-Halt Program            HLT         r0      0000 0000 0000 0    HLT                     /* Stop program */          0000 0000 0000 0000
-No Operation            NOP         r0      0000 0000 0000 1    NOP                     /* No operation */          0000 0000 0000 1000
 
-Load Word               LDW         m       1000 0000 0         LDW r1, r2, rd          r1 = Mem[r2]                1000 0000 0001 1001 | 0000 0000 0000 0010
-Store Word              STW         m       1000 0000 1         STW r1, label, id       Mem[label] = r1             1000 0000 1000 1001 | ???? ? label ? ????
-Load Low Byte           LDL         m       1000 0001 0         LDL r1, 15, i           r1<8..0> = 15               1000 0001 0000 0001 | 0000 0000 0000 1111
-Store Low Byte          STL         m       1000 0001 1         STL r1, label, id       Mem[label]<8..0> = r1       1000 0001 1000 1001 | ???? ? label ? ????
-Load High Byte          LDH         m       1000 0010 0         LDH r1, 15, i           r1<16..9> = 15              1000 0010 0000 0001 | 0000 0000 0000 1111
-Store High Byte         STH         m       1000 0010 1         STH r1, label, id       Mem[label]<16..9> = r1      1000 0010 1000 1001 | ???? ? label ? ????
 
-Move reg to reg         MOV         /* 'ADD r#, r#, r0' */      MOV r1, r2              r1 = r2                     
-Move imm to reg         MVI         /* 'ADI r#, r0, imm' */     MVI r1, 15              r1 = 15
+// ==================================================================
+// ============/  Instructions  /==============================================
+// ==================================================================
 
-Exchange                XCH         r2      0100 0000 00        XCH r1, r2              (r1,r2) = (r2,r1) (python)  0100 0000 0001 0001
 
-Exchange Equal          XEQ         r2      0100 0000 01        XEQ r1, r2              r1 = r2 if [Z]              0100 0000 0101 0001
-Exchange Not Equal      XNE         r2      0100 0000 10        XNE r1, r2              r1 = r2 if [!Z]             0100 0000 1001 0001
 
-Exchange Less Than      XLT         r2      0100 0001 11        XLT r1, r2              r1 = r2 if [S != O]         0100 0000 1101 0001
-Exchange Greater Than   XGT         r2      0100 0001 00        XGT r1, r2              r1 = r2 if [!Z & (S==F)]    0100 0001 0001 0001
-Exchange Less Equal     XLE         r2      0100 0001 01        XLE r1, r2              r1 = r2 if [Z | (S!=O)]     0100 0001 0101 0001
-Exchange Greater Equal  XGE         r2      0100 0001 10        XGE r1, r2              r1 = r2 if [S==O]           0100 0001 1001 0001
+Name                            Mnemonic    Type    Opcode                  Example                 Notes
+===============================================================================================================================================================
 
-Exchange Above Than     XAT         r2      0100 0001 11        XAT r1, r2              r1 = r2 if [!C & !Z]        0100 0001 1101 0001
-Exchange Below Than     XBT         r2      0100 0010 00        XBT r1, r2              r1 = r2 if [C]              0100 0010 0001 0001
-Exchange Above Equal    XAE         r2      0100 0010 01        XAE r1, r2              r1 = r2 if [!C]             0100 0010 0101 0001
-Exchange Below Equal    XBE         r2      0100 0010 10        XBE r1, r2              r1 = r2 if [C | Z]          0100 0010 1001 0001
+/* ----- Process Control ------------------------------------------------------------- */
 
-Exchange Zero           XYZ         r2      0100 0010 11        XYZ r1, r2              r1 = r2 if [Z]              0100 0010 1101 0001
-Exchange Not Zero       XNZ         r2      0100 0011 00        XNZ r1, r2              r1 = r2 if [!Z]             0100 0011 0001 0001
-Exchange Carry          XYC         r2      0100 0011 01        XYC r1, r2              r1 = r2 if [C]              0100 0011 0101 0001
-Exchange Not Carry      XNC         r2      0100 0011 10        XNC r1, r2              r1 = r2 if [!C]             0100 0011 1001 0001
-Exchange Overflow       XYO         r2      0100 0011 11        XYO r1, r2              r1 = r2 if [O]              0100 0011 1101 0001
-Exchange Not Overflow   XNO         r2      0100 0100 00        XNO r1, r2              r1 = r2 if [!O]             0100 0100 0001 0001
-Exchange Sign           XYS         r2      0100 0100 01        XYS r1, r2              r1 = r2 if [S]              0100 0100 0101 0001
-Exchange Not Sign       XNS         r2      0100 0100 10        XNS r1, r2              r1 = r2 if [!S]             0100 0100 1001 0001
-Exchange Parity         XYP         r2      0100 0100 11        XYP r1, r2              r1 = r2 if [P]              0100 0100 1101 0001
-Exchange Not Parity     XNP         r2      0100 0101 00        XNP r1, r2              r1 = r2 if [!P]             0100 0101 0001 0001
+Halt                            HLT         r2      0000 0000 00.. ....     HLT
+No Operation                    NOP         r2      0000 0000 01.. ....     NOP
 
-Bitwise Add             ADD         r3      0110 000            ADD r1, r2, r3          r1 = r2 + r3                0110 0000 1101 0001
-Bitwise Add w/ Carry    ADC         r3      0110 001            ADC r1, r2, r3          r1 = r2 + r3 + CF           0110 0010 1101 0001
-Bitwise Subtract        SUB         r3      0110 010            SUB r1, r2, r3          r1 = r2 - r3                0110 0100 1101 0001
-Bitwise Sub w/ Borrow   SBB         r3      0110 011            SBC r1, r2, r3          r1 = r2 - r3 - CF           0110 0110 1101 0001
-Bitwise And             AND         r3      0110 100            AND r1, r2, r3          r1 = r2 & r3                0110 1000 1101 0001
-Bitwise Or              ORR         r3      0110 101            OR  r1, r2, r3          r1 = r2 | r3                0110 1010 1101 0001
-Bitwise Xor             XOR         r3      0110 110            XOR r1, r2, r3          r1 = r2 ^ r3                0110 1100 1101 0001
-Bitwise Multiply�       MUL         r3      0110 111            MUL r2, r3, r4          [r(2-1),r1] = r3 * r4       0110 1111 0001 1010
-Bitwise Divide�         DIV         r3      0111 000            DIV r2, r3, r4          r2 = r3/r4, r(2-1) = r3%r4  0111 0001 0001 1010            
+Call procedure                  CAL         r2      0000 0000 10.. ....     CAL proc                Push IP; Load IP with proc; Jump
+Return from procedure           RET         r2      0000 0000 11.. ....     RET                     Pop IP; Jump
 
-Bitwise Not             NOT         r2      0100 0101 01        NOT r1, r2              r1 = ~r2                    0100 0101 0101 0001
-Bitwise Neg             NEG         r2      0100 0101 10        NEG r1, r2              r1 = -r2                    0100 0101 1001 0001
 
-Bitwise Add Imm         ADI         r2i     1100 0000 00        ADI r1, r2, 15          r1 = r2 + 15                1100 0000 0001 0001 | 0000 0000 0000 1111
-Bitwise Subtract Imm    SBI         r2i     1100 0000 01        SBI r1, r2, 15          r1 = r2 - 15                1100 0000 0101 0001 | 0000 0000 0000 1111
-Bit. Add Imm w/ Carry   ACI         r2i     1100 0000 10        ACI r1, r2, 15          r1 = r2 + 15 + CF           1100 0000 1001 0001 | 0000 0000 0000 1111
-Bit. Sub Imm w/ Borrow  SIB         r2i     1100 0000 11        SBI r1, r2, 15          r1 = r2 - 15 - CF           1100 0000 1101 0001 | 0000 0000 0000 1111
-Bitwise And Imm         ANI         r2i     1100 0001 00        ANI r1, r2, 15          r1 = r2 & 15                1100 0001 0001 0001 | 0000 0000 0000 1111
-Bitwise Or Imm          ORI         r2i     1100 0001 01        ORI r1, r2, 15          r1 = r2 | 15                1100 0001 0101 0001 | 0000 0000 0000 1111
-Bitwise Xor Imm         XRI         r2i     1100 0001 10        XRI r1, r2, 15          r1 = r2 ^ 15                1100 0001 1001 0001 | 0000 0000 0000 1111
+/* ----- Memory Management ----------------------------------------------------------- */
 
-Arith. Shift Left       ASL         r3      0111 001            ASL r1, r2, r3          r1 = r2 << r3               0111 0010 1101 0001
-Arith. Shift Right      ASR         r3      0111 010            ASR r1, r2, r3          r1 = r2 >> r3               0111 0100 1101 0001
-Logic Shift Left        LSL         /* Use ASL  r#, r#, r# */   LSL r1, r2, r3          r1 = r2 << r3                            
-Logic Shift Right       LSR         r3      0111 011            LSR r1, r2, r3          r1 = r2 >>> r3 (java)       0111 0110 1101 0001
-Rotate Left             RTL         r3      0111 100            RTL r1, r2, r3          r1 = r2 rotated by r3       0111 1000 1101 0001
-Rotate Right            RTR         r3      0111 101            RTR r1, r2, r3          r1 = r2 rotated by r3       0111 1010 1101 0001
-Rotate Left w/ Carry    RLC         r3      0111 110            RLC r1, r2, r3          r1 = [CF,r2] rotated by r3  0111 1100 1101 0001
-Rotate Right w/ Carry   RRC         r3      0111 111            RRC r1, r2, r3          r1 = [r2,CF] rotated by r3  0111 1110 1101 0001
+Load Word                       LDW         rm      1100 0000 0ccc crrr     LDW r1, 15, id
+Load Low Byte                   LDL         rm      1100 0000 1ccc crrr     LDL r1, 15, id
+Load High Byte                  LDH         rm      1100 0001 0ccc crrr     LDH r1, 15, id
 
-Compare                 CMP         r2      0100 0101 11        CMP r1, r2              flags set by r1 - r2        0100 0101 1110 0001
-Test                    TST         r2      0100 0110 00        TST r1, r2              flags set by r1 & r2        0100 0110 0010 0001
+Store Word                      STW         rm      1100 0001 1ccc crrr     STW r1, 15, id
+Store Low Byte                  STL         rm      1100 0010 0ccc crrr     STL r1, 15, id
+Store High Byte                 STH         rm      1100 0010 1ccc crrr     STH r1, 15, id
 
-Set Flags explicit      FLG         r1      0010 0000 0000 0    FLG r1                  flags set with r1<5..0>     0010 0000 0000 0001    
-Set Flags w/ reg val    FLR         r1      0010 0000 0000 1    FLR r1                  flags set by r1             0010 0000 0000 1001
+Load Float                      LDF         fm      1110 0000 0ccc crrr     LDF f1, 15, id          Opcode matches LDW except type bits
+Store Float                     STF         fm      1110 0001 1ccc crrr     STF f1, 15, id          Opcode matches STW except type bits
 
-Jump Unconditional      JMP         j       1010 0000 00        JMP label               jump to label               1010 0000 0000 0000 | ???? ? label ? ????
+Load Effective Address          LEA         rm      1100 0011 0... .rrr     LEA r1, label           r1 = address that label is mapped to
 
-Jump Equal              JEQ         j       1010 0000 01        JEQ r1, r2, label       jump if [Z]                 1010 0000 0101 0001 | ???? ? label ? ????
-Jump Not Equal          JNE         j       1010 0000 10        JNE r1, r2, label       jump if [!Z]                1010 0000 1001 0001 | ???? ? label ? ????             
+Push Word                       PSW         r2      0000 0001 00.. .rrr     PSW r1                  Stack pointer auto adjusted
+Push Low Byte                   PSL         r2      0000 0001 01.. .rrr     PSL r1                  "     "       "    "
+Push High Byte                  PSH         r2      0000 0001 10.. .rrr     PSH r1                  "     "       "    "
 
-Jump Less Than          JLT         j       1010 0000 11        JLT r1, r2, label       jump if [S!=O]              1010 0000 1101 0001 | ???? ? label ? ????
-Jump Greater Than       JGT         j       1010 0001 00        JGT r1, r2, label       jump if [!Z & !S]           1010 0001 0001 0001 | ???? ? label ? ????
-Jump Less Equal         JLE         j       1010 0001 01        JLE r1, r2, label       jump if [Z | (S != O)]      1010 0001 0101 0001 | ???? ? label ? ????
-Jump Greater Equal      JGE         j       1010 0001 10        JGE r1, r2, label       jump if [S==O]              1010 0001 1001 0001 | ???? ? label ? ????
+Pop Word                        PPW         r2      0000 0001 11.. .rrr     PPW r1                  Stack pointer auto adjusted
+Pop Low Byte                    PPL         r2      0000 0010 00.. .rrr     PPL r1                  "     "       "    "
+Pop High Byte                   PPH         r2      0000 0010 01.. .rrr     PPH r1                  "     "       "    "
 
-Jump Above Than         JAT         j       1010 0001 11        JAT r1, r2, label       jump if [!C & !Z]           1010 0001 1101 0001 | ???? ? label ? ????
-Jump Below Than         JBT         j       1010 0010 00        JBT r1, r2, label       jump if [C]                 1010 0010 0001 0001 | ???? ? label ? ????
-Jump Above Equal        JAE         j       1010 0010 01        JAE r1, r2, label       jump if [!C]                1010 0010 0101 0001 | ???? ? label ? ????
-Jump Below Equal        JBE         j       1010 0010 10        JBE r1, r2, label       jump if [C | Z]             1010 0010 1001 0001 | ???? ? label ? ????
+Push Float                      PSF         f2      0010 0001 00.. .rrr     PSF f1                  Opcode matches PSW except type bits
+Pop Float                       PPF         f2      0010 0001 11.. .rrr     PPF f1                  Opcode matches PPW except type bits
 
-Jump Zero               JYZ         j       1010 0010 11        JYZ r1, r2, label       jump if [Z]                 1010 0010 1101 0001 | ???? ? label ? ????
-Jump Not Zero           JNZ         j       1010 0011 00        JNZ r1, r2, label       jump if [!Z]                1010 0011 0001 0001 | ???? ? label ? ????
-Jump Carry              JYC         j       1010 0011 01        JYC r1, r2, label       jump if [C]                 1010 0011 0101 0001 | ???? ? label ? ????
-Jump Not Carry          JNC         j       1010 0011 10        JNC r1, r2, label       jump if [!C]                1010 0011 1001 0001 | ???? ? label ? ????
-Jump Overflow           JYO         j       1010 0011 11        JYO r1, r2, label       jump if [O]                 1010 0011 1101 0001 | ???? ? label ? ????
-Jump Not Overflow       JNO         j       1010 0100 00        JNO r1, r2, label       jump if [!O]                1010 0100 0001 0001 | ???? ? label ? ????
-Jump Sign               JYS         j       1010 0100 01        JYS r1, r2, label       jump if [S]                 1010 0100 0101 0001 | ???? ? label ? ????
-Jump Not Sign           JNS         j       1010 0100 10        JNS r1, r2, label       jump if [!S]                1010 0100 1001 0001 | ???? ? label ? ????
-Jump Parity             JYP         j       1010 0100 11        JYP r1, r2, label       jump if [P]                 1010 0100 1101 0001 | ???? ? label ? ????
-Jump Not Parity         JNP         j       1010 0101 00        JNP r1, r2, label       jump if [!P]                1010 0101 0001 0001 | ???? ? label ? ????
 
-Loop Not Zero & Dec     LOP         j        1010 0101 01        LOP r1, label           jump if [!Z]; r1 = r1 - 1   1010 0101 0101 0001 | ???? ? label ? ????
+/* ----- Register Management --------------------------------------------------------- */
 
-Push Word to stack      PSW         r1      0010 0000 0001 0    PSW r1                  push r1 to stack            0010 0000 0001 0001
-Push Byte (low)         PSL         r1      0010 0000 0001 1    PSL r1                  push r1<8..0> to stack      0010 0000 0001 1001
-Push Byte (high)        PSH         r1      0010 0000 0010 0    PSH r1                  push r1<16..9> to stack     0010 0000 0010 0001
-Pop Word from stack     PPW         r1      0010 0000 0010 1    PPW r1                  pop from stack to r1        0010 0000 0010 1001
-Pop Byte (low)          PPL         r1      0010 0000 0011 0    PPL r1                  pop from stack to r1<8..0>  0010 0000 0011 0001
-Pop Byte (high)         PPH         r1      0010 0000 0011 1    PPH r1                  pop from stack to r1<16..9> 0010 0000 0011 1001
+Copy into Reg, from Reg         CRR         r2      /*    Use MOV    */     CRR r1, r2              Converts to 'MOV r1, r2'
+Copy into Float, from Float     CFF         f2      /*    Use MOV    */     CFF f1, f2              Converts to 'MOV f1, f2'
+Copy into Reg, from Float       CRF         r2      0000 0010 10tt tsss     CRF r1, f1              Truncates to integer
+Copy into Float, from Reg       CFR¹        f2      0010 0010 10tt tsss     CFR f1, r1              Opcode matches CRF except type bits. See note.
 
-Load from PC            LPC         r1      0010 0000 0100 0    LPC r1                  r1 = PC                     0010 0000 0100 0001
-Store to PC             SPC         r1      0010 0000 0100 1    SPC r1                  PC = r1                     0010 0000 0100 1001
+Exchange registers              XCH         r2/f2   00?0 0010 11tt tsss     XCH r1, r2              Swaps contents of both registers
 
-Push PC                 PSPC        r0      0000 0000 0001 0    PSPC                    push PC to stack            0000 0000 0001 0000
-Pop PC                  PPPC        r0      0000 0000 0001 1    PPPC                    pop stack to PC             0000 0000 0001 1000
+Extend low byte into word       EXT         r2      0000 0011 00tt tsss     EXT r1, r2              Sign extends r2<8..0> into r1
 
-Call Proc               CAL         j       1010 0101 10        CAL label               push PC to stack, goto      1010 0101 1000 0000 | ???? ? label ? ????
-Return from Proc        RET         /*      Use PPPC    */      RET                     pop stack to PC, goto PC
 
--------------------------------------------------------------------------------------------------------------------------------------------------
-  � The MUL and DIV instructions use an implied register scheme
-    - MUL: the destination is a combined set of registers. These registers are the primary register, and one before it.
-        Ex: MUL r5, r1, r3  =>  [r4,r5] = r1 * r3. r4 gets most significant 16 bits, r5 the least significant bits.
-        
-    - DIV r1, r2, r3: works in much the same way. The source registers are the secondary register and one before it.
-        The primary register gets the quotient, while the register before the primary gets the modulus
-        Ex: DIV r5, r1, r3  =>  r5 = [r0,r1] / r3, r4 = [r0,r1] % r3
-        
-    - Note: The r0 register is a perfectly valid register for either source or destination, just remember that you lose
-        that data, as r0 cannot be altered away from its hardcoded 0
+/* ----- Pure Register Mathematics --------------------------------------------------- */
+
+Add                             ADD         r3/f3   01?0 000t ttss srrr     ADD r1, r2, r3
+Add with Carry                  ADC         r3/f3   01?0 001t ttss srrr     ADC r1, r2, r3
+Subtract                        SUB         r3/f3   01?0 010t ttss srrr     SUB r1, r2, r3
+Subtract with Borrow            SBB         r3/f3   01?0 011t ttss srrr     SBB r1, r2, r3
+Multiply                        MUL²        r3/f3   01?0 100t ttss srrr     MUL r1, r2, r3          See note.
+Divide                          DIV²        r3/f3   01?0 101t ttss srrr     DIV r1, r2, r3          See note.
+
+Negate                          NEG         r2/f2   00?0 0011 01tt tsss     NEG r1, r2
+Bitwise Not                     NOT         r2      0000 0011 10tt tsss     NOT r1, r2
+Bitwise And                     AND         r3      0100 110t ttss srrr     AND r1, r2, r3
+Bitwise Or                      ORR         r3      0100 111t ttss srrr     ORR r1, r2, r3
+Bitwise Xor                     XOR         r3      0101 000t ttss srrr     XOR r1, r2, r3
+
+Arith. Shift Left               ASL         r3      0101 001t ttss srrr     ASL r1, r2, r3
+Arith. Shift Right              ASR         r3      0101 010t ttss srrr     ASR r1, r2, r3
+Logic Shift Left                LSL         r3      /*    Use ASL    */     LSL r1, r2, r3          Converts to 'ASL r1, r2, r3'
+Logic Shift Right               LSR         r3      0101 011t ttss srrr     LSR r1, r2, r3
+Rotate Left                     RTL         r3      0101 100t ttss srrr     RTL r1, r2, r3
+Rotate Right                    RTR         r3      0101 101t ttss srrr     RTR r1, r2, r3
+Rotate with Carry Left          RCL         r3      0101 110t ttss srrr     RCL r1, r2, r3
+Rotate with Carry Right         RCR         r3      0101 111t ttss srrr     RCR r1, r2, r3
+
+Floor                           FLR         f2      0010 0000 00tt tsss     FLR f1, f2
+Ceiling                         CEL         f2      0010 0000 01tt tsss     CEL f1, f2
+Round                           RND         f2      0010 0000 10tt tsss     RND f1, f2
+Absolute Value                  ABS³        r2/f2   00?0 0011 11tt tsss     ABS f1, f2              See note.
+
+Bit Scan Forward                BSF         r2      0000 0100 00tt tsss     BSF r1, r2
+Bit Scan Reverse                BSR         r2      0000 0100 01tt tsss     BSR r1, r2
+
+
+/* ----- Small Immediate Mathematics ------------------------------------------------- */
+
+Increment                       INC         rs      1000 00ii iiss srrr     INC r1, r2              Defaults to adding 1: r1 = r2 + 1
+Decrement                       DEC         rs      1000 01ii iiss srrr     DEC r1, r2, 4           Can specify amount. r1 = r2 - 4
+
+Shift Arithmetically Left       SAL         rs      1000 10ii iiss srrr     SAL r1, r2
+Shift Arithmetically Right      SAR         rs      1000 11ii iiss srrr     SAR r1, r2, 4
+Shift Logically Left            SLL         rs      /*    Use SAL    */     SLL r1, r2
+Shift Logically Right           SLR         rs      1001 00ii iiss srrr     SLR r1, r2, 4
+Rotate Left                     RTL         rs      1001 01ii iiss srrr     RTL r1, r2
+Rotate Right                    RTR         rs      1001 10ii iiss srrr     RTR r1, r2, 4
+Rotate with Carry Left          RCL         rs      1001 11ii iiss srrr     RCL r1, r2
+Rotate with Carry Right         RCR         rs      1010 00ii iiss srrr     RCL r1, r2, 4
+
+
+/* ----- Large Immediate Mathematics ------------------------------------------------- */
+
+Add Immediate                   ADI         rm/fm   11?0 0011 1.cc crrr     ADI r1, r2, 1024        'cccc' here would be '0010' to encode r2
+Subtract Immediate              SBI         rm/fm   11?0 0100 0.cc crrr     SBI r1, r2, 1024
+Add Immediate with Carry        AIC         rm/fm   11?0 0100 1.cc crrr     AIC r1, r2, 1024
+Subtract Immediate with Borrow  SIB         rm/fm   11?0 0101 0.cc crrr     SIB r1, r2, 1024
+And Immediate                   ANI         rm/fm   11?0 0101 1.cc crrr     ANI r1, r2, 1024
+Or Immediate                    ORI         rm/fm   11?0 0110 0.cc crrr     ORI r1, r2, 1024
+Xor Immediate                   XRI         rm/fm   11?0 0110 1.cc crrr     XRI r1, r2, 1024
+
+
+/* ----- Decision Making ------------------------------------------------------------- */
+
+Compare                         CMP         r2/f2   00?0 0100 10tt tsss     CMP r1, r2
+Test                            TST         r2/f2   00?0 0100 11tt tsss     TST r1, r2
+
+Set Sign flag                   STS         r2      0000 0101 00.. ....     STS
+Clear Sign flag                 CLS         r2      0000 0101 01.. ....     CLS
+Set Parity flag                 STP         r2      0000 0101 10.. ....     STP
+Clear Parity flag               CLP         r2      0000 0101 11.. ....     CLP
+Set Overflow flag               STO         r2      0000 0110 00.. ....     STO
+Clear Overflow flag             CLO         r2      0000 0110 01.. ....     CLO
+Set Carry flag                  STC         r2      0000 0110 10.. ....     STC
+Clear Carry flag                CLC         r2      0000 0110 11.. ....     CLC
+Set Zero flag                   STZ         r2      0000 0111 00.. ....     STZ
+Clear Zero flag                 CLZ         r2      0000 0111 01.. ....     CLZ
+
+Load flags into low byte        LFL         r2      0000 0111 10.. .rrr     LFL r1                  r1<8..0> = 000SPOCZ
+Store low byte into flags       SFL         r2      0000 0111 11.. .rrr     SFL r1                  000SPOCZ = r1<8..0>
+
+Move (unconditional)            MOV         r2/f2   00?0 1000 00ss srrr     MOV r1, r2
+
+Move if Equal                   MEQ         r2/f2   /*    Use MYZ    */     MEQ r1, r2
+Move if Not Equal               MNE         r2/f2   /*    Use MNZ    */     MNE r1, r2
+
+Move if Less Than               MLT         r2/f2   00?0 1000 01ss srrr     MLT r1, r2
+Move if Greater Than            MGT         r2/f2   00?0 1000 10ss srrr     MGT r1, r2
+Move if Less or Equal           MLE         r2/f2   00?0 1000 11ss srrr     MLE r1, r2
+Move if Greater or Equal        MGE         r2/f2   00?0 1001 00ss srrr     MGE r1, r2
+
+Move if Above Than              MAT         r2/f2   00?0 1001 01ss srrr     MAT r1, r2
+Move if Below Than              MBT         r2/f2   /*    Use MYC    */     MBT r1, r2
+Move if Above or Equal          MAE         r2/f2   /*    Use MNC    */     MAE r1, r2
+Move if Below or Equal          MBE         r2/f2   00?0 1001 10ss srrr     MBE r1, r2
+
+Move if (Yes) Sign flag         MYS         r2/f2   00?0 1001 11ss srrr     MYS r1, r2
+Move if not (No) Sign flag      MNS         r2/f2   00?0 1010 00ss srrr     MNS r1, r2
+Move if (Yes) Parity flag       MYP         r2/f2   00?0 1010 01ss srrr     MYP r1, r2
+Move if not (No) Parity flag    MNP         r2/f2   00?0 1010 10ss srrr     MNP r1, r2
+Move if (Yes) Overflow flag     MYO         r2/f2   00?0 1010 11ss srrr     MYO r1, r2
+Move if not (No) Overflow flag  MNO         r2/f2   00?0 1011 00ss srrr     MNO r1, r2
+Move if (Yes) Carry flag        MYC         r2/f2   00?0 1011 01ss srrr     MYC r1, r2
+Move if not (No) Carry flag     MNC         r2/f2   00?0 1011 10ss srrr     MNC r1, r2
+Move if (Yes) Zero flag         MYZ         r2/f2   00?0 1011 11ss srrr     MYZ r1, r2
+Move if not (No) Zero flag      MNZ         r2/f2   00?0 1100 00ss srrr     MNZ r1, r2
+Move (unconditional)            MOV         r2/f2   00?0 1100 01ss srrr     MOV r1, r2
+
+Jump (unconditional)            JMP         rm/fm   11?0 0111 0.cc crrr     JMP Label
+
+Jump if Equal                   JEQ⁴        rm/fm   /*    Use JYZ    */     JEQ r1, r2, Label       See note.
+Jump if Not Equal               JNE⁴        rm/fm   /*    Use JNZ    */     JNE r1, r2, Label       "   "
+
+Jump if Less Than               JLT⁴        rm/fm   11?0 0111 1.cc crrr     JLT r1, r2, Label       "   "
+Jump if Greater Than            JGT⁴        rm/fm   11?0 1000 0.cc crrr     JGT r1, r2, Label       "   "
+Jump if Less or Equal           JLE⁴        rm/fm   11?0 1000 1.cc crrr     JLE r1, r2, Label       "   "
+Jump if Greater or Equal        JGE⁴        rm/fm   11?0 1001 0.cc crrr     JGE r1, r2, Label       "   "
+
+Jump if Above Than              JAT⁴        rm/fm   11?0 1001 1.cc crrr     JAT r1, r2, Label       "   "
+Jump if Below Than              JBT⁴        rm/fm   /*    Use JYC    */     JBT r1, r2, Label       "   "
+Jump if Above or Equal          JAE⁴        rm/fm   /*    Use JNC    */     JAE r1, r2, Label       "   "
+Jump if Below or Equal          JBE⁴        rm/fm   11?0 1010 0.cc crrr     JBE r1, r2, Label       "   "
+
+Jump if (Yes) Sign flag         JYS⁴        rm/fm   11?0 1010 1.cc crrr     JYS r1, r2, Label       "   "
+Jump if not (No) Sign flag      JNS⁴        rm/fm   11?0 1011 0.cc crrr     JNS r1, r2, Label       "   "
+Jump if (Yes) Parity flag       JYP⁴        rm/fm   11?0 1011 1.cc crrr     JYP r1, r2, Label       "   "
+Jump if not (No) Parity flag    JNP⁴        rm/fm   11?0 1100 0.cc crrr     JNP r1, r2, Label       "   "
+Jump if (Yes) Overflow flag     JYO⁴        rm/fm   11?0 1100 1.cc crrr     JYO r1, r2, Label       "   "
+Jump if not (No) Overflow flag  JNO⁴        rm/fm   11?0 1101 0.cc crrr     JNO r1, r2, Label       "   "
+Jump if (Yes) Carry flag        JYC⁴        rm/fm   11?0 1101 1.cc crrr     JYC r1, r2, Label       "   "
+Jump if not (No) Carry flag     JNC⁴        rm/fm   11?0 1110 0.cc crrr     JNC r1, r2, Label       "   "
+Jump if (Yes) Zero flag         JYZ⁴        rm/fm   11?0 1110 1.cc crrr     JYZ r1, r2, Label       "   "
+Jump if not (No) Zero flag      JNZ⁴        rm/fm   11?0 1111 0.cc crrr     JNZ r1, r2, Label       "   "
+
+Loop                            LOP⁵        rm/fm   11?0 1111 1.cc crrr     LOP r1, Label       See note.
+===============================================================================================================================================================
+    ¹ Note: CFR needs to econvert integer into floating point, but floating point cannot hold all values integer can. May throw errors.
+
+
+    ² Note: Muliplication and Division are complicated.
+
+        - Muliplication: MUL r2, r3, r4
+            Computes the value of r3 * r4. Stores the lower 16 bits in r2, and the upper 16 bits in the previous register, so r1.
+            Using r1 as the destination discards those high bits, since r0 cannot be written to.
+            R0 cannot be picked as a destination
+
+            Signed and unsigned integer multiplication are different: set the sign bit to perform signed multiplication, clear it to perform unsigned.
+
+                Signed:     0xFFFF * 0xFFFF   =>   -1 * -1         =>            1   =>   0x00000001
+                Unsigned:   0xFFFF * 0xFFFF   =>   65535 * 65535   =>   4294836225   =>   0xFFFE0001
+
+        - Division: DIV r2, r3, r4
+            Computes the value of r3 / r4. Stores the result in r2, and the remainder in the previous register, so r1.
+            Using r1 as the destination discards the remainder, since r0 cannot be written to.
+            R0 cannot be picked as a destination
+
+            Signed and unsigned integer division are different: set the sign bit to perform signed division, clear it to perform unsigned.
+
+                Signed:
+                    Non-integer results are truncated towards 0.
+                    The remainder always has the same sign as the dividend (left-hand side).
+                    The absolute value of the remainder is always smaller than the absolute value of the divisor (right-hand side).
+
+                    0x0005 / 0x0003   =>   +5 / +3   =>   +1.67 r +2   =>   +1 r +2
+                    0xFFFB / 0x0003   =>   -5 / +3   =>   -1.67 r -2   =>   -1 r -2
+                    0x0005 / 0xFFFD   =>   +5 / -3   =>   -1.67 r +2   =>   -1 r +2
+                    0xFFFB / 0xFFFD   =>   -5 / -3   =>   +1.67 r -2   =>   +1 r -2
+
+                Unsigned:
+                    Just signed division but only with positive operands
+
+                    0x0005 / 0x0003   =>   +    5 / +    3   =>   +    1.67 r +    2   =>   +    1 r +2
+                    0xFFFB / 0x0003   =>   +65531 / +    3   =>   +21843.67 r +    2   =>   +21843 r +2
+                    0x0005 / 0xFFFD   =>   +    5 / +65533   =>   +    0.00 r +    5   =>   +    0 r +5
+                    0xFFFB / 0xFFFD   =>   +65531 / +65533   =>   +    0.00 r +65531   =>   +    0 r +65531
+
+
+    ³ Note: ABS - there are more negative numbers than there are positive numbers (because of zero). So
+                ABS(0x8000) throws an error. NEG(0x8000) = 0x8000, so no problems there. There is no positive
+                counterpart to 0x8000 in signed notation.
+
+
+    ⁴ Note: All jumps use the two given registers to determine whether they should take the jump or not. The second register
+                is subtracted from the first (as in a CMP instruction) and the resulting flags are considered.
+
+        - WARNING: The jump instruction does not update the flags register. It uses temporary flags to determine whether to jump.
+
+        - If the two given registers are BOTH r0 or BOTH f0, then there is no point checking. Instead, to improve functionality,
+            the jump will consider the actual flags register (but not change it!) when determining whether to take the jump.
+
+
+    ⁵ Note: LOP r1, Label
+
+        - Pseudocode: r1 = r1 - 1; if (r1 != 0) { jump to label }
+
+        - WARNING: The LOP instruction does not update the flags register. It uses temporary flags to determine whether to jump.
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

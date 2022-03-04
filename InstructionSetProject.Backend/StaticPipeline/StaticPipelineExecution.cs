@@ -14,7 +14,8 @@ namespace InstructionSetProject.Backend.StaticPipeline
         public StaticPipelineDataStructures DataStructures = new();
         public List<byte> MachineCode;
 
-        public FetchDecode FetchDecode = new();
+        public Alu Alu = new();
+        
         public DecodeExecute DecodeExecute = new();
         public ExecuteMemory ExecuteMemory = new();
         public MemoryWriteBack MemoryWriteBack = new();
@@ -27,24 +28,25 @@ namespace InstructionSetProject.Backend.StaticPipeline
         private int _memoryStageOffset = -1;
         private int _writeBackStageOffset = -1;
 
-        public IInstruction? fetchingInstruction => (_fetchStageOffset >= 0 && _fetchStageOffset < InstrList.MaxOffset) ? InstrList.GetFromOffset(_fetchStageOffset) : null;
-        public IInstruction? decodingInstruction => (_decodeStageOffset >= 0 && _decodeStageOffset < InstrList.MaxOffset) ? InstrList.GetFromOffset(_decodeStageOffset) : null;
-        public IInstruction? executingInstruction => (_executeStageOffset >= 0 && _executeStageOffset < InstrList.MaxOffset) ? InstrList.GetFromOffset(_executeStageOffset) : null;
-        public IInstruction? memoryInstruction => (_memoryStageOffset >= 0 && _memoryStageOffset < InstrList.MaxOffset) ? InstrList.GetFromOffset(_memoryStageOffset) : null;
-        public IInstruction? writingBackInstruction => (_writeBackStageOffset >= 0 && _writeBackStageOffset < InstrList.MaxOffset) ? InstrList.GetFromOffset(_writeBackStageOffset) : null;
+        public IInstruction? fetchingInstruction => (_fetchStageOffset >= 0 && _fetchStageOffset <= InstrList.MaxOffset) ? InstrList.GetFromOffset(_fetchStageOffset) : null;
+        public IInstruction? decodingInstruction => (_decodeStageOffset >= 0 && _decodeStageOffset <= InstrList.MaxOffset) ? InstrList.GetFromOffset(_decodeStageOffset) : null;
+        public IInstruction? executingInstruction => (_executeStageOffset >= 0 && _executeStageOffset <= InstrList.MaxOffset) ? InstrList.GetFromOffset(_executeStageOffset) : null;
+        public IInstruction? memoryInstruction => (_memoryStageOffset >= 0 && _memoryStageOffset <= InstrList.MaxOffset) ? InstrList.GetFromOffset(_memoryStageOffset) : null;
+        public IInstruction? writingBackInstruction => (_writeBackStageOffset >= 0 && _writeBackStageOffset <= InstrList.MaxOffset) ? InstrList.GetFromOffset(_writeBackStageOffset) : null;
 
-        public IInstruction? nextInstructionToFinish => writingBackInstruction ?? (memoryInstruction ?? (executingInstruction ?? (decodingInstruction ?? (fetchingInstruction ?? InstrList.Instructions.FirstOrDefault()))));
+        public IInstruction? nextInstructionToFinish => writingBackInstruction ?? (memoryInstruction ?? (executingInstruction ?? (decodingInstruction ?? (fetchingInstruction ?? null))));
 
 
         public StaticPipelineExecution(InstructionList instrList)
         {
             InstrList = instrList;
             MachineCode = Assembler.Assemble(instrList);
+            DataStructures.Memory.AddInstructionCode(MachineCode);
         }
 
         public void Continue()
         {
-            while (InstrList.GetFromOffset(DataStructures.InstructionPointer.value) != null)
+            while (fetchingInstruction != null || decodingInstruction != null || executingInstruction != null || memoryInstruction != null || writingBackInstruction != null)
                 Step();
         }
 
@@ -82,15 +84,9 @@ namespace InstructionSetProject.Backend.StaticPipeline
         private void Fetch()
         {
             var instr = fetchingInstruction;
-            if (instr == null)
-            {
-                FetchDecode.ProgramCounter = null;
-                return;
-            }
-
-            FetchDecode.ProgramCounter = DataStructures.InstructionPointer.value;
-            if (!instr.functionBits.PCSrc)
-                DataStructures.InstructionPointer.value += instr.lengthInBytes;
+            if (instr == null) return;
+            
+            DataStructures.InstructionPointer.value += instr.lengthInBytes;
         }
 
         private void Decode()
@@ -99,14 +95,12 @@ namespace InstructionSetProject.Backend.StaticPipeline
             if (instr == null)
             {
                 DecodeExecute.Immediate = null;
-                DecodeExecute.ProgramCounter = null;
                 DecodeExecute.ReadData1 = null;
                 DecodeExecute.ReadData2 = null;
                 DecodeExecute.WriteRegister = null;
                 return;
             }
-
-            DecodeExecute.ProgramCounter = FetchDecode.ProgramCounter;
+            
             if (instr is IImmediateInstruction immediateInstr)
             {
                 DecodeExecute.Immediate = immediateInstr.GenerateImmediate();
@@ -139,21 +133,25 @@ namespace InstructionSetProject.Backend.StaticPipeline
                 ExecuteMemory.ReadData2 = null;
                 ExecuteMemory.WriteRegister = null;
                 ExecuteMemory.AluResult = null;
-                ExecuteMemory.CalculatedProgramCounter = null;
                 return;
             }
 
             ExecuteMemory.WriteRegister = DecodeExecute.WriteRegister;
-            
-            ushort? aluSource2 = instr.functionBits.ALUSrc ? DecodeExecute.Immediate : DecodeExecute.ReadData2;
-            if (DecodeExecute.ReadData1 == null || aluSource2 == null)
+
+            ushort? aluSource2 = instr.controlBits.ALUSrc ? DecodeExecute.Immediate : DecodeExecute.ReadData2;
+            if ((DecodeExecute.ReadData1 == null || aluSource2 == null) || instr.aluOperation == null)
                 ExecuteMemory.AluResult = null;
             else
-                ExecuteMemory.AluResult = instr.AluOperation((ushort)DecodeExecute.ReadData1, (ushort)aluSource2);
+            {
+                var aluOutput = Alu.Execute((AluOperation)instr.aluOperation, DecodeExecute.ReadData1, (ushort) aluSource2);
+                ExecuteMemory.AluResult = aluOutput.result;
+                if (instr.controlBits.UpdateFlags)
+                    DataStructures.Flags = aluOutput.flags;
+            }
 
             ExecuteMemory.ReadData2 = DecodeExecute.ReadData2;
 
-            if (instr.functionBits.PCSrc && DecodeExecute.Immediate != null)
+            if (instr.controlBits.PCSrc && DecodeExecute.Immediate != null)
             {
                 DataStructures.InstructionPointer.value = (ushort)DecodeExecute.Immediate;
             }
@@ -174,7 +172,7 @@ namespace InstructionSetProject.Backend.StaticPipeline
 
             MemoryWriteBack.AluResult = ExecuteMemory.AluResult;
 
-            if (instr.functionBits.MemRead)
+            if (instr.controlBits.MemRead)
             {
                 if (ExecuteMemory.AluResult == null)
                 {
@@ -183,7 +181,7 @@ namespace InstructionSetProject.Backend.StaticPipeline
 
                 MemoryWriteBack.ReadData = DataStructures.Memory.Read((ushort)ExecuteMemory.AluResult);
             }
-            else if (instr.functionBits.MemWrite)
+            else if (instr.controlBits.MemWrite)
             {
                 if (ExecuteMemory.AluResult == null)
                 {
@@ -209,14 +207,14 @@ namespace InstructionSetProject.Backend.StaticPipeline
             var instr = writingBackInstruction;
             if (instr == null) return;
 
-            if (instr.functionBits.RegWrite && MemoryWriteBack.WriteRegister != DataStructures.R0)
+            if (instr.controlBits.RegWrite && MemoryWriteBack.WriteRegister != DataStructures.R0)
             {
                 if (MemoryWriteBack.WriteRegister == null)
                 {
                     throw new Exception("Attempt to write to null register");
                 }
 
-                if (instr.functionBits.MemToReg)
+                if (instr.controlBits.MemToReg)
                 {
                     if (MemoryWriteBack.ReadData == null)
                     {
@@ -232,49 +230,59 @@ namespace InstructionSetProject.Backend.StaticPipeline
                         throw new Exception("Attempt to write null value to register");
                     }
 
-                    MemoryWriteBack.WriteRegister.value = (ushort) MemoryWriteBack.AluResult;
+                    MemoryWriteBack.WriteRegister.value = (ushort)MemoryWriteBack.AluResult;
                 }
             }
         }
 
         private Register<ushort>? GetFirstReadRegister(IInstruction instr)
         {
-            if (instr is JumpInstruction jumpInstr)
-                return ConvertRegisterIndexToRegister((ushort) (jumpInstr.SourceRegister >> 3));
+            if (instr is F2Instruction f2Instr)
+                return ConvertRegisterIndexToIntRegister((ushort)(f2Instr.SourceRegister >> 3));
             if (instr is R2Instruction r2Instr)
-                return ConvertRegisterIndexToRegister((ushort) (r2Instr.SourceRegister >> 3));
-            if (instr is R2IInstruction r2iInstr)
-                return ConvertRegisterIndexToRegister((ushort) (r2iInstr.SourceRegister >> 3));
+                return ConvertRegisterIndexToFloatRegister((ushort)(r2Instr.SourceRegister >> 3));
+            if (instr is F3Instruction f3Instr)
+                return ConvertRegisterIndexToIntRegister((ushort)(f3Instr.SourceRegister1 >> 3));
             if (instr is R3Instruction r3Instr)
-                return ConvertRegisterIndexToRegister((ushort) (r3Instr.SourceRegister1 >> 3));
+                return ConvertRegisterIndexToFloatRegister((ushort)(r3Instr.SourceRegister1 >> 3));
+            if (instr is RsInstruction rsInstr)
+                return ConvertRegisterIndexToIntRegister((ushort)(rsInstr.SourceRegister >> 3));
+            if (instr is RmInstruction rmInstr)
+                return ConvertRegisterIndexToIntRegister((ushort)(rmInstr.AddressingModeOrRegister >> 3));
+            if (instr is FmInstruction fmInstr)
+                return ConvertRegisterIndexToFloatRegister((ushort)(fmInstr.AddressingModeOrRegister >> 3));
             return null;
         }
 
         private Register<ushort>? GetSecondReadRegister(IInstruction instr)
         {
             if (instr is R3Instruction r3Instr)
-                return ConvertRegisterIndexToRegister((ushort) (r3Instr.SourceRegister2 >> 6));
+                return ConvertRegisterIndexToIntRegister((ushort)(r3Instr.SourceRegister2 >> 6));
+            if (instr is F3Instruction f3Instr)
+                return ConvertRegisterIndexToFloatRegister((ushort)(f3Instr.SourceRegister2 >> 6));
             return null;
         }
 
         private Register<ushort>? GetDestinationRegister(IInstruction instr)
         {
-            if (instr is JumpInstruction jumpInstr)
-                return ConvertRegisterIndexToRegister(jumpInstr.DestinationRegister);
-            if (instr is MemoryInstruction memInstr)
-                return ConvertRegisterIndexToRegister(memInstr.DestinationRegister);
-            if (instr is R1Instruction r1Instr)
-                return ConvertRegisterIndexToRegister(r1Instr.DestinationRegister);
-            if (instr is R2IInstruction r2iInstr)
-                return ConvertRegisterIndexToRegister(r2iInstr.DestinationRegister);
+            if (instr is F2Instruction f2Instr)
+                return ConvertRegisterIndexToFloatRegister(f2Instr.DestinationRegister);
             if (instr is R2Instruction r2Instr)
-                return ConvertRegisterIndexToRegister(r2Instr.DestinationRegister);
+                return ConvertRegisterIndexToIntRegister(r2Instr.DestinationRegister);
+            if (instr is F3Instruction f3Instr)
+                return ConvertRegisterIndexToFloatRegister(f3Instr.DestinationRegister);
             if (instr is R3Instruction r3Instr)
-                return ConvertRegisterIndexToRegister(r3Instr.DestinationRegister);
+                return ConvertRegisterIndexToIntRegister(r3Instr.DestinationRegister);
+            if (instr is RsInstruction rsInstr)
+                return ConvertRegisterIndexToIntRegister(rsInstr.DestinationRegister);
+            if (instr is RmInstruction rmInstr)
+                return ConvertRegisterIndexToIntRegister(rmInstr.DestinationRegister);
+            if (instr is FmInstruction fmInstr)
+                return ConvertRegisterIndexToFloatRegister(fmInstr.DestinationRegister);
             return null;
         }
 
-        private Register<ushort> ConvertRegisterIndexToRegister(ushort index)
+        private Register<ushort> ConvertRegisterIndexToIntRegister(ushort index)
         {
             switch (index)
             {
@@ -296,16 +304,33 @@ namespace InstructionSetProject.Backend.StaticPipeline
                     return DataStructures.R0;
             }
         }
-    }
 
-    public struct FetchDecode
-    {
-        public ushort? ProgramCounter;
+        private Register<ushort> ConvertRegisterIndexToFloatRegister(ushort index)
+        {
+            switch (index)
+            {
+                case 1:
+                    return DataStructures.F1;
+                case 2:
+                    return DataStructures.F2;
+                case 3:
+                    return DataStructures.F3;
+                case 4:
+                    return DataStructures.F4;
+                case 5:
+                    return DataStructures.F5;
+                case 6:
+                    return DataStructures.F6;
+                case 7:
+                    return DataStructures.F7;
+                default:
+                    return DataStructures.F0;
+            }
+        }
     }
 
     public struct DecodeExecute
     {
-        public ushort? ProgramCounter;
         public ushort? ReadData1;
         public ushort? ReadData2;
         public ushort? Immediate;
@@ -314,7 +339,6 @@ namespace InstructionSetProject.Backend.StaticPipeline
 
     public struct ExecuteMemory
     {
-        public ushort? CalculatedProgramCounter;
         public ushort? AluResult;
         public ushort? ReadData2;
         public Register<ushort>? WriteRegister;
