@@ -14,6 +14,14 @@
             throw new NotImplementedException();
         }
 
+        public byte[] GetBytesAtAddress(ushort address)
+        {
+            var arrayLength = 1000;
+            byte[] result = new byte[arrayLength];
+            Array.Copy(Bytes, address, result, 0, arrayLength);
+            return result;
+        }
+
         public void AddInstructionCode(List<byte> machineCode)
         {
             for (int i = 0; i < machineCode.Count; i++)
