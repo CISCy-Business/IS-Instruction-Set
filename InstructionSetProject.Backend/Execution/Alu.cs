@@ -56,7 +56,7 @@ namespace InstructionSetProject.Backend.Execution
             var result = (ushort) (lhs - rhs);
             var flags = ComputeFlagsRegister(lhs, rhs, result);
 
-            if (((lhs & signBit) == 0 && (result & signBit) == 1))
+            if (((lhs & signBit) == 0 && (result & signBit) != 0))
                 flags.Carry = true;
             else
                 flags.Carry = false;
