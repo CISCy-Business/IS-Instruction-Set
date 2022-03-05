@@ -1,13 +1,17 @@
 ﻿using InstructionSetProject.Backend.Execution;
 using InstructionSetProject.Backend.StaticPipeline;
+using InstructionSetProject.Backend.Utilities;
 
 namespace InstructionSetProject.Backend.InstructionTypes
 {
     public interface IInstruction
     {
-        public ushort? destinationRegister { get; set; }
-        public ushort? sourceRegister1 { get; set; }
-        public ushort? sourceRegister2 { get; set; }
+        public ushort? firstRegister { get; set; }
+        public RegisterType? firstRegisterType { get; }
+        public ushort? secondRegister { get; set; }
+        public RegisterType? secondRegisterType { get; }
+        public ushort? thirdRegister { get; set; }
+        public RegisterType? thirdRegisterType { get; }
         public ushort? addressingMode { get; set; }
         public ushort? immediate { get; set; }
         public ControlBits controlBits { get; }

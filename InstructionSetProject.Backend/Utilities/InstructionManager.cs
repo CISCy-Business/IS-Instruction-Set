@@ -24,9 +24,13 @@ namespace InstructionSetProject.Backend.Utilities
             AddFloat(Ceiling.OpCode, Ceiling.Mnemonic, () => new Ceiling());
             AddFloat(FloatAbsoluteValue.OpCode, FloatAbsoluteValue.Mnemonic, () => new FloatAbsoluteValue());
             AddFloat(FloatCompare.OpCode, FloatCompare.Mnemonic, () => new FloatCompare());
+            AddFloat(null, FloatCopyRegToReg.Mnemonic, () => new FloatCopyRegToReg());
             AddFloat(FloatExchangeRegisters.OpCode, FloatExchangeRegisters.Mnemonic, () => new FloatExchangeRegisters());
+            AddFloat(null, FloatMoveAboveEqual.Mnemonic, () => new FloatMoveAboveEqual());
             AddFloat(FloatMoveAboveThan.OpCode, FloatMoveAboveThan.Mnemonic, () => new FloatMoveAboveThan());
             AddFloat(FloatMoveBelowEqual.OpCode, FloatMoveBelowEqual.Mnemonic, () => new FloatMoveBelowEqual());
+            AddFloat(null, FloatMoveBelowThan.Mnemonic, () => new FloatMoveBelowThan());
+            AddFloat(null, FloatMoveEqual.Mnemonic, () => new FloatMoveEqual());
             AddFloat(FloatMoveGreaterEqual.OpCode, FloatMoveGreaterEqual.Mnemonic, () => new FloatMoveGreaterEqual());
             AddFloat(FloatMoveGreaterThan.OpCode, FloatMoveGreaterThan.Mnemonic, () => new FloatMoveGreaterThan());
             AddFloat(FloatMoveLessEqual.OpCode, FloatMoveLessEqual.Mnemonic, () => new FloatMoveLessEqual());
@@ -35,6 +39,7 @@ namespace InstructionSetProject.Backend.Utilities
             AddFloat(FloatMoveNoOverflow.OpCode, FloatMoveNoOverflow.Mnemonic, () => new FloatMoveNoOverflow());
             AddFloat(FloatMoveNoParity.OpCode, FloatMoveNoParity.Mnemonic, () => new FloatMoveNoParity());
             AddFloat(FloatMoveNoSign.OpCode, FloatMoveNoSign.Mnemonic, () => new FloatMoveNoSign());
+            AddFloat(null, FloatMoveNotEqual.Mnemonic, () => new FloatMoveNotEqual());
             AddFloat(FloatMoveNoZero.OpCode, FloatMoveNoZero.Mnemonic, () => new FloatMoveNoZero());
             AddFloat(FloatMoveUnconditional.OpCode, FloatMoveUnconditional.Mnemonic, () => new FloatMoveUnconditional());
             AddFloat(FloatMoveYesCarry.OpCode, FloatMoveYesCarry.Mnemonic, () => new FloatMoveYesCarry());
@@ -63,8 +68,11 @@ namespace InstructionSetProject.Backend.Utilities
             AddFloat(FloatAddImmediate.OpCode, FloatAddImmediate.Mnemonic, () => new FloatAddImmediate());
             AddFloat(FloatAddImmediateWithCarry.OpCode, FloatAddImmediateWithCarry.Mnemonic, () => new FloatAddImmediateWithCarry());
             AddFloat(FloatAndImmediate.OpCode, FloatAndImmediate.Mnemonic, () => new FloatAndImmediate());
+            AddFloat(null, FloatJumpAboveEqual.Mnemonic, () => new FloatJumpAboveEqual());
             AddFloat(FloatJumpAboveThan.OpCode, FloatJumpAboveThan.Mnemonic, () => new FloatJumpAboveThan());
             AddFloat(FloatJumpBelowEqual.OpCode, FloatJumpBelowEqual.Mnemonic, () => new FloatJumpBelowEqual());
+            AddFloat(null, FloatJumpBelowThan.Mnemonic, () => new FloatJumpBelowThan());
+            AddFloat(null, FloatJumpEqual.Mnemonic, () => new FloatJumpEqual());
             AddFloat(FloatJumpGreaterEqual.OpCode, FloatJumpGreaterEqual.Mnemonic, () => new FloatJumpGreaterEqual());
             AddFloat(FloatJumpGreaterThan.OpCode, FloatJumpGreaterThan.Mnemonic, () => new FloatJumpGreaterThan());
             AddFloat(FloatJumpLessEqual.OpCode, FloatJumpLessEqual.Mnemonic, () => new FloatJumpLessEqual());
@@ -73,6 +81,7 @@ namespace InstructionSetProject.Backend.Utilities
             AddFloat(FloatJumpNoOverflow.OpCode, FloatJumpNoOverflow.Mnemonic, () => new FloatJumpNoOverflow());
             AddFloat(FloatJumpNoParity.OpCode, FloatJumpNoParity.Mnemonic, () => new FloatJumpNoParity());
             AddFloat(FloatJumpNoSign.OpCode, FloatJumpNoSign.Mnemonic, () => new FloatJumpNoSign());
+            AddFloat(null, FloatJumpNotEqual.Mnemonic, () => new FloatJumpNotEqual());
             AddFloat(FloatJumpNoZero.OpCode, FloatJumpNoZero.Mnemonic, () => new FloatJumpNoZero());
             AddFloat(FloatJumpYesCarry.OpCode, FloatJumpYesCarry.Mnemonic, () => new FloatJumpYesCarry());
             AddFloat(FloatJumpYesOverflow.OpCode, FloatJumpYesOverflow.Mnemonic, () => new FloatJumpYesOverflow());
@@ -98,12 +107,16 @@ namespace InstructionSetProject.Backend.Utilities
             Add(ClearSignFlag.OpCode, ClearSignFlag.Mnemonic, () => new ClearSignFlag());
             Add(ClearZeroFlag.OpCode, ClearZeroFlag.Mnemonic, () => new ClearZeroFlag());
             Add(Compare.OpCode, Compare.Mnemonic, () => new Compare());
+            Add(null, CopyRegToReg.Mnemonic, () => new CopyRegToReg());
             Add(ExchangeRegisters.OpCode, ExchangeRegisters.Mnemonic, () => new ExchangeRegisters());
             Add(ExtendLowByte.OpCode, ExtendLowByte.Mnemonic, () => new ExtendLowByte());
             Add(Halt.OpCode, Halt.Mnemonic, () => new Halt());
             Add(LoadFlagsLow.OpCode, LoadFlagsLow.Mnemonic, () => new LoadFlagsLow());
+            Add(null, MoveAboveEqual.Mnemonic, () => new MoveAboveEqual());
             Add(MoveAboveThan.OpCode, MoveAboveThan.Mnemonic, () => new MoveAboveThan());
             Add(MoveBelowEqual.OpCode, MoveBelowEqual.Mnemonic, () => new MoveBelowEqual());
+            Add(null, MoveBelowThan.Mnemonic, () => new MoveBelowThan());
+            Add(null, MoveEqual.Mnemonic, () => new MoveEqual());
             Add(MoveGreaterEqual.OpCode, MoveGreaterEqual.Mnemonic, () => new MoveGreaterEqual());
             Add(MoveGreaterThan.OpCode, MoveGreaterThan.Mnemonic, () => new MoveGreaterThan());
             Add(MoveLessEqual.OpCode, MoveLessEqual.Mnemonic, () => new MoveLessEqual());
@@ -112,6 +125,7 @@ namespace InstructionSetProject.Backend.Utilities
             Add(MoveNoOverflow.OpCode, MoveNoOverflow.Mnemonic, () => new MoveNoOverflow());
             Add(MoveNoParity.OpCode, MoveNoParity.Mnemonic, () => new MoveNoParity());
             Add(MoveNoSign.OpCode, MoveNoSign.Mnemonic, () => new MoveNoSign());
+            Add(null, MoveNotEqual.Mnemonic, () => new MoveNotEqual());
             Add(MoveNoZero.OpCode, MoveNoZero.Mnemonic, () => new MoveNoZero());
             Add(MoveUnconditional.OpCode, MoveUnconditional.Mnemonic, () => new MoveUnconditional());
             Add(MoveYesCarry.OpCode, MoveYesCarry.Mnemonic, () => new MoveYesCarry());
@@ -146,6 +160,7 @@ namespace InstructionSetProject.Backend.Utilities
             Add(BitwiseOr.OpCode, BitwiseOr.Mnemonic, () => new BitwiseOr());
             Add(BitwiseXor.OpCode, BitwiseXor.Mnemonic, () => new BitwiseXor());
             Add(Divide.OpCode, Divide.Mnemonic, () => new Divide());
+            Add(null, LogicShiftLeft.Mnemonic, () => new LogicShiftLeft());
             Add(LogicShiftRight.OpCode, LogicShiftRight.Mnemonic, () => new LogicShiftRight());
             Add(Multiply.OpCode, Multiply.Mnemonic, () => new Multiply());
             Add(RotateLeft.OpCode, RotateLeft.Mnemonic, () => new RotateLeft());
@@ -161,8 +176,11 @@ namespace InstructionSetProject.Backend.Utilities
             Add(AddImmediateWithCarry.OpCode, AddImmediateWithCarry.Mnemonic, () => new AddImmediateWithCarry());
             Add(AndImmediate.OpCode, AndImmediate.Mnemonic, () => new AndImmediate());
             Add(Call.OpCode, Call.Mnemonic, () => new Call());
+            Add(null, JumpAboveEqual.Mnemonic, () => new JumpAboveEqual());
             Add(JumpAboveThan.OpCode, JumpAboveThan.Mnemonic, () => new JumpAboveThan());
             Add(JumpBelowEqual.OpCode, JumpBelowEqual.Mnemonic, () => new JumpBelowEqual());
+            Add(null, JumpBelowThan.Mnemonic, () => new JumpBelowThan());
+            Add(null, JumpEqual.Mnemonic, () => new JumpEqual());
             Add(JumpGreaterEqual.OpCode, JumpGreaterEqual.Mnemonic, () => new JumpGreaterEqual());
             Add(JumpGreaterThan.OpCode, JumpGreaterThan.Mnemonic, () => new JumpGreaterThan());
             Add(JumpLessEqual.OpCode, JumpLessEqual.Mnemonic, () => new JumpLessEqual());
@@ -171,6 +189,7 @@ namespace InstructionSetProject.Backend.Utilities
             Add(JumpNoOverflow.OpCode, JumpNoOverflow.Mnemonic, () => new JumpNoOverflow());
             Add(JumpNoParity.OpCode, JumpNoParity.Mnemonic, () => new JumpNoParity());
             Add(JumpNoSign.OpCode, JumpNoSign.Mnemonic, () => new JumpNoSign());
+            Add(null, JumpNotEqual.Mnemonic, () => new JumpNotEqual());
             Add(JumpNoZero.OpCode, JumpNoZero.Mnemonic, () => new JumpNoZero());
             Add(JumpUnconditional.OpCode, JumpUnconditional.Mnemonic, () => new JumpUnconditional());
             Add(JumpYesCarry.OpCode, JumpYesCarry.Mnemonic, () => new JumpYesCarry());
@@ -200,6 +219,7 @@ namespace InstructionSetProject.Backend.Utilities
             Add(RotateRightImmediateWithCarry.OpCode, RotateRightImmediateWithCarry.Mnemonic, () => new RotateRightImmediateWithCarry());
             Add(ShiftArithmeticallyLeft.OpCode, ShiftArithmeticallyLeft.Mnemonic, () => new ShiftArithmeticallyLeft());
             Add(ShiftArithmeticallyRight.OpCode, ShiftArithmeticallyRight.Mnemonic, () => new ShiftArithmeticallyRight());
+            Add(null, ShiftLogicallyLeft.Mnemonic, () => new ShiftLogicallyLeft());
             Add(ShiftLogicallyRight.OpCode, ShiftLogicallyRight.Mnemonic, () => new ShiftLogicallyRight());
         }
 

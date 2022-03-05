@@ -2,7 +2,7 @@
 {
     public static class Registers
     {
-        public static string ParseIntDestination(ushort value)
+        public static string ParseFirstInt(ushort value)
         {
             if (value > 7)
                 throw new ArgumentException($"Invalid Register Value: '{value}'");
@@ -10,10 +10,10 @@
             return $"r{value}";
         }
 
-        public static string ParseIntFirstSource(ushort value) => ParseIntDestination((ushort)(value >> 3));
-        public static string ParseIntSecondSource(ushort value) => ParseIntDestination((ushort)(value >> 6));
+        public static string ParseSecondInt(ushort value) => ParseFirstInt((ushort)(value >> 3));
+        public static string ParseThirdInt(ushort value) => ParseFirstInt((ushort)(value >> 6));
 
-        public static ushort ParseIntDestination(string registerName)
+        public static ushort ParseFirstInt(string registerName)
         {
             if (registerName == null || registerName.Length != 2 ||
                 (registerName[0] != 'r' && registerName[0] != 'R') ||
@@ -23,10 +23,10 @@
             return (ushort)(registerName[1] - '0');
         }
 
-        public static ushort ParseIntFirstSource(string registerName) => (ushort)(ParseIntDestination(registerName) << 3);
-        public static ushort ParseIntSecondSource(string registerName) => (ushort)(ParseIntDestination(registerName) << 6);
+        public static ushort ParseSecondInt(string registerName) => (ushort)(ParseFirstInt(registerName) << 3);
+        public static ushort ParseThirdInt(string registerName) => (ushort)(ParseFirstInt(registerName) << 6);
 
-        public static string ParseFloatDestination(ushort value)
+        public static string ParseFirstFloat(ushort value)
         {
             if (value > 7)
                 throw new ArgumentException($"Invalid Register Value: '{value}'");
@@ -34,10 +34,10 @@
             return $"f{value}";
         }
 
-        public static string ParseFloatFirstSource(ushort value) => ParseFloatDestination((ushort)(value >> 3));
-        public static string ParseFloatSecondSource(ushort value) => ParseFloatDestination((ushort)(value >> 6));
+        public static string ParseSecondFloat(ushort value) => ParseFirstFloat((ushort)(value >> 3));
+        public static string ParseThirdFloat(ushort value) => ParseFirstFloat((ushort)(value >> 6));
 
-        public static ushort ParseFloatDestination(string registerName)
+        public static ushort ParseFirstFloat(string registerName)
         {
             if (registerName == null || registerName.Length != 2 ||
                 (registerName[0] != 'f' && registerName[0] != 'F') ||
@@ -47,8 +47,14 @@
             return (ushort)(registerName[1] - '0');
         }
 
-        public static ushort ParseFloatFirstSource(string registerName) => (ushort)(ParseFloatDestination(registerName) << 3);
-        public static ushort ParseFloatSecondSource(string registerName) => (ushort)(ParseFloatDestination(registerName) << 6);
+        public static ushort ParseSecondFloat(string registerName) => (ushort)(ParseFirstFloat(registerName) << 3);
+        public static ushort ParseThirdFloat(string registerName) => (ushort)(ParseFirstFloat(registerName) << 6);
+    }
+
+    public enum RegisterType
+    {
+        Read,
+        Write
     }
 
     public struct FlagsRegister
@@ -81,7 +87,7 @@
         Sign = 0b00001,
         Parity = 0b00010,
         Overflow = 0b00100,
-        Carry = 0b010000,
+        Carry = 0b01000,
         Zero = 0b10000
     }
 }

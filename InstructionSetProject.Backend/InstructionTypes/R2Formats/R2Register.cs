@@ -4,7 +4,8 @@ namespace InstructionSetProject.Backend.InstructionTypes.R2Formats
 {
     public abstract class R2Register : R2Instruction
     {
-        public override ushort? sourceRegister1 { get => null; set { } }
+        public override ushort? secondRegister { get => null; set { } }
+        public override RegisterType? secondRegisterType => null;
 
         public override string Disassemble()
         {
@@ -12,7 +13,7 @@ namespace InstructionSetProject.Backend.InstructionTypes.R2Formats
 
             assembly += GetMnemonic();
             assembly += " ";
-            assembly += Registers.ParseIntDestination(destinationRegister ?? 0);
+            assembly += Registers.ParseFirstInt(firstRegister ?? 0);
 
             return assembly;
         }
@@ -24,7 +25,7 @@ namespace InstructionSetProject.Backend.InstructionTypes.R2Formats
             if (tokens.Length != 2)
                 throw new Exception("Incorrect number of tokens obtained from assembly instruction");
 
-            destinationRegister = Registers.ParseIntDestination(tokens[1]);
+            firstRegister = Registers.ParseFirstInt(tokens[1]);
         }
     }
 }

@@ -5,7 +5,9 @@ namespace InstructionSetProject.Backend.InstructionTypes.RmFormats
     public abstract class RmRegisterLabel : RmInstruction, IImmediateInstruction, ILabelInstruction
     {
         public override ushort? addressingMode { get => null; set { } }
-        public override ushort? sourceRegister1 { get => null; set { } }
+        public override ushort? secondRegister { get => null; set { } }
+        public override RegisterType? secondRegisterType => null;
+        public override RegisterType? firstRegisterType => RegisterType.Read;
 
         public override string Disassemble()
         {
@@ -13,7 +15,7 @@ namespace InstructionSetProject.Backend.InstructionTypes.RmFormats
 
             assembly += GetMnemonic();
             assembly += " ";
-            assembly += Registers.ParseIntDestination(destinationRegister ?? 0);
+            assembly += Registers.ParseFirstInt(firstRegister ?? 0);
             assembly += ", ";
             assembly += (immediate ?? 0).ToString("X2");
 
@@ -27,7 +29,7 @@ namespace InstructionSetProject.Backend.InstructionTypes.RmFormats
             if (tokens.Length != 3)
                 throw new Exception("Incorrect number of tokens obtained from assembly instruction");
 
-            destinationRegister = Registers.ParseIntDestination(tokens[1].TrimEnd(','));
+            firstRegister = Registers.ParseFirstInt(tokens[1].TrimEnd(','));
 
             immediate = Convert.ToUInt16(tokens[2], 16);
         }

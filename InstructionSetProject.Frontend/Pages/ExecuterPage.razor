@@ -64,8 +64,9 @@
                     <ToolbarItem PrefixIcon="e-icons e-chevron-right-fill" Text="Run" Type="ItemType.Button" OnClick="runCode" TooltipText="Run the code"></ToolbarItem>
                     <ToolbarItem PrefixIcon="e-icons e-properties-1" Text="Debug" TooltipText="Start debugging the code" OnClick="Debug"></ToolbarItem>
                     <ToolbarItem Type="ItemType.Separator"></ToolbarItem>
-                    <ToolbarItem PrefixIcon="e-icons e-text-wrap" Text="Step" OnClick="step" TooltipText="Step through each line of code upon debugging" Disabled="@ShowItem"></ToolbarItem>
-                    <ToolbarItem PrefixIcon="e-icons e-check" Text="Continue" OnClick="Continue" TooltipText="Continue through the rest of the program" Disabled="@ShowItem"></ToolbarItem>
+                    <ToolbarItem PrefixIcon="e-icons e-clock" Text="Clock Tick" OnClick="ClockTick" TooltipText="Perform on clock tick" Disabled="@(SPEx == null)"></ToolbarItem>
+                    <ToolbarItem PrefixIcon="e-icons e-text-wrap" Text="Step" OnClick="step" TooltipText="Step through each line of code upon debugging" Disabled="@(SPEx == null)"></ToolbarItem>
+                    <ToolbarItem PrefixIcon="e-icons e-check" Text="Continue" OnClick="Continue" TooltipText="Continue through the rest of the program" Disabled="@(SPEx == null)"></ToolbarItem>
                     <ToolbarItem Type="ItemType.Separator"></ToolbarItem>
                     <ToolbarItem PrefixIcon="e-icons e-bullet-3" Text="Stop" TooltipText="Stop the program"></ToolbarItem>
                     <ToolbarItem PrefixIcon="e-icons e-repeat" Text="ReRun" TooltipText="Re-build and Re-run the program"></ToolbarItem>

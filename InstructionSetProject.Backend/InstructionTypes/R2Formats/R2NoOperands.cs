@@ -1,9 +1,13 @@
-﻿namespace InstructionSetProject.Backend.InstructionTypes.R2Formats
+﻿using InstructionSetProject.Backend.Utilities;
+
+namespace InstructionSetProject.Backend.InstructionTypes.R2Formats
 {
     public abstract class R2NoOperands : R2Instruction
     {
-        public override ushort? destinationRegister { get => null; set { } }
-        public override ushort? sourceRegister1 { get => null; set { } }
+        public override ushort? firstRegister { get => null; set { } }
+        public override ushort? secondRegister { get => null; set { } }
+        public override RegisterType? firstRegisterType => null;
+        public override RegisterType? secondRegisterType => null;
 
         public override string Disassemble()
         {

@@ -4,7 +4,7 @@ namespace InstructionSetProject.Backend.InstructionTypes.FmFormats
 {
     public abstract class FmRegisterRegisterImmediate : FmInstruction, IImmediateInstruction
     {
-        public override ushort? addressingMode { get => sourceRegister1; set { } }
+        public override ushort? addressingMode { get => secondRegister; set { } }
 
         public override string Disassemble()
         {
@@ -12,9 +12,9 @@ namespace InstructionSetProject.Backend.InstructionTypes.FmFormats
 
             assembly += GetMnemonic();
             assembly += " ";
-            assembly += Registers.ParseFloatDestination(destinationRegister ?? 0);
+            assembly += Registers.ParseFirstFloat(firstRegister ?? 0);
             assembly += ", ";
-            assembly += Registers.ParseFloatFirstSource(sourceRegister1 ?? 0);
+            assembly += Registers.ParseSecondFloat(secondRegister ?? 0);
             assembly += ", ";
             assembly += (immediate ?? 0).ToString("X2");
 
@@ -28,9 +28,9 @@ namespace InstructionSetProject.Backend.InstructionTypes.FmFormats
             if (tokens.Length != 4)
                 throw new Exception("Incorrect number of tokens obtained from assembly instruction");
 
-            destinationRegister = Registers.ParseFloatDestination(tokens[1].TrimEnd(','));
+            firstRegister = Registers.ParseFirstFloat(tokens[1].TrimEnd(','));
 
-            sourceRegister1 = Registers.ParseFloatFirstSource(tokens[2].TrimEnd(','));
+            secondRegister = Registers.ParseSecondFloat(tokens[2].TrimEnd(','));
 
             immediate = Convert.ToUInt16(tokens[3], 16);
         }

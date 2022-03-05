@@ -1,10 +1,14 @@
-﻿namespace InstructionSetProject.Backend.InstructionTypes.RmFormats
+﻿using InstructionSetProject.Backend.Utilities;
+
+namespace InstructionSetProject.Backend.InstructionTypes.RmFormats
 {
     public abstract class RmLabel : RmInstruction, IImmediateInstruction, ILabelInstruction
     {
         public override ushort? addressingMode { get => null; set { } }
-        public override ushort? sourceRegister1 { get => null; set { } }
-        public override ushort? destinationRegister { get => null; set { } }
+        public override ushort? secondRegister { get => null; set { } }
+        public override ushort? firstRegister { get => null; set { } }
+        public override RegisterType? firstRegisterType => null;
+        public override RegisterType? secondRegisterType => null;
 
         public override string Disassemble()
         {

@@ -125,8 +125,8 @@ Name                            Mnemonic    Type    Opcode                  Exam
 
 /* ----- Register Management --------------------------------------------------------- */
 
-Copy into Reg, from Reg         CRR         r2      /*    Use MOV    */     CRR r1, r2              Converts to 'MOV r1, r2'
-Copy into Float, from Float     CFF         f2      /*    Use MOV    */     CFF f1, f2              Converts to 'MOV f1, f2'
+*Copy into Reg, from Reg         CRR         r2      /*    Use MOV    */     CRR r1, r2              Converts to 'MOV r1, r2'
+*Copy into Float, from Float     CFF         f2      /*    Use MOV    */     CFF f1, f2              Converts to 'MOV f1, f2'
 Copy into Reg, from Float       CRF         r2      0000 0010 10tt tsss     CRF r1, f1              Truncates to integer
 Copy into Float, from Reg       CFR¹        f2      0010 0010 10tt tsss     CFR f1, r1              Opcode matches CRF except type bits. See note.
 
@@ -152,7 +152,7 @@ Copy into Float, from Reg       CFR¹        f2      0010 0010 10tt tsss     CFR
 
 *Arith. Shift Left               ASL         r3      0101 001t ttss srrr     ASL r1, r2, r3
 *Arith. Shift Right              ASR         r3      0101 010t ttss srrr     ASR r1, r2, r3
-Logic Shift Left                LSL         r3      /*    Use ASL    */     LSL r1, r2, r3          Converts to 'ASL r1, r2, r3'
+*Logic Shift Left                LSL         r3      /*    Use ASL    */     LSL r1, r2, r3          Converts to 'ASL r1, r2, r3'
 *Logic Shift Right               LSR         r3      0101 011t ttss srrr     LSR r1, r2, r3
 *Rotate Left                     RTL         r3      0101 100t ttss srrr     RTL r1, r2, r3
 *Rotate Right                    RTR         r3      0101 101t ttss srrr     RTR r1, r2, r3
@@ -175,7 +175,7 @@ Logic Shift Left                LSL         r3      /*    Use ASL    */     LSL 
 
 *Shift Arithmetically Left       SAL         rs      1000 10ii iiss srrr     SAL r1, r2
 *Shift Arithmetically Right      SAR         rs      1000 11ii iiss srrr     SAR r1, r2, 4
-Shift Logically Left            SLL         rs      /*    Use SAL    */     SLL r1, r2
+*Shift Logically Left            SLL         rs      /*    Use SAL    */     SLL r1, r2
 *Shift Logically Right           SLR         rs      1001 00ii iiss srrr     SLR r1, r2, 4
 *Rotate Left                     RTL         rs      1001 01ii iiss srrr     RTL r1, r2
 *Rotate Right                    RTR         rs      1001 10ii iiss srrr     RTR r1, r2, 4
@@ -215,8 +215,8 @@ Shift Logically Left            SLL         rs      /*    Use SAL    */     SLL 
 
 **Move (unconditional)            MOV         r2/f2   00?0 1000 00ss srrr     MOV r1, r2
 
-Move if Equal                   MEQ         r2/f2   /*    Use MYZ    */     MEQ r1, r2
-Move if Not Equal               MNE         r2/f2   /*    Use MNZ    */     MNE r1, r2
+**Move if Equal                   MEQ         r2/f2   /*    Use MYZ    */     MEQ r1, r2
+**Move if Not Equal               MNE         r2/f2   /*    Use MNZ    */     MNE r1, r2
 
 **Move if Less Than               MLT         r2/f2   00?0 1000 01ss srrr     MLT r1, r2
 **Move if Greater Than            MGT         r2/f2   00?0 1000 10ss srrr     MGT r1, r2
@@ -224,8 +224,8 @@ Move if Not Equal               MNE         r2/f2   /*    Use MNZ    */     MNE 
 **Move if Greater or Equal        MGE         r2/f2   00?0 1001 00ss srrr     MGE r1, r2
 
 **Move if Above Than              MAT         r2/f2   00?0 1001 01ss srrr     MAT r1, r2
-Move if Below Than              MBT         r2/f2   /*    Use MYC    */     MBT r1, r2
-Move if Above or Equal          MAE         r2/f2   /*    Use MNC    */     MAE r1, r2
+**Move if Below Than              MBT         r2/f2   /*    Use MYC    */     MBT r1, r2
+**Move if Above or Equal          MAE         r2/f2   /*    Use MNC    */     MAE r1, r2
 **Move if Below or Equal          MBE         r2/f2   00?0 1001 10ss srrr     MBE r1, r2
 
 **Move if (Yes) Sign flag         MYS         r2/f2   00?0 1001 11ss srrr     MYS r1, r2
@@ -241,8 +241,8 @@ Move if Above or Equal          MAE         r2/f2   /*    Use MNC    */     MAE 
 
 *Jump (unconditional)            JMP         rm   11?0 0111 0.cc crrr     JMP Label
 
-Jump if Equal                   JEQ⁴        rm/fm   /*    Use JYZ    */     JEQ r1, r2, Label       See note.
-Jump if Not Equal               JNE⁴        rm/fm   /*    Use JNZ    */     JNE r1, r2, Label       "   "
+**Jump if Equal                   JEQ⁴        rm/fm   /*    Use JYZ    */     JEQ r1, r2, Label       See note.
+**Jump if Not Equal               JNE⁴        rm/fm   /*    Use JNZ    */     JNE r1, r2, Label       "   "
 
 **Jump if Less Than               JLT⁴        rm/fm   11?0 0111 1.cc crrr     JLT r1, r2, Label       "   "
 **Jump if Greater Than            JGT⁴        rm/fm   11?0 1000 0.cc crrr     JGT r1, r2, Label       "   "
@@ -250,8 +250,8 @@ Jump if Not Equal               JNE⁴        rm/fm   /*    Use JNZ    */     JN
 **Jump if Greater or Equal        JGE⁴        rm/fm   11?0 1001 0.cc crrr     JGE r1, r2, Label       "   "
 
 **Jump if Above Than              JAT⁴        rm/fm   11?0 1001 1.cc crrr     JAT r1, r2, Label       "   "
-Jump if Below Than              JBT⁴        rm/fm   /*    Use JYC    */     JBT r1, r2, Label       "   "
-Jump if Above or Equal          JAE⁴        rm/fm   /*    Use JNC    */     JAE r1, r2, Label       "   "
+**Jump if Below Than              JBT⁴        rm/fm   /*    Use JYC    */     JBT r1, r2, Label       "   "
+**Jump if Above or Equal          JAE⁴        rm/fm   /*    Use JNC    */     JAE r1, r2, Label       "   "
 **Jump if Below or Equal          JBE⁴        rm/fm   11?0 1010 0.cc crrr     JBE r1, r2, Label       "   "
 
 **Jump if (Yes) Sign flag         JYS⁴        rm/fm   11?0 1010 1.cc crrr     JYS r1, r2, Label       "   "

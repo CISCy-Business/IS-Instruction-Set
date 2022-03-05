@@ -10,10 +10,10 @@ namespace InstructionSetProject.Backend.InstructionTypes.FmFormats
 
             assembly += GetMnemonic();
             assembly += " ";
-            assembly += Registers.ParseFloatDestination(destinationRegister ?? 0);
+            assembly += Registers.ParseFirstFloat(firstRegister ?? 0);
             assembly += ", ";
             if (addressingMode == 0b001_0000 || addressingMode == 0b001_1000)
-                assembly += Registers.ParseFloatDestination(sourceRegister1 ?? 0);
+                assembly += Registers.ParseFirstFloat(secondRegister ?? 0);
             else
                 assembly += (immediate ?? 0).ToString("X2");
             assembly += ", ";
@@ -29,19 +29,19 @@ namespace InstructionSetProject.Backend.InstructionTypes.FmFormats
             if (tokens.Length != 4)
                 throw new Exception("Incorrect number of tokens obtained from assembly instruction");
 
-            destinationRegister = Registers.ParseFloatDestination(tokens[1].TrimEnd(','));
+            firstRegister = Registers.ParseFirstFloat(tokens[1].TrimEnd(','));
 
             addressingMode = AddressingMode.Get(tokens[3]);
 
             if (addressingMode == 0b001_0000 || addressingMode == 0b001_1000)
             {
-                sourceRegister1 = Registers.ParseFloatDestination(tokens[2].TrimEnd(','));
-                immediate = sourceRegister1;
+                secondRegister = Registers.ParseFirstFloat(tokens[2].TrimEnd(','));
+                immediate = secondRegister;
             }
             else
             {
                 immediate = Convert.ToUInt16(tokens[2].TrimEnd(','), 16);
-                sourceRegister1 = null;
+                secondRegister = null;
             }
         }
 

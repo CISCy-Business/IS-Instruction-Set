@@ -4,17 +4,17 @@
     {
         public byte[] Bytes = new byte[1048576];
 
-        public void Write(ushort address, ushort value)
+        public void Write(uint address, ushort value)
         {
 
         }
 
-        public ushort Read(ushort address)
+        public ushort Read(uint address)
         {
             throw new NotImplementedException();
         }
 
-        public byte[] GetBytesAtAddress(ushort address)
+        public byte[] GetBytesAtAddress(uint address)
         {
             var arrayLength = 1000;
             byte[] result = new byte[arrayLength];
