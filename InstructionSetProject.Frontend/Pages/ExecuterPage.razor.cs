@@ -91,6 +91,31 @@ namespace InstructionSetProject.Frontend.Pages
             await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "assemblyStats.txt", "text/plain", file);
         }
 
+        public string Statistics()
+        {
+            statsString = "";
+            if (SPEx == null) return "No Statistics Yet";
+            statsString += "Instruction Types\n";
+            statsString += "-----------------\n";
+            statsString += "R2 Type: " + SPEx.Statistics.R2InstructionCount + "\n";
+            statsString += "R3 Type: " + SPEx.Statistics.R3InstructionCount + "\n";
+            statsString += "Rm Type: " + SPEx.Statistics.RmInstructionCount + "\n";
+            statsString += "Rs Type: " + SPEx.Statistics.RsInstructionCount + "\n";
+            statsString += "F2 Type: " + SPEx.Statistics.F2InstructionCount + "\n";
+            statsString += "F3 Type: " + SPEx.Statistics.F3InstructionCount + "\n";
+            statsString += "Fm Type: " + SPEx.Statistics.FmInstructionCount + "\n\n";
+
+            statsString += "Clock\n";
+            statsString += "-----\n";
+            statsString += "Total Clock Ticks: " + SPEx.Statistics.ClockTicks + "\n\n";
+
+            statsString += "Flush\n";
+            statsString += "-----\n";
+            statsString += "Total Flushes: " + SPEx.Statistics.FlushCount;
+
+            return statsString;
+        }
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (debugRender)
@@ -107,7 +132,7 @@ namespace InstructionSetProject.Frontend.Pages
         protected override async Task OnInitializedAsync()
         {
             StartupMethod();
-            InitDiagramModel();
+            Statistics();
         }
 
         void StartupMethod()
@@ -151,6 +176,7 @@ namespace InstructionSetProject.Frontend.Pages
         {
             SPEx = (StaticPipelineExecution)StaticPipelineExecutor.Execute(ExecAssemblyCode);
             SPEx.Continue();
+            Statistics();
         }
 
         void Debug()
@@ -174,8 +200,9 @@ namespace InstructionSetProject.Frontend.Pages
             debugRender = true;
             SPEx.ClockTick();
             JSRuntime.InvokeVoidAsync("stepScroll");
-            ConnectorCollection[3].Style.StrokeWidth += 5;
+            Statistics();
             debugRender = true;
+            UpdateDiagram();
         }
 
         void step()
@@ -183,12 +210,259 @@ namespace InstructionSetProject.Frontend.Pages
             debugRender = true;
             SPEx.Step();
             JSRuntime.InvokeVoidAsync("stepScroll");
+            Statistics();
             debugRender = true;
+            UpdateDiagram();
         }
 
         void Continue()
         {
             SPEx.Continue();
+            Statistics();
+        }
+
+        void UpdateDiagram()
+        {
+            if (SPEx != null)
+            {
+                // Updates for Decoding Instruction RegWrite
+                if (SPEx.decodingInstruction != null && SPEx.decodingInstruction.controlBits != null && SPEx.decodingInstruction.controlBits.RegWrite == true)
+                {
+                    ConnectorCollection.First(connector => connector.ID == ControlToRW).Style.StrokeColor = "#0004FF";
+                    ConnectorCollection.First(connector => connector.ID == ControlToRW).Style.StrokeWidth = 3;
+                }
+                else if (SPEx.decodingInstruction == null && ConnectorCollection != null)
+                {
+                    ConnectorCollection.First(connector => connector.ID == ControlToRW).Style.StrokeColor = "black";
+                    ConnectorCollection.First(connector => connector.ID == ControlToRW).Style.StrokeWidth = 1;
+                }
+
+                // Updates for decoding Instruction ALUSrc
+                if (SPEx.decodingInstruction != null && SPEx.decodingInstruction.controlBits != null && SPEx.decodingInstruction.controlBits.ALUSrc == true)
+                {
+                    ConnectorCollection.First(connector => connector.ID == ControlToALUS).Style.StrokeColor = "#0004FF";
+                    ConnectorCollection.First(connector => connector.ID == ControlToALUS).Style.StrokeWidth = 3;
+                }
+                else if (SPEx.decodingInstruction == null && ConnectorCollection != null)
+                {
+                    ConnectorCollection.First(connector => connector.ID == ControlToALUS).Style.StrokeColor = "black";
+                    ConnectorCollection.First(connector => connector.ID == ControlToALUS).Style.StrokeWidth = 1;
+                }
+
+                // Updates for decoding Instruction MemRead
+                if (SPEx.decodingInstruction != null && SPEx.decodingInstruction.controlBits != null && SPEx.decodingInstruction.controlBits.MemRead == true)
+                {
+                    ConnectorCollection.First(connector => connector.ID == ControlToMR).Style.StrokeColor = "#0004FF";
+                    ConnectorCollection.First(connector => connector.ID == ControlToMR).Style.StrokeWidth = 3;
+                }
+                else if (SPEx.decodingInstruction == null && ConnectorCollection != null)
+                {
+                    ConnectorCollection.First(connector => connector.ID == ControlToMR).Style.StrokeColor = "black";
+                    ConnectorCollection.First(connector => connector.ID == ControlToMR).Style.StrokeWidth = 1;
+                }
+
+                // Updates for decoding Instruction MemWrite
+                if (SPEx.decodingInstruction != null && SPEx.decodingInstruction.controlBits != null && SPEx.decodingInstruction.controlBits.MemWrite == true)
+                {
+                    ConnectorCollection.First(connector => connector.ID == ControlToMW).Style.StrokeColor = "#0004FF";
+                    ConnectorCollection.First(connector => connector.ID == ControlToMW).Style.StrokeWidth = 3;
+                }
+                else if (SPEx.decodingInstruction == null && ConnectorCollection != null)
+                {
+                    ConnectorCollection.First(connector => connector.ID == ControlToMW).Style.StrokeColor = "black";
+                    ConnectorCollection.First(connector => connector.ID == ControlToMW).Style.StrokeWidth = 1;
+                }
+
+                // Updates for decoding Instruction MemToReg
+                if (SPEx.decodingInstruction != null && SPEx.decodingInstruction.controlBits != null && SPEx.decodingInstruction.controlBits.MemToReg == true)
+                {
+                    ConnectorCollection.First(connector => connector.ID == ControlToMTR).Style.StrokeColor = "#0004FF";
+                    ConnectorCollection.First(connector => connector.ID == ControlToMTR).Style.StrokeWidth = 3;
+                }
+                else if (SPEx.decodingInstruction == null && ConnectorCollection != null)
+                {
+                    ConnectorCollection.First(connector => connector.ID == ControlToMTR).Style.StrokeColor = "black";
+                    ConnectorCollection.First(connector => connector.ID == ControlToMTR).Style.StrokeWidth = 1;
+                }
+
+                // Updates for decoding Instruction PCSrc
+                if (SPEx.decodingInstruction != null && SPEx.decodingInstruction.controlBits != null && SPEx.decodingInstruction.controlBits.PCSrc == true)
+                {
+                    ConnectorCollection.First(connector => connector.ID == ControlToPCS).Style.StrokeColor = "#0004FF";
+                    ConnectorCollection.First(connector => connector.ID == ControlToPCS).Style.StrokeWidth = 3;
+                }
+                else if (SPEx.decodingInstruction == null && ConnectorCollection != null)
+                {
+                    ConnectorCollection.First(connector => connector.ID == ControlToPCS).Style.StrokeColor = "black";
+                    ConnectorCollection.First(connector => connector.ID == ControlToPCS).Style.StrokeWidth = 1;
+                }
+
+
+
+                // Updates for Executing Instruction RegWrite
+                if (SPEx.executingInstruction != null && SPEx.executingInstruction.controlBits != null && SPEx.executingInstruction.controlBits.RegWrite == true)
+                {
+                    ConnectorCollection.First(connector => connector.ID == RWToRW1).Style.StrokeColor = "#0099FF";
+                    ConnectorCollection.First(connector => connector.ID == RWToRW1).Style.StrokeWidth = 3;
+                }
+                else if (SPEx.executingInstruction == null && ConnectorCollection != null)
+                {
+                    ConnectorCollection.First(connector => connector.ID == RWToRW1).Style.StrokeColor = "black";
+                    ConnectorCollection.First(connector => connector.ID == RWToRW1).Style.StrokeWidth = 1;
+                }
+
+                // Updates for Executing Instruction ALUSrc
+                if (SPEx.executingInstruction != null && SPEx.executingInstruction.controlBits != null && SPEx.executingInstruction.controlBits.ALUSrc == true)
+                {
+                    ConnectorCollection.First(connector => connector.ID == ALUSToExecuteMux).Style.StrokeColor = "#0099FF";
+                    ConnectorCollection.First(connector => connector.ID == ALUSToExecuteMux).Style.StrokeWidth = 3;
+                }
+                else if (SPEx.executingInstruction == null && ConnectorCollection != null)
+                {
+                    ConnectorCollection.First(connector => connector.ID == ALUSToExecuteMux).Style.StrokeColor = "black";
+                    ConnectorCollection.First(connector => connector.ID == ALUSToExecuteMux).Style.StrokeWidth = 1;
+                }
+
+                // Updates for Executing Instruction MemRead
+                if (SPEx.executingInstruction != null && SPEx.executingInstruction.controlBits != null && SPEx.executingInstruction.controlBits.MemRead == true)
+                {
+                    ConnectorCollection.First(connector => connector.ID == MRToMR1).Style.StrokeColor = "#0099FF";
+                    ConnectorCollection.First(connector => connector.ID == MRToMR1).Style.StrokeWidth = 3;
+                }
+                else if (SPEx.executingInstruction == null && ConnectorCollection != null)
+                {
+                    ConnectorCollection.First(connector => connector.ID == MRToMR1).Style.StrokeColor = "black";
+                    ConnectorCollection.First(connector => connector.ID == MRToMR1).Style.StrokeWidth = 1;
+                }
+
+                // Updates for Executing Instruction MemWrite
+                if (SPEx.executingInstruction != null && SPEx.executingInstruction.controlBits != null && SPEx.executingInstruction.controlBits.MemWrite == true)
+                {
+                    ConnectorCollection.First(connector => connector.ID == MWToMW1).Style.StrokeColor = "#0099FF";
+                    ConnectorCollection.First(connector => connector.ID == MWToMW1).Style.StrokeWidth = 3;
+                }
+                else if (SPEx.executingInstruction == null && ConnectorCollection != null)
+                {
+                    ConnectorCollection.First(connector => connector.ID == MWToMW1).Style.StrokeColor = "black";
+                    ConnectorCollection.First(connector => connector.ID == MWToMW1).Style.StrokeWidth = 1;
+                }
+
+                // Updates for Executing Instruction MemToReg
+                if (SPEx.executingInstruction != null && SPEx.executingInstruction.controlBits != null && SPEx.executingInstruction.controlBits.MemToReg == true)
+                {
+                    ConnectorCollection.First(connector => connector.ID == MTRToMTR1).Style.StrokeColor = "#0099FF";
+                    ConnectorCollection.First(connector => connector.ID == MTRToMTR1).Style.StrokeWidth = 3;
+                }
+                else if (SPEx.executingInstruction == null && ConnectorCollection != null)
+                {
+                    ConnectorCollection.First(connector => connector.ID == MTRToMTR1).Style.StrokeColor = "black";
+                    ConnectorCollection.First(connector => connector.ID == MTRToMTR1).Style.StrokeWidth = 1;
+                }
+
+                // Updates for Executing Instruction PCSrc
+                if (SPEx.executingInstruction != null && SPEx.executingInstruction.controlBits != null && SPEx.executingInstruction.controlBits.PCSrc == true)
+                {
+                    ConnectorCollection.First(connector => connector.ID == PCSToPCS1).Style.StrokeColor = "#0099FF";
+                    ConnectorCollection.First(connector => connector.ID == PCSToPCS1).Style.StrokeWidth = 3;
+                }
+                else if (SPEx.executingInstruction == null && ConnectorCollection != null)
+                {
+                    ConnectorCollection.First(connector => connector.ID == PCSToPCS1).Style.StrokeColor = "black";
+                    ConnectorCollection.First(connector => connector.ID == PCSToPCS1).Style.StrokeWidth = 1;
+                }
+
+
+
+                // Updates for Memory Instruction RegWrite
+                if (SPEx.memoryInstruction != null && SPEx.memoryInstruction.controlBits != null && SPEx.memoryInstruction.controlBits.RegWrite == true)
+                {
+                    ConnectorCollection.First(connector => connector.ID == RW1ToRW2).Style.StrokeColor = "#00CC44";
+                    ConnectorCollection.First(connector => connector.ID == RW1ToRW2).Style.StrokeWidth = 3;
+                }
+                else if (SPEx.memoryInstruction == null && ConnectorCollection != null)
+                {
+                    ConnectorCollection.First(connector => connector.ID == RW1ToRW2).Style.StrokeColor = "black";
+                    ConnectorCollection.First(connector => connector.ID == RW1ToRW2).Style.StrokeWidth = 1;
+                }
+
+                // Updates for Memory Instruction MemToReg
+                if (SPEx.memoryInstruction != null && SPEx.memoryInstruction.controlBits != null && SPEx.memoryInstruction.controlBits.MemToReg == true)
+                {
+                    ConnectorCollection.First(connector => connector.ID == MTR1ToMTR2).Style.StrokeColor = "#00CC44";
+                    ConnectorCollection.First(connector => connector.ID == MTR1ToMTR2).Style.StrokeWidth = 3;
+                }
+                else if (SPEx.memoryInstruction == null && ConnectorCollection != null)
+                {
+                    ConnectorCollection.First(connector => connector.ID == MTR1ToMTR2).Style.StrokeColor = "black";
+                    ConnectorCollection.First(connector => connector.ID == MTR1ToMTR2).Style.StrokeWidth = 1;
+                }
+
+                // Updates for Memory Instruction MemRead
+                if (SPEx.memoryInstruction != null && SPEx.memoryInstruction.controlBits != null && SPEx.memoryInstruction.controlBits.MemRead == true)
+                {
+                    ConnectorCollection.First(connector => connector.ID == MR1ToDataMem).Style.StrokeColor = "#00CC44";
+                    ConnectorCollection.First(connector => connector.ID == MR1ToDataMem).Style.StrokeWidth = 3;
+                }
+                else if (SPEx.memoryInstruction == null && ConnectorCollection != null)
+                {
+                    ConnectorCollection.First(connector => connector.ID == MR1ToDataMem).Style.StrokeColor = "black";
+                    ConnectorCollection.First(connector => connector.ID == MR1ToDataMem).Style.StrokeWidth = 1;
+                }
+
+                // Updates for Memory Instruction MemWrite
+                if (SPEx.memoryInstruction != null && SPEx.memoryInstruction.controlBits != null && SPEx.memoryInstruction.controlBits.MemWrite == true)
+                {
+                    ConnectorCollection.First(connector => connector.ID == MW1ToDataMem).Style.StrokeColor = "#00CC44";
+                    ConnectorCollection.First(connector => connector.ID == MW1ToDataMem).Style.StrokeWidth = 3;
+                }
+                else if (SPEx.memoryInstruction == null && ConnectorCollection != null)
+                {
+                    ConnectorCollection.First(connector => connector.ID == MW1ToDataMem).Style.StrokeColor = "black";
+                    ConnectorCollection.First(connector => connector.ID == MW1ToDataMem).Style.StrokeWidth = 1;
+                }
+
+                // Updates for Memory Instruction PCSrc
+                if (SPEx.memoryInstruction != null && SPEx.memoryInstruction.controlBits != null && SPEx.memoryInstruction.controlBits.PCSrc == true)
+                {
+                    ConnectorCollection.First(connector => connector.ID == PCS1ToCheckFlags).Style.StrokeColor = "#00CC44";
+                    ConnectorCollection.First(connector => connector.ID == PCS1ToCheckFlags).Style.StrokeWidth = 3;
+                }
+                else if (SPEx.memoryInstruction == null && ConnectorCollection != null)
+                {
+                    ConnectorCollection.First(connector => connector.ID == PCS1ToCheckFlags).Style.StrokeColor = "black";
+                    ConnectorCollection.First(connector => connector.ID == PCS1ToCheckFlags).Style.StrokeWidth = 1;
+                }
+
+
+
+                // Updates for WriteBack Instruction RegWrite
+                if (SPEx.writingBackInstruction != null && SPEx.writingBackInstruction.controlBits != null && SPEx.writingBackInstruction.controlBits.RegWrite == true)
+                {
+                    ConnectorCollection.First(connector => connector.ID == RW2ToRWRet).Style.StrokeColor = "#B6BF02";
+                    ConnectorCollection.First(connector => connector.ID == RW2ToRWRet).Style.StrokeWidth = 3;
+                    ConnectorCollection.First(connector => connector.ID == RWRetToReg).Style.StrokeColor = "#B6BF02";
+                    ConnectorCollection.First(connector => connector.ID == RWRetToReg).Style.StrokeWidth = 3;
+                }
+                else if (SPEx.writingBackInstruction == null && ConnectorCollection != null)
+                {
+                    ConnectorCollection.First(connector => connector.ID == RW2ToRWRet).Style.StrokeColor = "black";
+                    ConnectorCollection.First(connector => connector.ID == RW2ToRWRet).Style.StrokeWidth = 1;
+                    ConnectorCollection.First(connector => connector.ID == RWRetToReg).Style.StrokeColor = "black";
+                    ConnectorCollection.First(connector => connector.ID == RWRetToReg).Style.StrokeWidth = 1;
+                }
+
+                // Updates for Memory Instruction MemToReg
+                if (SPEx.writingBackInstruction != null && SPEx.writingBackInstruction.controlBits != null && SPEx.writingBackInstruction.controlBits.MemToReg == true)
+                {
+                    ConnectorCollection.First(connector => connector.ID == MTR2ToWriteMux).Style.StrokeColor = "#B6BF02";
+                    ConnectorCollection.First(connector => connector.ID == MTR2ToWriteMux).Style.StrokeWidth = 3;
+                }
+                else if (SPEx.writingBackInstruction == null && ConnectorCollection != null)
+                {
+                    ConnectorCollection.First(connector => connector.ID == MTR2ToWriteMux).Style.StrokeColor = "black";
+                    ConnectorCollection.First(connector => connector.ID == MTR2ToWriteMux).Style.StrokeWidth = 1;
+                }
+            }
         }
 
         private void InitDiagramModel()
@@ -441,79 +715,151 @@ namespace InstructionSetProject.Frontend.Pages
 
             #region Connectors
             // Fetch Connectors
-            CreateConnector("FetchMux", "portFetchMuxOut0", "PC", "portPCIn", "black");
-            CreateConnector("PC", "portPCOut", "InstrMem", "portInstrMemIn", "black");
-            CreateConnector("PC", "portPCOut", "AddPC", "portAddPCIn1", "black");
-            CreateConnector("AddPC", "portAddPCOut0", "FetchMux", "portFetchMuxIn2", "black", "0", AnnotationAlignment.Center, .78);
-            CreateConnector("InstrMem", "portInstrMemOut", "IFID", "portIfidIn1", "black");
-            CreateConnector("InstrMem", "portInstrMemOut1", "AddPC", "portAddPCIn0", "black", "Instr Size", AnnotationAlignment.Center, 0.15);
+            CreateConnector(FetchMuxToPCIn, "FetchMux", "portFetchMuxOut0", "PC", "portPCIn", "black");
+            CreateConnector(PCToInstrMemIn, "PC", "portPCOut", "InstrMem", "portInstrMemIn", "black");
+            CreateConnector(PCToAddPC, "PC", "portPCOut", "AddPC", "portAddPCIn1", "black");
+            CreateConnector(AddPCToFetchMux, "AddPC", "portAddPCOut0", "FetchMux", "portFetchMuxIn2", "black", "0", AnnotationAlignment.Center, .78);
+            CreateConnector(IntrMemToIFID, "InstrMem", "portInstrMemOut", "IFID", "portIfidIn1", "black");
+            CreateConnector(IntrMemToAddPC, "InstrMem", "portInstrMemOut1", "AddPC", "portAddPCIn0", "black", "Instr Size", AnnotationAlignment.Center, 0.15);
 
             // Decode Connectors
-            CreateConnector("IFID", "portIfidOut1", "Registers", "portRegIn0", "black", "Rs1");
-            CreateConnector("IFID", "portIfidOut1", "Registers", "portRegIn1", "black", "Rs2");
-            CreateConnector("Registers", "portRegOut0", "IDEX", "portIdexIn1", "black", "RsD1", AnnotationAlignment.Before);
-            CreateConnector("Registers", "portRegOut1", "IDEX", "portIdexIn2", "black", "RsD2", AnnotationAlignment.Before);
-            CreateConnector("IFID", "portIfidOut1", "ImmGen", "portImmGenIn", "black", "Imm/Addr Mode");
-            CreateConnector("ImmGen", "portImmGenOut", "IDEX", "portIdexIn3", "black", "Result", AnnotationAlignment.Before);
-            CreateConnector("IFID", "portIfidOut1", "IDEX", "portIdexIn4", "black", "Rd");
-            CreateConnector("IFID", "portIfidOut1", "Control", "portControlIn", "black", "Control Bits", AnnotationAlignment.Center, .85);
-            CreateConnector("Control", "portControlOut1", "RW", "portRWIn", "black");
-            CreateConnector("Control", "portControlOut1", "MTR", "portMTRIn", "black");
-            CreateConnector("Control", "portControlOut1", "MR", "portMRIn", "black");
-            CreateConnector("Control", "portControlOut1", "MW", "portMWIn", "black");
-            CreateConnector("Control", "portControlOut1", "PCS", "portPCSIn", "black");
-            CreateConnector("Control", "portControlOut1", "ALUS", "portALUSIn", "black");
+            CreateConnector(IFIDToRegIn0, "IFID", "portIfidOut1", "Registers", "portRegIn0", "black", "Rs1");
+            CreateConnector(IFIDToRegIn1, "IFID", "portIfidOut1", "Registers", "portRegIn1", "black", "Rs2");
+            CreateConnector(RegToIDEXIn1, "Registers", "portRegOut0", "IDEX", "portIdexIn1", "black", "RsD1", AnnotationAlignment.Before);
+            CreateConnector(RegToIDEXIn2, "Registers", "portRegOut1", "IDEX", "portIdexIn2", "black", "RsD2", AnnotationAlignment.Before);
+            CreateConnector(IFIDToImmGen, "IFID", "portIfidOut1", "ImmGen", "portImmGenIn", "black", "Imm/Addr Mode");
+            CreateConnector(ImmGenToIDEX, "ImmGen", "portImmGenOut", "IDEX", "portIdexIn3", "black", "Result", AnnotationAlignment.Before);
+            CreateConnector(IFIDToIDEX, "IFID", "portIfidOut1", "IDEX", "portIdexIn4", "black", "Rd");
+            CreateConnector(IFIDToControl, "IFID", "portIfidOut1", "Control", "portControlIn", "black", "Control Bits", AnnotationAlignment.Center, .85);
+            CreateConnector(ControlToRW, "Control", "portControlOut1", "RW", "portRWIn", "black");
+            CreateConnector(ControlToMTR, "Control", "portControlOut1", "MTR", "portMTRIn", "black");
+            CreateConnector(ControlToMR, "Control", "portControlOut1", "MR", "portMRIn", "black");
+            CreateConnector(ControlToMW, "Control", "portControlOut1", "MW", "portMWIn", "black");
+            CreateConnector(ControlToPCS, "Control", "portControlOut1", "PCS", "portPCSIn", "black");
+            CreateConnector(ControlToALUS, "Control", "portControlOut1", "ALUS", "portALUSIn", "black");
 
             // Execute Connectors
-            CreateConnector("RW", "portRWOut", "RW1", "portRW1In", "black");
-            CreateConnector("MTR", "portMTROut", "MTR1", "portMTR1In", "black");
-            CreateConnector("MR", "portMROut", "MR1", "portMR1In", "black");
-            CreateConnector("MW", "portMWOut", "MW1", "portMW1In", "black");
-            CreateConnector("PCS", "portPCSOut", "PCS1", "portPCS1In", "black");
-            CreateConnector("ALUS", "portALUSOut", "ExecuteMux", "portExecuteMuxIn2", "black");
-            CreateConnector("IDEX", "portIdexOut2", "ExecuteMux", "portExecuteMuxIn1", "black", "0", AnnotationAlignment.Center, .7);
-            CreateConnector("IDEX", "portIdexOut2", "EXMEM", "portExmemIn2", "black", "RsD2", AnnotationAlignment.Center, .9);
-            CreateConnector("IDEX", "portIdexOut3", "FetchMux", "portFetchMuxIn0", "black", "1", AnnotationAlignment.Center, .65);
-            CreateConnector("IDEX", "portIdexOut3", "ExecuteMux", "portExecuteMuxIn0", "black", "1", AnnotationAlignment.Before, .7);
-            CreateConnector("IDEX", "portIdexOut4", "EXMEM", "portExmemIn3", "black", "Rd", AnnotationAlignment.Center, .9);
-            CreateConnector("IDEX", "portIdexOut1", "ALU", "portALUIn1", "black", "RsD1", AnnotationAlignment.Center, .5);
-            CreateConnector("ExecuteMux", "portExecuteMuxOut0", "ALU", "portALUIn0", "black");
-            CreateConnector("ALU", "portALUOut0", "EXMEM", "portExmemIn1", "black", "ALUr", AnnotationAlignment.After, 0);
-            CreateConnector("ALU", "portALUOut1", "EXMEM", "portExmemIn0", "black", "TMP FLGS", AnnotationAlignment.After, .74);
+            CreateConnector(RWToRW1, "RW", "portRWOut", "RW1", "portRW1In", "black");
+            CreateConnector(MTRToMTR1, "MTR", "portMTROut", "MTR1", "portMTR1In", "black");
+            CreateConnector(MRToMR1, "MR", "portMROut", "MR1", "portMR1In", "black");
+            CreateConnector(MWToMW1, "MW", "portMWOut", "MW1", "portMW1In", "black");
+            CreateConnector(PCSToPCS1, "PCS", "portPCSOut", "PCS1", "portPCS1In", "black");
+            CreateConnector(ALUSToExecuteMux, "ALUS", "portALUSOut", "ExecuteMux", "portExecuteMuxIn2", "black");
+            CreateConnector(IDEXToExecuteMux1, "IDEX", "portIdexOut2", "ExecuteMux", "portExecuteMuxIn1", "black", "0", AnnotationAlignment.Center, .7);
+            CreateConnector(IDEXToEXMEM2, "IDEX", "portIdexOut2", "EXMEM", "portExmemIn2", "black", "RsD2", AnnotationAlignment.Center, .9);
+            CreateConnector(IDEXToFetchMux, "IDEX", "portIdexOut3", "FetchMux", "portFetchMuxIn0", "black", "1", AnnotationAlignment.Center, .65);
+            CreateConnector(IDEXToExecuteMux0, "IDEX", "portIdexOut3", "ExecuteMux", "portExecuteMuxIn0", "black", "1", AnnotationAlignment.Before, .7);
+            CreateConnector(IDEXToEXMEM3, "IDEX", "portIdexOut4", "EXMEM", "portExmemIn3", "black", "Rd", AnnotationAlignment.Center, .9);
+            CreateConnector(IDEXToALU, "IDEX", "portIdexOut1", "ALU", "portALUIn1", "black", "RsD1", AnnotationAlignment.Center, .5);
+            CreateConnector(ExecuteMuxToALU, "ExecuteMux", "portExecuteMuxOut0", "ALU", "portALUIn0", "black");
+            CreateConnector(ALUToEXMEM1, "ALU", "portALUOut0", "EXMEM", "portExmemIn1", "black", "ALUr", AnnotationAlignment.After, 0);
+            CreateConnector(ALUToEXMEM0, "ALU", "portALUOut1", "EXMEM", "portExmemIn0", "black", "TMP FLGS", AnnotationAlignment.After, .74);
 
             // Memory Connectors
-            CreateConnector("RW1", "portRW1Out", "RW2", "portRW2In", "black");
-            CreateConnector("MTR1", "portMTR1Out", "MTR2", "portMTR2In", "black");
-            CreateConnector("MR1", "portMR1Out", "DataMem", "portDataMemIn3", "black");
-            CreateConnector("MW1", "portMW1Out", "DataMem", "portDataMemIn2", "black");
-            CreateConnector("EXMEM", "portExmemOut1", "DataMem", "portDataMemIn0", "black", "Addr");
-            CreateConnector("EXMEM", "portExmemOut2", "DataMem", "portDataMemIn1", "black", "RsD2");
-            CreateConnector("EXMEM", "portExmemOut1", "MEMWB", "portMemwbIn1", "black", "ALUr");
-            CreateConnector("EXMEM", "portExmemOut3", "MEMWB", "portMemwbIn2", "black", "Rd");
-            CreateConnector("DataMem", "portDataMemOut", "MEMWB", "portMemwbIn0", "black", "Data");
-            CreateConnector("PCS1", "portPCS1Out", "CheckFlags", "portChkFlgIn1", "black");
-            CreateConnector("EXMEM", "portExmemOut0", "CheckFlags", "portChkFlgIn0", "black", "FL");
-            CreateConnector("CheckFlags", "portChkFlgOut0", "FlgReturn", "portFLRetIn", "black");
-            CreateConnector("FlgReturn", "portFLRetOut", "FetchMux", "portFetchMuxIn1", "black");
+            CreateConnector(RW1ToRW2, "RW1", "portRW1Out", "RW2", "portRW2In", "black");
+            CreateConnector(MTR1ToMTR2, "MTR1", "portMTR1Out", "MTR2", "portMTR2In", "black");
+            CreateConnector(MR1ToDataMem, "MR1", "portMR1Out", "DataMem", "portDataMemIn3", "black");
+            CreateConnector(MW1ToDataMem, "MW1", "portMW1Out", "DataMem", "portDataMemIn2", "black");
+            CreateConnector(EXMEMToDataMem0, "EXMEM", "portExmemOut1", "DataMem", "portDataMemIn0", "black", "Addr");
+            CreateConnector(EXMEMToDataMem1, "EXMEM", "portExmemOut2", "DataMem", "portDataMemIn1", "black", "RsD2");
+            CreateConnector(EXMEMToMEMWB1, "EXMEM", "portExmemOut1", "MEMWB", "portMemwbIn1", "black", "ALUr");
+            CreateConnector(EXMEMToMEMWB2, "EXMEM", "portExmemOut3", "MEMWB", "portMemwbIn2", "black", "Rd");
+            CreateConnector(DataMemToMEMWB, "DataMem", "portDataMemOut", "MEMWB", "portMemwbIn0", "black", "Data");
+            CreateConnector(PCS1ToCheckFlags, "PCS1", "portPCS1Out", "CheckFlags", "portChkFlgIn1", "black");
+            CreateConnector(EXMEMToCheckFlags, "EXMEM", "portExmemOut0", "CheckFlags", "portChkFlgIn0", "black", "FL");
+            CreateConnector(CheckFlagsToFlgRet, "CheckFlags", "portChkFlgOut0", "FlgReturn", "portFLRetIn", "black");
+            CreateConnector(FlgRetToFetchMux, "FlgReturn", "portFLRetOut", "FetchMux", "portFetchMuxIn1", "black");
 
             // WriteBack Connectors
-            CreateConnector("MTR2", "portMTR2Out", "WriteMux", "portWriteMuxIn2", "black");
-            CreateConnector("RW2", "portRW2Out", "RWReturn", "portRWRetIn", "black");
-            CreateConnector("RWReturn", "portRWRetOut", "Registers", "portRegIn4", "black");
-            CreateConnector("MEMWB", "portMemwbOut0", "WriteMux", "portWriteMuxIn1", "black", "1", AnnotationAlignment.Center, .5);
-            CreateConnector("MEMWB", "portMemwbOut1", "WriteMux", "portWriteMuxIn0", "black", "0", AnnotationAlignment.Before, .8);
-            CreateConnector("WriteMux", "portWriteMuxOut0", "Registers", "portRegIn3", "black", "Rd Data", AnnotationAlignment.After, .5, segment1, segment2);
-            CreateConnector("MEMWB", "portMemwbOut2", "RdRegReturn", "portRdRetIn", "black", "Rd Reg", AnnotationAlignment.Before, .5);
-            CreateConnector("RdRegReturn", "portRdRetOut", "Registers", "portRegIn2", "black", "Rd Reg", AnnotationAlignment.Before, .5);
+            CreateConnector(MTR2ToWriteMux, "MTR2", "portMTR2Out", "WriteMux", "portWriteMuxIn2", "black");
+            CreateConnector(RW2ToRWRet, "RW2", "portRW2Out", "RWReturn", "portRWRetIn", "black");
+            CreateConnector(RWRetToReg, "RWReturn", "portRWRetOut", "Registers", "portRegIn4", "black");
+            CreateConnector(MEMWBToWriteMux1, "MEMWB", "portMemwbOut0", "WriteMux", "portWriteMuxIn1", "black", "1", AnnotationAlignment.Center, .5);
+            CreateConnector(MEMWBToWriteMux2, "MEMWB", "portMemwbOut1", "WriteMux", "portWriteMuxIn0", "black", "0", AnnotationAlignment.Before, .8);
+            CreateConnector(WriteMuxToReg, "WriteMux", "portWriteMuxOut0", "Registers", "portRegIn3", "black", "Rd Data", AnnotationAlignment.After, .5, segment1, segment2);
+            CreateConnector(MEMWBToRdRet, "MEMWB", "portMemwbOut2", "RdRegReturn", "portRdRetIn", "black", "Rd Reg", AnnotationAlignment.Before, .5);
+            CreateConnector(RdRetToReg, "RdRegReturn", "portRdRetOut", "Registers", "portRegIn2", "black", "Rd Reg", AnnotationAlignment.Before, .5);
 
             #endregion
+
+            UpdateDiagram();
         }
 
-        private void CreateConnector(string sourceId, string sourcePortId, string targetId, string targetPortId, string strokeColor, string label = default, AnnotationAlignment align = AnnotationAlignment.Before, double offset = 1, OrthogonalSegment segment1 = null, OrthogonalSegment segment2 = null)
+        #region Connector Variables
+
+        // Fetch Connectors
+        public string FetchMuxToPCIn = "FetchMuxToPCIn";
+        public string PCToInstrMemIn = "PCToInstrMemIn";
+        public string PCToAddPC = "PCToAddPC";
+        public string AddPCToFetchMux = "AddPCToFetchMux";
+        public string IntrMemToIFID = "IntrMemToIFID";
+        public string IntrMemToAddPC = "IntrMemToAddPC";
+
+        // Decode Connectors
+        public string IFIDToRegIn0 = "IFIDToRegIn0";
+        public string IFIDToRegIn1 = "IFIDToRegIn1";
+        public string RegToIDEXIn1 = "RegToIDEXIn1";
+        public string RegToIDEXIn2 = "RegToIDEXIn2";
+        public string IFIDToImmGen = "IFIDToImmGen";
+        public string ImmGenToIDEX = "ImmGenToIDEX";
+        public string IFIDToIDEX = "IFIDToIDEX";
+        public string IFIDToControl = "IFIDToControl";
+        public string ControlToRW = "ControlToRW";
+        public string ControlToMTR = "ControlToMTR";
+        public string ControlToMR = "ControlToMR";
+        public string ControlToMW = "ControlToMW";
+        public string ControlToPCS = "ControlToPCS";
+        public string ControlToALUS = "ControlToALUS";
+
+        // Execute Connectors
+        public string RWToRW1 = "RWToRW1";
+        public string MTRToMTR1 = "MTRToMTR1";
+        public string MRToMR1 = "MRToMR1";
+        public string MWToMW1 = "MWToMW1";
+        public string PCSToPCS1 = "PCSToPCS1";
+        public string ALUSToExecuteMux = "ALUSToExecuteMux";
+        public string IDEXToExecuteMux1 = "IDEXToExecuteMux1";
+        public string IDEXToEXMEM2 = "IDEXToEXMEM2";
+        public string IDEXToFetchMux = "IDEXToFetchMux";
+        public string IDEXToExecuteMux0 = "IDEXToExecuteMux0";
+        public string IDEXToEXMEM3 = "IDEXToEXMEM3";
+        public string IDEXToALU = "IDEXToALU";
+        public string ExecuteMuxToALU = "ExecuteMuxToALU";
+        public string ALUToEXMEM1 = "ALUToEXMEM1";
+        public string ALUToEXMEM0 = "ALUToEXMEM0";
+
+        // Memory Connectors
+        public string RW1ToRW2 = "RW1ToRW2";
+        public string MTR1ToMTR2 = "MTR1ToMTR2";
+        public string MR1ToDataMem = "MR1ToDataMem";
+        public string MW1ToDataMem = "MW1ToDataMem";
+        public string EXMEMToDataMem0 = "EXMEMToDataMem0";
+        public string EXMEMToDataMem1 = "EXMEMToDataMem1";
+        public string EXMEMToMEMWB1 = "EXMEMToMEMWB1";
+        public string EXMEMToMEMWB2 = "EXMEMToMEMWB2";
+        public string DataMemToMEMWB = "DataMemToMEMWB";
+        public string PCS1ToCheckFlags = "PCS1ToCheckFlags";
+        public string EXMEMToCheckFlags = "EXMEMToCheckFlags";
+        public string CheckFlagsToFlgRet = "CheckFlagsToFlgRet";
+        public string FlgRetToFetchMux = "FlgRetToFetchMux";
+
+        // WriteBack Connectors
+        public string MTR2ToWriteMux = "MTR2ToWriteMux";
+        public string RW2ToRWRet = "RW2ToRWRet";
+        public string RWRetToReg = "RWRetToReg";
+        public string MEMWBToWriteMux1 = "MEMWBToWriteMux1";
+        public string MEMWBToWriteMux2 = "MEMWBToWriteMux2";
+        public string WriteMuxToReg = "WriteMuxToReg";
+        public string MEMWBToRdRet = "MEMWBToRdRet";
+        public string RdRetToReg = "RdRetToReg";
+
+        #endregion
+
+        private void CreateConnector(string id, string sourceId, string sourcePortId, string targetId, string targetPortId, string strokeColor, string label = default, AnnotationAlignment align = AnnotationAlignment.Before, double offset = 1, OrthogonalSegment segment1 = null, OrthogonalSegment segment2 = null)
         {
             Connector diagramConnector = new Connector()
             {
-                ID = string.Format("connector{0}", ++connectorCount),
+                ID = id,
                 SourceID = sourceId,
                 SourcePortID = sourcePortId,
                 TargetID = targetId,

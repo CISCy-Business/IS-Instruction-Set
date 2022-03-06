@@ -9,6 +9,7 @@ namespace InstructionSetProject.Backend.StaticPipeline
         public InstructionList InstrList;
         public StaticPipelineDataStructures DataStructures;
         public List<byte> MachineCode;
+        public StaticPipelineStatistics Statistics;
 
         public Alu Alu;
 
@@ -37,6 +38,7 @@ namespace InstructionSetProject.Backend.StaticPipeline
             InstrList = instrList;
             MachineCode = Assembler.Assemble(instrList);
             DataStructures.Memory.AddInstructionCode(MachineCode);
+            Statistics = new();
         }
 
         public void Continue()
@@ -74,6 +76,7 @@ namespace InstructionSetProject.Backend.StaticPipeline
             {
                 _fetchStageOffset = -1;
             }
+            Statistics.ClockTicks++;
         }
 
         private void Fetch()
@@ -244,6 +247,7 @@ namespace InstructionSetProject.Backend.StaticPipeline
                     MemoryWriteBack.WriteRegister.value = (ushort)MemoryWriteBack.AluResult;
                 }
             }
+            Statistics.StatInstructionType(writingBackInstruction);
         }
 
         private void FlushPipeline()
@@ -251,6 +255,7 @@ namespace InstructionSetProject.Backend.StaticPipeline
             _executeStageOffset = -1;
             _decodeStageOffset = -1;
             _fetchStageOffset = -1;
+            Statistics.FlushCount++;
         }
 
         private Register<ushort>? GetDestinationRegister(IInstruction instr)
