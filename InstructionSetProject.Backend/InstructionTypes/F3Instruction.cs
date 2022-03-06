@@ -4,7 +4,7 @@ using InstructionSetProject.Backend.Utilities;
 
 namespace InstructionSetProject.Backend.InstructionTypes
 {
-    public abstract class F3Instruction : IInstruction
+    public abstract class F3Instruction : IInstruction, IFloatInstruction
     {
         public ushort lengthInBytes => 2;
         public abstract ControlBits controlBits { get; }

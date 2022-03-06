@@ -10,7 +10,7 @@ namespace InstructionSetProject.Backend.Instructions.F2Types
 
         public const ushort OpCode = 0b0010_0011_0100_0000;
 
-        public override ControlBits controlBits => throw new NotImplementedException();
+        public override ControlBits controlBits => new(true, false, false, false, false, false, true);
 
         public override AluOperation? aluOperation => null;
 

@@ -20,8 +20,54 @@ namespace InstructionSetProject.Backend.Execution
             {
                 case AluOperation.Add:
                     return UshortAdd(lhsOp, rhsOp);
+                case AluOperation.AddWithCarry:
+                    return UshortAddWithCarry(lhsOp, rhsOp);
                 case AluOperation.Subtract:
                     return UshortSubtract(lhsOp, rhsOp);
+                case AluOperation.SubtractWithBorrow:
+                    return UshortSubtractWithBorrow(lhsOp, rhsOp);
+                case AluOperation.FloatAdd:
+                    return FloatAdd(lhsOp, rhsOp);
+                case AluOperation.FloatAddWithCarry:
+                    return FloatAddWithCarry(lhsOp, rhsOp);
+                case AluOperation.FloatSubtract:
+                    return FloatSubtract(lhsOp, rhsOp);
+                case AluOperation.FloatSubtractWithBorrow:
+                    return FloatSubtractWithBorrow(lhsOp, rhsOp);
+                case AluOperation.BitwiseAnd:
+                    return BitwiseAnd(lhsOp, rhsOp);
+                case AluOperation.BitwiseOr:
+                    return BitwiseOr(lhsOp, rhsOp);
+                case AluOperation.BitwiseXor:
+                    return BitwiseXor(lhsOp, rhsOp);
+                case AluOperation.BitwiseNot:
+                    return BitwiseNot(lhsOp, rhsOp);
+                case AluOperation.Negate:
+                    return Negate(lhsOp, rhsOp);
+                case AluOperation.SetSignFlag:
+                    return SetSignFlag(true);
+                case AluOperation.ClearSignFlag:
+                    return SetSignFlag(false);
+                case AluOperation.SetParityFlag:
+                    return SetParityFlag(true);
+                case AluOperation.ClearParityFlag:
+                    return SetParityFlag(false);
+                case AluOperation.SetOverflowFlag:
+                    return SetOverflowFlag(true);
+                case AluOperation.ClearOverflowFlag:
+                    return SetOverflowFlag(false);
+                case AluOperation.SetCarryFlag:
+                    return SetCarryFlag(true);
+                case AluOperation.ClearCarryFlag:
+                    return SetCarryFlag(false);
+                case AluOperation.SetZeroFlag:
+                    return SetZeroFlag(true);
+                case AluOperation.ClearZeroFlag:
+                    return SetZeroFlag(false);
+                case AluOperation.AbsoluteValue:
+                    return AbsoluteValue(lhsOp, rhsOp);
+                case AluOperation.NoOperation:
+                    return NoOperation();
                 default:
                     throw new Exception("ALU operation not found");
             }
@@ -32,8 +78,53 @@ namespace InstructionSetProject.Backend.Execution
             var lhs = lhsOp ?? 0;
             var rhs = rhsOp ?? 0;
             var result = (ushort)(lhs + rhs);
-            var flags = ComputeFlagsRegister(lhs, rhs, result);
+            var flags = ComputeFlagsRegister(result);
+            flags = CalculateAddFlags(lhs, rhs, result, flags);
+            
+            return (result, flags);
+        }
 
+        public (ushort result, FlagsRegister flags) UshortAddWithCarry(ushort? lhsOp, ushort? rhsOp)
+        {
+            var lhs = lhsOp ?? 0;
+            var rhs = rhsOp ?? 0;
+            var result = (ushort)(lhs + rhs + (dataStructures.Flags.Carry ? 1 : 0));
+            var flags = ComputeFlagsRegister(result);
+            flags = CalculateAddFlags(lhs, rhs, result, flags);
+
+            return (result, flags);
+        }
+
+        public (ushort result, FlagsRegister flags) FloatAdd(ushort? lhsOp, ushort? rhsOp)
+        {
+            var lhsShort = lhsOp ?? 0;
+            var rhsShort = rhsOp ?? 0;
+            var lhs = (float)BitConverter.UInt16BitsToHalf(lhsShort);
+            var rhs = (float) BitConverter.UInt16BitsToHalf(rhsShort);
+            var result = (Half) (lhs + rhs);
+            var resultShort = BitConverter.HalfToUInt16Bits(result);
+            var flags = ComputeFlagsRegister(resultShort);
+            flags = CalculateAddFlags(lhsShort, rhsShort, resultShort, flags);
+
+            return (resultShort, flags);
+        }
+
+        public (ushort result, FlagsRegister flags) FloatAddWithCarry(ushort? lhsOp, ushort? rhsOp)
+        {
+            var lhsShort = lhsOp ?? 0;
+            var rhsShort = rhsOp ?? 0;
+            var lhs = (float)BitConverter.UInt16BitsToHalf(lhsShort);
+            var rhs = (float)BitConverter.UInt16BitsToHalf(rhsShort);
+            var result = (Half)(lhs + rhs + (dataStructures.Flags.Carry ? 1f : 0f));
+            var resultShort = BitConverter.HalfToUInt16Bits(result);
+            var flags = ComputeFlagsRegister(resultShort);
+            flags = CalculateAddFlags(lhsShort, rhsShort, resultShort, flags);
+
+            return (resultShort, flags);
+        }
+
+        private FlagsRegister CalculateAddFlags(ushort lhs, ushort rhs, ushort result, FlagsRegister flags)
+        {
             if (((lhs & signBit) != 0 || (rhs & signBit) != 0) && (result & signBit) == 0)
                 flags.Carry = true;
             else
@@ -46,7 +137,7 @@ namespace InstructionSetProject.Backend.Execution
             else
                 flags.Overflow = false;
 
-            return (result, flags);
+            return flags;
         }
 
         public (ushort result, FlagsRegister flags) UshortSubtract(ushort? lhsOp, ushort? rhsOp)
@@ -54,8 +145,53 @@ namespace InstructionSetProject.Backend.Execution
             var lhs = lhsOp ?? 0;
             var rhs = rhsOp ?? 0;
             var result = (ushort) (lhs - rhs);
-            var flags = ComputeFlagsRegister(lhs, rhs, result);
+            var flags = ComputeFlagsRegister(result);
+            flags = CalculateSubtractFlags(lhs, rhs, result, flags);
 
+            return (result, flags);
+        }
+
+        public (ushort result, FlagsRegister flags) UshortSubtractWithBorrow(ushort? lhsOp, ushort? rhsOp)
+        {
+            var lhs = lhsOp ?? 0;
+            var rhs = rhsOp ?? 0;
+            var result = (ushort)(lhs - rhs - (dataStructures.Flags.Carry ? 1 : 0));
+            var flags = ComputeFlagsRegister(result);
+            flags = CalculateSubtractFlags(lhs, rhs, result, flags);
+
+            return (result, flags);
+        }
+
+        public (ushort result, FlagsRegister flags) FloatSubtract(ushort? lhsOp, ushort? rhsOp)
+        {
+            var lhsShort = lhsOp ?? 0;
+            var rhsShort = rhsOp ?? 0;
+            var lhs = (float)BitConverter.UInt16BitsToHalf(lhsShort);
+            var rhs = (float)BitConverter.UInt16BitsToHalf(rhsShort);
+            var result = (Half)(lhs - rhs);
+            var resultShort = BitConverter.HalfToUInt16Bits(result);
+            var flags = ComputeFlagsRegister(resultShort);
+            flags = CalculateSubtractFlags(lhsShort, rhsShort, resultShort, flags);
+
+            return (resultShort, flags);
+        }
+
+        public (ushort result, FlagsRegister flags) FloatSubtractWithBorrow(ushort? lhsOp, ushort? rhsOp)
+        {
+            var lhsShort = lhsOp ?? 0;
+            var rhsShort = rhsOp ?? 0;
+            var lhs = (float)BitConverter.UInt16BitsToHalf(lhsShort);
+            var rhs = (float)BitConverter.UInt16BitsToHalf(rhsShort);
+            var result = (Half)(lhs - rhs - (dataStructures.Flags.Carry ? 1f : 0f));
+            var resultShort = BitConverter.HalfToUInt16Bits(result);
+            var flags = ComputeFlagsRegister(resultShort);
+            flags = CalculateSubtractFlags(lhsShort, rhsShort, resultShort, flags);
+
+            return (resultShort, flags);
+        }
+
+        private FlagsRegister CalculateSubtractFlags(ushort lhs, ushort rhs, ushort result, FlagsRegister flags)
+        {
             if (((lhs & signBit) == 0 && (result & signBit) != 0))
                 flags.Carry = true;
             else
@@ -63,10 +199,102 @@ namespace InstructionSetProject.Backend.Execution
 
             flags.Overflow = false;
 
+            return flags;
+        }
+
+        public (ushort result, FlagsRegister flags) BitwiseAnd(ushort? lhsOp, ushort? rhsOp)
+        {
+            var lhs = lhsOp ?? 0;
+            var rhs = rhsOp ?? 0;
+            var result = (ushort)(lhs & rhs);
+            var flags = ComputeFlagsRegister(result);
+
             return (result, flags);
         }
 
-        private FlagsRegister ComputeFlagsRegister(ushort lhs, ushort rhs, ushort result)
+        public (ushort result, FlagsRegister flags) BitwiseOr(ushort? lhsOp, ushort? rhsOp)
+        {
+            var lhs = lhsOp ?? 0;
+            var rhs = rhsOp ?? 0;
+            var result = (ushort)(lhs | rhs);
+            var flags = ComputeFlagsRegister(result);
+
+            return (result, flags);
+        }
+
+        public (ushort result, FlagsRegister flags) BitwiseXor(ushort? lhsOp, ushort? rhsOp)
+        {
+            var lhs = lhsOp ?? 0;
+            var rhs = rhsOp ?? 0;
+            var result = (ushort)(lhs ^ rhs);
+            var flags = ComputeFlagsRegister(result);
+
+            return (result, flags);
+        }
+
+        public (ushort result, FlagsRegister flags) BitwiseNot(ushort? lhsOp, ushort? rhsOp)
+        {
+            var lhs = lhsOp ?? 0;
+            var result = (ushort)(~lhs);
+            var flags = ComputeFlagsRegister(result);
+
+            return (result, flags);
+        }
+
+        public (ushort result, FlagsRegister flags) Negate(ushort? lhsOp, ushort? rhsOp)
+        {
+            var lhs = lhsOp ?? 0;
+            var result = (ushort) (lhs * -1);
+            var flags = ComputeFlagsRegister(result);
+
+            return (result, flags);
+        }
+
+        public (ushort result, FlagsRegister flags) SetSignFlag(bool value)
+        {
+            dataStructures.Flags.Sign = value;
+            return (0, dataStructures.Flags);
+        }
+
+        public (ushort result, FlagsRegister flags) SetParityFlag(bool value)
+        {
+            dataStructures.Flags.Parity = value;
+            return (0, dataStructures.Flags);
+        }
+
+        public (ushort result, FlagsRegister flags) SetOverflowFlag(bool value)
+        {
+            dataStructures.Flags.Overflow = value;
+            return (0, dataStructures.Flags);
+        }
+
+        public (ushort result, FlagsRegister flags) SetCarryFlag(bool value)
+        {
+            dataStructures.Flags.Carry = value;
+            return (0, dataStructures.Flags);
+        }
+
+        public (ushort result, FlagsRegister flags) SetZeroFlag(bool value)
+        {
+            dataStructures.Flags.Zero = value;
+            return (0, dataStructures.Flags);
+        }
+
+        public (ushort result, FlagsRegister flags) AbsoluteValue(ushort? lhsOp, ushort? rhsOp)
+        {
+            var lhs = lhsOp ?? 0;
+            var result = (ushort) (lhs & 0b0111_1111_1111_1111);
+            var flags = ComputeFlagsRegister(result);
+
+            return (result, flags);
+        }
+
+        public (ushort result, FlagsRegister flags) NoOperation()
+        {
+            return (0, dataStructures.Flags);
+        }
+
+        private FlagsRegister ComputeFlagsRegister(ushort result)
         {
             FlagsRegister flags = new();
 
@@ -90,6 +318,29 @@ namespace InstructionSetProject.Backend.Execution
     public enum AluOperation
     {
         Add,
-        Subtract
+        AddWithCarry,
+        Subtract,
+        SubtractWithBorrow,
+        FloatAdd,
+        FloatAddWithCarry,
+        FloatSubtract,
+        FloatSubtractWithBorrow,
+        BitwiseAnd,
+        BitwiseOr,
+        BitwiseXor,
+        BitwiseNot,
+        Negate,
+        SetSignFlag,
+        ClearSignFlag,
+        SetParityFlag,
+        ClearParityFlag,
+        SetOverflowFlag,
+        ClearOverflowFlag,
+        SetCarryFlag,
+        ClearCarryFlag,
+        SetZeroFlag,
+        ClearZeroFlag,
+        AbsoluteValue,
+        NoOperation
     }
 }
