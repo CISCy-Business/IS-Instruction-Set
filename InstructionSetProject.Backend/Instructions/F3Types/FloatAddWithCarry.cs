@@ -10,9 +10,9 @@ namespace InstructionSetProject.Backend.Instructions.F3Types
 
         public const ushort OpCode = 0b0110_0010_0000_0000;
 
-        public override ControlBits controlBits => throw new NotImplementedException();
+        public override ControlBits controlBits => new(true, false, false, false, false, false, true);
 
-        public override AluOperation? aluOperation => null;
+        public override AluOperation? aluOperation => AluOperation.FloatAddWithCarry;
 
         public override string GetMnemonic()
         {

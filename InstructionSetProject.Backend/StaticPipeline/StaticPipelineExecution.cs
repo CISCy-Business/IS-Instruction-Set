@@ -15,7 +15,7 @@ namespace InstructionSetProject.Backend.StaticPipeline
         public DecodeExecute DecodeExecute;
         public ExecuteMemory ExecuteMemory;
         public MemoryWriteBack MemoryWriteBack;
-        
+
         private int _fetchStageOffset = 0;
         private int _decodeStageOffset = -1;
         private int _executeStageOffset = -1;
@@ -135,16 +135,11 @@ namespace InstructionSetProject.Backend.StaticPipeline
             ExecuteMemory.WriteRegister = DecodeExecute.WriteRegister;
 
             ushort? aluSource2 = instr.controlBits.ALUSrc ? DecodeExecute.Immediate : DecodeExecute.ReadData2;
-            if ((DecodeExecute.ReadData1 == null || aluSource2 == null) || instr.aluOperation == null)
-                ExecuteMemory.AluResult = null;
-            else
-            {
-                var aluOutput = Alu.Execute((AluOperation)instr.aluOperation, DecodeExecute.ReadData1, (ushort)aluSource2);
-                ExecuteMemory.AluResult = aluOutput.result;
-                ExecuteMemory.FlagsRegister = aluOutput.flags;
-                if (instr.controlBits.UpdateFlags)
-                    DataStructures.Flags = aluOutput.flags;
-            }
+            var aluOutput = Alu.Execute((AluOperation)instr.aluOperation, DecodeExecute.ReadData1, aluSource2);
+            ExecuteMemory.AluResult = aluOutput.result;
+            ExecuteMemory.FlagsRegister = aluOutput.flags;
+            if (instr.controlBits.UpdateFlags)
+                DataStructures.Flags = aluOutput.flags;
 
             ExecuteMemory.ReadData2 = DecodeExecute.ReadData2;
 
@@ -201,7 +196,7 @@ namespace InstructionSetProject.Backend.StaticPipeline
                 {
                     if (ExecuteMemory.FlagsRegister != null && ExecuteMemory.FlagsRegister?.IsFlagSet(flagInstr.flagToCheck) == flagInstr.flagEnabled)
                     {
-                        DataStructures.InstructionPointer.value = (ushort) ExecuteMemory.Immediate;
+                        DataStructures.InstructionPointer.value = (ushort)ExecuteMemory.Immediate;
                         FlushPipeline();
                     }
                 }

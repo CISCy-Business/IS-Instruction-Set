@@ -10,9 +10,9 @@ namespace InstructionSetProject.Backend.Instructions.R2Types
 
         public const ushort OpCode = 0b0000_0011_1100_0000;
 
-        public override ControlBits controlBits => throw new NotImplementedException();
+        public override ControlBits controlBits => new(true, false, false, false, false, false, true);
 
-        public override AluOperation? aluOperation => null;
+        public override AluOperation? aluOperation => AluOperation.AbsoluteValue;
 
         public override string GetMnemonic()
         {

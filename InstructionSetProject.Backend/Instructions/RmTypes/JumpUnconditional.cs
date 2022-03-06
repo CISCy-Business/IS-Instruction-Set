@@ -12,7 +12,7 @@ namespace InstructionSetProject.Backend.Instructions.RmTypes
 
         public override ControlBits controlBits => new(false, false, false, false, false, true, false);
 
-        public override AluOperation? aluOperation => AluOperation.Subtract;
+        public override AluOperation? aluOperation => AluOperation.NoOperation;
 
         public override string GetMnemonic()
         {
