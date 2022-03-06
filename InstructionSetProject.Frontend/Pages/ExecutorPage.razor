@@ -116,7 +116,7 @@
                                         <label id="exLabel"><b>Source Code</b></label>
                                         <button @onclick="SaveAssemblyCode" type="button" class="float-end" id="saveButton">Save File</button>
                                     </div>
-                                    <textarea @bind="ExecAssemblyCode" placeholder="Write your assembly code here..."></textarea><br />
+                                    <textarea @bind="ExecAssemblyCode" id="assemblyTextBox" placeholder="Write your assembly code here..."></textarea><br />
                                     <div>
                                         <label id="exLabel"><b>Machine Code</b></label>
                                     </div>
@@ -148,7 +148,7 @@
                                         <label id="exLabel" class="statsClass"><b>Statistics</b></label>
                                         <button @onclick="SaveStats" type="button" class="float-end" id="saveButton">Save Stats</button>
                                     </div>
-                                    <textarea @bind="statsString" placeholder="Statistics will appear after running the code..."></textarea>
+                                    <textarea @bind="statsString" placeholder="Statistics will appear after running the code..." readonly></textarea>
                                 </div>
                             </div>
                         </div>
@@ -159,6 +159,27 @@
                         <div class="registerPane">
                             <div class="container">
                                 <div class="row">
+                                    <div class="col-sm-4">
+                                        <label class="registerLabel"><b>PC:</b></label>
+                                        <textarea readonly class="registerTextArea">@PC</textarea><br/>
+
+                                        <label class="registerLabel"><b>SP:</b></label>
+                                        <textarea readonly class="registerTextArea">@SP</textarea><br/>
+
+                                        <label class="registerLabel"><b>FL:</b></label>
+                                        <textarea readonly class="registerTextArea">@FL</textarea><br/><br/>
+
+                                        <!-- Add a stage legend right here in this spot where this comment is located-->
+                                        <div>
+                                            <h3 style="color: black; font-family: monospace; font-size: 25px; border"><b>Stages:</b></h3>
+                                            <p class="bg-fetch" style="color: black; font-family: monospace; font-size: 21px"><b>Fetch</b></p>
+                                            <p class="bg-decode" style="color: black; font-family: monospace; font-size: 21px"><b>Decode</b></p>
+                                            <p class="bg-execute" style="color: black; font-family: monospace; font-size: 21px"><b>Execute</b></p>
+                                            <p class="bg-memory" style="color: black; font-family: monospace; font-size: 21px"><b>Memory</b></p>
+                                            <p class="bg-write" style="color: black; font-family: monospace; font-size: 21px"><b>WriteBack</b></p>
+                                        </div>
+                                    </div>
+
                                     <div class="col-sm-4">
                                         <label class="registerLabel"><b>R0:</b></label>
                                         <textarea readonly class="registerTextArea">@r0</textarea><br/>
