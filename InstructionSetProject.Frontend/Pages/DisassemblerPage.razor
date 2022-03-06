@@ -36,7 +36,7 @@
                 <textarea @bind="currentCodeDis" id="disassemble" name="disassemble" placeholder="@machinePlaceholder"></textarea>
                 <p>
                     <button @onclick="SaveMachineCode" type="button" name="dis_btn" class="btn btn-primary btn-lg">Save Code</button>
-                    <button @onclick="OpenMachineCodeExecuter" type="button" name="dis_exec_btn" class="btn btn-primary btn-lg float-end">Open Executer</button>
+                    <button @onclick="OpenMachineCodeExecutor" type="button" name="dis_exec_btn" class="btn btn-primary btn-lg float-end">Open Executor</button>
                 </p>
             </div>
     
@@ -94,10 +94,10 @@
         await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "assemblyCode.txt", "text/plain", file);
     }
 
-    private void OpenMachineCodeExecuter()
+    private void OpenMachineCodeExecutor()
     {
-        FrontendVariables.currentMachineCodeExecuter = currentCodeDis;
-        UriHelper.NavigateTo("executer");
+        FrontendVariables.currentMachineCodeExecutor = currentCodeDis;
+        UriHelper.NavigateTo("executor");
     }
 
     protected override async Task OnInitializedAsync()

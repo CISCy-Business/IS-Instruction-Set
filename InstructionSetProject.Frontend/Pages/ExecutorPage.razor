@@ -1,4 +1,4 @@
-﻿@page "/executer"
+﻿@page "/executor"
 @using InstructionSetProject.Backend;
 @using InstructionSetProject.Backend.StaticFrontend;
 @using InstructionSetProject.Backend.StaticPipeline;
@@ -55,7 +55,7 @@
 
 </style>
 
-<div class="code_input_executer">
+<div class="code_input_executor">
     <div class="code_input_wrapper">
         <div>
             <SfToolbar Height="65px">
@@ -87,7 +87,7 @@
                         </SfDiagramComponent>
                     </Content>
                 </DialogTemplates>
-                <DialogEvents OnOpen="@DialogOpen" Closed="@DialogClose"></DialogEvents>
+                <DialogEvents Opened="@DialogOpen" Closed="@DialogClose"></DialogEvents>
             </SfDialog>
 
             <SfDialog Target="#target" Width="350px" Height="140px" AllowDragging="false" EnableResize="false" ShowCloseIcon="true" @bind-Visible="errorVis">
@@ -104,13 +104,13 @@
                     <ContentTemplate>
                         <div class="codeDiv">
                             <div class="tab">
-                                <button class="tablinks" onclick="swapTab(event, 'Executer')" id="defaultOpen">Executer</button>
+                                <button class="tablinks" onclick="swapTab(event, 'Executor')" id="defaultOpen">Executor</button>
                                 <button class="tablinks" onclick="swapTab(event, 'Debugger')" id="debuggerTab">Debugger</button>
                                 <button class="tablinks" onclick="swapTab(event, 'Stats')">Statistics</button>
                             </div>
 
-                            <div id="Executer" class="tabcontent">
-                                <div class="executerTabContent">
+                            <div id="Executor" class="tabcontent">
+                                <div class="executorTabContent">
                                     <div>
                                         <InputFile OnChange="@LoadFile" id="inputFile" class="float-start" accept=".txt"></InputFile>
                                         <label id="exLabel"><b>Source Code</b></label>
@@ -159,7 +159,7 @@
                         <div class="registerPane">
                             <div class="container">
                                 <div class="row">
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-4">
                                         <label class="registerLabel"><b>R0:</b></label>
                                         <textarea readonly class="registerTextArea">@r0</textarea><br/>
 
@@ -184,27 +184,42 @@
                                         <label class="registerLabel"><b>R7:</b></label>
                                         <textarea readonly class="registerTextArea">@r7</textarea>
                                     </div>
+                                    
+                                    <div class="col-sm-4">
+                                        <label class="registerLabel"><b>F0:</b></label>
+                                        <textarea readonly class="registerTextArea">@f0</textarea><br/>
 
-                                    <div class="col-sm-6">
-                                        <label class="registerLabel"><b>IP:</b></label>
-                                        <textarea readonly class="registerTextArea">@IP</textarea><br/>
+                                        <label class="registerLabel"><b>F1:</b></label>
+                                        <textarea readonly class="registerTextArea">@f1</textarea><br/>
+
+                                        <label class="registerLabel"><b>F2:</b></label>
+                                        <textarea readonly class="registerTextArea">@f2</textarea><br/>
+
+                                        <label class="registerLabel"><b>F3:</b></label>
+                                        <textarea readonly class="registerTextArea">@f3</textarea><br/>
+
+                                        <label class="registerLabel"><b>F4:</b></label>
+                                        <textarea readonly class="registerTextArea">@f4</textarea><br/>
+
+                                        <label class="registerLabel"><b>F5:</b></label>
+                                        <textarea readonly class="registerTextArea">@f5</textarea><br/>
+
+                                        <label class="registerLabel"><b>F6:</b></label>
+                                        <textarea readonly class="registerTextArea">@f6</textarea><br/>
+
+                                        <label class="registerLabel"><b>F7:</b></label>
+                                        <textarea readonly class="registerTextArea">@f7</textarea>
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="registerLabel"><b>PC:</b></label>
+                                        <textarea readonly class="registerTextArea">@PC</textarea><br/><hr/>
 
                                         <label class="registerLabel"><b>SP:</b></label>
                                         <textarea readonly class="registerTextArea">@SP</textarea><br/>
 
                                         <label class="registerLabel"><b>FL:</b></label>
                                         <textarea readonly class="registerTextArea">@FL</textarea><br/>
-
-                                        <label class="registerLabel"><b>PC:</b></label>
-                                        <textarea readonly class="registerTextArea">@PC</textarea><br/><hr/>
-
-                                        <label class="instLabel"><b>Instruction</b></label><br/>
-
-                                        <label class="registerLabel"><b>OC:</b></label>
-                                        <textarea readonly class="registerTextArea">0x00</textarea><br/>
-
-                                        <label class="registerLabel"><b>OP:</b></label>
-                                        <textarea readonly class="registerTextArea">0x0000</textarea>
                                     </div>
                                 </div>
                             </div>

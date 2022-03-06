@@ -1,4 +1,5 @@
-﻿using InstructionSetProject.Backend;
+﻿using System.Collections.Specialized;
+using InstructionSetProject.Backend;
 using InstructionSetProject.Backend.InstructionTypes;
 using InstructionSetProject.Backend.StaticFrontend;
 using InstructionSetProject.Backend.StaticPipeline;
@@ -10,7 +11,7 @@ using DiagramSegments = Syncfusion.Blazor.Diagram.ConnectorSegmentType;
 
 namespace InstructionSetProject.Frontend.Pages
 {
-    public partial class ExecuterPage
+    public partial class ExecutorPage
     {
         private string ExecMachineCode = "";
         private string ExecAssemblyCode = "";
@@ -36,6 +37,14 @@ namespace InstructionSetProject.Frontend.Pages
         public string r5 => SPEx != null ? SPEx.DataStructures.R5.value.ToString("X4") : "0000";
         public string r6 => SPEx != null ? SPEx.DataStructures.R6.value.ToString("X4") : "0000";
         public string r7 => SPEx != null ? SPEx.DataStructures.R7.value.ToString("X4") : "0000";
+        public string f0 => SPEx != null ? SPEx.DataStructures.F0.value.ToString("X4") : "0000";
+        public string f1 => SPEx != null ? SPEx.DataStructures.F1.value.ToString("X4") : "0000";
+        public string f2 => SPEx != null ? SPEx.DataStructures.F2.value.ToString("X4") : "0000";
+        public string f3 => SPEx != null ? SPEx.DataStructures.F3.value.ToString("X4") : "0000";
+        public string f4 => SPEx != null ? SPEx.DataStructures.F4.value.ToString("X4") : "0000";
+        public string f5 => SPEx != null ? SPEx.DataStructures.F5.value.ToString("X4") : "0000";
+        public string f6 => SPEx != null ? SPEx.DataStructures.F6.value.ToString("X4") : "0000";
+        public string f7 => SPEx != null ? SPEx.DataStructures.F7.value.ToString("X4") : "0000";
         public string IP => SPEx != null ? SPEx.DataStructures.InstructionPointer.value.ToString("X4") : "0000";
         public string SP => SPEx != null ? SPEx.DataStructures.StackPointer.value.ToString("X4") : "0000";
         public string FL => SPEx != null ? SPEx.DataStructures.Flags.AsRegisterValue().ToString("X4") : "0000";
@@ -47,9 +56,9 @@ namespace InstructionSetProject.Frontend.Pages
         // Reference to diagram
         SfDiagramComponent diagram;
         // Defines diagram's nodes collection
-        public DiagramObjectCollection<Node> NodeCollection { get; set; }
+        public DiagramObjectCollection<Node> NodeCollection { get; set; } = new();
         // Defines diagram's connector collection
-        public DiagramObjectCollection<Connector> ConnectorCollection { get; set; }
+        public DiagramObjectCollection<Connector> ConnectorCollection { get; set; } = new();
 
 
         private List<byte> machineCode = new();
@@ -107,30 +116,14 @@ namespace InstructionSetProject.Frontend.Pages
         protected override async Task OnInitializedAsync()
         {
             StartupMethod();
-            InitDiagramModel();
         }
 
         void StartupMethod()
         {
-            ExecMachineCode = FrontendVariables.currentMachineCodeExecuter;
-            FrontendVariables.currentMachineCodeExecuter = "";
-            ExecAssemblyCode = FrontendVariables.currentAssemblyCodeExecuter;
-            FrontendVariables.currentAssemblyCodeExecuter = "";
-        }
-
-        private static List<byte> HexStringToByteList(string machineCodeString)
-        {
-            if (machineCodeString.Length % 2 == 1)
-                throw new Exception("Cannot have an odd number of digits!!");
-
-            int numChars = machineCodeString.Length;
-            byte[] bytes = new byte[numChars / 2];
-            for (int i = 0; i < numChars; i += 2)
-                bytes[i / 2] = Convert.ToByte(machineCodeString.Substring(i, 2), 16);
-
-            List<byte> mCode = new List<byte>(bytes);
-
-            return mCode;
+            ExecMachineCode = FrontendVariables.currentMachineCodeExecutor;
+            FrontendVariables.currentMachineCodeExecutor = "";
+            ExecAssemblyCode = FrontendVariables.currentAssemblyCodeExecutor;
+            FrontendVariables.currentAssemblyCodeExecutor = "";
         }
 
         void buildCode()
@@ -174,7 +167,6 @@ namespace InstructionSetProject.Frontend.Pages
             debugRender = true;
             SPEx.ClockTick();
             JSRuntime.InvokeVoidAsync("stepScroll");
-            ConnectorCollection[3].Style.StrokeWidth += 5;
             debugRender = true;
         }
 
@@ -639,16 +631,20 @@ namespace InstructionSetProject.Frontend.Pages
             ShowItem = !ShowItem;
         }
 
+        private string diagramContent = "";
+
         private void DialogOpen(Object args)
         {
             this.ShowButton = true;
         }
         private void DialogClose(Object args)
         {
+            diagramContent =  diagram.SaveDiagram();
             this.ShowButton = false;
         }
         private void OnClicked()
         {
+            InitDiagramModel();
             this.Visibility = true;
         }
 

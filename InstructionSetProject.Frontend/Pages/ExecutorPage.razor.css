@@ -53,15 +53,15 @@
     z-index: 1;
 }
 
-.executerTabContent, .debuggerTabContent, .statsTabContent {
+.executorTabContent, .debuggerTabContent, .statsTabContent {
     margin: 0px 5px 0px 5px;
 }
 
-.executerTabContent {
+.executorTabContent {
     margin-bottom: 5px;
 }
 
-    .executerTabContent > textarea {
+    .executorTabContent > textarea {
         width: 100%;
         height: 348px;
         margin-top: 0px;
@@ -70,7 +70,7 @@
         transform: translateY(5px);
     }
 
-    .executerTabContent > div, .debugLabel, .statsTabContent > div {
+    .executorTabContent > div, .debugLabel, .statsTabContent > div {
         text-align: center;
         align-content: center;
         padding: 0px;
