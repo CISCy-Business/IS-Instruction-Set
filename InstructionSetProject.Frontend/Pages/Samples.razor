@@ -62,7 +62,7 @@
             <textarea id="idAddSubAssem1" readonly>@addSubAssem1</textarea><br />
             <div class="sample_btns1">
                 <button class="btn btn-primary btn-lg" @onclick="() => NavigateAssemblerSample(addSubAssem1)">Open Source</button>
-                <button @onclick="() => NavigateExecuterAssemblySample(addSubAssem1)" type="button" class="btn btn-primary btn-lg float-end">Open Executer</button>
+                <button @onclick="() => NavigateExecutorAssemblySample(addSubAssem1)" type="button" class="btn btn-primary btn-lg float-end">Open Executor</button>
             </div>
         </div>
         <div class="col-sm-2"><img src="arrow-left-right.svg"/></div>
@@ -71,7 +71,7 @@
             <textarea id="idAddSubMach1" readonly>@addSubMach1</textarea>
             <div class="sample_btns2">
                 <button class="btn btn-primary btn-lg" @onclick="() => NavigateDisassemblerSample(addSubMach1)">Open Machine</button>
-                <button @onclick="() => NavigateExecuterMachineSample(addSubMach1)" type="button" class="btn btn-primary btn-lg float-end">Open Executer</button>
+                <button @onclick="() => NavigateExecutorMachineSample(addSubMach1)" type="button" class="btn btn-primary btn-lg float-end">Open Executor</button>
             </div>
         </div>
         <div class="col-sm-2"></div>
@@ -106,7 +106,7 @@
             <textarea id="idLoadStoreAssem1" readonly>@loadStoreAssem1</textarea>
             <div class="sample_btns1">
                 <button class="btn btn-primary btn-lg" @onclick="() => NavigateAssemblerSample(loadStoreAssem1)">Open Source</button>
-                <button @onclick="() => NavigateExecuterAssemblySample(loadStoreAssem1)" type="button" class="btn btn-primary btn-lg float-end">Open Executer</button>
+                <button @onclick="() => NavigateExecutorAssemblySample(loadStoreAssem1)" type="button" class="btn btn-primary btn-lg float-end">Open Executor</button>
             </div>
         </div>
         <div class="col-sm-2"><img src="arrow-left-right.svg"/></div>
@@ -115,7 +115,7 @@
             <textarea id="idLoadStoreMach1" readonly>@loadStoreMach1</textarea>
             <div class="sample_btns2">
                 <button class="btn btn-primary btn-lg" @onclick="() => NavigateDisassemblerSample(loadStoreMach1)">Open Machine</button>
-                <button @onclick="() => NavigateExecuterMachineSample(loadStoreMach1)" type="button" class="btn btn-primary btn-lg float-end">Open Executer</button>
+                <button @onclick="() => NavigateExecutorMachineSample(loadStoreMach1)" type="button" class="btn btn-primary btn-lg float-end">Open Executor</button>
             </div>
         </div>
         <div class="col-sm-2"></div>
@@ -150,7 +150,7 @@
             <textarea id="idJumpAssem1" readonly>@jumpAssem1</textarea><br />
             <div class="sample_btns1">
                 <button class="btn btn-primary btn-lg" @onclick="() => NavigateAssemblerSample(jumpAssem1)">Open Source</button>
-                <button @onclick="() => NavigateExecuterAssemblySample(jumpAssem1)" type="button" class="btn btn-primary btn-lg float-end">Open Executer</button>
+                <button @onclick="() => NavigateExecutorAssemblySample(jumpAssem1)" type="button" class="btn btn-primary btn-lg float-end">Open Executor</button>
             </div>
         </div>
         <div class="col-sm-2"><img src="arrow-left-right.svg"/></div>
@@ -159,7 +159,7 @@
             <textarea id="idJumpMach1" readonly>@jumpMach1</textarea>
             <div class="sample_btns2">
                 <button class="btn btn-primary btn-lg" @onclick="() => NavigateDisassemblerSample(jumpMach1)">Open Machine</button>
-                <button @onclick="() => NavigateExecuterMachineSample(jumpMach1)" type="button" class="btn btn-primary btn-lg float-end">Open Executer</button>
+                <button @onclick="() => NavigateExecutorMachineSample(jumpMach1)" type="button" class="btn btn-primary btn-lg float-end">Open Executor</button>
             </div>
         </div>
         <div class="col-sm-2"></div>
@@ -196,7 +196,7 @@
             <textarea id="idPushPopAssem1" readonly>@pushPopAssem1</textarea><br />
             <div class="sample_btns1">
                 <button class="btn btn-primary btn-lg" @onclick="() => NavigateAssemblerSample(pushPopAssem1)">Open Source</button>
-                <button @onclick="() => NavigateExecuterAssemblySample(pushPopAssem1)" type="button" class="btn btn-primary btn-lg float-end">Open Executer</button>
+                <button @onclick="() => NavigateExecutorAssemblySample(pushPopAssem1)" type="button" class="btn btn-primary btn-lg float-end">Open Executor</button>
             </div>
         </div>
         <div class="col-sm-2"><img src="arrow-left-right.svg"/></div>
@@ -205,7 +205,7 @@
             <textarea id="idPushPopMach1" readonly>@pushPopMach1</textarea>
             <div class="sample_btns2">
                 <button class="btn btn-primary btn-lg" @onclick="() => NavigateDisassemblerSample(pushPopMach1)">Open Machine</button>
-                <button @onclick="() => NavigateExecuterMachineSample(pushPopMach1)" type="button" class="btn btn-primary btn-lg float-end">Open Executer</button>
+                <button @onclick="() => NavigateExecutorMachineSample(pushPopMach1)" type="button" class="btn btn-primary btn-lg float-end">Open Executor</button>
             </div>
         </div>
         <div class="col-sm-2"></div>
@@ -253,16 +253,16 @@
         UriHelper.NavigateTo("disassembler");
     }
 
-    void NavigateExecuterAssemblySample(string textToPush)
+    void NavigateExecutorAssemblySample(string textToPush)
     {
-        FrontendVariables.currentAssemblyCodeExecuter = textToPush;
-        UriHelper.NavigateTo("executer");
+        FrontendVariables.currentAssemblyCodeExecutor = textToPush;
+        UriHelper.NavigateTo("executor");
     }
 
-    void NavigateExecuterMachineSample(string textToPush)
+    void NavigateExecutorMachineSample(string textToPush)
     {
-        FrontendVariables.currentMachineCodeExecuter = textToPush;
-        UriHelper.NavigateTo("executer");
+        FrontendVariables.currentMachineCodeExecutor = textToPush;
+        UriHelper.NavigateTo("executor");
     }
 
 }
