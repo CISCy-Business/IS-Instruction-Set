@@ -10,11 +10,11 @@ namespace InstructionSetProject.Backend.InstructionTypes.F3Formats
 
             assembly += GetMnemonic();
             assembly += " ";
-            assembly += Registers.ParseFloatDestination(destinationRegister ?? 0);
+            assembly += Registers.ParseFirstFloat(firstRegister ?? 0);
             assembly += ", ";
-            assembly += Registers.ParseFloatFirstSource(sourceRegister1 ?? 0);
+            assembly += Registers.ParseSecondFloat(secondRegister ?? 0);
             assembly += ", ";
-            assembly += Registers.ParseFloatSecondSource(sourceRegister2 ?? 0);
+            assembly += Registers.ParseThirdFloat(thirdRegister ?? 0);
 
             return assembly;
         }
@@ -26,11 +26,11 @@ namespace InstructionSetProject.Backend.InstructionTypes.F3Formats
             if (tokens.Length != 4)
                 throw new Exception("Incorrect number of tokens obtained from assembly instruction");
 
-            destinationRegister = Registers.ParseFloatDestination(tokens[1].TrimEnd(','));
+            firstRegister = Registers.ParseFirstFloat(tokens[1].TrimEnd(','));
 
-            sourceRegister1 = Registers.ParseFloatFirstSource(tokens[2].TrimEnd(','));
+            secondRegister = Registers.ParseSecondFloat(tokens[2].TrimEnd(','));
 
-            sourceRegister2 = Registers.ParseFloatSecondSource(tokens[3]);
+            thirdRegister = Registers.ParseThirdFloat(tokens[3]);
         }
     }
 }

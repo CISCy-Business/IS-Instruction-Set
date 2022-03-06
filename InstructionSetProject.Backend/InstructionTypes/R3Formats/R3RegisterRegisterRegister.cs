@@ -10,11 +10,11 @@ namespace InstructionSetProject.Backend.InstructionTypes.R3Formats
 
             assembly += GetMnemonic();
             assembly += " ";
-            assembly += Registers.ParseIntDestination(destinationRegister ?? 0);
+            assembly += Registers.ParseFirstInt(firstRegister ?? 0);
             assembly += ", ";
-            assembly += Registers.ParseIntFirstSource(sourceRegister1 ?? 0);
+            assembly += Registers.ParseSecondInt(secondRegister ?? 0);
             assembly += ", ";
-            assembly += Registers.ParseIntSecondSource(sourceRegister2 ?? 0);
+            assembly += Registers.ParseThirdInt(thirdRegister ?? 0);
 
             return assembly;
         }
@@ -26,11 +26,11 @@ namespace InstructionSetProject.Backend.InstructionTypes.R3Formats
             if (tokens.Length != 4)
                 throw new Exception("Incorrect number of tokens obtained from assembly instruction");
 
-            destinationRegister = Registers.ParseIntDestination(tokens[1].TrimEnd(','));
+            firstRegister = Registers.ParseFirstInt(tokens[1].TrimEnd(','));
 
-            sourceRegister1 = Registers.ParseIntFirstSource(tokens[2].TrimEnd(','));
+            secondRegister = Registers.ParseSecondInt(tokens[2].TrimEnd(','));
 
-            sourceRegister2 = Registers.ParseIntSecondSource(tokens[3]);
+            thirdRegister = Registers.ParseThirdInt(tokens[3]);
         }
     }
 }

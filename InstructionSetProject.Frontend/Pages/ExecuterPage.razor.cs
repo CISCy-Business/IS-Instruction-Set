@@ -20,7 +20,7 @@ namespace InstructionSetProject.Frontend.Pages
         public string MemDumpContent => SPEx != null
             ? String.Join(" ",
                 SPEx.DataStructures.Memory
-                    .GetBytesAtAddress(MemDumpStart != string.Empty ? Convert.ToUInt16(MemDumpStart, 16) : (ushort) 0)
+                    .GetBytesAtAddress(MemDumpStart != string.Empty ? Convert.ToUInt32(MemDumpStart, 16) : 0)
                     .Select((memByte) => memByte.ToString("X2")))
             : "";
 
@@ -168,6 +168,15 @@ namespace InstructionSetProject.Frontend.Pages
         bool IsSelectedWrite(IInstruction instr) => instr == SPEx.writingBackInstruction;
 
         string DivCSS(IInstruction instr) => IsSelectedFetch(instr) ? "bg-fetch text-white" : (IsSelectedDecode(instr) ? "bg-decode text-white" : (IsSelectedExecute(instr) ? "bg-execute text-white" : (IsSelectedMemory(instr) ? "bg-memory text-white" : (IsSelectedWrite(instr) ? "bg-write text-white" : "bg-white"))));
+
+        void ClockTick()
+        {
+            debugRender = true;
+            SPEx.ClockTick();
+            JSRuntime.InvokeVoidAsync("stepScroll");
+            ConnectorCollection[3].Style.StrokeWidth += 5;
+            debugRender = true;
+        }
 
         void step()
         {

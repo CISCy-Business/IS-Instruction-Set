@@ -10,9 +10,9 @@ namespace InstructionSetProject.Backend.InstructionTypes.RsFormats
 
             assembly += GetMnemonic();
             assembly += " ";
-            assembly += Registers.ParseIntDestination(destinationRegister ?? 0);
+            assembly += Registers.ParseFirstInt(firstRegister ?? 0);
             assembly += ", ";
-            assembly += Registers.ParseIntFirstSource(sourceRegister1 ?? 0);
+            assembly += Registers.ParseSecondInt(secondRegister ?? 0);
             assembly += ", ";
             assembly += (immediate ?? 1).ToString("X2");
 
@@ -26,9 +26,9 @@ namespace InstructionSetProject.Backend.InstructionTypes.RsFormats
             if (tokens.Length != 3 && tokens.Length != 4)
                 throw new Exception("Incorrect number fo tokens obtained from assembly instruction");
 
-            destinationRegister = Registers.ParseIntDestination(tokens[1].TrimEnd(','));
+            firstRegister = Registers.ParseFirstInt(tokens[1].TrimEnd(','));
 
-            sourceRegister1 = Registers.ParseIntFirstSource(tokens[2].TrimEnd(','));
+            secondRegister = Registers.ParseSecondInt(tokens[2].TrimEnd(','));
 
             immediate = tokens.Length == 4 ? Convert.ToUInt16(tokens[3], 16) : (ushort?)1;
         }

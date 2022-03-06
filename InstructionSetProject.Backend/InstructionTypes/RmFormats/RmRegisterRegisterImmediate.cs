@@ -4,7 +4,7 @@ namespace InstructionSetProject.Backend.InstructionTypes.RmFormats
 {
     public abstract class RmRegisterRegisterImmediate : RmInstruction, IImmediateInstruction
     {
-        public override ushort? addressingMode { get => sourceRegister1; set { } }
+        public override ushort? addressingMode { get => secondRegister; set { } }
 
         public override string Disassemble()
         {
@@ -12,9 +12,9 @@ namespace InstructionSetProject.Backend.InstructionTypes.RmFormats
 
             assembly += GetMnemonic();
             assembly += " ";
-            assembly += Registers.ParseIntDestination(destinationRegister ?? 0);
+            assembly += Registers.ParseFirstInt(firstRegister ?? 0);
             assembly += ", ";
-            assembly += Registers.ParseIntFirstSource(sourceRegister1 ?? 0);
+            assembly += Registers.ParseSecondInt(secondRegister ?? 0);
             assembly += ", ";
             assembly += (immediate ?? 0).ToString("X2");
 
@@ -28,9 +28,9 @@ namespace InstructionSetProject.Backend.InstructionTypes.RmFormats
             if (tokens.Length != 4)
                 throw new Exception("Incorrect number of tokens obtained from assembly instruction");
 
-            destinationRegister = Registers.ParseIntDestination(tokens[1].TrimEnd(','));
+            firstRegister = Registers.ParseFirstInt(tokens[1].TrimEnd(','));
 
-            sourceRegister1 = Registers.ParseIntFirstSource(tokens[2].TrimEnd(','));
+            secondRegister = Registers.ParseSecondInt(tokens[2].TrimEnd(','));
 
             immediate = Convert.ToUInt16(tokens[3], 16);
         }

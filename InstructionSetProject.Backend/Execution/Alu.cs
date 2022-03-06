@@ -1,4 +1,5 @@
-﻿using InstructionSetProject.Backend.Utilities;
+﻿using InstructionSetProject.Backend.StaticPipeline;
+using InstructionSetProject.Backend.Utilities;
 
 namespace InstructionSetProject.Backend.Execution
 {
@@ -6,12 +7,21 @@ namespace InstructionSetProject.Backend.Execution
     {
         private const ushort signBit = 0b1000_0000_0000_0000;
 
+        private StaticPipelineDataStructures dataStructures;
+
+        public Alu(StaticPipelineDataStructures dataStructures)
+        {
+            this.dataStructures = dataStructures;
+        }
+
         public (ushort result, FlagsRegister flags) Execute(AluOperation operation, ushort? lhsOp, ushort? rhsOp)
         {
             switch (operation)
             {
                 case AluOperation.Add:
                     return UshortAdd(lhsOp, rhsOp);
+                case AluOperation.Subtract:
+                    return UshortSubtract(lhsOp, rhsOp);
                 default:
                     throw new Exception("ALU operation not found");
             }
@@ -25,26 +35,33 @@ namespace InstructionSetProject.Backend.Execution
             var flags = ComputeFlagsRegister(lhs, rhs, result);
 
             if (((lhs & signBit) != 0 || (rhs & signBit) != 0) && (result & signBit) == 0)
-            {
                 flags.Carry = true;
-            }
             else
-            {
                 flags.Carry = false;
-            }
 
             if (((lhs & signBit) != 0 && (rhs & signBit) != 0) && (result & signBit) == 0)
-            {
                 flags.Overflow = true;
-            }
             else if (((lhs & signBit) == 0 && (rhs & signBit) == 0) && (result & signBit) != 0)
-            {
                 flags.Overflow = true;
-            }
             else
-            {
                 flags.Overflow = false;
-            }
+
+            return (result, flags);
+        }
+
+        public (ushort result, FlagsRegister flags) UshortSubtract(ushort? lhsOp, ushort? rhsOp)
+        {
+            var lhs = lhsOp ?? 0;
+            var rhs = rhsOp ?? 0;
+            var result = (ushort) (lhs - rhs);
+            var flags = ComputeFlagsRegister(lhs, rhs, result);
+
+            if (((lhs & signBit) == 0 && (result & signBit) != 0))
+                flags.Carry = true;
+            else
+                flags.Carry = false;
+
+            flags.Overflow = false;
 
             return (result, flags);
         }
@@ -72,6 +89,7 @@ namespace InstructionSetProject.Backend.Execution
 
     public enum AluOperation
     {
-        Add
+        Add,
+        Subtract
     }
 }
