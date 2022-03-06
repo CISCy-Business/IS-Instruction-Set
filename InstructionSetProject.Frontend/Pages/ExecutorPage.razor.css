@@ -63,11 +63,18 @@
 
     .executorTabContent > textarea {
         width: 100%;
-        height: 348px;
         margin-top: 0px;
         margin-bottom: 0px;
         padding: 0px;
         transform: translateY(5px);
+    }
+
+    #assemblyTextBox {
+        height: 500px;
+    }
+
+    #machineTextBox {
+        height: 192px;
     }
 
     .executorTabContent > div, .debugLabel, .statsTabContent > div {
@@ -130,7 +137,7 @@
 
 .memoryDumpContent > textarea {
     width: 100%;
-    height: 786px;
+    height: 782px;
     margin-bottom: 4px;
     transform: translateY(5px);
 }
@@ -155,12 +162,17 @@
 }
 
 .container {
-    margin-bottom: 16px;
+    margin-bottom: 0px;
     text-align: center;
+}
+
+.registerPane {
+    margin-bottom: 39px;
 }
 
 .registerTextArea {
     max-width: 150px;
+    min-width: 75px;
     height: 35px;
     overflow-x: hidden;
     overflow-y: hidden;
