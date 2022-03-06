@@ -14,11 +14,9 @@ General Notes:
 
 Name                    Letters     Binary      How operand is treated          Notes
 ------------------------------------------------------------------------------------------------------------------
-immediate               i           ----        operand                         Convert to: ADI r#, r0, imm or ADI f#, f0, imm
 immediate direct        id          0000        Mem[operand]
 immediate indirect      in          0001        Mem[Mem[operand]]
 
-register                r           ----        register operand                Convert to: ADD r#, r0, r# or ADD f#, f0, f#
 register direct         rd          0010        Mem[register operand]           Can only accept integer registers (cannot have a floating-point address)
 register indirect       rn          0011        Mem[Mem[register operand]]      Can only accept integer registers (cannot have a floating-point address)
 
@@ -110,6 +108,8 @@ Name                            Mnemonic    Type    Opcode                  Exam
 *Store Float                     STF         fm      1110 0001 1ccc crrr     STF f1, 15, id          Opcode matches STW except type bits
 
 *Load Effective Address          LEA         rm      1100 0011 0... .rrr     LEA r1, label           r1 = address that label is mapped to
+
+Set Memory Base Pointer          SMP         rm      1101 0000 0... ....     SMP ABAB
 
 *Push Word                       PSW         r2      0000 0001 00.. .rrr     PSW r1                  Stack pointer auto adjusted
 *Push Low Byte                   PSL         r2      0000 0001 01.. .rrr     PSL r1                  "     "       "    "
@@ -265,7 +265,7 @@ Copy into Float, from Reg       CFR¹        f2      0010 0010 10tt tsss     CFR
 **Jump if (Yes) Zero flag         JYZ⁴        rm/fm   11?0 1110 1.cc crrr     JYZ r1, r2, Label       "   "
 **Jump if not (No) Zero flag      JNZ⁴        rm/fm   11?0 1111 0.cc crrr     JNZ r1, r2, Label       "   "
 
-Loop                            LOP⁵        rm/fm   11?0 1111 1.cc crrr     LOP r1, Label       See note.
+Loop                            LOP⁵        rm      1100 1111 1.cc crrr     LOP r1, Label       See note.
 ===============================================================================================================================================================
     ¹ Note: CFR needs to econvert integer into floating point, but floating point cannot hold all values integer can. May throw errors.
 
