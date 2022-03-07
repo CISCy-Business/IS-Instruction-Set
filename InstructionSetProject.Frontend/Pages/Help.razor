@@ -46,102 +46,121 @@
             <th>Letters</th>
             <th>Binary</th>
             <th>Treatment</th>
-          </tr>
-          <tr>
-            <td>immediate</td>
-            <td>i</td>
-            <td>0000</td>
-            <td>operand</td>
+            <th>Notes</th>
           </tr>
           <tr>
             <td>immediate direct</td>
             <td>id</td>
-            <td>0001</td>
+            <td>0000</td>
             <td>Mem[operand]</td>
+            <td></td>
           </tr>
           <tr>
             <td>immediate indirect</td>
             <td>in</td>
-            <td>0010</td>
+            <td>0001</td>
             <td>Mem[Mem[operand]]</td>
+            <td></td>
           </tr>
           <tr>
             <td>register direct</td>
             <td>rd</td>
-            <td>0011</td>
-            <td>Mem[register]</td>
+            <td>0010</td>
+            <td>Mem[register operand]</td>
+            <td>Can only accept integer registers<br />
+                (cannot have a floating-point address)</td>
           </tr>
           <tr>
             <td>register indirect</td>
             <td>rn</td>
-            <td>0100</td>
-            <td>Mem[Mem[register]]</td>
+            <td>0011</td>
+            <td>Mem[Mem[register operand]]</td>
+            <td>Can only accept integer registers<br />
+                (cannot have a floating-point address)</td>
           </tr>
           <tr>
             <td>indexed direct</td>
             <td>xd</td>
-            <td>0101</td>
+            <td>0100</td>
             <td>Mem[r7 + operand]</td>
+            <td></td>
           </tr>
           <tr>
             <td>indexed indirect</td>
             <td>xn</td>
-            <td>0110</td>
+            <td>0101</td>
             <td>Mem[Mem[r7 + operand]]</td>
+            <td></td>
           </tr>
           <tr>
             <td>indexed offset</td>
             <td>xo</td>
-            <td>0111</td>
+            <td>0110</td>
             <td>Mem[Mem[r7] + operand]</td>
+            <td></td>
           </tr>
           <tr>
             <td>indexed deferred</td>
             <td>xf</td>
-            <td>1000</td>
+            <td>0111</td>
             <td>Mem[Mem[operand] + r7]</td>
+            <td></td>
           </tr>
           <tr>
             <td>stack direct</td>
             <td>sd</td>
-            <td>1001</td>
+            <td>1000</td>
             <td>Mem[SP + operand]</td>
+            <td></td>
           </tr>
           <tr>
             <td>stack indirect</td>
             <td>sn</td>
-            <td>1010</td>
+            <td>1001</td>
             <td>Mem[Mem[SP + operand]]</td>
+            <td></td>
           </tr>
           <tr>
             <td>stack offset</td>
             <td>so</td>
-            <td>1011</td>
+            <td>1010</td>
             <td>Mem[Mem[SP] + operand]</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>stack deferred</td>
+            <td>sf</td>
+            <td>1011</td>
+            <td>Mem[SP + Mem[operand]]</td>
+            <td></td>
           </tr>
           <tr>
             <td>stack indexed direct</td>
             <td>sxd</td>
             <td>1100</td>
             <td>Mem[SP + r7 + operand]</td>
+            <td></td>
           </tr>
           <tr>
             <td>stack indexed indirect</td>
             <td>sxn</td>
             <td>1101</td>
             <td>Mem[Mem[SP + r7 + operand]]</td>
+            <td></td>
           </tr>
           <tr>
             <td>stack indexed offset</td>
             <td>sxo</td>
             <td>1110</td>
             <td>Mem[Mem[SP + r7] + operand]</td>
+            <td></td>
           </tr>
           <tr>
             <td>stack indexed deferred</td>
             <td>sxf</td>
             <td>1111</td>
             <td>Mem[Mem[SP + operand] + r7]</td>
+            <td></td>
           </tr>
         </table>
     </div>
@@ -191,6 +210,38 @@
           <tr height="25px">
           </tr>
           <tr>
+            <td>f0</td>
+            <td>cannot be assigned to, hardcoded zero</td>
+          </tr>
+          <tr>
+            <td>f1</td>
+            <td>general purpose</td>
+          </tr>
+          <tr>
+            <td>f2</td>
+            <td>general purpose</td>
+          </tr>
+          <tr>
+            <td>f3</td>
+            <td>general purpose</td>
+          </tr>
+          <tr>
+            <td>f4</td>
+            <td>general purpose</td>
+          </tr>
+          <tr>
+            <td>f5</td>
+            <td>general purpose</td>
+          </tr>
+          <tr>
+            <td>f6</td>
+            <td>general purpose</td>
+          </tr>
+          <tr>
+            <td>f7</td>
+            <td>general purpose</td>
+          </tr>
+          <tr>
             <th colspan=2>Inaccessible</th>
           </tr>
           <tr>
@@ -209,6 +260,10 @@
             <td>FL</td>
             <td>flags registers</td>
           </tr>
+          <tr>
+            <td>MBP</td>
+            <td>memory base pointer registers</td>
+          </tr>
         </table>
     </div>
 
@@ -220,37 +275,34 @@
             <th>Definition</th>
           </tr>
           <tr>
-            <td>t</td>
-            <td>bit that defines the instruction type, and how the rest of the instruction's bits are to be interpreted</td>
+            <td>0,1</td>
+            <td>set bits, not changed per instruction</td>
           </tr>
           <tr>
             <td>o</td>
-            <td>opcode bit</td>
+            <td>operand bits, encode each instruction</td>
           </tr>
           <tr>
-            <td>a</td>
-            <td>addressing mode bit</td>
+            <td>c</td>
+            <td>bits to encode conditions, such as address modes and jump conditions</td>
           </tr>
-          <tr>
-            <td>b</td>
-            <td>binary bit - flip to logically inverse instruction if supported (such as JEQ to JNE)</td>
+           <tr>
+            <td>i</td>
+            <td>bits to encode immediates</td>
           </tr>
           <tr>
             <td>r</td>
-            <td>the first register bit (usually destination register)</td>
+            <td>primary register, often destination register</td>
           </tr>
           <tr>
             <td>s</td>
-            <td>the second register bit (usually source register 1)</td>
+            <td>secondary register, often source 1</td>
           </tr>
           <tr>
             <td>t</td>
-            <td>the third register bit (usually source register 2)</td>
+            <td>tertiary register, often source 2</td>
           </tr>
-          <tr>
-            <td>i</td>
-            <td>immediate bit</td>
-          </tr>
+         
         </table>
 
         <br />
@@ -258,95 +310,137 @@
         <table style="width:70%">
           <tr>
             <th>Type</th>
-            <th>Definition</th>
-            <th>Format</th>
+            <th>Name</th>
+            <th>Encoding</th>
+            <th>Purpose</th>
           </tr>
           <tr>
-            <td>Memory-type</td>
-            <td>- Five opcode bits allow for 32 Memory-Type instructions<br />
-                - Binary bit doubles that to 64 (if logically inversable instructions exist)<br />
-                - Uses operand and address mode to load the chosen register with a value from memory</td>
-            <td>100o oooo oaaa arrr | iiii iiii iiii iiii</td>
+            <td>00 0</td>
+            <td>r2-type</td>
+            <td>000o oooo ooss srrr</td>
+            <td>Involves 2 Integer Registers</td>
           </tr>
           <tr>
-            <td>Jump-type</td>
-            <td>- Six opcode bits allow for 64 Jump-Type instructions (doubled by binary bit)<br />
-                - Typically compares the primary register against the secondary register, jumps if the condition is true<br />
-                - Treats the operand as an offset into memory<br /><br />
-            ! IMPORTANT ! - Jump instruction require two registers and an offset. If the registers are
-            both r0, then the jump DOES NOT change the flags, rather the jump is calculated based on
-            the flags present just before the jump instruction. If either of the registers is not r0,
-            then the flags are updated with the value generated by subtracting the second register from
-            the first.</td>
-            <td>101o oooo ooss srrr | iiii iiii iiii iiii</td>
+            <td>00 1</td>
+            <td>f2-type</td>
+            <td>001o oooo ooss srrr</td>
+            <td>Involves 2 Floating Point Registers</td>
+          </tr>
+          <tr style="height: 20px">
           </tr>
           <tr>
-            <td>R2I-type</td>
-            <td>- Six opcode bits allow for 64 R2I-Type instructions (doubled by binary bit)<br />
-                - Typically used to merge a register and an immediate<br />
-                - Treats the operand as an immediate</td>
-            <td>110o oooo ooss srrr | iiii iiii iiii iiii</td>
+            <td>01 0</td>
+            <td>r3-type</td>
+            <td>010o ooot ttss srrr</td>
+            <td>Involves 3 Integer Registers</td>
           </tr>
           <tr>
-            <td>R0-type</td>
-            <td>0 registers involved<br />
-                - 10 opcode bits allow for 1024 R0-Type instructions<br />
-                - Very few no-register opcodes, used for program control (Halt, No op, etc)<br />
-                - Although the register bits are reserved, they are unused (mimics R1-type to reduce hardware complexity)</td>
-            <td>000o oooo oooo orrr</td>
-          </tr>
-           <tr>
-            <td>R1-type</td>
-            <td>1 register involved<br />
-                - Nine opcode bits allow for 512 R1-Type instructions</td>
-            <td>001o oooo oooo orrr</td>
-          </tr>
-           <tr>
-            <td>R2-type</td>
-            <td>2 registers involved<br />
-                - Six opcode bits allow for 64 R2-Type instructions</td>
-            <td>010o oooo ooss srrr</td>
-          </tr>
-           <tr>
-            <td>R3-type</td>
-            <td>3 registers involved<br />
-                - Four opcode bits allow for 16 R3-Type instructions</td>
+            <td>01 1</td>
+            <td>f3-type</td>
             <td>011o ooot ttss srrr</td>
+            <td>Involves 3 Floating Point Registers</td>
           </tr>
+          <tr style="height: 20px">
+          </tr>
+           <tr>
+            <td>10 0</td>
+            <td>rs-type²</td>
+            <td>100o ooii iiss srrr</td>
+            <td>See note. Involves 2 Integer Registers and a Small immediate (1-16)</td>
+          </tr>
+          <tr>
+            <td>10 1</td>
+            <td>fs-type²</td>
+            <td>101o ooii iiss srrr</td>
+            <td>See note. Involves 2 Floating Point Registers and a Small immediate (1-16)</td>
+          </tr>
+          <tr style="height: 20px">
+          </tr>
+           <tr>
+            <td>11 0</td>
+            <td>rm-type¹</td>
+            <td>110o oooo occc crrr | iiii iiii iiii iiii</td>
+            <td>See note. 1 or 2 Registers with large immediate, possibly with addressing mode</td>
+          </tr>
+          <tr>
+            <td>11 1</td>
+            <td>fm-type¹</td>
+            <td>111o oooo occc crrr | iiii iiii iiii iiii</td>
+            <td>See note. 1 or 2 Registers with large immediate, possibly with addressing mode</td>
+          </tr>
+          <tr>
+              <th colspan=4>Notes</th>
+          </tr>
+          <tr>
+              <td colspan=4>¹ Note: type will interpret the 'cccc' bits according to the opcode, either as addressing mode or as a second register</td>
+          </tr>
+          <tr>
+              <td colspan=4>² Note: since encoding 0 is useless for the immediate in most instructions, '0000' encodes a 16. So the range of possible immediates is [1-16].</td>
+          </tr>
+
         </table>
     </div>
 
     <div>
         <label>Instructions</label>
         <table style="width:90%">
+            <tr>
+                <th colspan=6>Process Control Instructions</th>
+            </tr>
           <tr>
             <th>Name</th>
             <th>Mnemonic</th>
             <th>Type</th>
             <th>Op Code</th>
             <th>Example</th>
-            <th>Example Pseudo Code</th>
-            <th>Example Binary</th>
+            <th>Notes</th>
           </tr>
           <tr>
             <td>Halt Program</td>
             <td>HLT</td>
-            <td>r0</td>
-            <td>0000 0000 0000 0</td>
+            <td>r2</td>
+            <td>0000 0000 00.. ....</td>
             <td>HLT</td>
-            <td>Stop Program</td>
-            <td>0000 0000 0000 0000</td>
+            <td></td>
           </tr>
           <tr>
             <td>No Operation</td>
             <td>NOP</td>
-            <td>r0</td>
-            <td>0000 0000 0000 1</td>
+            <td>r2</td>
+            <td>0000 0000 01.. ....</td>
             <td>NOP</td>
-            <td>No Operation</td>
-            <td>0000 0000 0000 0001</td>
+            <td></td>
+          </tr>
+          <tr style="height: 20px">
+          </tr>
+          <tr>
+            <td>Call Procedure</td>
+            <td>CAL</td>
+            <td>rm</td>
+            <td>1101 0000 0... ....</td>
+            <td>CAL proc</td>
+            <td>Push IP; Load IP with proc; Jump</td>
+          </tr>
+          <tr>
+            <td>Return from Procedure</td>
+            <td>RET</td>
+            <td>r2</td>
+            <td>0000 0000 11.. ....</td>
+            <td>RET</td>
+            <td>Pop IP; Jump</td>
           </tr>
           <tr style="height: 25px">
+          </tr>
+          <tr>
+            <th colspan=6>Memory Management Instructions</th>
+          </tr>
+          <tr>
+            <th>Name</th>
+            <th>Mnemonic</th>
+            <th>Type</th>
+            <th>Op Code</th>
+            <th>Example</th>
+            <th>Notes</th>
           </tr>
           <tr>
             <td>Load Word</td>
@@ -1167,24 +1261,7 @@
           </tr>
           <tr style="height: 25px">
           </tr>
-          <tr>
-            <td>Call Proc</td>
-            <td>CAL</td>
-            <td>j</td>
-            <td>1010 0101 10</td>
-            <td>CAL label</td>
-            <td>push PC to stack, goto</td>
-            <td>1010 0101 1000 0000 | ???? ? label ? ????</td>
-          </tr>
-          <tr>
-            <td>Return from Proc</td>
-            <td>RET</td>
-            <td>j</td>
-            <td>1010 0101 11</td>
-            <td>RET</td>
-            <td>pop stack to PC, goto PC</td>
-            <td>1010 0101 1100 0000 | ???? ???? ???? ????</td>
-          </tr>
+          
         </table>
     </div>
 </div>

@@ -84,37 +84,8 @@
         public static string OutputFromDis(string assembly)
         {
             string returnStr = "";
-            returnStr += "Prog Count  Type   Opcode       Instruction\n" +
-                         "----------  ----   ------    -----------------\n";
 
             returnStr += assembly;
-
-            returnStr += "\n\nSummary Statistics\n" +
-                         "------------------\n" +
-                         "Total Instructions:           " + totalInstructions + "\n" +
-                         "Arithmetic Instructions:      " + arithmeticInstructions + "\n" +
-                         "General Instructions:         " + generalInstructions + "\n" +
-                         "Jump Instructions:            " + jumpInstructions + "\n" +
-                         "Stack Instructions:           " + stackInstructions + "\n\n";
-
-            returnStr += "Addressing Mode Uses\n" +
-                         "--------------------\n" +
-                         "Memory:                       " + immediateAddrMode + "\n" +
-                         "Direct:                       " + directAddrMode + "\n" +
-                         "Indirect:                     " + indirectAddrMode + "\n" +
-                         "R-Direct:                     " + registerDirectAddrMode + "\n" +
-                         "R-Indirect:                   " + registerIndirectAddrMode + "\n" +
-                         "Index-Direct:                 " + indexDirectAddrMode + "\n" +
-                         "Index-Indirect:               " + indexIndirectAddrMode + "\n" +
-                         "Index-Offset:                 " + indexOffsetAddrMode + "\n" +
-                         "Index-Deferred:               " + indexDefferedAddrMode + "\n" +
-                         "Stack-Direct:                 " + stackDirectAddrMode + "\n" +
-                         "Stack-Indirect:               " + stackIndirectAddrMode + "\n" +
-                         "Stack-Offset:                 " + stackOffsetAddrMode + "\n" +
-                         "Stack-Index-Direct:           " + stackIndexDirectAddrMode + "\n" +
-                         "Stack-Index-Indirect:         " + stackIndexIndirectAddrMode + "\n" +
-                         "Stack-Index-Offset:           " + stackIndexOffsetAddrMode + "\n" +
-                         "Stack-Index-Deferred:         " + stackIndexDefferedAddrMode + "\n";
 
             return returnStr;
         }
