@@ -85,7 +85,7 @@
 
     .statsTabContent > textarea {
         width: 100%;
-        height: 735px;
+        height: 731px;
         margin-top: 0px;
         margin-bottom: 5px;
         transform: translateY(5px);
@@ -115,7 +115,7 @@
     margin-bottom: 4px;
 }
 
-        .inputBox > div, .outputBox > div, .memoryDumpContent > div {
+        .inputBox > div, .outputBox > div, .MemLabelClass{
             text-align: center;
             align-content: center;
         }
@@ -133,6 +133,7 @@
 .memDump {
     margin-top: 5px;
     margin-left: 5px;
+    height: 843px;
 }
 
 .memoryDumpContent > textarea {
@@ -224,7 +225,7 @@ hr {
     font-family: "Source Code Pro", monospace;
     font-size: 15px;
     width: 100%;
-    height: 744px;
+    height: 740px;
     margin-top: 0px;
     margin-bottom: 0px;
     overflow-y: auto;
@@ -233,8 +234,23 @@ hr {
     color: black;
 }
 
+.memoryContainer {
+    border: 2px solid rgb(100, 100, 100);
+    font-family: "Source Code Pro", monospace;
+    font-size: 15px;
+    width: 100%;
+    height: 783px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    overflow-y: auto;
+    overflow-wrap: break-word;
+    transform: translateY(5px);
+    background-color: white;
+    color: black;
+}
+
 .debuggerTabContent {
-    height: 788px;
+    height: 784px;
 }
 
 p {

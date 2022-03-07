@@ -264,14 +264,23 @@
                         <div>
                             <div class="memDump">
                                 <div class="memoryDumpContent">
-                                    <div>
+                                    <div class="MemLabelClass">
                                         <button class="byteAddressLabel float-start"> Jump To </button>
                                         <input id="MemDumpStart" class="byteAddressInput float-start" placeholder="ex. 00AB" @bind-value="@MemDumpStart">
                                         <div class="memDumpLabel">
                                             <label id="exLabel"><b>Memory Dump</b></label>
                                         </div>
                                     </div>
-                                    <textarea placeholder="Memory will begin to appear once the code begins execution...">@MemDumpContent</textarea><br />
+                                    <div class="memoryContainer" id="memDumpId">
+                                        @if (SPEx != null)
+                                        {
+                                            @foreach (var instr in SPEx.InstrList.InstructionOffsetDictionary)
+                                            {
+                                                <span class="@DivCSS(instr.Value)">     @instr.Value.Assemble().opcode.ToString("X2") </span>
+                                            }
+                                        }
+                                    </div>
+                                    <!-- <textarea placeholder="Memory will begin to appear once the code begins execution...">@MemDumpContent</textarea><br /> -->
                                 </div>
                             </div>
                         </div>
