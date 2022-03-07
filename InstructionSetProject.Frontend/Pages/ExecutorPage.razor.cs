@@ -75,11 +75,6 @@ namespace InstructionSetProject.Frontend.Pages
         private bool ShowButton { get; set; } = false;
         private ResizeDirection[] dialogResizeDirections { get; set; } = new ResizeDirection[] { ResizeDirection.All };
 
-        private string StartMemDumpLimit()
-        {
-            return "Need to implement";
-        }
-
         private async Task LoadFile(InputFileChangeEventArgs e)
         {
             var file = e.File;
@@ -100,6 +95,13 @@ namespace InstructionSetProject.Frontend.Pages
         {
             byte[] file = System.Text.Encoding.UTF8.GetBytes(statsString);
             await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "assemblyStats.txt", "text/plain", file);
+        }
+
+        void selectMemDumpText(ushort instrKey)
+        {
+            debugRender = true;
+            MemDumpStart = instrKey.ToString("X4");
+            debugRender = true;
         }
 
         public string Statistics()
@@ -158,9 +160,18 @@ namespace InstructionSetProject.Frontend.Pages
         {
             if (ExecAssemblyCode.Length != 0)
             {
-                machineCode = Assembler.Assemble(ExecAssemblyCode);
-                string hexCode = BitConverter.ToString(machineCode.ToArray());
-                ExecMachineCode = hexCode.Replace("-", " ");
+                try
+                {
+                    machineCode = Assembler.Assemble(ExecAssemblyCode);
+                    string hexCode = BitConverter.ToString(machineCode.ToArray());
+                    ExecMachineCode = hexCode.Replace("-", " ");
+                    output = "";
+                }
+                catch (Exception ex)
+                {
+                    output = "ERROR: " + ex.Message + "\n";
+                }
+                
             }
             else
             {
@@ -170,14 +181,41 @@ namespace InstructionSetProject.Frontend.Pages
 
         void runCode()
         {
-            SPEx = (StaticPipelineExecution)StaticPipelineExecutor.Execute(ExecAssemblyCode);
-            SPEx.Continue();
+            try
+            {
+                SPEx = (StaticPipelineExecution)StaticPipelineExecutor.Execute(ExecAssemblyCode);
+                output = "";
+            }
+            catch (Exception ex)
+            {
+                output = "ERROR: " + ex.Message + "\n";
+            }
+            
+            debugRender = true;
+            try
+            {
+                SPEx.Continue();
+                output = "";
+            }
+            catch (Exception ex)
+            {
+                output = "ERROR: " + ex.Message + "\n";
+            }
+            debugRender = true;
             Statistics();
         }
 
         void Debug()
         {
-            SPEx = (StaticPipelineExecution)StaticPipelineExecutor.Execute(ExecAssemblyCode);
+            try
+            {
+                SPEx = (StaticPipelineExecution)StaticPipelineExecutor.Execute(ExecAssemblyCode);
+                output = "";
+            }
+            catch (Exception ex)
+            {
+                output = "ERROR: " + ex.Message + "\n";
+            }
             OnItemClick();
             debugRender = true;
             JSRuntime.InvokeVoidAsync("debugScrollToTop");
@@ -195,7 +233,15 @@ namespace InstructionSetProject.Frontend.Pages
         void ClockTick()
         {
             debugRender = true;
-            SPEx.ClockTick();
+            try
+            {
+                SPEx.ClockTick();
+                output = "";
+            }
+            catch (Exception ex)
+            {
+                output = "ERROR: " + ex.Message + "\n";
+            }
             JSRuntime.InvokeVoidAsync("stepScroll");
             Statistics();
             debugRender = true;
@@ -205,7 +251,15 @@ namespace InstructionSetProject.Frontend.Pages
         void step()
         {
             debugRender = true;
-            SPEx.Step();
+            try
+            {
+                SPEx.Step();
+                output = "";
+            }
+            catch (Exception ex)
+            {
+                output = "ERROR: " + ex.Message + "\n";
+            }
             JSRuntime.InvokeVoidAsync("stepScroll");
             Statistics();
             debugRender = true;
@@ -214,8 +268,24 @@ namespace InstructionSetProject.Frontend.Pages
 
         void Continue()
         {
-            SPEx.Continue();
+            debugRender = true;
+            try
+            {
+                SPEx.Continue();
+                output = "";
+            }
+            catch (Exception ex)
+            {
+                output = "ERROR: " + ex.Message + "\n";
+            }
             Statistics();
+            debugRender = true;
+        }
+
+        void Stop()
+        {
+            SPEx = null;
+            InitDiagramModel();
         }
 
         #region ColorCodes
@@ -240,6 +310,13 @@ namespace InstructionSetProject.Frontend.Pages
                 UpdateWritebackStage();
             }
         }
+
+        public string fetchMnemonic => (SPEx != null && SPEx.fetchingInstruction != null) ? SPEx.fetchingInstruction.GetMnemonic() : "";
+        public string decodeMnemonic => (SPEx != null && SPEx.decodingInstruction != null) ? SPEx.decodingInstruction.GetMnemonic() : "";
+        public string executeMnemonic => (SPEx != null && SPEx.executingInstruction != null) ? SPEx.executingInstruction.GetMnemonic() : "";
+        public string memoryMnemonic => (SPEx != null && SPEx.memoryInstruction != null) ? SPEx.memoryInstruction.GetMnemonic() : "";
+        public string writeMnemonic => (SPEx != null && SPEx.writingBackInstruction!= null) ? SPEx.writingBackInstruction.GetMnemonic() : "";
+
 
         void UpdateFetchStage()
         {
@@ -336,6 +413,7 @@ namespace InstructionSetProject.Frontend.Pages
 
             EnableLines(linesToEnable, Blue);
             DisableLines(linesToDisable);
+
         }
 
         void UpdateExecuteStage()
@@ -411,6 +489,7 @@ namespace InstructionSetProject.Frontend.Pages
 
             EnableLines(linesToEnable, LightBlue);
             DisableLines(linesToDisable);
+
         }
 
         void UpdateMemoryStage()
@@ -497,6 +576,7 @@ namespace InstructionSetProject.Frontend.Pages
 
             EnableLines(linesToEnable, Green);
             DisableLines(linesToDisable);
+
         }
 
         void UpdateWritebackStage()
@@ -552,6 +632,7 @@ namespace InstructionSetProject.Frontend.Pages
 
             EnableLines(linesToEnable, Yellow);
             DisableLines(linesToDisable);
+
         }
 
         Connector GetConnectorByID(string id)
@@ -970,6 +1051,8 @@ namespace InstructionSetProject.Frontend.Pages
 
         #endregion
 
+        
+
         private void CreateConnector(string id, string sourceId, string sourcePortId, string targetId, string targetPortId, string strokeDash, string strokeColor, string label = default, AnnotationAlignment align = AnnotationAlignment.Before, double offset = 1, OrthogonalSegment segment1 = null, OrthogonalSegment segment2 = null)
         {
             Connector diagramConnector = new Connector()
@@ -1104,12 +1187,16 @@ namespace InstructionSetProject.Frontend.Pages
 
         private void DialogOpen(Object args)
         {
+            debugRender = true;
             this.ShowButton = true;
+            debugRender = true;
         }
         private void DialogClose(Object args)
         {
+            debugRender = true;
             diagramContent =  diagram.SaveDiagram();
             this.ShowButton = false;
+            debugRender = true;
         }
         private void OnClicked()
         {

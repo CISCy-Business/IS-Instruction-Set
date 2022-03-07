@@ -1,4 +1,5 @@
 ﻿@page "/"
+@inject NavigationManager UriHelper
 
 <style>
     .cont-parent {
@@ -21,25 +22,37 @@
         <br />
         <h1>Come try out our instruction set!</h1><br /><hr /><br />
 
-        <p>We currently offer two options for this architecture:</p>
-        <p>Disassembly<br />Assembly</p><br />
+        <p>We currently offer three options for this architecture:</p>
+        <p>Disassembly<br />Assembly<br />Execution with 5 stage pipelining</p><br />
 
-        <p>Both of these options are available in the top navigation menu.</p><br /><hr /><br />
+        <p>All of these options are available in the top navigation menu.</p><br /><hr /><br />
 
-        <h3>Disassembler</h3>
+        <h3 @onclick="() => NavigateDisassembler()">Disassembler</h3>
 
         <p>
             Our disassembler allows you to type in your machine (hex) code into the left hand text box and
-            by clicking the arrow button in the middle it will disassemble your code into a clean table 
-            organizing the instruction types, totals, summaries, etc.
-        </p><br />
+            by clicking the arrow button in the middle it will disassemble your code into its assembly code
+            counterpart.
+        </p>
+        <br />
 
-        <h3>Assembler</h3>
+        <h3 @onclick="() => NavigateAssembler()">Assembler</h3>
 
         <p>
             Our assembler allows you to type in the assembly (IS Instruction Set) code into the left hand text
             box and by clicking the arrow button in the middle it will assemble your code into its machine code
-            variant ready for compilation and execution (possible future iterations).
+            variant.
+        </p>
+        <br />
+        
+        <h3 @onclick="() => NavigateExecutor()">Execution (New)</h3>
+
+        <p>
+            Our executor allows you to type in assembly code from our instruction set in the Executor tab and there
+            are many options for execution along the top toolbar. From here you can build, run, debug, step, clock, 
+            continue, stop, and view our data path. The data path allows you to see how each instruction interacts 
+            with a hypothetical CPU. There is highlighting of instructions throughout each stage in the pipeline. 
+            There are many other tools to play around with and details to discover so go give it a try!
         </p>
         <br />
     </div>
@@ -47,5 +60,18 @@
 
 
 @code {
+    void NavigateAssembler()
+    {
+        UriHelper.NavigateTo("assembler");
+    }
 
+    void NavigateDisassembler()
+    {
+        UriHelper.NavigateTo("disassembler");
+    }
+
+    void NavigateExecutor()
+    {
+        UriHelper.NavigateTo("executor");
+    }
 }

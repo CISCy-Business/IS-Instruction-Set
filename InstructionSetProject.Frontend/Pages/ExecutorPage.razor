@@ -17,6 +17,7 @@
         margin-left: 5px;
         width: 93px;
         border: 1px solid black;
+        font-family: revert !important;
     }
 
     SfSplitter {
@@ -67,9 +68,7 @@
                     <ToolbarItem PrefixIcon="e-icons e-clock" Text="Clock Tick" OnClick="ClockTick" TooltipText="Perform on clock tick" Disabled="@(SPEx == null)"></ToolbarItem>
                     <ToolbarItem PrefixIcon="e-icons e-text-wrap" Text="Step" OnClick="step" TooltipText="Step through each line of code upon debugging" Disabled="@(SPEx == null)"></ToolbarItem>
                     <ToolbarItem PrefixIcon="e-icons e-check" Text="Continue" OnClick="Continue" TooltipText="Continue through the rest of the program" Disabled="@(SPEx == null)"></ToolbarItem>
-                    <ToolbarItem Type="ItemType.Separator"></ToolbarItem>
-                    <ToolbarItem PrefixIcon="e-icons e-bullet-3" Text="Stop" TooltipText="Stop the program"></ToolbarItem>
-                    <ToolbarItem PrefixIcon="e-icons e-repeat" Text="ReRun" TooltipText="Re-build and Re-run the program"></ToolbarItem>
+                    <ToolbarItem PrefixIcon="e-icons e-bullet-3" Text="Stop" OnClick="Stop" TooltipText="Stop the program" Disabled="@(SPEx == null)"></ToolbarItem>
                     <ToolbarItem Type="ItemType.Separator"></ToolbarItem>
                     <ToolbarItem Text="DataPath" TooltipText="Show the data path of instructions" Disabled="@ShowButton" OnClick="OnClicked"></ToolbarItem>
                     <ToolbarItem Type="ItemType.Separator"></ToolbarItem>
@@ -77,14 +76,22 @@
             </SfToolbar>
             
 
-            <SfDialog Target="#target" Width="1225px" Height="800px" ResizeHandles="@dialogResizeDirections" AllowDragging="true" EnableResize="false" ShowCloseIcon="true" @bind-Visible="Visibility">
+            <SfDialog Target="#target" Width="1225px" Height="850px" ResizeHandles="@dialogResizeDirections" AllowDragging="true" EnableResize="true" ShowCloseIcon="true" @bind-Visible="Visibility">
                 <DialogTemplates>
-                    <Header>Datapath Emulation of Our ISA in the CPU</Header>
+                    <Header>Datapath: 
+                        <Syncfusion.Blazor.Buttons.SfButton OnClick="step" Content="Step" Disabled="@(SPEx == null)" IsPrimary="true" style="transform: translateY(5px)"></Syncfusion.Blazor.Buttons.SfButton>
+                        <Syncfusion.Blazor.Buttons.SfButton OnClick="ClockTick" Content="Clock Tick" Disabled="@(SPEx == null)" IsPrimary="true" style="transform: translateY(5px)"></Syncfusion.Blazor.Buttons.SfButton>
+                    </Header>
                     <Content>
                         <SfDiagramComponent Height="680px" Constraints="DiagramConstraints.None" Nodes="@NodeCollection" Connectors="@ConnectorCollection" @ref="@diagram">
                             <SnapSettings Constraints=SnapConstraints.None>
                             </SnapSettings>
                         </SfDiagramComponent>
+                        <textarea style="height: 35px; width: 265px; margin-left: 35px; text-align: center" readonly>@fetchMnemonic</textarea>
+                        <textarea style="height: 35px; width: 257px; text-align: center" readonly>@decodeMnemonic</textarea>
+                        <textarea style="height: 35px; width: 237px; text-align: center" readonly>@executeMnemonic</textarea>
+                        <textarea style="height: 35px; width: 252px; text-align: center" readonly>@memoryMnemonic</textarea>
+                        <textarea style="height: 35px; width: 118px; text-align: center" readonly>@writeMnemonic</textarea>
                     </Content>
                 </DialogTemplates>
                 <DialogEvents Opened="@DialogOpen" Closed="@DialogClose"></DialogEvents>
@@ -134,7 +141,7 @@
                                         {
                                             @foreach (var instr in SPEx.InstrList.InstructionOffsetDictionary)
                                             {
-                                                <p class="@DivCSS(instr.Value)">@instr.Key.ToString("X4"):     @instr.Value.Disassemble()</p>
+                                                <p class="@DivCSS(instr.Value)"><a class="@DivCSS(instr.Value)" title="Jump To @instr.Key.ToString("X4")" style="color: blue; text-decoration: underline; cursor: pointer" @onclick="() => selectMemDumpText(instr.Key)">@instr.Key.ToString("X4")</a>:     @instr.Value.Disassemble()</p>
                                             }
                                         }
                                         <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
@@ -172,11 +179,11 @@
                                         <!-- Add a stage legend right here in this spot where this comment is located-->
                                         <div>
                                             <h3 style="color: black; font-family: monospace; font-size: 25px; border"><b>Stages:</b></h3>
-                                            <p class="bg-fetch" style="color: black; font-family: monospace; font-size: 21px"><b>Fetch</b></p>
-                                            <p class="bg-decode" style="color: black; font-family: monospace; font-size: 21px"><b>Decode</b></p>
-                                            <p class="bg-execute" style="color: black; font-family: monospace; font-size: 21px"><b>Execute</b></p>
-                                            <p class="bg-memory" style="color: black; font-family: monospace; font-size: 21px"><b>Memory</b></p>
-                                            <p class="bg-write" style="color: black; font-family: monospace; font-size: 21px"><b>WriteBack</b></p>
+                                            <p class="bg-fetch" style="color: white; font-family: monospace; font-size: 21px"><b>Fetch</b></p>
+                                            <p class="bg-decode" style="color: white; font-family: monospace; font-size: 21px"><b>Decode</b></p>
+                                            <p class="bg-execute" style="color: white; font-family: monospace; font-size: 21px"><b>Execute</b></p>
+                                            <p class="bg-memory" style="color: white; font-family: monospace; font-size: 21px"><b>Memory</b></p>
+                                            <p class="bg-write" style="color: white; font-family: monospace; font-size: 21px"><b>WriteBack</b></p>
                                         </div>
                                     </div>
 
@@ -246,7 +253,7 @@
                                     <div>
                                         <label id="exLabel"><b>Output</b></label>
                                     </div>
-                                    <textarea placeholder="Ouput will appear here after running code..."></textarea>
+                                    <textarea placeholder="Ouput will appear here after running code...">@output</textarea>
                                 </div>
                             </div>
                         </div>
