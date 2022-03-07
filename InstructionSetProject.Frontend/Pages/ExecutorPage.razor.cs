@@ -226,7 +226,7 @@ namespace InstructionSetProject.Frontend.Pages
         private const string LightBlue = "#0099FF";
         private const string Green = "#00CC44";
         private const string Yellow = "#B6BF02";
-        private const double ControlOpacity = 0.35;
+        private const string ControlDash = "4,2";
         #endregion
 
         void UpdateDiagram()
@@ -750,55 +750,55 @@ namespace InstructionSetProject.Frontend.Pages
 
             #region Nodes
             // Fetch Nodes
-            CreateNode("FetchMux", 60, 293, 60, 27, -90, 90, FetchMuxPorts, FlowShapeType.Terminator, "Mux", "white", 1.0, "black");
-            CreateNode("PC", 110, 293, 25, 55, 0, 0, PCPorts, FlowShapeType.Process, "PC", "white", 1.0, "black");
-            CreateNode("InstrMem", 200, 370, 100, 100, 0, 0, InstrMemPorts, FlowShapeType.Process, "Instruction Memory", "white", 1.0, "black");
-            CreateNode("AddPC", 205, 250, 75, 70, -90, 90, AddPCPorts, BasicShapeType.Trapezoid, "Add", "white", 1.0, "black");
+            CreateNode("FetchMux", 60, 293, 60, 27, -90, 90, FetchMuxPorts, FlowShapeType.Terminator, "Mux", "white", "8,0", "black");
+            CreateNode("PC", 110, 293, 25, 55, 0, 0, PCPorts, FlowShapeType.Process, "PC", "white", "8,0", "black");
+            CreateNode("InstrMem", 200, 370, 100, 100, 0, 0, InstrMemPorts, FlowShapeType.Process, "Instruction Memory", "white", "8,0", "black");
+            CreateNode("AddPC", 205, 250, 75, 70, -90, 90, AddPCPorts, BasicShapeType.Trapezoid, "Add", "white", "8,0", "black");
 
-            CreateNode("IFID", 300, 343, 30, 450, 0, -90, ifidPorts, FlowShapeType.Process, "IF/ID", "white", 1.0, "black");
+            CreateNode("IFID", 300, 343, 30, 450, 0, -90, ifidPorts, FlowShapeType.Process, "IF/ID", "white", "8,0", "black");
 
             // Decode Nodes
-            CreateNode("Registers", 450, 350, 100, 100, 0, 0, regPorts, FlowShapeType.Process, "Registers", "white", 1.0, "black");
-            CreateNode("ImmGen", 470, 450, 40, 75, 0, 0, ImmGenPorts, BasicShapeType.Ellipse, "Imm Gen", "white", 1.0, "black");
-            CreateNode("Control", 480, 70, 45, 100, 0, 0, ControlPorts, BasicShapeType.Ellipse, "Control", "white", ControlOpacity, "black");
+            CreateNode("Registers", 450, 350, 100, 100, 0, 0, regPorts, FlowShapeType.Process, "Registers", "white", "8,0", "black");
+            CreateNode("ImmGen", 470, 450, 40, 75, 0, 0, ImmGenPorts, BasicShapeType.Ellipse, "Imm Gen", "white", "8,0", "black");
+            CreateNode("Control", 480, 70, 45, 100, 0, 0, ControlPorts, BasicShapeType.Ellipse, "Control", "white", ControlDash, "black");
 
-            CreateNode("IDEX", 560, 343, 30, 450, 0, -90, idexPorts, FlowShapeType.Process, "ID/EX", "white", 1.0, "black");
-            CreateNode("RW", 560, 33, 35, 15, 0, 0, RWPorts, FlowShapeType.Process, "RW", "white", ControlOpacity, "black");
-            CreateNode("MTR", 560, 48, 35, 15, 0, 0, MTRPorts, FlowShapeType.Process, "MTR", "white", ControlOpacity, "black");
-            CreateNode("MR", 560, 63, 35, 15, 0, 0, MRPorts, FlowShapeType.Process, "MR", "white", ControlOpacity, "black");
-            CreateNode("MW", 560, 78, 35, 15, 0, 0, MWPorts, FlowShapeType.Process, "MW", "white", ControlOpacity, "black");
-            CreateNode("PCS", 560, 93, 35, 15, 0, 0, PCSPorts, FlowShapeType.Process, "PCS", "white", ControlOpacity, "black");
-            CreateNode("ALUS", 560, 108, 35, 15, 0, 0, ALUSPorts, FlowShapeType.Process, "ALUS", "white", ControlOpacity, "black");
+            CreateNode("IDEX", 560, 343, 30, 450, 0, -90, idexPorts, FlowShapeType.Process, "ID/EX", "white", "8,0", "black");
+            CreateNode("RW", 560, 33, 35, 15, 0, 0, RWPorts, FlowShapeType.Process, "RW", "white", ControlDash, "black");
+            CreateNode("MTR", 560, 48, 35, 15, 0, 0, MTRPorts, FlowShapeType.Process, "MTR", "white", ControlDash, "black");
+            CreateNode("MR", 560, 63, 35, 15, 0, 0, MRPorts, FlowShapeType.Process, "MR", "white", ControlDash, "black");
+            CreateNode("MW", 560, 78, 35, 15, 0, 0, MWPorts, FlowShapeType.Process, "MW", "white", ControlDash, "black");
+            CreateNode("PCS", 560, 93, 35, 15, 0, 0, PCSPorts, FlowShapeType.Process, "PCS", "white", ControlDash, "black");
+            CreateNode("ALUS", 560, 108, 35, 15, 0, 0, ALUSPorts, FlowShapeType.Process, "ALUS", "white", ControlDash, "black");
 
             // Execute Nodes
-            CreateNode("ExecuteMux", 632, 378, 60, 27, -90, 90, ExecuteMuxPorts, FlowShapeType.Terminator, "Mux", "white", 1.0, "black");
-            CreateNode("ALU", 710, 281, 75, 70, -90, 90, ALUPorts, BasicShapeType.Trapezoid, "ALU", "white", 1.0, "black");
+            CreateNode("ExecuteMux", 632, 378, 60, 27, -90, 90, ExecuteMuxPorts, FlowShapeType.Terminator, "Mux", "white", "8,0", "black");
+            CreateNode("ALU", 710, 281, 75, 70, -90, 90, ALUPorts, BasicShapeType.Trapezoid, "ALU", "white", "8,0", "black");
             //CreateNode("ALUControl", 640, 490, 45, 75, 0, 0, ImmGenPorts, BasicShapeType.Ellipse, "ALU Control", "white", ControlOpacity, "black");
 
-            CreateNode("EXMEM", 800, 343, 30, 450, 0, -90, exmemPorts, FlowShapeType.Process, "EX/MEM", "white", 1.0, "black");
-            CreateNode("RW1", 800, 48, 35, 15, 0, 0, RW1Ports, FlowShapeType.Process, "RW", "white", ControlOpacity, "black");
-            CreateNode("MTR1", 800, 63, 35, 15, 0, 0, MTR1Ports, FlowShapeType.Process, "MTR", "white", ControlOpacity, "black");
-            CreateNode("MR1", 800, 78, 35, 15, 0, 0, MR1Ports, FlowShapeType.Process, "MR", "white", ControlOpacity, "black");
-            CreateNode("MW1", 800, 93, 35, 15, 0, 0, MW1Ports, FlowShapeType.Process, "MW", "white", ControlOpacity, "black");
-            CreateNode("PCS1", 800, 108, 35, 15, 0, 0, PCS1Ports, FlowShapeType.Process, "PCS", "white", ControlOpacity, "black");
+            CreateNode("EXMEM", 800, 343, 30, 450, 0, -90, exmemPorts, FlowShapeType.Process, "EX/MEM", "white", "8,0", "black");
+            CreateNode("RW1", 800, 48, 35, 15, 0, 0, RW1Ports, FlowShapeType.Process, "RW", "white", ControlDash, "black");
+            CreateNode("MTR1", 800, 63, 35, 15, 0, 0, MTR1Ports, FlowShapeType.Process, "MTR", "white", ControlDash, "black");
+            CreateNode("MR1", 800, 78, 35, 15, 0, 0, MR1Ports, FlowShapeType.Process, "MR", "white", ControlDash, "black");
+            CreateNode("MW1", 800, 93, 35, 15, 0, 0, MW1Ports, FlowShapeType.Process, "MW", "white", ControlDash, "black");
+            CreateNode("PCS1", 800, 108, 35, 15, 0, 0, PCS1Ports, FlowShapeType.Process, "PCS", "white", ControlDash, "black");
 
             // Memory Nodes
-            CreateNode("DataMem", 950, 319, 100, 100, 0, 0, dataMemPorts, FlowShapeType.Process, "Data Memory", "white", 1.0, "black");
-            CreateNode("CheckFlags", 880, 164, 75, 65, -90, 90, ChkFlgPorts, BasicShapeType.Trapezoid, "Check Flgs", "white", 1.0, "black");
+            CreateNode("DataMem", 950, 319, 100, 100, 0, 0, dataMemPorts, FlowShapeType.Process, "Data Memory", "white", "8,0", "black");
+            CreateNode("CheckFlags", 880, 164, 75, 65, -90, 90, ChkFlgPorts, BasicShapeType.Trapezoid, "Check Flgs", "white", ControlDash, "black");
 
-            CreateNode("MEMWB", 1055, 343, 30, 450, 0, -90, memwbPorts, FlowShapeType.Process, "MEM/WB", "white", 1.0, "black");
-            CreateNode("RW2", 1055, 93, 35, 15, 0, 0, RW2Ports, FlowShapeType.Process, "RW", "white", ControlOpacity, "black");
-            CreateNode("MTR2", 1055, 108, 35, 15, 0, 0, MTR2Ports, FlowShapeType.Process, "MTR", "white", ControlOpacity, "black");
+            CreateNode("MEMWB", 1055, 343, 30, 450, 0, -90, memwbPorts, FlowShapeType.Process, "MEM/WB", "white", "8,0", "black");
+            CreateNode("RW2", 1055, 93, 35, 15, 0, 0, RW2Ports, FlowShapeType.Process, "RW", "white", ControlDash, "black");
+            CreateNode("MTR2", 1055, 108, 35, 15, 0, 0, MTR2Ports, FlowShapeType.Process, "MTR", "white", ControlDash, "black");
 
-            CreateNode("FlgReturn", 750, 10, 1, 1, 0, 0, FLRetPorts, FlowShapeType.Process, "", "white", 1.0, "black");
+            CreateNode("FlgReturn", 750, 10, 1, 1, 0, 0, FLRetPorts, FlowShapeType.Process, "", "white", "8,0", "black");
 
             // Write Nodes
-            CreateNode("WriteMux", 1125, 315, 60, 27, -90, 90, WriteMuxPorts, FlowShapeType.Terminator, "Mux", "white", 1.0, "black");
-            CreateNode("RdRegReturn", 750, 635, 1, 1, 0, 0, RdRegReturnPorts, FlowShapeType.Process, "", "white", 1.0, "black");
-            CreateNode("RWReturn", 750, 15, 1, 1, 0, 0, RWRetPorts, FlowShapeType.Process, "", "white", 1.0, "black");
+            CreateNode("WriteMux", 1125, 315, 60, 27, -90, 90, WriteMuxPorts, FlowShapeType.Terminator, "Mux", "white", "8,0", "black");
+            CreateNode("RdRegReturn", 750, 635, 1, 1, 0, 0, RdRegReturnPorts, FlowShapeType.Process, "", "white", "8,0", "black");
+            CreateNode("RWReturn", 750, 15, 1, 1, 0, 0, RWRetPorts, FlowShapeType.Process, "", "white", "8,0", "black");
 
             // Window Sizing Node
-            CreateNode("sizeNodeYX", 1170, 650, 1, 1, 0, 0, WinSizePorts, FlowShapeType.Process, "", "white", 1.0, "white");
+            CreateNode("sizeNodeYX", 1170, 650, 1, 1, 0, 0, WinSizePorts, FlowShapeType.Process, "", "white", "8,0", "white");
             #endregion
 
             #region Segments
@@ -830,70 +830,70 @@ namespace InstructionSetProject.Frontend.Pages
 
             #region Connectors
             // Fetch Connectors
-            CreateConnector(FetchMuxToPCIn, "FetchMux", "portFetchMuxOut0", "PC", "portPCIn", 1.0, "black");
-            CreateConnector(PCToInstrMemIn, "PC", "portPCOut", "InstrMem", "portInstrMemIn", 1.0, "black");
-            CreateConnector(PCToAddPC, "PC", "portPCOut", "AddPC", "portAddPCIn1", 1.0, "black");
-            CreateConnector(AddPCToFetchMux, "AddPC", "portAddPCOut0", "FetchMux", "portFetchMuxIn2", 1.0, "black", "0", AnnotationAlignment.Center, .78);
-            CreateConnector(IntrMemToIFID, "InstrMem", "portInstrMemOut", "IFID", "portIfidIn1", 1.0, "black");
-            CreateConnector(IntrMemToAddPC, "InstrMem", "portInstrMemOut1", "AddPC", "portAddPCIn0", 1.0, "black", "Instr Size", AnnotationAlignment.Center, 0.15);
+            CreateConnector(FetchMuxToPCIn, "FetchMux", "portFetchMuxOut0", "PC", "portPCIn", "8,0", "black");
+            CreateConnector(PCToInstrMemIn, "PC", "portPCOut", "InstrMem", "portInstrMemIn", "8,0", "black");
+            CreateConnector(PCToAddPC, "PC", "portPCOut", "AddPC", "portAddPCIn1", "8,0", "black");
+            CreateConnector(AddPCToFetchMux, "AddPC", "portAddPCOut0", "FetchMux", "portFetchMuxIn2", "8,0", "black", "0", AnnotationAlignment.Center, .78);
+            CreateConnector(IntrMemToIFID, "InstrMem", "portInstrMemOut", "IFID", "portIfidIn1", "8,0", "black");
+            CreateConnector(IntrMemToAddPC, "InstrMem", "portInstrMemOut1", "AddPC", "portAddPCIn0", "8,0", "black", "Instr Size", AnnotationAlignment.Center, 0.15);
 
             // Decode Connectors
-            CreateConnector(IFIDToRegIn0, "IFID", "portIfidOut1", "Registers", "portRegIn0", 1.0, "black", "Rs1");
-            CreateConnector(IFIDToRegIn1, "IFID", "portIfidOut1", "Registers", "portRegIn1", 1.0, "black", "Rs2");
-            CreateConnector(RegToIDEXIn1, "Registers", "portRegOut0", "IDEX", "portIdexIn1", 1.0, "black", "RsD1", AnnotationAlignment.Before);
-            CreateConnector(RegToIDEXIn2, "Registers", "portRegOut1", "IDEX", "portIdexIn2", 1.0, "black", "RsD2", AnnotationAlignment.Before);
-            CreateConnector(IFIDToImmGen, "IFID", "portIfidOut1", "ImmGen", "portImmGenIn", 1.0, "black", "Imm/Addr Mode");
-            CreateConnector(ImmGenToIDEX, "ImmGen", "portImmGenOut", "IDEX", "portIdexIn3", 1.0, "black", "Result", AnnotationAlignment.Before);
-            CreateConnector(IFIDToIDEX, "IFID", "portIfidOut1", "IDEX", "portIdexIn4", 1.0, "black", "Rd");
-            CreateConnector(IFIDToControl, "IFID", "portIfidOut1", "Control", "portControlIn", 1.0, "black", "Control Bits", AnnotationAlignment.Center, .85);
-            CreateConnector(ControlToRW, "Control", "portControlOut1", "RW", "portRWIn", ControlOpacity, "black");
-            CreateConnector(ControlToMTR, "Control", "portControlOut1", "MTR", "portMTRIn", ControlOpacity, "black");
-            CreateConnector(ControlToMR, "Control", "portControlOut1", "MR", "portMRIn", ControlOpacity, "black");
-            CreateConnector(ControlToMW, "Control", "portControlOut1", "MW", "portMWIn", ControlOpacity, "black");
-            CreateConnector(ControlToPCS, "Control", "portControlOut1", "PCS", "portPCSIn", ControlOpacity, "black");
-            CreateConnector(ControlToALUS, "Control", "portControlOut1", "ALUS", "portALUSIn", ControlOpacity, "black");
+            CreateConnector(IFIDToRegIn0, "IFID", "portIfidOut1", "Registers", "portRegIn0", "8,0", "black", "Rs1");
+            CreateConnector(IFIDToRegIn1, "IFID", "portIfidOut1", "Registers", "portRegIn1", "8,0", "black", "Rs2");
+            CreateConnector(RegToIDEXIn1, "Registers", "portRegOut0", "IDEX", "portIdexIn1", "8,0", "black", "RsD1", AnnotationAlignment.Before);
+            CreateConnector(RegToIDEXIn2, "Registers", "portRegOut1", "IDEX", "portIdexIn2", "8,0", "black", "RsD2", AnnotationAlignment.Before);
+            CreateConnector(IFIDToImmGen, "IFID", "portIfidOut1", "ImmGen", "portImmGenIn", "8,0", "black", "Imm/Addr Mode");
+            CreateConnector(ImmGenToIDEX, "ImmGen", "portImmGenOut", "IDEX", "portIdexIn3", "8,0", "black", "Result", AnnotationAlignment.Before);
+            CreateConnector(IFIDToIDEX, "IFID", "portIfidOut1", "IDEX", "portIdexIn4", "8,0", "black", "Rd");
+            CreateConnector(IFIDToControl, "IFID", "portIfidOut1", "Control", "portControlIn", "8,0", "black", "Control Bits", AnnotationAlignment.Center, .85);
+            CreateConnector(ControlToRW, "Control", "portControlOut1", "RW", "portRWIn", ControlDash, "black");
+            CreateConnector(ControlToMTR, "Control", "portControlOut1", "MTR", "portMTRIn", ControlDash, "black");
+            CreateConnector(ControlToMR, "Control", "portControlOut1", "MR", "portMRIn", ControlDash, "black");
+            CreateConnector(ControlToMW, "Control", "portControlOut1", "MW", "portMWIn", ControlDash, "black");
+            CreateConnector(ControlToPCS, "Control", "portControlOut1", "PCS", "portPCSIn", ControlDash, "black");
+            CreateConnector(ControlToALUS, "Control", "portControlOut1", "ALUS", "portALUSIn", ControlDash, "black");
 
             // Execute Connectors
-            CreateConnector(RWToRW1, "RW", "portRWOut", "RW1", "portRW1In", ControlOpacity, "black");
-            CreateConnector(MTRToMTR1, "MTR", "portMTROut", "MTR1", "portMTR1In", ControlOpacity, "black");
-            CreateConnector(MRToMR1, "MR", "portMROut", "MR1", "portMR1In", ControlOpacity, "black");
-            CreateConnector(MWToMW1, "MW", "portMWOut", "MW1", "portMW1In", ControlOpacity, "black");
-            CreateConnector(PCSToPCS1, "PCS", "portPCSOut", "PCS1", "portPCS1In", ControlOpacity, "black");
-            CreateConnector(ALUSToExecuteMux, "ALUS", "portALUSOut", "ExecuteMux", "portExecuteMuxIn2", ControlOpacity, "black");
-            CreateConnector(IDEXToExecuteMux1, "IDEX", "portIdexOut2", "ExecuteMux", "portExecuteMuxIn1", 1.0, "black", "0", AnnotationAlignment.Center, .7);
-            CreateConnector(IDEXToEXMEM2, "IDEX", "portIdexOut2", "EXMEM", "portExmemIn2", 1.0, "black", "RsD2", AnnotationAlignment.Center, .9);
-            CreateConnector(IDEXToFetchMux, "IDEX", "portIdexOut3", "FetchMux", "portFetchMuxIn0", 1.0, "black", "1", AnnotationAlignment.Center, .65);
-            CreateConnector(IDEXToExecuteMux0, "IDEX", "portIdexOut3", "ExecuteMux", "portExecuteMuxIn0", 1.0, "black", "1", AnnotationAlignment.Before, .7);
-            CreateConnector(IDEXToEXMEM3, "IDEX", "portIdexOut4", "EXMEM", "portExmemIn3", 1.0, "black", "Rd", AnnotationAlignment.Center, .9);
-            CreateConnector(IDEXToALU, "IDEX", "portIdexOut1", "ALU", "portALUIn1", 1.0, "black", "RsD1", AnnotationAlignment.Center, .5);
-            CreateConnector(ExecuteMuxToALU, "ExecuteMux", "portExecuteMuxOut0", "ALU", "portALUIn0", 1.0, "black");
-            CreateConnector(ALUToEXMEM1, "ALU", "portALUOut0", "EXMEM", "portExmemIn1", 1.0, "black", "ALUr", AnnotationAlignment.After, 0);
-            CreateConnector(ALUToEXMEM0, "ALU", "portALUOut1", "EXMEM", "portExmemIn0", 1.0, "black", "TMP FLGS", AnnotationAlignment.After, .74);
+            CreateConnector(RWToRW1, "RW", "portRWOut", "RW1", "portRW1In", ControlDash, "black");
+            CreateConnector(MTRToMTR1, "MTR", "portMTROut", "MTR1", "portMTR1In", ControlDash, "black");
+            CreateConnector(MRToMR1, "MR", "portMROut", "MR1", "portMR1In", ControlDash, "black");
+            CreateConnector(MWToMW1, "MW", "portMWOut", "MW1", "portMW1In", ControlDash, "black");
+            CreateConnector(PCSToPCS1, "PCS", "portPCSOut", "PCS1", "portPCS1In", ControlDash, "black");
+            CreateConnector(ALUSToExecuteMux, "ALUS", "portALUSOut", "ExecuteMux", "portExecuteMuxIn2", ControlDash, "black");
+            CreateConnector(IDEXToExecuteMux1, "IDEX", "portIdexOut2", "ExecuteMux", "portExecuteMuxIn1", "8,0", "black", "0", AnnotationAlignment.Center, .7);
+            CreateConnector(IDEXToEXMEM2, "IDEX", "portIdexOut2", "EXMEM", "portExmemIn2", "8,0", "black", "RsD2", AnnotationAlignment.Center, .9);
+            CreateConnector(IDEXToFetchMux, "IDEX", "portIdexOut3", "FetchMux", "portFetchMuxIn0", "8,0", "black", "1", AnnotationAlignment.Center, .65);
+            CreateConnector(IDEXToExecuteMux0, "IDEX", "portIdexOut3", "ExecuteMux", "portExecuteMuxIn0", "8,0", "black", "1", AnnotationAlignment.Before, .7);
+            CreateConnector(IDEXToEXMEM3, "IDEX", "portIdexOut4", "EXMEM", "portExmemIn3", "8,0", "black", "Rd", AnnotationAlignment.Center, .9);
+            CreateConnector(IDEXToALU, "IDEX", "portIdexOut1", "ALU", "portALUIn1", "8,0", "black", "RsD1", AnnotationAlignment.Center, .5);
+            CreateConnector(ExecuteMuxToALU, "ExecuteMux", "portExecuteMuxOut0", "ALU", "portALUIn0", "8,0", "black");
+            CreateConnector(ALUToEXMEM1, "ALU", "portALUOut0", "EXMEM", "portExmemIn1", "8,0", "black", "ALUr", AnnotationAlignment.After, 0);
+            CreateConnector(ALUToEXMEM0, "ALU", "portALUOut1", "EXMEM", "portExmemIn0", "8,0", "black", "TMP FLGS", AnnotationAlignment.After, .74);
 
             // Memory Connectors
-            CreateConnector(RW1ToRW2, "RW1", "portRW1Out", "RW2", "portRW2In", ControlOpacity, "black");
-            CreateConnector(MTR1ToMTR2, "MTR1", "portMTR1Out", "MTR2", "portMTR2In", ControlOpacity, "black");
-            CreateConnector(MR1ToDataMem, "MR1", "portMR1Out", "DataMem", "portDataMemIn3", ControlOpacity, "black");
-            CreateConnector(MW1ToDataMem, "MW1", "portMW1Out", "DataMem", "portDataMemIn2", ControlOpacity, "black");
-            CreateConnector(EXMEMToDataMem0, "EXMEM", "portExmemOut1", "DataMem", "portDataMemIn0", 1.0, "black", "Addr");
-            CreateConnector(EXMEMToDataMem1, "EXMEM", "portExmemOut2", "DataMem", "portDataMemIn1", 1.0, "black", "RsD2");
-            CreateConnector(EXMEMToMEMWB1, "EXMEM", "portExmemOut1", "MEMWB", "portMemwbIn1", 1.0, "black", "ALUr");
-            CreateConnector(EXMEMToMEMWB2, "EXMEM", "portExmemOut3", "MEMWB", "portMemwbIn2", 1.0, "black", "Rd");
-            CreateConnector(DataMemToMEMWB, "DataMem", "portDataMemOut", "MEMWB", "portMemwbIn0", 1.0, "black", "Data");
-            CreateConnector(PCS1ToCheckFlags, "PCS1", "portPCS1Out", "CheckFlags", "portChkFlgIn1", ControlOpacity, "black");
-            CreateConnector(EXMEMToCheckFlags, "EXMEM", "portExmemOut0", "CheckFlags", "portChkFlgIn0", ControlOpacity, "black", "FL");
-            CreateConnector(CheckFlagsToFlgRet, "CheckFlags", "portChkFlgOut0", "FlgReturn", "portFLRetIn", 1.0, "black");
-            CreateConnector(FlgRetToFetchMux, "FlgReturn", "portFLRetOut", "FetchMux", "portFetchMuxIn1", ControlOpacity, "black");
+            CreateConnector(RW1ToRW2, "RW1", "portRW1Out", "RW2", "portRW2In", ControlDash, "black");
+            CreateConnector(MTR1ToMTR2, "MTR1", "portMTR1Out", "MTR2", "portMTR2In", ControlDash, "black");
+            CreateConnector(MR1ToDataMem, "MR1", "portMR1Out", "DataMem", "portDataMemIn3", ControlDash, "black");
+            CreateConnector(MW1ToDataMem, "MW1", "portMW1Out", "DataMem", "portDataMemIn2", ControlDash, "black");
+            CreateConnector(EXMEMToDataMem0, "EXMEM", "portExmemOut1", "DataMem", "portDataMemIn0", "8,0", "black", "Addr");
+            CreateConnector(EXMEMToDataMem1, "EXMEM", "portExmemOut2", "DataMem", "portDataMemIn1", "8,0", "black", "RsD2");
+            CreateConnector(EXMEMToMEMWB1, "EXMEM", "portExmemOut1", "MEMWB", "portMemwbIn1", "8,0", "black", "ALUr");
+            CreateConnector(EXMEMToMEMWB2, "EXMEM", "portExmemOut3", "MEMWB", "portMemwbIn2", "8,0", "black", "Rd");
+            CreateConnector(DataMemToMEMWB, "DataMem", "portDataMemOut", "MEMWB", "portMemwbIn0", "8,0", "black", "Data");
+            CreateConnector(PCS1ToCheckFlags, "PCS1", "portPCS1Out", "CheckFlags", "portChkFlgIn1", ControlDash, "black");
+            CreateConnector(EXMEMToCheckFlags, "EXMEM", "portExmemOut0", "CheckFlags", "portChkFlgIn0", ControlDash, "black", "FL");
+            CreateConnector(CheckFlagsToFlgRet, "CheckFlags", "portChkFlgOut0", "FlgReturn", "portFLRetIn", ControlDash, "black");
+            CreateConnector(FlgRetToFetchMux, "FlgReturn", "portFLRetOut", "FetchMux", "portFetchMuxIn1", ControlDash, "black");
 
             // WriteBack Connectors
-            CreateConnector(MTR2ToWriteMux, "MTR2", "portMTR2Out", "WriteMux", "portWriteMuxIn2", ControlOpacity, "black");
-            CreateConnector(RW2ToRWRet, "RW2", "portRW2Out", "RWReturn", "portRWRetIn", ControlOpacity, "black");
-            CreateConnector(RWRetToReg, "RWReturn", "portRWRetOut", "Registers", "portRegIn4", ControlOpacity, "black");
-            CreateConnector(MEMWBToWriteMux1, "MEMWB", "portMemwbOut0", "WriteMux", "portWriteMuxIn1", 1.0, "black", "1", AnnotationAlignment.Center, .5);
-            CreateConnector(MEMWBToWriteMux2, "MEMWB", "portMemwbOut1", "WriteMux", "portWriteMuxIn0", 1.0, "black", "0", AnnotationAlignment.Before, .8);
-            CreateConnector(WriteMuxToReg, "WriteMux", "portWriteMuxOut0", "Registers", "portRegIn3", 1.0, "black", "Rd Data", AnnotationAlignment.After, .5, segment1, segment2);
-            CreateConnector(MEMWBToRdRet, "MEMWB", "portMemwbOut2", "RdRegReturn", "portRdRetIn", 1.0, "black", "Rd Reg", AnnotationAlignment.Before, .5);
-            CreateConnector(RdRetToReg, "RdRegReturn", "portRdRetOut", "Registers", "portRegIn2", 1.0, "black", "Rd Reg", AnnotationAlignment.Before, .5);
+            CreateConnector(MTR2ToWriteMux, "MTR2", "portMTR2Out", "WriteMux", "portWriteMuxIn2", ControlDash, "black");
+            CreateConnector(RW2ToRWRet, "RW2", "portRW2Out", "RWReturn", "portRWRetIn", ControlDash, "black");
+            CreateConnector(RWRetToReg, "RWReturn", "portRWRetOut", "Registers", "portRegIn4", ControlDash, "black");
+            CreateConnector(MEMWBToWriteMux1, "MEMWB", "portMemwbOut0", "WriteMux", "portWriteMuxIn1", "8,0", "black", "1", AnnotationAlignment.Center, .5);
+            CreateConnector(MEMWBToWriteMux2, "MEMWB", "portMemwbOut1", "WriteMux", "portWriteMuxIn0", "8,0", "black", "0", AnnotationAlignment.Before, .8);
+            CreateConnector(WriteMuxToReg, "WriteMux", "portWriteMuxOut0", "Registers", "portRegIn3", "8,0", "black", "Rd Data", AnnotationAlignment.After, .5, segment1, segment2);
+            CreateConnector(MEMWBToRdRet, "MEMWB", "portMemwbOut2", "RdRegReturn", "portRdRetIn", "8,0", "black", "Rd Reg", AnnotationAlignment.Before, .5);
+            CreateConnector(RdRetToReg, "RdRegReturn", "portRdRetOut", "Registers", "portRegIn2", "8,0", "black", "Rd Reg", AnnotationAlignment.Before, .5);
 
             #endregion
 
@@ -970,7 +970,7 @@ namespace InstructionSetProject.Frontend.Pages
 
         #endregion
 
-        private void CreateConnector(string id, string sourceId, string sourcePortId, string targetId, string targetPortId, double opacity, string strokeColor, string label = default, AnnotationAlignment align = AnnotationAlignment.Before, double offset = 1, OrthogonalSegment segment1 = null, OrthogonalSegment segment2 = null)
+        private void CreateConnector(string id, string sourceId, string sourcePortId, string targetId, string targetPortId, string strokeDash, string strokeColor, string label = default, AnnotationAlignment align = AnnotationAlignment.Before, double offset = 1, OrthogonalSegment segment1 = null, OrthogonalSegment segment2 = null)
         {
             Connector diagramConnector = new Connector()
             {
@@ -979,10 +979,10 @@ namespace InstructionSetProject.Frontend.Pages
                 SourcePortID = sourcePortId,
                 TargetID = targetId,
                 TargetPortID = targetPortId,
-                Style = new ShapeStyle() { StrokeWidth = 1, StrokeColor = strokeColor, Opacity = opacity},
+                Style = new ShapeStyle() { StrokeWidth = 1, StrokeColor = strokeColor, StrokeDashArray = strokeDash },
                 TargetDecorator = new DecoratorSettings()
                 {
-                    Style = new ShapeStyle() { StrokeColor = strokeColor, Fill = strokeColor }
+                    Style = new ShapeStyle() { StrokeColor = strokeColor, Fill = strokeColor}
                 }
             };
             diagramConnector.Constraints |= ConnectorConstraints.DragSegmentThumb;
@@ -1014,8 +1014,8 @@ namespace InstructionSetProject.Frontend.Pages
             {
                 ID = id,
                 Shape = PortShapes.Circle,
-                Width = 3,
-                Height = 3,
+                Width = 0,
+                Height = 0,
                 Visibility = PortVisibility.Visible,
                 Offset = new DiagramPoint() { X = x, Y = y },
                 Style = new ShapeStyle() { Fill = "#1916C1", StrokeColor = "#000" },
@@ -1024,7 +1024,7 @@ namespace InstructionSetProject.Frontend.Pages
         }
 
         private void CreateNode(string id, double xOffset, double yOffset, int xSize, int ySize, int rAngleNode, int rAngleAnnotation,
-            List<PointPort> ports, FlowShapeType shape, string label, string fillColor, double opacity, string stroke, string? labelColor = default)
+            List<PointPort> ports, FlowShapeType shape, string label, string fillColor, string strokeDash, string stroke, string? labelColor = default)
         {
             ShapeAnnotation annotation = new ShapeAnnotation()
             {
@@ -1047,7 +1047,7 @@ namespace InstructionSetProject.Frontend.Pages
                 Height = ySize,
                 RotationAngle = rAngleNode,
                 Shape = new FlowShape() { Type = Shapes.Flow, Shape = shape },
-                Style = new ShapeStyle() { Fill = fillColor, StrokeColor = stroke, Opacity = opacity},
+                Style = new ShapeStyle() { Fill = fillColor, StrokeColor = stroke, StrokeDashArray = strokeDash},
                 Annotations = new DiagramObjectCollection<ShapeAnnotation>() { annotation },
                 Ports = new DiagramObjectCollection<PointPort>(ports)
             };
@@ -1060,7 +1060,7 @@ namespace InstructionSetProject.Frontend.Pages
         }
 
         private void CreateNode(string id, double xOffset, double yOffset, int xSize, int ySize, int rAngleNode, int rAngleAnnotation,
-            List<PointPort> ports, BasicShapeType shape, string label, string fillColor, double opacity, string stroke, string labelColor = default)
+            List<PointPort> ports, BasicShapeType shape, string label, string fillColor, string strokeDash, string stroke, string labelColor = default)
         {
             ShapeAnnotation annotation = new ShapeAnnotation()
             {
@@ -1083,7 +1083,7 @@ namespace InstructionSetProject.Frontend.Pages
                 Height = ySize,
                 RotationAngle = rAngleNode,
                 Shape = new BasicShape() { Type = Shapes.Basic, Shape = shape },
-                Style = new ShapeStyle() { Fill = fillColor, StrokeColor = stroke, Opacity = opacity},
+                Style = new ShapeStyle() { Fill = fillColor, StrokeColor = stroke, StrokeDashArray = strokeDash},
                 Annotations = new DiagramObjectCollection<ShapeAnnotation>() { annotation },
                 Ports = new DiagramObjectCollection<PointPort>(ports)
             };
