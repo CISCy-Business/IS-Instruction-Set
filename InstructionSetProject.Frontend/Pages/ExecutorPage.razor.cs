@@ -1085,8 +1085,16 @@ namespace InstructionSetProject.Frontend.Pages
                     VerticalAlignment = VerticalAlignment.Bottom,
                     Alignment = align
                 };
+                var value = new PathAnnotation
+                {
+                    Content = "Test",
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Bottom,
+                    Alignment = AnnotationAlignment.Before,
+                };
+                value.Offset = -0.1;
                 annotation.Offset = offset;
-                diagramConnector.Annotations = new DiagramObjectCollection<PathAnnotation>() { annotation };
+                diagramConnector.Annotations = new DiagramObjectCollection<PathAnnotation>() { annotation, value };
             }
 
             ConnectorCollection.Add(diagramConnector);

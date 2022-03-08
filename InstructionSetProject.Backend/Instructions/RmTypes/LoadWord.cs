@@ -14,6 +14,8 @@ namespace InstructionSetProject.Backend.Instructions.RmTypes
 
         public override AluOperation? aluOperation => (addressingMode == 0b001_0000 || addressingMode == 0b001_1000) ? AluOperation.PassFirstOperandThrough : AluOperation.PassSecondOperandThrough;
 
+        public override int cyclesNeededInMemory => 3;
+
         public override string GetMnemonic()
         {
             return Mnemonic;

@@ -18,6 +18,8 @@ namespace InstructionSetProject.Backend.InstructionTypes
         public RegisterType? firstRegisterType => RegisterType.Write;
         public RegisterType? secondRegisterType => RegisterType.Read;
         public RegisterType? thirdRegisterType => RegisterType.Read;
+        public virtual int cyclesNeededInExecute => 1;
+        public virtual int cyclesNeededInMemory => 1;
 
         public abstract string GetMnemonic();
         public abstract ushort GetOpCode();

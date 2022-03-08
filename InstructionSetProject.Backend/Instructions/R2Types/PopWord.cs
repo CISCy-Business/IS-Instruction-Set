@@ -14,6 +14,8 @@ namespace InstructionSetProject.Backend.Instructions.R2Types
 
         public override AluOperation? aluOperation => AluOperation.NoOperation;
 
+        public override int cyclesNeededInMemory => 3;
+
         public override string GetMnemonic()
         {
             return Mnemonic;

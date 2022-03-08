@@ -17,6 +17,8 @@ namespace InstructionSetProject.Backend.Instructions.F2Types
 
         public override AluOperation? aluOperation => AluOperation.PassSecondOperandThrough;
 
+        public override int cyclesNeededInMemory => 3;
+
         public override string GetMnemonic()
         {
             return Mnemonic;

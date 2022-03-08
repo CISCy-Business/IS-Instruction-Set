@@ -68,37 +68,46 @@ namespace InstructionSetProject.Backend.StaticPipeline
             Decode();
             Fetch();
 
-            _writeBackStageOffset = _memoryStageOffset;
-            _memoryStageOffset = _executeStageOffset;
-            _executeStageOffset = _decodeStageOffset;
-            _decodeStageOffset = _fetchStageOffset;
-            if (_fetchStageOffset != DataStructures.InstructionPointer.value)
-            {
-                _fetchStageOffset = DataStructures.InstructionPointer.value;
-            }
-            else
-            {
-                _fetchStageOffset = -1;
-            }
+            // _writeBackStageOffset = _memoryStageOffset;
+            // _memoryStageOffset = _executeStageOffset;
+            // _executeStageOffset = _decodeStageOffset;
+            // _decodeStageOffset = _fetchStageOffset;
+            // if (_fetchStageOffset != DataStructures.InstructionPointer.value)
+            // {
+            //     _fetchStageOffset = DataStructures.InstructionPointer.value;
+            // }
+            // else
+            // {
+            //     _fetchStageOffset = -1;
+            // }
             Statistics.ClockTicks++;
         }
 
+        public int CyclesRemainingInMemoryStage;
+        public int CyclesRemainingInExecuteStage;
+
         private void Fetch()
         {
+            if (_decodeStageOffset != -1) return;
             var instr = fetchingInstruction;
             if (instr == null) return;
 
             DataStructures.InstructionPointer.value += instr.lengthInBytes;
+            _decodeStageOffset = _fetchStageOffset;
+            _fetchStageOffset = DataStructures.InstructionPointer.value;
         }
 
         private void Decode()
         {
+            if (_executeStageOffset != -1) return;
             var instr = decodingInstruction;
             if (instr == null)
             {
                 DecodeExecute.Immediate = null;
                 DecodeExecute.ReadData1 = null;
                 DecodeExecute.ReadData2 = null;
+                DecodeExecute.ReadReg1 = null;
+                DecodeExecute.ReadReg2 = null;
                 DecodeExecute.WriteRegister = null;
                 return;
             }
@@ -114,24 +123,50 @@ namespace InstructionSetProject.Backend.StaticPipeline
 
             var readReg1 = GetFirstReadRegister(instr);
             if (readReg1 != null)
+            {
                 DecodeExecute.ReadData1 = readReg1.value;
+                DecodeExecute.ReadReg1 = readReg1;
+            }
             else
+            {
                 DecodeExecute.ReadData1 = null;
+                DecodeExecute.ReadReg1 = null;
+            }
 
             var readReg2 = GetSecondReadRegister(instr);
             if (readReg2 != null)
+            {
                 DecodeExecute.ReadData2 = readReg2.value;
+                DecodeExecute.ReadReg2 = readReg2;
+            }
             else
+            {
                 DecodeExecute.ReadData2 = null;
+                DecodeExecute.ReadReg2 = null;
+            }
 
             if (instr is StoreWord || instr is StoreFloat || instr is PushWord || instr is PushFloat)
+            {
                 (DecodeExecute.ReadData1, DecodeExecute.ReadData2) = (DecodeExecute.ReadData2, DecodeExecute.ReadData1);
+                (DecodeExecute.ReadReg1, DecodeExecute.ReadReg2) = (DecodeExecute.ReadReg2, DecodeExecute.ReadReg1);
+            }
 
             DecodeExecute.WriteRegister = GetDestinationRegister(instr);
+            _executeStageOffset = _decodeStageOffset;
+            CyclesRemainingInExecuteStage = instr.cyclesNeededInExecute;
+            _decodeStageOffset = -1;
         }
 
         private void Execute()
         {
+            if (CyclesRemainingInExecuteStage > 1)
+            {
+                CyclesRemainingInExecuteStage--;
+                return;
+            }
+            if (_memoryStageOffset != -1) return;
+            if (writingBackInstruction != null && (MemoryWriteBack.WriteRegister == DecodeExecute.ReadReg1 ||
+                ExecuteMemory.WriteRegister == DecodeExecute.ReadReg2)) return;
             var instr = executingInstruction;
             if (instr == null)
             {
@@ -154,10 +189,19 @@ namespace InstructionSetProject.Backend.StaticPipeline
             ExecuteMemory.ReadData2 = DecodeExecute.ReadData2;
 
             ExecuteMemory.Immediate = DecodeExecute.Immediate;
+
+            _memoryStageOffset = _executeStageOffset;
+            CyclesRemainingInMemoryStage = instr.cyclesNeededInMemory;
+            _executeStageOffset = -1;
         }
 
         private void MemoryAccess()
         {
+            if (CyclesRemainingInMemoryStage > 1)
+            {
+                CyclesRemainingInMemoryStage--;
+                return;
+            }
             var instr = memoryInstruction;
             if (instr == null)
             {
@@ -201,6 +245,9 @@ namespace InstructionSetProject.Backend.StaticPipeline
                     FlushPipeline();
                 }
             }
+
+            _writeBackStageOffset = _memoryStageOffset;
+            _memoryStageOffset = -1;
         }
 
         private void WriteBack()
@@ -232,8 +279,10 @@ namespace InstructionSetProject.Backend.StaticPipeline
                     }
 
                     MemoryWriteBack.WriteRegister.value = (ushort)MemoryWriteBack.AluResult;
+                    ForwardNewRegisterValue(MemoryWriteBack.WriteRegister);
                 }
             }
+            _writeBackStageOffset = -1;
             Statistics.StatInstructionType(writingBackInstruction);
         }
 
@@ -277,8 +326,17 @@ namespace InstructionSetProject.Backend.StaticPipeline
         {
             _executeStageOffset = -1;
             _decodeStageOffset = -1;
-            _fetchStageOffset = -1;
+            _fetchStageOffset = DataStructures.InstructionPointer.value;
             Statistics.FlushCount++;
+        }
+
+        private void ForwardNewRegisterValue(Register<ushort> writeReg)
+        {
+            if (DecodeExecute.ReadReg1 == writeReg)
+                DecodeExecute.ReadData1 = writeReg.value;
+
+            if (DecodeExecute.ReadReg2 == writeReg)
+                DecodeExecute.ReadData2 = writeReg.value;
         }
 
         private Register<ushort>? GetDestinationRegister(IInstruction instr)
@@ -334,13 +392,13 @@ namespace InstructionSetProject.Backend.StaticPipeline
         private Register<ushort>? GetSecondRegister(IInstruction instr)
         {
             if (instr is F2Instruction f2Instr)
-                return ConvertRegisterIndexToIntRegister((ushort)((f2Instr.secondRegister ?? 0) >> 3));
+                return ConvertRegisterIndexToFloatRegister((ushort)((f2Instr.secondRegister ?? 0) >> 3));
             if (instr is R2Instruction r2Instr)
-                return ConvertRegisterIndexToFloatRegister((ushort)((r2Instr.secondRegister ?? 0) >> 3));
+                return ConvertRegisterIndexToIntRegister((ushort)((r2Instr.secondRegister ?? 0) >> 3));
             if (instr is F3Instruction f3Instr)
-                return ConvertRegisterIndexToIntRegister((ushort)((f3Instr.secondRegister ?? 0) >> 3));
+                return ConvertRegisterIndexToFloatRegister((ushort)((f3Instr.secondRegister ?? 0) >> 3));
             if (instr is R3Instruction r3Instr)
-                return ConvertRegisterIndexToFloatRegister((ushort)((r3Instr.secondRegister ?? 0) >> 3));
+                return ConvertRegisterIndexToIntRegister((ushort)((r3Instr.secondRegister ?? 0) >> 3));
             if (instr is RsInstruction rsInstr)
                 return ConvertRegisterIndexToIntRegister((ushort)((rsInstr.secondRegister ?? 0) >> 3));
             if (instr is RmInstruction rmInstr)
@@ -420,7 +478,9 @@ namespace InstructionSetProject.Backend.StaticPipeline
     public struct DecodeExecute
     {
         public ushort? ReadData1;
+        public Register<ushort>? ReadReg1;
         public ushort? ReadData2;
+        public Register<ushort>? ReadReg2;
         public ushort? Immediate;
         public Register<ushort>? WriteRegister;
     }
