@@ -24,13 +24,13 @@ namespace InstructionSetProject.Backend.InstructionTypes
         public abstract string Disassemble();
         public abstract void ParseInstruction(string assemblyCode);
 
-        public (ushort opcode, ushort? operand) Assemble()
+        public virtual (ushort opcode, ushort? operand) Assemble()
         {
             var opcode = (ushort)(GetOpCode() | (firstRegister ?? 0) | (addressingMode ?? 0));
             return (opcode, immediate ?? 0);
         }
 
-        public void ParseInstruction((ushort opcode, ushort? operand) machineCode)
+        public virtual void ParseInstruction((ushort opcode, ushort? operand) machineCode)
         {
             addressingMode = (ushort)(machineCode.opcode & 0b111_1000);
             secondRegister = (ushort)(machineCode.opcode & 0b11_1000);

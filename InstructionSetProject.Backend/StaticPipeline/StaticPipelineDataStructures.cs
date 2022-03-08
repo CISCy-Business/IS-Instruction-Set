@@ -24,9 +24,15 @@ namespace InstructionSetProject.Backend.StaticPipeline
         public Register<ushort> F7 = new();
 
         public Register<ushort> InstructionPointer = new();
-        public Register<ushort> StackPointer = new();
+        public Register<ushort> StackPointer = new(0xFFFF);
+        public Register<ushort> MemoryBasePointer = new();
         public FlagsRegister Flags = new();
 
-        public Memory Memory = new();
+        public Memory Memory;
+
+        public StaticPipelineDataStructures()
+        {
+            Memory = new(StackPointer, MemoryBasePointer, R7);
+        }
     }
 }
