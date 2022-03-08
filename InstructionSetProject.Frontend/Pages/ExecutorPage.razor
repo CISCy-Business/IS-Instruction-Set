@@ -161,12 +161,12 @@
                         </div>
                     </ContentTemplate>
                 </SplitterPane>
-                <SplitterPane Min="25%" Max="50%">
+                <SplitterPane Min="25%">
                     <ContentTemplate>
                         <div class="registerPane">
                             <div class="container">
                                 <div class="row">
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-4" style="align-items: center">
                                         <label class="registerLabel"><b>PC:</b></label>
                                         <textarea readonly class="registerTextArea">@PC</textarea><br/>
 
@@ -181,12 +181,11 @@
 
                                         <!-- Add a stage legend right here in this spot where this comment is located-->
                                         <div>
-                                            <h3 style="color: black; font-family: monospace; font-size: 25px; border"><b>Stages:</b></h3>
-                                            <p class="bg-fetch" style="color: white; font-family: monospace; font-size: 21px"><b>Fetch</b></p>
-                                            <p class="bg-decode" style="color: white; font-family: monospace; font-size: 21px"><b>Decode</b></p>
-                                            <p class="bg-execute" style="color: white; font-family: monospace; font-size: 21px"><b>Execute</b></p>
-                                            <p class="bg-memory" style="color: white; font-family: monospace; font-size: 21px"><b>Memory</b></p>
-                                            <p class="bg-write" style="color: white; font-family: monospace; font-size: 21px"><b>WriteBack</b></p>
+                                            <p class="bg-fetch" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px)"><b>Fetch</b></p>
+                                            <p class="bg-decode" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px)"><b>Decode</b></p>
+                                            <p class="bg-execute" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px)"><b>Execute</b></p>
+                                            <p class="bg-memory" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px)"><b>Memory</b></p>
+                                            <p class="bg-write" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px)"><b>WriteBack</b></p>
                                         </div>
                                     </div>
 
@@ -262,7 +261,7 @@
                         </div>
                     </ContentTemplate>
                 </SplitterPane>
-                <SplitterPane Min="25%" Max="50%">
+                <SplitterPane Min="25%" Max="25%">
                     <ContentTemplate>
                         <div>
                             <div class="memDump">
