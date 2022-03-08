@@ -18,6 +18,8 @@ namespace InstructionSetProject.Backend.InstructionTypes
         public RegisterType? thirdRegisterType => null;
         public ushort? addressingMode { get => null; set { } }
         public ushort? immediate { get => null; set { } }
+        public virtual int cyclesNeededInExecute => 1;
+        public virtual int cyclesNeededInMemory => 1;
 
         public abstract string GetMnemonic();
         public abstract ushort GetOpCode();

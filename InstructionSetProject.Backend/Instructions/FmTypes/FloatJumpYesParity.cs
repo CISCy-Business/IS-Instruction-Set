@@ -20,6 +20,8 @@ namespace InstructionSetProject.Backend.Instructions.FmTypes
 
         public bool flagEnabled => true;
 
+        public override int cyclesNeededInExecute => 2;
+
         public override string GetMnemonic()
         {
             return Mnemonic;

@@ -17,6 +17,8 @@ namespace InstructionSetProject.Backend.InstructionTypes
         public ControlBits controlBits { get; }
         public AluOperation? aluOperation { get; }
         public ushort lengthInBytes { get; }
+        public int cyclesNeededInExecute { get; }
+        public int cyclesNeededInMemory { get; }
         public string GetMnemonic();
         public ushort GetOpCode();
         public (ushort opcode, ushort? operand) Assemble();

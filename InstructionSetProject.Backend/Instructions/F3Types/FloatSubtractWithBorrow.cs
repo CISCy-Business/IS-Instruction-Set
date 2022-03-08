@@ -14,6 +14,8 @@ namespace InstructionSetProject.Backend.Instructions.F3Types
 
         public override AluOperation? aluOperation => AluOperation.FloatSubtractWithBorrow;
 
+        public override int cyclesNeededInExecute => 2;
+
         public override string GetMnemonic()
         {
             return Mnemonic;

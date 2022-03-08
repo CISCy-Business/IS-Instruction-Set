@@ -16,6 +16,8 @@ namespace InstructionSetProject.Backend.Instructions.F2Types
         public override ControlBits controlBits => new (false, false, false, false, false, false, true);
 
         public override AluOperation? aluOperation => AluOperation.Subtract;
+        
+        public override int cyclesNeededInExecute => 2;
 
         public override string GetMnemonic()
         {

@@ -14,6 +14,8 @@ namespace InstructionSetProject.Backend.Instructions.FmTypes
 
         public override AluOperation? aluOperation => AluOperation.FloatSubtract;
 
+        public override int cyclesNeededInExecute => 2;
+
         public override string GetMnemonic()
         {
             return Mnemonic;
