@@ -202,6 +202,7 @@ namespace InstructionSetProject.Backend.Utilities
             Add(LoadLowByte.OpCode, LoadLowByte.Mnemonic, () => new LoadLowByte());
             Add(LoadWord.OpCode, LoadWord.Mnemonic, () => new LoadWord());
             Add(OrImmediate.OpCode, OrImmediate.Mnemonic, () => new OrImmediate());
+            Add(SetMemoryBasePointer.OpCode, SetMemoryBasePointer.Mnemonic, () => new SetMemoryBasePointer());
             Add(StoreHighByte.OpCode, StoreHighByte.Mnemonic, () => new StoreHighByte());
             Add(StoreLowByte.OpCode, StoreLowByte.Mnemonic, () => new StoreLowByte());
             Add(StoreWord.OpCode, StoreWord.Mnemonic, () => new StoreWord());

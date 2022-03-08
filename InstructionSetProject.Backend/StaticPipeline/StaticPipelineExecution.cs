@@ -386,6 +386,8 @@ namespace InstructionSetProject.Backend.StaticPipeline
                     return DataStructures.R6;
                 case 7:
                     return DataStructures.R7;
+                case 8:
+                    return DataStructures.MemoryBasePointer;
                 default:
                     return DataStructures.R0;
             }

@@ -51,6 +51,7 @@ namespace InstructionSetProject.Frontend.Pages
         public string SP => SPEx != null ? SPEx.DataStructures.StackPointer.value.ToString("X4") : "0000";
         public string FL => SPEx != null ? SPEx.DataStructures.Flags.AsRegisterValue().ToString("X4") : "0000";
         public string PC => SPEx != null ? SPEx.DataStructures.InstructionPointer.value.ToString("X4") : "0000";
+        public string MBP => SPEx != null ? SPEx.DataStructures.MemoryBasePointer.value.ToString("X4") : "0000";
 
         private bool debugRender = false;
 
