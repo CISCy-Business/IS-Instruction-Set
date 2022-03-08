@@ -69,27 +69,27 @@
         transform: translateY(5px);
     }
 
-    #assemblyTextBox {
-        height: 500px;
-    }
+#assemblyTextBox {
+    height: 500px;
+}
 
-    #machineTextBox {
-        height: 192px;
-    }
+#machineTextBox {
+    height: 192px;
+}
 
-    .executorTabContent > div, .debugLabel, .statsTabContent > div {
-        text-align: center;
-        align-content: center;
-        padding: 0px;
-    }
+.executorTabContent > div, .debugLabel, .statsTabContent > div {
+    text-align: center;
+    align-content: center;
+    padding: 0px;
+}
 
-    .statsTabContent > textarea {
-        width: 100%;
-        height: 735px;
-        margin-top: 0px;
-        margin-bottom: 5px;
-        transform: translateY(5px);
-    }
+.statsTabContent > textarea {
+    width: 100%;
+    height: 731px;
+    margin-top: 0px;
+    margin-bottom: 5px;
+    transform: translateY(5px);
+}
 
 #exLabel {
     font-size: 22px;
@@ -111,28 +111,30 @@
         transform: translateY(5px);
     }
 
-.outputBox > textarea {
-    margin-bottom: 4px;
-}
+    .outputBox > textarea {
+        margin-bottom: 4px;
+    }
 
-        .inputBox > div, .outputBox > div, .memoryDumpContent > div {
-            text-align: center;
-            align-content: center;
-        }
+    .inputBox > div, .outputBox > div, .MemLabelClass {
+        text-align: center;
+        align-content: center;
+    }
 
 .memoryDumpContent {
     margin: 0px 5px 0px 5px;
 }
 
-    .ioContent, .memDump {
-        border-radius: 5px 5px 5px 5px;
-        border: 1px solid black;
-        background-color: darkgray;
-    }
+.ioContent, .memDump {
+    border-radius: 5px 5px 5px 5px;
+    border: 1px solid black;
+    background-color: darkgray;
+}
 
 .memDump {
     margin-top: 5px;
     margin-left: 5px;
+    height: 843px;
+    max-width: 500px;
 }
 
 .memoryDumpContent > textarea {
@@ -224,7 +226,7 @@ hr {
     font-family: "Source Code Pro", monospace;
     font-size: 15px;
     width: 100%;
-    height: 744px;
+    height: 740px;
     margin-top: 0px;
     margin-bottom: 0px;
     overflow-y: auto;
@@ -233,8 +235,23 @@ hr {
     color: black;
 }
 
+.memoryContainer {
+    border: 2px solid rgb(100, 100, 100);
+    font-family: "Source Code Pro", monospace;
+    font-size: 15px;
+    width: 100%;
+    height: 783px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    overflow-y: auto;
+    overflow-wrap: break-word;
+    transform: translateY(5px);
+    background-color: white;
+    color: black;
+}
+
 .debuggerTabContent {
-    height: 788px;
+    height: 784px;
 }
 
 p {
