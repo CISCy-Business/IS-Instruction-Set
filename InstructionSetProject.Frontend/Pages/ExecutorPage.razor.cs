@@ -849,14 +849,21 @@ namespace InstructionSetProject.Frontend.Pages
             CreateNode("InstrMem", 200, 370, 100, 100, 0, 0, InstrMemPorts, FlowShapeType.Process, "Instruction Memory", "white", "8,0", "black");
             CreateNode("AddPC", 205, 250, 75, 70, -90, 90, AddPCPorts, BasicShapeType.Trapezoid, "Add", "white", "8,0", "black");
 
-            CreateNode("IFID", 300, 343, 30, 450, 0, -90, ifidPorts, FlowShapeType.Process, "IF/ID", "white", "8,0", "black");
+            CreateNode("IFID", 300, 343, 30, 450, 0, -90, ifidPorts, FlowShapeType.Process, "IF/ID", "white", "8,0", "black", default, new DiagramPoint(.5, .1));
 
             // Decode Nodes
-            CreateNode("Registers", 450, 350, 100, 100, 0, 0, regPorts, FlowShapeType.Process, "Registers", "white", "8,0", "black");
+            CreateNode("Registers", 450, 350, 100, 100, 0, 0, regPorts, FlowShapeType.Process, "Registers", "white", "8,0", "black", default, null, new ShapeAnnotation()
+            {
+                Content = RegistersRdReg,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Offset = new DiagramPoint(0.1, .71),
+                Style = new TextStyle() { Color = "red"}
+            });
             CreateNode("ImmGen", 470, 450, 40, 75, 0, 0, ImmGenPorts, BasicShapeType.Ellipse, "Imm Gen", "white", "8,0", "black");
             CreateNode("Control", 480, 70, 45, 100, 0, 0, ControlPorts, BasicShapeType.Ellipse, "Control", "white", ControlDash, "black");
 
-            CreateNode("IDEX", 560, 343, 30, 450, 0, -90, idexPorts, FlowShapeType.Process, "ID/EX", "white", "8,0", "black", default, HorizontalAlignment.Center, VerticalAlignment.Auto);
+            CreateNode("IDEX", 560, 343, 30, 450, 0, -90, idexPorts, FlowShapeType.Process, "ID/EX", "white", "8,0", "black", default, new DiagramPoint(.5, .1));
             CreateNode("RW", 560, 33, 35, 15, 0, 0, RWPorts, FlowShapeType.Process, "RW", "white", ControlDash, "black");
             CreateNode("MTR", 560, 48, 35, 15, 0, 0, MTRPorts, FlowShapeType.Process, "MTR", "white", ControlDash, "black");
             CreateNode("MR", 560, 63, 35, 15, 0, 0, MRPorts, FlowShapeType.Process, "MR", "white", ControlDash, "black");
@@ -869,7 +876,7 @@ namespace InstructionSetProject.Frontend.Pages
             CreateNode("ALU", 710, 281, 75, 70, -90, 90, ALUPorts, BasicShapeType.Trapezoid, "ALU", "white", "8,0", "black");
             //CreateNode("ALUControl", 640, 490, 45, 75, 0, 0, ImmGenPorts, BasicShapeType.Ellipse, "ALU Control", "white", ControlOpacity, "black");
 
-            CreateNode("EXMEM", 800, 343, 30, 450, 0, -90, exmemPorts, FlowShapeType.Process, "EX/MEM", "white", "8,0", "black");
+            CreateNode("EXMEM", 800, 343, 30, 450, 0, -90, exmemPorts, FlowShapeType.Process, "EX/MEM", "white", "8,0", "black", default, new DiagramPoint(.5, .1));
             CreateNode("RW1", 800, 48, 35, 15, 0, 0, RW1Ports, FlowShapeType.Process, "RW", "white", ControlDash, "black");
             CreateNode("MTR1", 800, 63, 35, 15, 0, 0, MTR1Ports, FlowShapeType.Process, "MTR", "white", ControlDash, "black");
             CreateNode("MR1", 800, 78, 35, 15, 0, 0, MR1Ports, FlowShapeType.Process, "MR", "white", ControlDash, "black");
@@ -880,7 +887,7 @@ namespace InstructionSetProject.Frontend.Pages
             CreateNode("DataMem", 950, 319, 100, 100, 0, 0, dataMemPorts, FlowShapeType.Process, "Data Memory", "white", "8,0", "black");
             CreateNode("CheckFlags", 880, 164, 75, 65, -90, 90, ChkFlgPorts, BasicShapeType.Trapezoid, "Check Flgs", "white", ControlDash, "black");
 
-            CreateNode("MEMWB", 1055, 343, 30, 450, 0, -90, memwbPorts, FlowShapeType.Process, "MEM/WB", "white", "8,0", "black");
+            CreateNode("MEMWB", 1055, 343, 30, 450, 0, -90, memwbPorts, FlowShapeType.Process, "MEM/WB", "white", "8,0", "black", default, new DiagramPoint(.5, .1));
             CreateNode("RW2", 1055, 93, 35, 15, 0, 0, RW2Ports, FlowShapeType.Process, "RW", "white", ControlDash, "black");
             CreateNode("MTR2", 1055, 108, 35, 15, 0, 0, MTR2Ports, FlowShapeType.Process, "MTR", "white", ControlDash, "black");
 
@@ -954,12 +961,44 @@ namespace InstructionSetProject.Frontend.Pages
             CreateConnector(MWToMW1, "MW", "portMWOut", "MW1", "portMW1In", ControlDash, "black");
             CreateConnector(PCSToPCS1, "PCS", "portPCSOut", "PCS1", "portPCS1In", ControlDash, "black");
             CreateConnector(ALUSToExecuteMux, "ALUS", "portALUSOut", "ExecuteMux", "portExecuteMuxIn2", ControlDash, "black");
-            CreateConnector(IDEXToExecuteMux1, "IDEX", "portIdexOut2", "ExecuteMux", "portExecuteMuxIn1", "8,0", "black", "0", AnnotationAlignment.Center, .7);
+            CreateConnector(IDEXToExecuteMux1, "IDEX", "portIdexOut2", "ExecuteMux", "portExecuteMuxIn1", "8,0", "black", "0", AnnotationAlignment.Center, .7, new PathAnnotation
+            {
+                Content = IDEXToExecuteMux1DataAnnote,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Alignment = AnnotationAlignment.Center,
+                Offset = -0.26,
+                Style = new TextStyle() { Color = "red" }
+            });
             CreateConnector(IDEXToEXMEM2, "IDEX", "portIdexOut2", "EXMEM", "portExmemIn2", "8,0", "black", "RsD2", AnnotationAlignment.Center, .9);
             CreateConnector(IDEXToFetchMux, "IDEX", "portIdexOut3", "FetchMux", "portFetchMuxIn0", "8,0", "black", "1", AnnotationAlignment.Center, .65);
-            CreateConnector(IDEXToExecuteMux0, "IDEX", "portIdexOut3", "ExecuteMux", "portExecuteMuxIn0", "8,0", "black", "1", AnnotationAlignment.Before, .7);
-            CreateConnector(IDEXToEXMEM3, "IDEX", "portIdexOut4", "EXMEM", "portExmemIn3", "8,0", "black", "Rd", AnnotationAlignment.Center, .9);
-            CreateConnector(IDEXToALU, "IDEX", "portIdexOut1", "ALU", "portALUIn1", "8,0", "black", "RsD1", AnnotationAlignment.Center, .5);
+            CreateConnector(IDEXToExecuteMux0, "IDEX", "portIdexOut3", "ExecuteMux", "portExecuteMuxIn0", "8,0", "black", "1", AnnotationAlignment.Before, .7, new PathAnnotation
+            {
+                Content = IDEXToExecuteMux0DataAnnote,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Alignment = AnnotationAlignment.Center,
+                Offset = -0.14,
+                Style = new TextStyle() { Color = "red" }
+            });
+            CreateConnector(IDEXToEXMEM3, "IDEX", "portIdexOut4", "EXMEM", "portExmemIn3", "8,0", "black", "Rd", AnnotationAlignment.Center, .9, new PathAnnotation
+            {
+                Content = IDEXToEXMEM3DataAnnote,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Alignment = AnnotationAlignment.Center,
+                Offset = -0.06,
+                Style = new TextStyle() { Color = "red" }
+            });
+            CreateConnector(IDEXToALU, "IDEX", "portIdexOut1", "ALU", "portALUIn1", "8,0", "black", "RsD1", AnnotationAlignment.Center, .5, new PathAnnotation
+            {
+                Content = IDEXToALUDataAnnote,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Alignment = AnnotationAlignment.Center,
+                Offset = -0.08,
+                Style = new TextStyle() { Color = "red"}
+            });
             CreateConnector(ExecuteMuxToALU, "ExecuteMux", "portExecuteMuxOut0", "ALU", "portALUIn0", "8,0", "black");
             CreateConnector(ALUToEXMEM1, "ALU", "portALUOut0", "EXMEM", "portExmemIn1", "8,0", "black", "ALUr", AnnotationAlignment.After, 0);
             CreateConnector(ALUToEXMEM0, "ALU", "portALUOut1", "EXMEM", "portExmemIn0", "8,0", "black", "TMP FLGS", AnnotationAlignment.After, .74);
@@ -970,9 +1009,33 @@ namespace InstructionSetProject.Frontend.Pages
             CreateConnector(MR1ToDataMem, "MR1", "portMR1Out", "DataMem", "portDataMemIn3", ControlDash, "black");
             CreateConnector(MW1ToDataMem, "MW1", "portMW1Out", "DataMem", "portDataMemIn2", ControlDash, "black");
             CreateConnector(EXMEMToDataMem0, "EXMEM", "portExmemOut1", "DataMem", "portDataMemIn0", "8,0", "black", "Addr");
-            CreateConnector(EXMEMToDataMem1, "EXMEM", "portExmemOut2", "DataMem", "portDataMemIn1", "8,0", "black", "RsD2");
-            CreateConnector(EXMEMToMEMWB1, "EXMEM", "portExmemOut1", "MEMWB", "portMemwbIn1", "8,0", "black", "ALUr");
-            CreateConnector(EXMEMToMEMWB2, "EXMEM", "portExmemOut3", "MEMWB", "portMemwbIn2", "8,0", "black", "Rd");
+            CreateConnector(EXMEMToDataMem1, "EXMEM", "portExmemOut2", "DataMem", "portDataMemIn1", "8,0", "black", "RsD2", AnnotationAlignment.Before, 1, new PathAnnotation
+            {
+                Content = EXMEMToDataMem1DataAnnote,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Alignment = AnnotationAlignment.Center,
+                Offset = -0.075,
+                Style = new TextStyle() { Color = "red" }
+            });
+            CreateConnector(EXMEMToMEMWB1, "EXMEM", "portExmemOut1", "MEMWB", "portMemwbIn1", "8,0", "black", "ALUr", AnnotationAlignment.Before, 1, new PathAnnotation
+            {
+                Content = EXMEMToMEMWB1DataAnnote,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Alignment = AnnotationAlignment.Center,
+                Offset = -0.03,
+                Style = new TextStyle() { Color = "red" }
+            });
+            CreateConnector(EXMEMToMEMWB2, "EXMEM", "portExmemOut3", "MEMWB", "portMemwbIn2", "8,0", "black", "Rd", AnnotationAlignment.Before, 1,  new PathAnnotation
+            {
+                Content = EXMEMToMEMWB2DataAnnote,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Alignment = AnnotationAlignment.Center,
+                Offset = -0.06,
+                Style = new TextStyle() { Color = "red" }
+            });
             CreateConnector(DataMemToMEMWB, "DataMem", "portDataMemOut", "MEMWB", "portMemwbIn0", "8,0", "black", "Data");
             CreateConnector(PCS1ToCheckFlags, "PCS1", "portPCS1Out", "CheckFlags", "portChkFlgIn1", ControlDash, "black");
             CreateConnector(EXMEMToCheckFlags, "EXMEM", "portExmemOut0", "CheckFlags", "portChkFlgIn0", ControlDash, "black", "FL");
@@ -983,10 +1046,34 @@ namespace InstructionSetProject.Frontend.Pages
             CreateConnector(MTR2ToWriteMux, "MTR2", "portMTR2Out", "WriteMux", "portWriteMuxIn2", ControlDash, "black");
             CreateConnector(RW2ToRWRet, "RW2", "portRW2Out", "RWReturn", "portRWRetIn", ControlDash, "black");
             CreateConnector(RWRetToReg, "RWReturn", "portRWRetOut", "Registers", "portRegIn4", ControlDash, "black");
-            CreateConnector(MEMWBToWriteMux1, "MEMWB", "portMemwbOut0", "WriteMux", "portWriteMuxIn1", "8,0", "black", "1", AnnotationAlignment.Center, .5);
-            CreateConnector(MEMWBToWriteMux2, "MEMWB", "portMemwbOut1", "WriteMux", "portWriteMuxIn0", "8,0", "black", "0", AnnotationAlignment.Before, .8);
-            CreateConnector(WriteMuxToReg, "WriteMux", "portWriteMuxOut0", "Registers", "portRegIn3", "8,0", "black", "Rd Data", AnnotationAlignment.After, .5, segment1, segment2);
-            CreateConnector(MEMWBToRdRet, "MEMWB", "portMemwbOut2", "RdRegReturn", "portRdRetIn", "8,0", "black", "Rd Reg", AnnotationAlignment.Before, .5);
+            CreateConnector(MEMWBToWriteMux1, "MEMWB", "portMemwbOut0", "WriteMux", "portWriteMuxIn1", "8,0", "black", "1", AnnotationAlignment.Center, .5, new PathAnnotation
+            {
+                Content = MEMWBToWriteMux1DataAnnote,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Alignment = AnnotationAlignment.Center,
+                Offset = -0.12,
+                Style = new TextStyle() { Color = "red" }
+            });
+            CreateConnector(MEMWBToWriteMux2, "MEMWB", "portMemwbOut1", "WriteMux", "portWriteMuxIn0", "8,0", "black", "0", AnnotationAlignment.Before, .8, new PathAnnotation
+            {
+                Content = MEMWBToWriteMux2DataAnnote,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Alignment = AnnotationAlignment.Center,
+                Offset = -0.075,
+                Style = new TextStyle() { Color = "red" }
+            });
+            CreateConnector(WriteMuxToReg, "WriteMux", "portWriteMuxOut0", "Registers", "portRegIn3", "8,0", "black", "Rd Data", AnnotationAlignment.After, .5, null, segment1, segment2);
+            CreateConnector(MEMWBToRdRet, "MEMWB", "portMemwbOut2", "RdRegReturn", "portRdRetIn", "8,0", "black", "Rd Reg", AnnotationAlignment.Before, .5, new PathAnnotation
+            {
+                Content = MEMWBToRdRetDataAnnote,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Alignment = AnnotationAlignment.Center,
+                Offset = -0.03,
+                Style = new TextStyle() { Color = "red" }
+            });
             CreateConnector(RdRetToReg, "RdRegReturn", "portRdRetOut", "Registers", "portRegIn2", "8,0", "black", "Rd Reg", AnnotationAlignment.Before, .5);
 
             #endregion
@@ -1037,6 +1124,11 @@ namespace InstructionSetProject.Frontend.Pages
         public string ALUToEXMEM1 = "ALUToEXMEM1";
         public string ALUToEXMEM0 = "ALUToEXMEM0";
 
+        public string IDEXToALUDataAnnote = "AB";
+        public string IDEXToExecuteMux1DataAnnote = "0A";
+        public string IDEXToExecuteMux0DataAnnote = "11";
+        public string IDEXToEXMEM3DataAnnote = "r2";
+
         // Memory Connectors
         public string RW1ToRW2 = "RW1ToRW2";
         public string MTR1ToMTR2 = "MTR1ToMTR2";
@@ -1052,6 +1144,10 @@ namespace InstructionSetProject.Frontend.Pages
         public string CheckFlagsToFlgRet = "CheckFlagsToFlgRet";
         public string FlgRetToFetchMux = "FlgRetToFetchMux";
 
+        public string EXMEMToMEMWB2DataAnnote = "r2";
+        public string EXMEMToDataMem1DataAnnote = "11";
+        public string EXMEMToMEMWB1DataAnnote = "BB";
+
         // WriteBack Connectors
         public string MTR2ToWriteMux = "MTR2ToWriteMux";
         public string RW2ToRWRet = "RW2ToRWRet";
@@ -1062,11 +1158,16 @@ namespace InstructionSetProject.Frontend.Pages
         public string MEMWBToRdRet = "MEMWBToRdRet";
         public string RdRetToReg = "RdRetToReg";
 
+        public string MEMWBToRdRetDataAnnote = "r2";
+        public string MEMWBToWriteMux2DataAnnote = "BB";
+        public string MEMWBToWriteMux1DataAnnote = "FF";
+
         #endregion
 
+        public string RegistersRdReg = "r2";
 
-
-        private void CreateConnector(string id, string sourceId, string sourcePortId, string targetId, string targetPortId, string strokeDash, string strokeColor, string label = default, AnnotationAlignment align = AnnotationAlignment.Before, double offset = 1, OrthogonalSegment segment1 = null, OrthogonalSegment segment2 = null)
+        private void CreateConnector(string id, string sourceId, string sourcePortId, string targetId, string targetPortId, string strokeDash, string strokeColor, string label = default,
+                                     AnnotationAlignment align = AnnotationAlignment.Before, double offset = 1, PathAnnotation pAnnotate = null, OrthogonalSegment segment1 = null, OrthogonalSegment segment2 = null)
         {
             Connector diagramConnector = new Connector()
             {
@@ -1097,16 +1198,17 @@ namespace InstructionSetProject.Frontend.Pages
                     VerticalAlignment = VerticalAlignment.Bottom,
                     Alignment = align
                 };
-                var value = new PathAnnotation
-                {
-                    Content = "Test",
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    VerticalAlignment = VerticalAlignment.Bottom,
-                    Alignment = AnnotationAlignment.Before,
-                };
-                value.Offset = -0.1;
+                
                 annotation.Offset = offset;
-                diagramConnector.Annotations = new DiagramObjectCollection<PathAnnotation>() { annotation, value };
+
+                if(pAnnotate != null)
+                {
+                    diagramConnector.Annotations = new DiagramObjectCollection<PathAnnotation>() { annotation, pAnnotate };
+                }
+                else
+                {
+                    diagramConnector.Annotations = new DiagramObjectCollection<PathAnnotation>() { annotation };
+                }
             }
 
             ConnectorCollection.Add(diagramConnector);
@@ -1129,15 +1231,17 @@ namespace InstructionSetProject.Frontend.Pages
 
         private void CreateNode(string id, double xOffset, double yOffset, int xSize, int ySize, int rAngleNode, int rAngleAnnotation,
             List<PointPort> ports, FlowShapeType shape, string label, string fillColor, string strokeDash, string stroke, string? labelColor = default, 
-            HorizontalAlignment hAlign = HorizontalAlignment.Center, VerticalAlignment vAlign = VerticalAlignment.Center)
+            DiagramPoint diagramPoint = null, ShapeAnnotation sAnnotate1 = null)
         {
             ShapeAnnotation annotation = new ShapeAnnotation()
             {
                 Content = label,
-                HorizontalAlignment = hAlign,
-                VerticalAlignment = vAlign,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
                 RotationAngle = rAngleAnnotation
             };
+            if (diagramPoint != null)
+                annotation.Offset = diagramPoint;
             annotation.Style = new TextStyle()
             {
                 Color = labelColor != default ? labelColor : "black",
@@ -1153,7 +1257,7 @@ namespace InstructionSetProject.Frontend.Pages
                 RotationAngle = rAngleNode,
                 Shape = new FlowShape() { Type = Shapes.Flow, Shape = shape },
                 Style = new ShapeStyle() { Fill = fillColor, StrokeColor = stroke, StrokeDashArray = strokeDash },
-                Annotations = new DiagramObjectCollection<ShapeAnnotation>() { annotation },
+                Annotations = sAnnotate1 != null ? new DiagramObjectCollection<ShapeAnnotation>() { annotation, sAnnotate1 } : new DiagramObjectCollection<ShapeAnnotation>() { annotation },
                 Ports = new DiagramObjectCollection<PointPort>(ports)
             };
             if (diagramNode.ID.ToString() == "Ready")
