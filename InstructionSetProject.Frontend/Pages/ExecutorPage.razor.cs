@@ -18,10 +18,12 @@ namespace InstructionSetProject.Frontend.Pages
         private string ExecMachineCode = "";
         private string ExecAssemblyCode = "";
         private string statsString = "";
+        private string space = " ";
+        private int charCount = 0;
         public string MemDumpStart { get; set; } = "";
 
         public string MemDumpContent => SPEx != null
-            ? String.Join(" ",
+            ? String.Join("",
                 SPEx.DataStructures.Memory
                     .GetBytesAtAddress(MemDumpStart != string.Empty ? Convert.ToUInt32(MemDumpStart, 16) : 0)
                     .Select((memByte) => memByte.ToString("X2")))
@@ -95,6 +97,16 @@ namespace InstructionSetProject.Frontend.Pages
         {
             byte[] file = System.Text.Encoding.UTF8.GetBytes(statsString);
             await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "assemblyStats.txt", "text/plain", file);
+        }
+
+        void IncrementCharCount()
+        {
+            charCount++;
+        }
+
+        void ClearCharCount()
+        {
+            charCount = 0;
         }
 
         void selectMemDumpText(ushort instrKey)
@@ -171,7 +183,7 @@ namespace InstructionSetProject.Frontend.Pages
                 {
                     output = "ERROR: " + ex.Message + "\n";
                 }
-                
+
             }
             else
             {
@@ -190,7 +202,7 @@ namespace InstructionSetProject.Frontend.Pages
             {
                 output = "ERROR: " + ex.Message + "\n";
             }
-            
+
             debugRender = true;
             try
             {
@@ -315,7 +327,7 @@ namespace InstructionSetProject.Frontend.Pages
         public string decodeMnemonic => (SPEx != null && SPEx.decodingInstruction != null) ? SPEx.decodingInstruction.GetMnemonic() : "";
         public string executeMnemonic => (SPEx != null && SPEx.executingInstruction != null) ? SPEx.executingInstruction.GetMnemonic() : "";
         public string memoryMnemonic => (SPEx != null && SPEx.memoryInstruction != null) ? SPEx.memoryInstruction.GetMnemonic() : "";
-        public string writeMnemonic => (SPEx != null && SPEx.writingBackInstruction!= null) ? SPEx.writingBackInstruction.GetMnemonic() : "";
+        public string writeMnemonic => (SPEx != null && SPEx.writingBackInstruction != null) ? SPEx.writingBackInstruction.GetMnemonic() : "";
 
 
         void UpdateFetchStage()
@@ -329,7 +341,7 @@ namespace InstructionSetProject.Frontend.Pages
 
             if (SPEx?.fetchingInstruction == null)
             {
-                DisableLines(new List<Connector>{addToMux, instrSize, instrMemToReg, pcToAdd, instrMemToAdd, muxToPc});
+                DisableLines(new List<Connector> { addToMux, instrSize, instrMemToReg, pcToAdd, instrMemToAdd, muxToPc });
                 return;
             }
 
@@ -362,7 +374,7 @@ namespace InstructionSetProject.Frontend.Pages
             var instr = SPEx?.decodingInstruction;
             if (instr == null)
             {
-                DisableLines(new List<Connector>{regToControlBits, regToRs1, regToRs2, regToImm, regToRd, rd1, rd2, immResult});
+                DisableLines(new List<Connector> { regToControlBits, regToRs1, regToRs2, regToImm, regToRd, rd1, rd2, immResult });
                 return;
             }
 
@@ -431,7 +443,7 @@ namespace InstructionSetProject.Frontend.Pages
             var instr = SPEx?.executingInstruction;
             if (instr == null)
             {
-                DisableLines(new List<Connector>{aluSrc, rsd1ToAlu, rsd2ToMux, immToMux, muxToAlu, rsd2ToReg, rd, tmpFlags, aluResult});
+                DisableLines(new List<Connector> { aluSrc, rsd1ToAlu, rsd2ToMux, immToMux, muxToAlu, rsd2ToReg, rd, tmpFlags, aluResult });
                 return;
             }
 
@@ -510,7 +522,7 @@ namespace InstructionSetProject.Frontend.Pages
             var instr = SPEx?.memoryInstruction;
             if (instr == null)
             {
-                DisableLines(new List<Connector>{pcSrc, memWrite, memRead, flags, addr, rsd2ToMem, aluResult, rd, checkFlagsToPCMux, checkFlagsToPCMux2, immToPC, dataOutput});
+                DisableLines(new List<Connector> { pcSrc, memWrite, memRead, flags, addr, rsd2ToMem, aluResult, rd, checkFlagsToPCMux, checkFlagsToPCMux2, immToPC, dataOutput });
                 return;
             }
 
@@ -593,7 +605,7 @@ namespace InstructionSetProject.Frontend.Pages
             var instr = SPEx?.writingBackInstruction;
             if (instr == null)
             {
-                DisableLines(new List<Connector>{ regWrite, regWrite2, memToReg, memResult, aluResult, rd, rd2, muxToReg});
+                DisableLines(new List<Connector> { regWrite, regWrite2, memToReg, memResult, aluResult, rd, rd2, muxToReg });
                 return;
             }
 
@@ -843,7 +855,7 @@ namespace InstructionSetProject.Frontend.Pages
             CreateNode("ImmGen", 470, 450, 40, 75, 0, 0, ImmGenPorts, BasicShapeType.Ellipse, "Imm Gen", "white", "8,0", "black");
             CreateNode("Control", 480, 70, 45, 100, 0, 0, ControlPorts, BasicShapeType.Ellipse, "Control", "white", ControlDash, "black");
 
-            CreateNode("IDEX", 560, 343, 30, 450, 0, -90, idexPorts, FlowShapeType.Process, "ID/EX", "white", "8,0", "black");
+            CreateNode("IDEX", 560, 343, 30, 450, 0, -90, idexPorts, FlowShapeType.Process, "ID/EX", "white", "8,0", "black", default, HorizontalAlignment.Center, VerticalAlignment.Auto);
             CreateNode("RW", 560, 33, 35, 15, 0, 0, RWPorts, FlowShapeType.Process, "RW", "white", ControlDash, "black");
             CreateNode("MTR", 560, 48, 35, 15, 0, 0, MTRPorts, FlowShapeType.Process, "MTR", "white", ControlDash, "black");
             CreateNode("MR", 560, 63, 35, 15, 0, 0, MRPorts, FlowShapeType.Process, "MR", "white", ControlDash, "black");
@@ -1051,7 +1063,7 @@ namespace InstructionSetProject.Frontend.Pages
 
         #endregion
 
-        
+
 
         private void CreateConnector(string id, string sourceId, string sourcePortId, string targetId, string targetPortId, string strokeDash, string strokeColor, string label = default, AnnotationAlignment align = AnnotationAlignment.Before, double offset = 1, OrthogonalSegment segment1 = null, OrthogonalSegment segment2 = null)
         {
@@ -1065,7 +1077,7 @@ namespace InstructionSetProject.Frontend.Pages
                 Style = new ShapeStyle() { StrokeWidth = 1, StrokeColor = strokeColor, StrokeDashArray = strokeDash },
                 TargetDecorator = new DecoratorSettings()
                 {
-                    Style = new ShapeStyle() { StrokeColor = strokeColor, Fill = strokeColor}
+                    Style = new ShapeStyle() { StrokeColor = strokeColor, Fill = strokeColor }
                 }
             };
             diagramConnector.Constraints |= ConnectorConstraints.DragSegmentThumb;
@@ -1107,13 +1119,14 @@ namespace InstructionSetProject.Frontend.Pages
         }
 
         private void CreateNode(string id, double xOffset, double yOffset, int xSize, int ySize, int rAngleNode, int rAngleAnnotation,
-            List<PointPort> ports, FlowShapeType shape, string label, string fillColor, string strokeDash, string stroke, string? labelColor = default)
+            List<PointPort> ports, FlowShapeType shape, string label, string fillColor, string strokeDash, string stroke, string? labelColor = default, 
+            HorizontalAlignment hAlign = HorizontalAlignment.Center, VerticalAlignment vAlign = VerticalAlignment.Center)
         {
             ShapeAnnotation annotation = new ShapeAnnotation()
             {
                 Content = label,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = hAlign,
+                VerticalAlignment = vAlign,
                 RotationAngle = rAngleAnnotation
             };
             annotation.Style = new TextStyle()
@@ -1130,7 +1143,7 @@ namespace InstructionSetProject.Frontend.Pages
                 Height = ySize,
                 RotationAngle = rAngleNode,
                 Shape = new FlowShape() { Type = Shapes.Flow, Shape = shape },
-                Style = new ShapeStyle() { Fill = fillColor, StrokeColor = stroke, StrokeDashArray = strokeDash},
+                Style = new ShapeStyle() { Fill = fillColor, StrokeColor = stroke, StrokeDashArray = strokeDash },
                 Annotations = new DiagramObjectCollection<ShapeAnnotation>() { annotation },
                 Ports = new DiagramObjectCollection<PointPort>(ports)
             };
@@ -1166,7 +1179,7 @@ namespace InstructionSetProject.Frontend.Pages
                 Height = ySize,
                 RotationAngle = rAngleNode,
                 Shape = new BasicShape() { Type = Shapes.Basic, Shape = shape },
-                Style = new ShapeStyle() { Fill = fillColor, StrokeColor = stroke, StrokeDashArray = strokeDash},
+                Style = new ShapeStyle() { Fill = fillColor, StrokeColor = stroke, StrokeDashArray = strokeDash },
                 Annotations = new DiagramObjectCollection<ShapeAnnotation>() { annotation },
                 Ports = new DiagramObjectCollection<PointPort>(ports)
             };
@@ -1194,7 +1207,7 @@ namespace InstructionSetProject.Frontend.Pages
         private void DialogClose(Object args)
         {
             debugRender = true;
-            diagramContent =  diagram.SaveDiagram();
+            diagramContent = diagram.SaveDiagram();
             this.ShowButton = false;
             debugRender = true;
         }

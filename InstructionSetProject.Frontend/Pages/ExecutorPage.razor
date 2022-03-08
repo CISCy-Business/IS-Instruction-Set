@@ -107,7 +107,7 @@
         </div>
         <SfSplitter Height="860px" Width="100%" ID="mainSplitter">
             <SplitterPanes>
-                <SplitterPane Min="25%">
+                <SplitterPane Min="25%" Max="50%">
                     <ContentTemplate>
                         <div class="codeDiv">
                             <div class="tab">
@@ -161,7 +161,7 @@
                         </div>
                     </ContentTemplate>
                 </SplitterPane>
-                <SplitterPane Min="25%">
+                <SplitterPane Min="25%" Max="50%">
                     <ContentTemplate>
                         <div class="registerPane">
                             <div class="container">
@@ -259,7 +259,7 @@
                         </div>
                     </ContentTemplate>
                 </SplitterPane>
-                <SplitterPane Min="25%">
+                <SplitterPane Min="25%" Max="50%">
                     <ContentTemplate>
                         <div>
                             <div class="memDump">
@@ -276,11 +276,38 @@
                                         {
                                             @foreach (var instr in SPEx.InstrList.InstructionOffsetDictionary)
                                             {
-                                                <span class="@DivCSS(instr.Value)">     @instr.Value.Assemble().opcode.ToString("X2") </span>
+                                                <span class="@DivCSS(instr.Value)">
+                                                    @foreach (var character in MemDumpContent.Substring((int)(instr.Key * 2), (int)(instr.Value.lengthInBytes * 2)))
+                                                    {
+                                                        @character
+                                                        IncrementCharCount();
+                                                        if (charCount == instr.Value.lengthInBytes * 2)
+                                                        {
+                                                            ClearCharCount();
+                                                        }
+                                                        if (charCount % 2 == 0 && charCount != 0 && charCount != (int)(instr.Value.lengthInBytes * 2))
+                                                        {
+                                                            @space
+                                                        }
+                                                    }
+                                                </span>
+                                                @space
+                                            }
+                                            @foreach (var character in MemDumpContent.Substring((int)(SPEx.InstrList.InstructionOffsetDictionary.Keys.Last() + SPEx.InstrList.InstructionOffsetDictionary.Values.Last().lengthInBytes * 2) * 2))
+                                            {
+                                                @character
+                                                IncrementCharCount();
+                                                if (charCount % 2 == 0)
+                                                {
+                                                    @space
+                                                }
+                                                if(charCount == MemDumpContent.Length)
+                                                {
+                                                    ClearCharCount();
+                                                }
                                             }
                                         }
                                     </div>
-                                    <!-- <textarea placeholder="Memory will begin to appear once the code begins execution...">@MemDumpContent</textarea><br /> -->
                                 </div>
                             </div>
                         </div>
