@@ -1,4 +1,7 @@
 ﻿using InstructionSetProject.Backend.Execution;
+using InstructionSetProject.Backend.Instructions.FmTypes;
+using InstructionSetProject.Backend.Instructions.R2Types;
+using InstructionSetProject.Backend.Instructions.RmTypes;
 using InstructionSetProject.Backend.InstructionTypes;
 using InstructionSetProject.Backend.Utilities;
 
@@ -120,6 +123,9 @@ namespace InstructionSetProject.Backend.StaticPipeline
             else
                 DecodeExecute.ReadData2 = null;
 
+            if (instr is StoreWord || instr is StoreFloat || instr is PushWord)
+                (DecodeExecute.ReadData1, DecodeExecute.ReadData2) = (DecodeExecute.ReadData2, DecodeExecute.ReadData1);
+
             DecodeExecute.WriteRegister = GetDestinationRegister(instr);
         }
 
@@ -166,26 +172,11 @@ namespace InstructionSetProject.Backend.StaticPipeline
 
             if (instr.controlBits.MemRead)
             {
-                if (ExecuteMemory.AluResult == null)
-                {
-                    throw new Exception("Attempt to read from null address");
-                }
-
-                MemoryWriteBack.ReadData = DataStructures.Memory.Read((ushort)ExecuteMemory.AluResult);
+                MemoryWriteBack.ReadData = PerformMemRead(instr);
             }
             else if (instr.controlBits.MemWrite)
             {
-                if (ExecuteMemory.AluResult == null)
-                {
-                    throw new Exception("Attempt to write to null address");
-                }
-
-                if (ExecuteMemory.ReadData2 == null)
-                {
-                    throw new Exception("Attempt to write null value to memory");
-                }
-
-                DataStructures.Memory.Write((ushort)ExecuteMemory.AluResult, (ushort)ExecuteMemory.ReadData2);
+                PerformMemWrite(instr);
                 MemoryWriteBack.ReadData = null;
             }
             else
@@ -245,6 +236,42 @@ namespace InstructionSetProject.Backend.StaticPipeline
             Statistics.StatInstructionType(writingBackInstruction);
         }
 
+        private ushort PerformMemRead(IInstruction instr)
+        {
+            if (instr is LoadWord || instr is LoadFloat)
+            {
+                if (ExecuteMemory.AluResult == null || instr.addressingMode == null)
+                    throw new Exception("Null read values");
+                return DataStructures.Memory.ReadUshort(ExecuteMemory.AluResult ?? 0, instr.addressingMode ?? 0);
+            }
+
+            if (instr is PopWord)
+            {
+                return DataStructures.Memory.StackPopWord();
+            }
+
+            throw new Exception("Unsupported read instruction");
+        }
+
+        private void PerformMemWrite(IInstruction instr)
+        {
+            if (instr is StoreWord || instr is StoreFloat)
+            {
+                if (ExecuteMemory.AluResult == null || instr.addressingMode == null || ExecuteMemory.ReadData2 == null)
+                    throw new Exception("Null write values");
+                DataStructures.Memory.WriteUshort(ExecuteMemory.AluResult ?? 0, ExecuteMemory.ReadData2 ?? 0, instr.addressingMode ?? 0);
+                return;
+            }
+
+            if (instr is PushWord)
+            {
+                DataStructures.Memory.StackPushWord(ExecuteMemory.ReadData2 ?? 0);
+                return;
+            }
+
+            throw new Exception("Unsupported write instruction");
+        }
+
         private void FlushPipeline()
         {
             _executeStageOffset = -1;
@@ -266,6 +293,9 @@ namespace InstructionSetProject.Backend.StaticPipeline
                 return GetFirstRegister(instr);
             if (instr.secondRegisterType == RegisterType.Read)
                 return GetSecondRegister(instr);
+            if (instr is IImmediateRegister &&
+                (instr.addressingMode == 0b001_0000 || instr.addressingMode == 0b001_1000))
+                return GetImmediateRegister(instr);
             return null;
         }
 
@@ -275,6 +305,9 @@ namespace InstructionSetProject.Backend.StaticPipeline
                 return GetSecondRegister(instr);
             if (instr.thirdRegisterType == RegisterType.Read)
                 return GetThirdRegister(instr);
+            if (instr is IImmediateRegister && instr.firstRegisterType == RegisterType.Read &&
+                (instr.addressingMode == 0b001_0000 || instr.addressingMode == 0b001_1000))
+                return GetImmediateRegister(instr);
             return null;
         }
 
@@ -322,6 +355,15 @@ namespace InstructionSetProject.Backend.StaticPipeline
                 return ConvertRegisterIndexToIntRegister((ushort)((r3Instr.thirdRegister ?? 0) >> 6));
             if (instr is F3Instruction f3Instr)
                 return ConvertRegisterIndexToFloatRegister((ushort)((f3Instr.thirdRegister ?? 0) >> 6));
+            return null;
+        }
+
+        private Register<ushort>? GetImmediateRegister(IInstruction instr)
+        {
+            if (instr is RmInstruction rmInstr)
+                return ConvertRegisterIndexToIntRegister(rmInstr.immediate ?? 0);
+            if (instr is FmInstruction fmInstr)
+                return ConvertRegisterIndexToFloatRegister(fmInstr.immediate ?? 0);
             return null;
         }
 

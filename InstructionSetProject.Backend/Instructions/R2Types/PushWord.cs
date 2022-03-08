@@ -1,6 +1,7 @@
 ﻿using InstructionSetProject.Backend.Execution;
 using InstructionSetProject.Backend.InstructionTypes.R2Formats;
 using InstructionSetProject.Backend.StaticPipeline;
+using InstructionSetProject.Backend.Utilities;
 
 namespace InstructionSetProject.Backend.Instructions.R2Types
 {
@@ -10,9 +11,11 @@ namespace InstructionSetProject.Backend.Instructions.R2Types
 
         public const ushort OpCode = 0b0000_0001_0000_0000;
 
-        public override ControlBits controlBits => throw new NotImplementedException();
+        public override RegisterType? firstRegisterType => RegisterType.Read;
 
-        public override AluOperation? aluOperation => null;
+        public override ControlBits controlBits => new(false, false, false, true, false, false, false);
+
+        public override AluOperation? aluOperation => AluOperation.PassSecondOperandThrough;
 
         public override string GetMnemonic()
         {

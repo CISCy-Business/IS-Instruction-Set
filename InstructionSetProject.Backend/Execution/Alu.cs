@@ -68,6 +68,10 @@ namespace InstructionSetProject.Backend.Execution
                     return AbsoluteValue(lhsOp, rhsOp);
                 case AluOperation.NoOperation:
                     return NoOperation();
+                case AluOperation.PassFirstOperandThrough:
+                    return PassFirstOperandThrough(lhsOp, rhsOp);
+                case AluOperation.PassSecondOperandThrough:
+                    return PassSecondOperandThrough(lhsOp, rhsOp);
                 default:
                     throw new Exception("ALU operation not found");
             }
@@ -294,6 +298,16 @@ namespace InstructionSetProject.Backend.Execution
             return (0, dataStructures.Flags);
         }
 
+        public (ushort result, FlagsRegister flags) PassSecondOperandThrough(ushort? lhsOp, ushort? rhsOp)
+        {
+            return (rhsOp ?? 0, dataStructures.Flags);
+        }
+
+        public (ushort result, FlagsRegister flags) PassFirstOperandThrough(ushort? lhsOp, ushort? rhsOp)
+        {
+            return (lhsOp ?? 0, dataStructures.Flags);
+        }
+
         private FlagsRegister ComputeFlagsRegister(ushort result)
         {
             FlagsRegister flags = new();
@@ -341,6 +355,8 @@ namespace InstructionSetProject.Backend.Execution
         SetZeroFlag,
         ClearZeroFlag,
         AbsoluteValue,
-        NoOperation
+        NoOperation,
+        PassFirstOperandThrough,
+        PassSecondOperandThrough
     }
 }

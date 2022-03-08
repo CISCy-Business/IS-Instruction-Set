@@ -2,8 +2,11 @@
 
 namespace InstructionSetProject.Backend.InstructionTypes.RmFormats
 {
-    public abstract class RmRegisterImmediateAddrMode : RmInstruction, IImmediateInstruction
+    public abstract class RmRegisterImmediateAddrMode : RmInstruction, IImmediateInstruction, IImmediateRegister
     {
+        public override RegisterType? secondRegisterType => null;
+        public override ushort? secondRegister { get => null; set {} }
+
         public override string Disassemble()
         {
             string assembly = "";
@@ -13,7 +16,7 @@ namespace InstructionSetProject.Backend.InstructionTypes.RmFormats
             assembly += Registers.ParseFirstInt(firstRegister ?? 0);
             assembly += ", ";
             if (addressingMode == 0b001_0000 || addressingMode == 0b001_1000)
-                assembly += Registers.ParseSecondInt(secondRegister ?? 0);
+                assembly += Registers.ParseFirstInt(immediate ?? 0);
             else
                 assembly += (immediate ?? 0).ToString("X2");
             assembly += ", ";
@@ -35,19 +38,17 @@ namespace InstructionSetProject.Backend.InstructionTypes.RmFormats
 
             if (addressingMode == 0b001_0000 || addressingMode == 0b001_1000)
             {
-                secondRegister = Registers.ParseFirstInt(tokens[2].TrimEnd(','));
-                immediate = null;
+                immediate = Registers.ParseFirstInt(tokens[2].TrimEnd(','));
             }
             else
             {
                 immediate = Convert.ToUInt16(tokens[2].TrimEnd(','), 16);
-                secondRegister = null;
             }
         }
 
         public ushort GenerateImmediate()
         {
-            throw new NotImplementedException();
+            return immediate ?? 0;
         }
     }
 }
