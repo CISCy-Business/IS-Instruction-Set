@@ -1,4 +1,5 @@
 ﻿using InstructionSetProject.Backend.Execution;
+using InstructionSetProject.Backend.Instructions.F2Types;
 using InstructionSetProject.Backend.Instructions.FmTypes;
 using InstructionSetProject.Backend.Instructions.R2Types;
 using InstructionSetProject.Backend.Instructions.RmTypes;
@@ -123,7 +124,7 @@ namespace InstructionSetProject.Backend.StaticPipeline
             else
                 DecodeExecute.ReadData2 = null;
 
-            if (instr is StoreWord || instr is StoreFloat || instr is PushWord)
+            if (instr is StoreWord || instr is StoreFloat || instr is PushWord || instr is PushFloat)
                 (DecodeExecute.ReadData1, DecodeExecute.ReadData2) = (DecodeExecute.ReadData2, DecodeExecute.ReadData1);
 
             DecodeExecute.WriteRegister = GetDestinationRegister(instr);
@@ -245,7 +246,7 @@ namespace InstructionSetProject.Backend.StaticPipeline
                 return DataStructures.Memory.ReadUshort(ExecuteMemory.AluResult ?? 0, instr.addressingMode ?? 0);
             }
 
-            if (instr is PopWord)
+            if (instr is PopWord || instr is PopFloat)
             {
                 return DataStructures.Memory.StackPopWord();
             }
@@ -263,7 +264,7 @@ namespace InstructionSetProject.Backend.StaticPipeline
                 return;
             }
 
-            if (instr is PushWord)
+            if (instr is PushWord || instr is PushFloat)
             {
                 DataStructures.Memory.StackPushWord(ExecuteMemory.ReadData2 ?? 0);
                 return;
