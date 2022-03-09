@@ -4,6 +4,7 @@
 @using InstructionSetProject.Backend.StaticPipeline;
 @using Syncfusion.Blazor.Diagram
 @using System.Collections.ObjectModel
+@using System.ComponentModel
 @using InstructionSetProject.Backend.InstructionTypes
 @using DiagramShapes = Syncfusion.Blazor.Diagram.Shapes
 @using DiagramSegments = Syncfusion.Blazor.Diagram.ConnectorSegmentType
@@ -276,36 +277,55 @@
                                     <div class="memoryContainer" id="memDumpId">
                                         @if (SPEx != null)
                                         {
-                                            @foreach (var instr in SPEx.InstrList.InstructionOffsetDictionary)
+                                            @if (MemDumpStart == String.Empty || Convert.ToUInt16(MemDumpStart, 16) == 0)
                                             {
-                                                <span class="@DivCSS(instr.Value)">
-                                                    @foreach (var character in MemDumpContent.Substring((int)(instr.Key * 2), (int)(instr.Value.lengthInBytes * 2)))
-                                                    {
-                                                        @character
-                                                        IncrementCharCount();
-                                                        if (charCount == instr.Value.lengthInBytes * 2)
-                                                        {
-                                                            ClearCharCount();
-                                                        }
-                                                        if (charCount % 2 == 0 && charCount != 0 && charCount != (int)(instr.Value.lengthInBytes * 2))
-                                                        {
-                                                            @space
-                                                        }
-                                                    }
-                                                </span>
-                                                @space
-                                            }
-                                            @foreach (var character in MemDumpContent.Substring((int)(SPEx.InstrList.InstructionOffsetDictionary.Keys.Last() + SPEx.InstrList.InstructionOffsetDictionary.Values.Last().lengthInBytes * 2) * 2))
-                                            {
-                                                @character
-                                                IncrementCharCount();
-                                                if (charCount % 2 == 0)
+                                                @foreach (var instr in SPEx.InstrList.InstructionOffsetDictionary)
                                                 {
+                                                    <span class="@DivCSS(instr.Value)">
+                                                        @foreach (var character in MemDumpContent.Substring((int) (instr.Key * 2), (int) (instr.Value.lengthInBytes * 2)))
+                                                        {
+                                                            @character
+                                                            IncrementCharCount();
+                                                            if (charCount == instr.Value.lengthInBytes * 2)
+                                                            {
+                                                                ClearCharCount();
+                                                            }
+                                                            if (charCount % 2 == 0 && charCount != 0 && charCount != (int) (instr.Value.lengthInBytes * 2))
+                                                            {
+                                                                @space
+                                                            }
+                                                        }
+                                                    </span>
                                                     @space
                                                 }
-                                                if(charCount == MemDumpContent.Length)
+                                                @foreach (var character in MemDumpContent.Substring((int) (SPEx.InstrList.InstructionOffsetDictionary.Keys.Last() + SPEx.InstrList.InstructionOffsetDictionary.Values.Last().lengthInBytes * 2) * 2))
                                                 {
-                                                    ClearCharCount();
+                                                    @character
+                                                    IncrementCharCount();
+                                                    if (charCount % 2 == 0)
+                                                    {
+                                                        @space
+                                                    }
+                                                    if (charCount == MemDumpContent.Length)
+                                                    {
+                                                        ClearCharCount();
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                @foreach (var character in MemDumpContent)
+                                                {
+                                                    @character
+                                                    IncrementCharCount();
+                                                    if (charCount % 2 == 0)
+                                                    {
+                                                        @space
+                                                    }
+                                                    if (charCount == MemDumpContent.Length)
+                                                    {
+                                                        ClearCharCount();
+                                                    }
                                                 }
                                             }
                                         }
