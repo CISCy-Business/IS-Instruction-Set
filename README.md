@@ -17,4 +17,4 @@
 [issues-shield]: https://img.shields.io/github/issues/CISCy-Business/IS-Instruction-Set.svg?style=for-the-badge
 [issues-url]: https://github.com/CISCy-Business/IS-Instruction-Set/issues
 [license-shield]: https://img.shields.io/github/license/CISCy-Business/IS-Instruction-Set.svg?style=for-the-badge
-[license-url]: https://github.com/CISCy-Business/IS-Instruction-Set/blob/master/LICENSE.txt
+[license-url]: https://github.com/CISCy-Business/IS-Instruction-Set/blob/main/LICENSE.txt
