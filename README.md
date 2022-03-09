@@ -1,7 +1,7 @@
 <div id="top"></div>
 
 [![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
+[![Pull Requests][pr-shield]][pr-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
@@ -47,8 +47,8 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 [contributors-shield]: https://img.shields.io/github/contributors/CISCy-Business/IS-Instruction-Set.svg?style=flat
 [contributors-url]: https://github.com/CISCy-Business/IS-Instruction-Set/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/CISCy-Business/IS-Instruction-Set.svg?style=flat
-[forks-url]: https://github.com/CISCy-Business/IS-Instruction-Set/network/members
+[pr-shield]: https://img.shields.io/github/issues-pr/CISCy-Business/IS-Instruction-Set?style=flat
+[pr-url]: https://github.com/CISCy-Business/IS-Instruction-Set/pulls
 [stars-shield]: https://img.shields.io/github/stars/CISCy-Business/IS-Instruction-Set.svg?style=flat
 [stars-url]: https://github.com/CISCy-Business/IS-Instruction-Set/stargazers
 [issues-shield]: https://img.shields.io/github/issues/CISCy-Business/IS-Instruction-Set.svg?style=flat
