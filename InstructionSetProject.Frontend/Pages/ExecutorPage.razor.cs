@@ -255,7 +255,7 @@ namespace InstructionSetProject.Frontend.Pages
             {
                 output = "ERROR: " + ex.Message + "\n";
             }
-            JSRuntime.InvokeVoidAsync("stepScroll");
+            //JSRuntime.InvokeVoidAsync("stepScroll");
             Statistics();
             debugRender = true;
             UpdateDiagram();
@@ -273,7 +273,7 @@ namespace InstructionSetProject.Frontend.Pages
             {
                 output = "ERROR: " + ex.Message + "\n";
             }
-            JSRuntime.InvokeVoidAsync("stepScroll");
+            //JSRuntime.InvokeVoidAsync("stepScroll");
             Statistics();
             debugRender = true;
             UpdateDiagram();
