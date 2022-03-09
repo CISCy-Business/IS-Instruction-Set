@@ -321,6 +321,7 @@ namespace InstructionSetProject.Frontend.Pages
                 UpdateExecuteStage();
                 UpdateMemoryStage();
                 UpdateWritebackStage();
+                UpdateLabels();
             }
         }
 
@@ -330,6 +331,52 @@ namespace InstructionSetProject.Frontend.Pages
         public string memoryMnemonic => (SPEx != null && SPEx.memoryInstruction != null) ? SPEx.memoryInstruction.GetMnemonic() : "";
         public string writeMnemonic => (SPEx != null && SPEx.writingBackInstruction != null) ? SPEx.writingBackInstruction.GetMnemonic() : "";
 
+        void UpdateLabels()
+        {
+            idExRsD1.Content = SPEx != null && SPEx.DecodeExecute.ReadData1 != null
+                ? SPEx.DecodeExecute.ReadData1?.ToString("X4")
+                : "null";
+
+            idExRsD2.Content = SPEx != null && SPEx.DecodeExecute.ReadData2 != null
+                ? SPEx.DecodeExecute.ReadData2?.ToString("X4")
+                : "null";
+
+            idExImmediate.Content = SPEx != null && SPEx.DecodeExecute.Immediate != null
+                ? SPEx.DecodeExecute.Immediate?.ToString("X4")
+                : "null";
+
+            idExRd.Content = SPEx != null && SPEx.DecodeExecute.WriteRegister != null
+                ? SPEx.DecodeExecute.WriteRegister.Label
+                : "null";
+
+            exMemAluResult.Content = SPEx != null && SPEx.ExecuteMemory.AluResult != null
+                ? SPEx.ExecuteMemory.AluResult?.ToString("X4")
+                : "null";
+
+            exMemRsD2.Content = SPEx != null && SPEx.ExecuteMemory.ReadData2 != null
+                ? SPEx.ExecuteMemory.ReadData2?.ToString("X4")
+                : "null";
+
+            exMemRd.Content = SPEx != null && SPEx.ExecuteMemory.WriteRegister != null
+                ? SPEx.ExecuteMemory.WriteRegister.Label
+                : "null";
+
+            memWbMemData.Content = SPEx != null && SPEx.MemoryWriteBack.ReadData != null
+                ? SPEx.MemoryWriteBack.ReadData?.ToString("X4")
+                : "null";
+
+            memWbAluResult.Content = SPEx != null && SPEx.MemoryWriteBack.AluResult != null
+                ? SPEx.MemoryWriteBack.AluResult?.ToString("X4")
+                : "null";
+
+            memWbRd.Content = SPEx != null && SPEx.MemoryWriteBack.WriteRegister != null
+                ? SPEx.MemoryWriteBack.WriteRegister.Label
+                : "null";
+
+            rdReg.Content = SPEx != null && SPEx.MemoryWriteBack.WriteRegister != null
+                ? SPEx.MemoryWriteBack.WriteRegister.Label
+                : "null";
+        }
 
         void UpdateFetchStage()
         {
@@ -674,6 +721,20 @@ namespace InstructionSetProject.Frontend.Pages
             }
         }
 
+        #region DataLabels
+        private PathAnnotation idExRsD1 = new();
+        private PathAnnotation idExRsD2 = new();
+        private PathAnnotation idExImmediate = new();
+        private PathAnnotation idExRd = new();
+        private PathAnnotation exMemAluResult = new();
+        private PathAnnotation exMemRsD2 = new();
+        private PathAnnotation exMemRd = new();
+        private PathAnnotation memWbMemData = new();
+        private PathAnnotation memWbAluResult = new();
+        private PathAnnotation memWbRd = new();
+        private ShapeAnnotation rdReg = new();
+        #endregion
+
         private void InitDiagramModel()
         {
             NodeCollection = new DiagramObjectCollection<Node>();
@@ -852,14 +913,15 @@ namespace InstructionSetProject.Frontend.Pages
             CreateNode("IFID", 300, 343, 30, 450, 0, -90, ifidPorts, FlowShapeType.Process, "IF/ID", "white", "8,0", "black", default, new DiagramPoint(.5, .1));
 
             // Decode Nodes
-            CreateNode("Registers", 450, 350, 100, 100, 0, 0, regPorts, FlowShapeType.Process, "Registers", "white", "8,0", "black", default, null, new ShapeAnnotation()
+            rdReg = new ShapeAnnotation()
             {
-                Content = RegistersRdReg,
+                Content = "null",
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
                 Offset = new DiagramPoint(0.1, .71),
-                Style = new TextStyle() { Color = "red"}
-            });
+                Style = new TextStyle() {Color = "red", FontSize = 9.0 }
+            };
+            CreateNode("Registers", 450, 350, 100, 100, 0, 0, regPorts, FlowShapeType.Process, "Registers", "white", "8,0", "black", default, null, rdReg);
             CreateNode("ImmGen", 470, 450, 40, 75, 0, 0, ImmGenPorts, BasicShapeType.Ellipse, "Imm Gen", "white", "8,0", "black");
             CreateNode("Control", 480, 70, 45, 100, 0, 0, ControlPorts, BasicShapeType.Ellipse, "Control", "white", ControlDash, "black");
 
@@ -961,44 +1023,49 @@ namespace InstructionSetProject.Frontend.Pages
             CreateConnector(MWToMW1, "MW", "portMWOut", "MW1", "portMW1In", ControlDash, "black");
             CreateConnector(PCSToPCS1, "PCS", "portPCSOut", "PCS1", "portPCS1In", ControlDash, "black");
             CreateConnector(ALUSToExecuteMux, "ALUS", "portALUSOut", "ExecuteMux", "portExecuteMuxIn2", ControlDash, "black");
-            CreateConnector(IDEXToExecuteMux1, "IDEX", "portIdexOut2", "ExecuteMux", "portExecuteMuxIn1", "8,0", "black", "0", AnnotationAlignment.Center, .7, new PathAnnotation
+            idExRsD2 = new PathAnnotation
             {
-                Content = IDEXToExecuteMux1DataAnnote,
+                Content = "null",
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
                 Alignment = AnnotationAlignment.Center,
                 Offset = -0.26,
-                Style = new TextStyle() { Color = "red" }
-            });
+                Style = new TextStyle() {Color = "red", FontSize = 9.0}
+            };
+            CreateConnector(IDEXToExecuteMux1, "IDEX", "portIdexOut2", "ExecuteMux", "portExecuteMuxIn1", "8,0", "black", "0", AnnotationAlignment.Center, .7, idExRsD2);
             CreateConnector(IDEXToEXMEM2, "IDEX", "portIdexOut2", "EXMEM", "portExmemIn2", "8,0", "black", "RsD2", AnnotationAlignment.Center, .9);
             CreateConnector(IDEXToFetchMux, "IDEX", "portIdexOut3", "FetchMux", "portFetchMuxIn0", "8,0", "black", "1", AnnotationAlignment.Center, .65);
-            CreateConnector(IDEXToExecuteMux0, "IDEX", "portIdexOut3", "ExecuteMux", "portExecuteMuxIn0", "8,0", "black", "1", AnnotationAlignment.Before, .7, new PathAnnotation
+            idExImmediate = new PathAnnotation
             {
-                Content = IDEXToExecuteMux0DataAnnote,
+                Content = "null",
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
                 Alignment = AnnotationAlignment.Center,
                 Offset = -0.14,
-                Style = new TextStyle() { Color = "red" }
-            });
-            CreateConnector(IDEXToEXMEM3, "IDEX", "portIdexOut4", "EXMEM", "portExmemIn3", "8,0", "black", "Rd", AnnotationAlignment.Center, .9, new PathAnnotation
+                Style = new TextStyle() {Color = "red", FontSize = 9.0 }
+            };
+            CreateConnector(IDEXToExecuteMux0, "IDEX", "portIdexOut3", "ExecuteMux", "portExecuteMuxIn0", "8,0",
+                "black", "1", AnnotationAlignment.Before, .7, idExImmediate);
+            idExRd = new PathAnnotation
             {
-                Content = IDEXToEXMEM3DataAnnote,
+                Content = "null",
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
                 Alignment = AnnotationAlignment.Center,
                 Offset = -0.06,
-                Style = new TextStyle() { Color = "red" }
-            });
-            CreateConnector(IDEXToALU, "IDEX", "portIdexOut1", "ALU", "portALUIn1", "8,0", "black", "RsD1", AnnotationAlignment.Center, .5, new PathAnnotation
+                Style = new TextStyle() {Color = "red", FontSize = 9.0 }
+            };
+            CreateConnector(IDEXToEXMEM3, "IDEX", "portIdexOut4", "EXMEM", "portExmemIn3", "8,0", "black", "Rd", AnnotationAlignment.Center, .9, idExRd);
+            idExRsD1 = new PathAnnotation
             {
-                Content = IDEXToALUDataAnnote,
+                Content = "null",
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
                 Alignment = AnnotationAlignment.Center,
                 Offset = -0.08,
-                Style = new TextStyle() { Color = "red"}
-            });
+                Style = new TextStyle() {Color = "red", FontSize = 9.0 }
+            };
+            CreateConnector(IDEXToALU, "IDEX", "portIdexOut1", "ALU", "portALUIn1", "8,0", "black", "RsD1", AnnotationAlignment.Center, .5, idExRsD1);
             CreateConnector(ExecuteMuxToALU, "ExecuteMux", "portExecuteMuxOut0", "ALU", "portALUIn0", "8,0", "black");
             CreateConnector(ALUToEXMEM1, "ALU", "portALUOut0", "EXMEM", "portExmemIn1", "8,0", "black", "ALUr", AnnotationAlignment.After, 0);
             CreateConnector(ALUToEXMEM0, "ALU", "portALUOut1", "EXMEM", "portExmemIn0", "8,0", "black", "TMP FLGS", AnnotationAlignment.After, .74);
@@ -1009,33 +1076,36 @@ namespace InstructionSetProject.Frontend.Pages
             CreateConnector(MR1ToDataMem, "MR1", "portMR1Out", "DataMem", "portDataMemIn3", ControlDash, "black");
             CreateConnector(MW1ToDataMem, "MW1", "portMW1Out", "DataMem", "portDataMemIn2", ControlDash, "black");
             CreateConnector(EXMEMToDataMem0, "EXMEM", "portExmemOut1", "DataMem", "portDataMemIn0", "8,0", "black", "Addr");
-            CreateConnector(EXMEMToDataMem1, "EXMEM", "portExmemOut2", "DataMem", "portDataMemIn1", "8,0", "black", "RsD2", AnnotationAlignment.Before, 1, new PathAnnotation
+            exMemRsD2 = new PathAnnotation
             {
-                Content = EXMEMToDataMem1DataAnnote,
+                Content = "null",
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
                 Alignment = AnnotationAlignment.Center,
                 Offset = -0.075,
-                Style = new TextStyle() { Color = "red" }
-            });
-            CreateConnector(EXMEMToMEMWB1, "EXMEM", "portExmemOut1", "MEMWB", "portMemwbIn1", "8,0", "black", "ALUr", AnnotationAlignment.Before, 1, new PathAnnotation
+                Style = new TextStyle() {Color = "red", FontSize = 9.0 }
+            };
+            CreateConnector(EXMEMToDataMem1, "EXMEM", "portExmemOut2", "DataMem", "portDataMemIn1", "8,0", "black", "RsD2", AnnotationAlignment.Before, 1, exMemRsD2);
+            exMemAluResult = new PathAnnotation
             {
-                Content = EXMEMToMEMWB1DataAnnote,
+                Content = "null",
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
                 Alignment = AnnotationAlignment.Center,
                 Offset = -0.03,
-                Style = new TextStyle() { Color = "red" }
-            });
-            CreateConnector(EXMEMToMEMWB2, "EXMEM", "portExmemOut3", "MEMWB", "portMemwbIn2", "8,0", "black", "Rd", AnnotationAlignment.Before, 1,  new PathAnnotation
+                Style = new TextStyle() {Color = "red", FontSize = 9.0 }
+            };
+            CreateConnector(EXMEMToMEMWB1, "EXMEM", "portExmemOut1", "MEMWB", "portMemwbIn1", "8,0", "black", "ALUr", AnnotationAlignment.Before, 1, exMemAluResult);
+            exMemRd = new PathAnnotation
             {
-                Content = EXMEMToMEMWB2DataAnnote,
+                Content = "null",
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
                 Alignment = AnnotationAlignment.Center,
                 Offset = -0.06,
-                Style = new TextStyle() { Color = "red" }
-            });
+                Style = new TextStyle() {Color = "red", FontSize = 9.0 }
+            };
+            CreateConnector(EXMEMToMEMWB2, "EXMEM", "portExmemOut3", "MEMWB", "portMemwbIn2", "8,0", "black", "Rd", AnnotationAlignment.Before, 1, exMemRd);
             CreateConnector(DataMemToMEMWB, "DataMem", "portDataMemOut", "MEMWB", "portMemwbIn0", "8,0", "black", "Data");
             CreateConnector(PCS1ToCheckFlags, "PCS1", "portPCS1Out", "CheckFlags", "portChkFlgIn1", ControlDash, "black");
             CreateConnector(EXMEMToCheckFlags, "EXMEM", "portExmemOut0", "CheckFlags", "portChkFlgIn0", ControlDash, "black", "FL");
@@ -1046,34 +1116,37 @@ namespace InstructionSetProject.Frontend.Pages
             CreateConnector(MTR2ToWriteMux, "MTR2", "portMTR2Out", "WriteMux", "portWriteMuxIn2", ControlDash, "black");
             CreateConnector(RW2ToRWRet, "RW2", "portRW2Out", "RWReturn", "portRWRetIn", ControlDash, "black");
             CreateConnector(RWRetToReg, "RWReturn", "portRWRetOut", "Registers", "portRegIn4", ControlDash, "black");
-            CreateConnector(MEMWBToWriteMux1, "MEMWB", "portMemwbOut0", "WriteMux", "portWriteMuxIn1", "8,0", "black", "1", AnnotationAlignment.Center, .5, new PathAnnotation
+            memWbMemData = new PathAnnotation
             {
-                Content = MEMWBToWriteMux1DataAnnote,
+                Content ="null",
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
                 Alignment = AnnotationAlignment.Center,
                 Offset = -0.12,
-                Style = new TextStyle() { Color = "red" }
-            });
-            CreateConnector(MEMWBToWriteMux2, "MEMWB", "portMemwbOut1", "WriteMux", "portWriteMuxIn0", "8,0", "black", "0", AnnotationAlignment.Before, .8, new PathAnnotation
+                Style = new TextStyle() {Color = "red", FontSize = 9.0 }
+            };
+            CreateConnector(MEMWBToWriteMux1, "MEMWB", "portMemwbOut0", "WriteMux", "portWriteMuxIn1", "8,0", "black", "1", AnnotationAlignment.Center, .5, memWbMemData);
+            memWbAluResult = new PathAnnotation
             {
-                Content = MEMWBToWriteMux2DataAnnote,
+                Content = "null",
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
                 Alignment = AnnotationAlignment.Center,
                 Offset = -0.075,
-                Style = new TextStyle() { Color = "red" }
-            });
+                Style = new TextStyle() {Color = "red", FontSize = 9.0 }
+            };
+            CreateConnector(MEMWBToWriteMux2, "MEMWB", "portMemwbOut1", "WriteMux", "portWriteMuxIn0", "8,0", "black", "0", AnnotationAlignment.Before, .8, memWbAluResult);
             CreateConnector(WriteMuxToReg, "WriteMux", "portWriteMuxOut0", "Registers", "portRegIn3", "8,0", "black", "Rd Data", AnnotationAlignment.After, .5, null, segment1, segment2);
-            CreateConnector(MEMWBToRdRet, "MEMWB", "portMemwbOut2", "RdRegReturn", "portRdRetIn", "8,0", "black", "Rd Reg", AnnotationAlignment.Before, .5, new PathAnnotation
+            memWbRd = new PathAnnotation
             {
-                Content = MEMWBToRdRetDataAnnote,
+                Content = "null",
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
                 Alignment = AnnotationAlignment.Center,
                 Offset = -0.03,
-                Style = new TextStyle() { Color = "red" }
-            });
+                Style = new TextStyle() {Color = "red", FontSize = 9.0 }
+            };
+            CreateConnector(MEMWBToRdRet, "MEMWB", "portMemwbOut2", "RdRegReturn", "portRdRetIn", "8,0", "black", "Rd Reg", AnnotationAlignment.Before, .5, memWbRd);
             CreateConnector(RdRetToReg, "RdRegReturn", "portRdRetOut", "Registers", "portRegIn2", "8,0", "black", "Rd Reg", AnnotationAlignment.Before, .5);
 
             #endregion
@@ -1124,11 +1197,6 @@ namespace InstructionSetProject.Frontend.Pages
         public string ALUToEXMEM1 = "ALUToEXMEM1";
         public string ALUToEXMEM0 = "ALUToEXMEM0";
 
-        public string IDEXToALUDataAnnote = "AB";
-        public string IDEXToExecuteMux1DataAnnote = "0A";
-        public string IDEXToExecuteMux0DataAnnote = "11";
-        public string IDEXToEXMEM3DataAnnote = "r2";
-
         // Memory Connectors
         public string RW1ToRW2 = "RW1ToRW2";
         public string MTR1ToMTR2 = "MTR1ToMTR2";
@@ -1144,10 +1212,6 @@ namespace InstructionSetProject.Frontend.Pages
         public string CheckFlagsToFlgRet = "CheckFlagsToFlgRet";
         public string FlgRetToFetchMux = "FlgRetToFetchMux";
 
-        public string EXMEMToMEMWB2DataAnnote = "r2";
-        public string EXMEMToDataMem1DataAnnote = "11";
-        public string EXMEMToMEMWB1DataAnnote = "BB";
-
         // WriteBack Connectors
         public string MTR2ToWriteMux = "MTR2ToWriteMux";
         public string RW2ToRWRet = "RW2ToRWRet";
@@ -1157,10 +1221,6 @@ namespace InstructionSetProject.Frontend.Pages
         public string WriteMuxToReg = "WriteMuxToReg";
         public string MEMWBToRdRet = "MEMWBToRdRet";
         public string RdRetToReg = "RdRetToReg";
-
-        public string MEMWBToRdRetDataAnnote = "r2";
-        public string MEMWBToWriteMux2DataAnnote = "BB";
-        public string MEMWBToWriteMux1DataAnnote = "FF";
 
         #endregion
 

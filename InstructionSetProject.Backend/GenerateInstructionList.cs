@@ -48,26 +48,30 @@ namespace InstructionSetProject.Backend
         {
             var assemblyLines = assemblyCode.Split("\n");
             var instrList = new InstructionList();
-
-            foreach (var line in assemblyLines)
+            try
             {
-                if (line.Trim() != String.Empty && line.Trim().EndsWith(':'))
+                foreach (var line in assemblyLines)
                 {
-                    instrList.AddLabel(line.Trim().Trim(':'));
+                    if (line.Trim() != String.Empty && line.Trim().EndsWith(':'))
+                    {
+                        instrList.AddLabel(line.Trim().Trim(':'));
+                    }
+                    else if (line.Trim() != String.Empty && !line.Trim().StartsWith('#'))
+                    {
+                        instrList.AddInstruction(InstructionFromString(line.Trim()));
+                    }
                 }
-                else if (line.Trim() != String.Empty && !line.Trim().StartsWith('#'))
+
+                foreach (var instr in instrWithLabel)
                 {
-                    instrList.AddInstruction(InstructionFromString(line.Trim()));
+                    var lineWithOffset = ReplaceLabelWithOffset(instr.line, instrList);
+                    instr.obj.ParseInstruction(lineWithOffset);
                 }
             }
-
-            foreach (var instr in instrWithLabel)
+            finally
             {
-                var lineWithOffset = ReplaceLabelWithOffset(instr.line, instrList);
-                instr.obj.ParseInstruction(lineWithOffset);
+                instrWithLabel.Clear();
             }
-
-            instrWithLabel.Clear();
 
             return instrList;
         }
