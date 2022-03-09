@@ -5,6 +5,7 @@
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
+[![Deployment][deployment-shield]][deployment-shield]
 
 # IS Instruction Set
 
@@ -18,3 +19,5 @@
 [issues-url]: https://github.com/CISCy-Business/IS-Instruction-Set/issues
 [license-shield]: https://img.shields.io/github/license/CISCy-Business/IS-Instruction-Set.svg?style=for-the-badge
 [license-url]: https://github.com/CISCy-Business/IS-Instruction-Set/blob/main/LICENSE.txt
+[deployment-shield]: https://img.shields.io/github/workflow/status/CISCy-Business/IS-Instruction-Set/Build%20and%20deploy%20ASP.Net%20Core%20app%20to%20Azure%20Web%20App%20-%20instruction-set?style=for-the-badge
+[deployment-url]: https://github.com/CISCy-Business/IS-Instruction-Set/actions/workflows/main_instruction-set.yml
