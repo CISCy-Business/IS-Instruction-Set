@@ -105,217 +105,211 @@
                 <DialogEvents Closed="@errorClose"></DialogEvents>
             </SfDialog>
         </div>
-        <SfSplitter Height="860px" Width="100%" ID="mainSplitter">
-            <SplitterPanes>
-                <SplitterPane Min="25%" Max="50%">
-                    <ContentTemplate>
-                        <div class="codeDiv">
-                            <div class="tab">
-                                <button class="tablinks" onclick="swapTab(event, 'Executor')" id="defaultOpen">Executor</button>
-                                <button class="tablinks" onclick="swapTab(event, 'Debugger')" id="debuggerTab">Debugger</button>
-                                <button class="tablinks" onclick="swapTab(event, 'Stats')">Statistics</button>
-                            </div>
+        <div class="row">
+            <div class="col-4">
+                <div class="codeDiv">
+                    <div class="tab">
+                        <button class="tablinks" onclick="swapTab(event, 'Executor')" id="defaultOpen">Executor</button>
+                        <button class="tablinks" onclick="swapTab(event, 'Debugger')" id="debuggerTab">Debugger</button>
+                        <button class="tablinks" onclick="swapTab(event, 'Stats')">Statistics</button>
+                    </div>
 
-                            <div id="Executor" class="tabcontent">
-                                <div class="executorTabContent">
-                                    <div>
-                                        <InputFile OnChange="@LoadFile" id="inputFile" class="float-start" accept=".txt"></InputFile>
-                                        <label id="exLabel"><b>Source Code</b></label>
-                                        <button @onclick="SaveAssemblyCode" type="button" class="float-end" id="saveButton">Save File</button>
-                                    </div>
-                                    <textarea @bind="ExecAssemblyCode" id="assemblyTextBox" placeholder="Write your assembly code here..."></textarea><br />
-                                    <div>
-                                        <label id="exLabel"><b>Machine Code</b></label>
-                                    </div>
-                                    <textarea @bind="ExecMachineCode" id="machineTextBox" readonly placeholder="Machine code output will appear here after building code..."></textarea>
-                                </div>
+                    <div id="Executor" class="tabcontent">
+                        <div class="executorTabContent">
+                            <div>
+                                <InputFile OnChange="@LoadFile" id="inputFile" class="float-start" accept=".txt"></InputFile>
+                                <label id="exLabel"><b>Source Code</b></label>
+                                <button @onclick="SaveAssemblyCode" type="button" class="float-end" id="saveButton">Save File</button>
                             </div>
-
-                            <div id="Debugger" class="tabcontent">
-                                <div class="debuggerTabContent">
-                                    <div class="debugLabel">
-                                        <label id="exLabel"><b>Stack Trace</b></label>
-                                    </div>
-                                    <div class="debugContainer" id="debugCodeId">
-                                        @if (SPEx != null)
-                                        {
-                                            @foreach (var instr in SPEx.InstrList.InstructionOffsetDictionary)
-                                            {
-                                                <p class="@DivCSS(instr.Value)"><a class="@DivCSS(instr.Value)" title="Jump To @instr.Key.ToString("X4")" style="color: blue; text-decoration: underline; cursor: pointer" @onclick="() => selectMemDumpText(instr.Key)">@instr.Key.ToString("X4")</a>:     @instr.Value.Disassemble()</p>
-                                            }
-                                        }
-                                        <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-                                    </div>
-                                </div>
+                            <textarea @bind="ExecAssemblyCode" id="assemblyTextBox" placeholder="Write your assembly code here..."></textarea><br />
+                            <div>
+                                <label id="exLabel"><b>Machine Code</b></label>
                             </div>
+                            <textarea @bind="ExecMachineCode" id="machineTextBox" readonly placeholder="Machine code output will appear here after building code..."></textarea>
+                        </div>
+                    </div>
 
-                            <div id="Stats" class="tabcontent">
-                                <div class="statsTabContent">
-                                    <div>
-                                        <label id="exLabel" class="statsClass"><b>Statistics</b></label>
-                                        <button @onclick="SaveStats" type="button" class="float-end" id="saveButton">Save Stats</button>
-                                    </div>
-                                    <textarea @bind="statsString" placeholder="Statistics will appear after running the code..." readonly></textarea>
-                                </div>
+                    <div id="Debugger" class="tabcontent">
+                        <div class="debuggerTabContent">
+                            <div class="debugLabel">
+                                <label id="exLabel"><b>Stack Trace</b></label>
+                            </div>
+                            <div class="debugContainer" id="debugCodeId">
+                                @if (SPEx != null)
+                                {
+                                    @foreach (var instr in SPEx.InstrList.InstructionOffsetDictionary)
+                                    {
+                                        <p class="@DivCSS(instr.Value)"><a class="@DivCSS(instr.Value)" title="Jump To @instr.Key.ToString("X4")" style="color: blue; text-decoration: underline; cursor: pointer" @onclick="() => selectMemDumpText(instr.Key)">@instr.Key.ToString("X4")</a>:     @instr.Value.Disassemble()</p>
+                                    }
+                                }
+                                <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
                             </div>
                         </div>
-                    </ContentTemplate>
-                </SplitterPane>
-                <SplitterPane Min="25%">
-                    <ContentTemplate>
-                        <div class="registerPane">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-sm-4" style="align-items: center">
-                                        <label class="registerLabel"><b>PC:</b></label>
-                                        <textarea readonly class="registerTextArea">@PC</textarea><br/>
+                    </div>
 
-                                        <label class="registerLabel"><b>SP:</b></label>
-                                        <textarea readonly class="registerTextArea">@SP</textarea><br/>
+                    <div id="Stats" class="tabcontent">
+                        <div class="statsTabContent">
+                            <div>
+                                <label id="exLabel" class="statsClass"><b>Statistics</b></label>
+                                <button @onclick="SaveStats" type="button" class="float-end" id="saveButton">Save Stats</button>
+                            </div>
+                            <textarea @bind="statsString" placeholder="Statistics will appear after running the code..." readonly></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-5">
+                <div>
+                    <div class="registerPane">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm-4" style="align-items: center">
+                                    <label class="registerLabel"><b>PC:</b></label>
+                                    <textarea readonly class="registerTextArea">@PC</textarea><br/>
 
-                                        <label class="registerLabel"><b>FL:</b></label>
-                                        <textarea readonly class="registerTextArea">@FL</textarea><br/>
+                                    <label class="registerLabel"><b>SP:</b></label>
+                                    <textarea readonly class="registerTextArea">@SP</textarea><br/>
+
+                                    <label class="registerLabel"><b>FL:</b></label>
+                                    <textarea readonly class="registerTextArea">@FL</textarea><br/>
                                         
-                                        <label class="registerLabel"><b>MP:</b></label>
-                                        <textarea readonly class="registerTextArea">@MBP</textarea><br/><br/>
+                                    <label class="registerLabel"><b>MP:</b></label>
+                                    <textarea readonly class="registerTextArea">@MBP</textarea><br/><br/>
 
-                                        <!-- Add a stage legend right here in this spot where this comment is located-->
-                                        <div>
-                                            <p class="bg-fetch" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px)"><b>Fetch</b></p>
-                                            <p class="bg-decode" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px)"><b>Decode</b></p>
-                                            <p class="bg-execute" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px)"><b>Execute</b></p>
-                                            <p class="bg-memory" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px)"><b>Memory</b></p>
-                                            <p class="bg-write" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px)"><b>WriteBack</b></p>
-                                        </div>
+                                    <!-- Add a stage legend right here in this spot where this comment is located-->
+                                    <div>
+                                        <p class="bg-fetch" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px)"><b>Fetch</b></p>
+                                        <p class="bg-decode" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px)"><b>Decode</b></p>
+                                        <p class="bg-execute" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px)"><b>Execute</b></p>
+                                        <p class="bg-memory" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px)"><b>Memory</b></p>
+                                        <p class="bg-write" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px)"><b>WriteBack</b></p>
                                     </div>
+                                </div>
 
-                                    <div class="col-sm-4">
-                                        <label class="registerLabel"><b>R0:</b></label>
-                                        <textarea readonly class="registerTextArea">@r0</textarea><br/>
+                                <div class="col-sm-4">
+                                    <label class="registerLabel"><b>R0:</b></label>
+                                    <textarea readonly class="registerTextArea">@r0</textarea><br/>
 
-                                        <label class="registerLabel"><b>R1:</b></label>
-                                        <textarea readonly class="registerTextArea">@r1</textarea><br/>
+                                    <label class="registerLabel"><b>R1:</b></label>
+                                    <textarea readonly class="registerTextArea">@r1</textarea><br/>
 
-                                        <label class="registerLabel"><b>R2:</b></label>
-                                        <textarea readonly class="registerTextArea">@r2</textarea><br/>
+                                    <label class="registerLabel"><b>R2:</b></label>
+                                    <textarea readonly class="registerTextArea">@r2</textarea><br/>
 
-                                        <label class="registerLabel"><b>R3:</b></label>
-                                        <textarea readonly class="registerTextArea">@r3</textarea><br/>
+                                    <label class="registerLabel"><b>R3:</b></label>
+                                    <textarea readonly class="registerTextArea">@r3</textarea><br/>
 
-                                        <label class="registerLabel"><b>R4:</b></label>
-                                        <textarea readonly class="registerTextArea">@r4</textarea><br/>
+                                    <label class="registerLabel"><b>R4:</b></label>
+                                    <textarea readonly class="registerTextArea">@r4</textarea><br/>
 
-                                        <label class="registerLabel"><b>R5:</b></label>
-                                        <textarea readonly class="registerTextArea">@r5</textarea><br/>
+                                    <label class="registerLabel"><b>R5:</b></label>
+                                    <textarea readonly class="registerTextArea">@r5</textarea><br/>
 
-                                        <label class="registerLabel"><b>R6:</b></label>
-                                        <textarea readonly class="registerTextArea">@r6</textarea><br/>
+                                    <label class="registerLabel"><b>R6:</b></label>
+                                    <textarea readonly class="registerTextArea">@r6</textarea><br/>
 
-                                        <label class="registerLabel"><b>R7:</b></label>
-                                        <textarea readonly class="registerTextArea">@r7</textarea>
-                                    </div>
+                                    <label class="registerLabel"><b>R7:</b></label>
+                                    <textarea readonly class="registerTextArea">@r7</textarea>
+                                </div>
                                     
-                                    <div class="col-sm-4">
-                                        <label class="registerLabel"><b>F0:</b></label>
-                                        <textarea readonly class="registerTextArea">@f0</textarea><br/>
+                                <div class="col-sm-4">
+                                    <label class="registerLabel"><b>F0:</b></label>
+                                    <textarea readonly class="registerTextArea">@f0</textarea><br/>
 
-                                        <label class="registerLabel"><b>F1:</b></label>
-                                        <textarea readonly class="registerTextArea">@f1</textarea><br/>
+                                    <label class="registerLabel"><b>F1:</b></label>
+                                    <textarea readonly class="registerTextArea">@f1</textarea><br/>
 
-                                        <label class="registerLabel"><b>F2:</b></label>
-                                        <textarea readonly class="registerTextArea">@f2</textarea><br/>
+                                    <label class="registerLabel"><b>F2:</b></label>
+                                    <textarea readonly class="registerTextArea">@f2</textarea><br/>
 
-                                        <label class="registerLabel"><b>F3:</b></label>
-                                        <textarea readonly class="registerTextArea">@f3</textarea><br/>
+                                    <label class="registerLabel"><b>F3:</b></label>
+                                    <textarea readonly class="registerTextArea">@f3</textarea><br/>
 
-                                        <label class="registerLabel"><b>F4:</b></label>
-                                        <textarea readonly class="registerTextArea">@f4</textarea><br/>
+                                    <label class="registerLabel"><b>F4:</b></label>
+                                    <textarea readonly class="registerTextArea">@f4</textarea><br/>
 
-                                        <label class="registerLabel"><b>F5:</b></label>
-                                        <textarea readonly class="registerTextArea">@f5</textarea><br/>
+                                    <label class="registerLabel"><b>F5:</b></label>
+                                    <textarea readonly class="registerTextArea">@f5</textarea><br/>
 
-                                        <label class="registerLabel"><b>F6:</b></label>
-                                        <textarea readonly class="registerTextArea">@f6</textarea><br/>
+                                    <label class="registerLabel"><b>F6:</b></label>
+                                    <textarea readonly class="registerTextArea">@f6</textarea><br/>
 
-                                        <label class="registerLabel"><b>F7:</b></label>
-                                        <textarea readonly class="registerTextArea">@f7</textarea>
-                                    </div>
+                                    <label class="registerLabel"><b>F7:</b></label>
+                                    <textarea readonly class="registerTextArea">@f7</textarea>
                                 </div>
                             </div>
                         </div>
-                        <div class="ioPane">
-                            <div class="ioContent">
-                                <div class="inputBox">
-                                    <div>
-                                        <label id="exLabel"><b>Input</b></label>
-                                    </div>
-                                    <textarea placeholder="Input stuff here for the code to use..."></textarea><br/>
+                    </div>
+                    <div class="ioPane">
+                        <div class="ioContent">
+                            <div class="inputBox">
+                                <div>
+                                    <label id="exLabel"><b>Input</b></label>
                                 </div>
-                                <div class="outputBox">
-                                    <div>
-                                        <label id="exLabel"><b>Output</b></label>
-                                    </div>
-                                    <textarea placeholder="Ouput will appear here after running code...">@output</textarea>
+                                <textarea placeholder="Input stuff here for the code to use..."></textarea><br/>
+                            </div>
+                            <div class="outputBox">
+                                <div>
+                                    <label id="exLabel"><b>Output</b></label>
                                 </div>
+                                <textarea placeholder="Ouput will appear here after running code...">@output</textarea>
                             </div>
                         </div>
-                    </ContentTemplate>
-                </SplitterPane>
-                <SplitterPane Min="25%" Max="25%">
-                    <ContentTemplate>
-                        <div>
-                            <div class="memDump">
-                                <div class="memoryDumpContent">
-                                    <div class="MemLabelClass">
-                                        <button class="byteAddressLabel float-start"> Jump To </button>
-                                        <input id="MemDumpStart" class="byteAddressInput float-start" placeholder="ex. 00AB" @bind-value="@MemDumpStart">
-                                        <div class="memDumpLabel">
-                                            <label id="exLabel"><b>Memory Dump</b></label>
-                                        </div>
-                                    </div>
-                                    <div class="memoryContainer" id="memDumpId">
-                                        @if (SPEx != null)
-                                        {
-                                            @foreach (var instr in SPEx.InstrList.InstructionOffsetDictionary)
-                                            {
-                                                <span class="@DivCSS(instr.Value)">
-                                                    @foreach (var character in MemDumpContent.Substring((int)(instr.Key * 2), (int)(instr.Value.lengthInBytes * 2)))
-                                                    {
-                                                        @character
-                                                        IncrementCharCount();
-                                                        if (charCount == instr.Value.lengthInBytes * 2)
-                                                        {
-                                                            ClearCharCount();
-                                                        }
-                                                        if (charCount % 2 == 0 && charCount != 0 && charCount != (int)(instr.Value.lengthInBytes * 2))
-                                                        {
-                                                            @space
-                                                        }
-                                                    }
-                                                </span>
-                                                @space
-                                            }
-                                            @foreach (var character in MemDumpContent.Substring((int)(SPEx.InstrList.InstructionOffsetDictionary.Keys.Last() + SPEx.InstrList.InstructionOffsetDictionary.Values.Last().lengthInBytes * 2) * 2))
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div>
+                    <div class="memDump">
+                        <div class="memoryDumpContent">
+                            <div class="MemLabelClass">
+                                <button class="byteAddressLabel float-start"> Jump To </button>
+                                <input id="MemDumpStart" class="byteAddressInput float-start" placeholder="ex. 00AB" @bind-value="@MemDumpStart">
+                                <div class="memDumpLabel">
+                                    <label id="exLabel"><b>Memory Dump</b></label>
+                                </div>
+                            </div>
+                            <div class="memoryContainer" id="memDumpId">
+                                @if (SPEx != null)
+                                {
+                                    @foreach (var instr in SPEx.InstrList.InstructionOffsetDictionary)
+                                    {
+                                        <span class="@DivCSS(instr.Value)">
+                                            @foreach (var character in MemDumpContent.Substring((int)(instr.Key * 2), (int)(instr.Value.lengthInBytes * 2)))
                                             {
                                                 @character
                                                 IncrementCharCount();
-                                                if (charCount % 2 == 0)
-                                                {
-                                                    @space
-                                                }
-                                                if(charCount == MemDumpContent.Length)
+                                                if (charCount == instr.Value.lengthInBytes * 2)
                                                 {
                                                     ClearCharCount();
                                                 }
+                                                if (charCount % 2 == 0 && charCount != 0 && charCount != (int)(instr.Value.lengthInBytes * 2))
+                                                {
+                                                    @space
+                                                }
                                             }
+                                        </span>
+                                        @space
+                                    }
+                                    @foreach (var character in MemDumpContent.Substring((int)(SPEx.InstrList.InstructionOffsetDictionary.Keys.Last() + SPEx.InstrList.InstructionOffsetDictionary.Values.Last().lengthInBytes * 2) * 2))
+                                    {
+                                        @character
+                                        IncrementCharCount();
+                                        if (charCount % 2 == 0)
+                                        {
+                                            @space
                                         }
-                                    </div>
-                                </div>
+                                        if(charCount == MemDumpContent.Length)
+                                        {
+                                            ClearCharCount();
+                                        }
+                                    }
+                                }
                             </div>
                         </div>
-                    </ContentTemplate>
-                </SplitterPane>
-            </SplitterPanes>
-        </SfSplitter>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
