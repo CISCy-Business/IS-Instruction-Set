@@ -68,18 +68,6 @@ namespace InstructionSetProject.Backend.StaticPipeline
             Decode();
             Fetch();
 
-            // _writeBackStageOffset = _memoryStageOffset;
-            // _memoryStageOffset = _executeStageOffset;
-            // _executeStageOffset = _decodeStageOffset;
-            // _decodeStageOffset = _fetchStageOffset;
-            // if (_fetchStageOffset != DataStructures.InstructionPointer.value)
-            // {
-            //     _fetchStageOffset = DataStructures.InstructionPointer.value;
-            // }
-            // else
-            // {
-            //     _fetchStageOffset = -1;
-            // }
             Statistics.ClockTicks++;
         }
 
@@ -165,8 +153,8 @@ namespace InstructionSetProject.Backend.StaticPipeline
                 return;
             }
             if (_memoryStageOffset != -1) return;
-            if (writingBackInstruction != null && (MemoryWriteBack.WriteRegister == DecodeExecute.ReadReg1 ||
-                ExecuteMemory.WriteRegister == DecodeExecute.ReadReg2)) return;
+            if (writingBackInstruction != null && MemoryWriteBack.WriteRegister != null && MemoryWriteBack.WriteRegister != DataStructures.R0 && (MemoryWriteBack.WriteRegister == DecodeExecute.ReadReg1 ||
+                MemoryWriteBack.WriteRegister == DecodeExecute.ReadReg2)) return;
             var instr = executingInstruction;
             if (instr == null)
             {
@@ -193,6 +181,7 @@ namespace InstructionSetProject.Backend.StaticPipeline
             _memoryStageOffset = _executeStageOffset;
             CyclesRemainingInMemoryStage = instr.cyclesNeededInMemory;
             _executeStageOffset = -1;
+            DecodeExecute = new();
         }
 
         private void MemoryAccess()
@@ -248,6 +237,7 @@ namespace InstructionSetProject.Backend.StaticPipeline
 
             _writeBackStageOffset = _memoryStageOffset;
             _memoryStageOffset = -1;
+            ExecuteMemory = new();
         }
 
         private void WriteBack()
@@ -282,8 +272,9 @@ namespace InstructionSetProject.Backend.StaticPipeline
                     ForwardNewRegisterValue(MemoryWriteBack.WriteRegister);
                 }
             }
-            _writeBackStageOffset = -1;
             Statistics.StatInstructionType(writingBackInstruction);
+            _writeBackStageOffset = -1;
+            MemoryWriteBack = new();
         }
 
         private ushort PerformMemRead(IInstruction instr)
