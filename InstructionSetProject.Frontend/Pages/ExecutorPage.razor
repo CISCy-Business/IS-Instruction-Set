@@ -273,7 +273,7 @@
                             <div class="memoryContainer" id="memDumpId">
                                 @if (SPEx != null)
                                 {
-                                    @if (MemDumpStart == String.Empty || Convert.ToUInt16(MemDumpStart, 16) == 0)
+                                    @if (MemDumpStart == String.Empty || Convert.ToUInt32(MemDumpStart, 16) == 0)
                                     {
                                         @foreach (var instr in SPEx.InstrList.InstructionOffsetDictionary)
                                         {
