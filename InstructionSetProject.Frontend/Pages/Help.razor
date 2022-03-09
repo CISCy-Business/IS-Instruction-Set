@@ -445,830 +445,1172 @@
           <tr>
             <td>Load Word</td>
             <td>LDW</td>
-            <td>m</td>
-            <td>1000 0000 0</td>
-            <td>LDW r1, r2, rd</td>
-            <td>r1 = Mem[r2]</td>
-            <td>1000 0000 0001 1001 | 0000 0000 0000 0010</td>
+            <td>rm</td>
+            <td>1100 0000 0ccc crrr</td>
+            <td>LDW r1, 15, id</td>
+            <td></td>
           </tr>
-          <tr>
-            <td>Store Word</td>
-            <td>STW</td>
-            <td>m</td>
-            <td>1000 0000 1</td>
-            <td>STW r1, label, id</td>
-            <td>Mem[label] = r1</td>
-            <td>1000 0000 1000 1001 | ???? ? label ? ????</td>
-          </tr>
-          <tr>
+           <tr>
             <td>Load Low Byte</td>
             <td>LDL</td>
-            <td>m</td>
-            <td>1000 0001 0</td>
-            <td>LDL r1, 15, i</td>
-            <td>r1<img src="chevron-left.svg"/>8..0<img src="chevron-right.svg"/> = 15</td>
-            <td>1000 0001 0000 0001 | 0000 0000 0000 1111</td>
-          </tr>
-          <tr>
-            <td>Store Low Byte</td>
-            <td>STL</td>
-            <td>m</td>
-            <td>1000 0001 1</td>
-            <td>STL r1, label, id</td>
-            <td>Mem[label]<img src="chevron-left.svg"/>8..0<img src="chevron-right.svg"/> = r1</td>
-            <td>1000 0001 1000 1001 | ???? ? label ? ????</td>
+            <td>rm</td>
+            <td>1100 0000 1ccc crrr</td>
+            <td>LDL r1, 15, id</td>
+            <td></td>
           </tr>
           <tr>
             <td>Load High Byte</td>
             <td>LDH</td>
-            <td>m</td>
-            <td>1000 0010 0</td>
-            <td>LDH r1, 15, i</td>
-            <td>r1<img src="chevron-left.svg"/>16..9<img src="chevron-right.svg"/> = 15</td>
-            <td>1000 0010 0000 0001 | 0000 0000 0000 1111</td>
+            <td>rm</td>
+            <td>1100 0001 0ccc crrr</td>
+            <td>LDH r1, 15, id</td>
+            <td></td>
+          </tr>
+          <tr style="height: 20px">
+          </tr>
+          <tr>
+            <td>Store Word</td>
+            <td>STW</td>
+            <td>rm</td>
+            <td>1100 0001 1ccc crrr</td>
+            <td>STW r1, 15, id</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Store Low Byte</td>
+            <td>STL</td>
+            <td>rm</td>
+            <td>1100 0010 0ccc crrr</td>
+            <td>STL r1, 15, id</td>
+            <td></td>
           </tr>
           <tr>
             <td>Store High Byte</td>
             <td>STH</td>
-            <td>m</td>
-            <td>1000 0010 1</td>
-            <td>STH r1, label, id</td>
-            <td>Mem[label]<img src="chevron-left.svg"/>16..9<img src="chevron-right.svg"/> = r1</td>
-            <td>1000 0010 1000 1001 | ???? ? label ? ????</td>
+            <td>rm</td>
+            <td>1100 0010 1ccc crrr</td>
+            <td>STH r1, 15, id</td>
+            <td></td>
           </tr>
-          <tr style="height: 25px">
-          </tr>
-          <tr>
-            <td>Move reg to reg</td>
-            <td>MOV</td>
-            <td colspan=2>/* 'ADD r#, r#, r0' */</td>
-            <td>MOV r1, r2</td>
-            <td>r1 = r2</td>
-            <td> </td>
+          <tr style="height: 20px">
           </tr>
           <tr>
-            <td>Move imm to reg</td>
-            <td>MVI</td>
-            <td colspan=2>/* 'ADI r#, r0, imm' */</td>
-            <td>MVI r1, 15</td>
-            <td>r1 = 15</td>
-            <td> </td>
+            <td>Load Float</td>
+            <td>LDF</td>
+            <td>fm</td>
+            <td>1110 0000 0ccc crrr</td>
+            <td>LDF f1, 15, id</td>
+            <td>Opcode matches LDW except type bits</td>
+        </tr>
+        <tr>
+            <td>Store Float</td>
+            <td>STF</td>
+            <td>fm</td>
+            <td>1110 0001 1ccc crrr</td>
+            <td>STF f1, 15, id</td>
+            <td>Opcode matches STW except type bits</td>
+        </tr>
+        <tr style="height: 20px">
           </tr>
-          <tr style="height: 25px">
+        <tr>
+            <td>Load Effective Address</td>
+            <td>LEA</td>
+            <td>rm</td>
+            <td>1100 0011 0... .rrr</td>
+            <td>LEA r1, label</td>
+            <td>r1 = address that label is mapped to</td>
+        </tr>
+        <tr style="height: 20px">
+          </tr>
+        <tr>
+            <td>Set Memory Base Pointer</td>
+            <td>SMP</td>
+            <td>rm</td>
+            <td>1101 0000 0... ....</td>
+            <td>SMP ABAB</td>
+            <td></td>
+        </tr>
+        <tr style="height: 20px">
+          </tr>
+        <tr>
+            <td>Push Word</td>
+            <td>PSW</td>
+            <td>r2</td>
+            <td>0000 0001 00.. .rrr</td>
+            <td>PSW r1</td>
+            <td>Stack pointer auto adjusted</td>
+        </tr>
+        <tr>
+            <td>Push Low Byte</td>
+            <td>PSL</td>
+            <td>r2</td>
+            <td>0000 0001 01.. .rrr</td>
+            <td>PSL r1</td>
+            <td>Stack pointer auto adjusted</td>
+        </tr>
+        <tr>
+            <td>Push High Byte</td>
+            <td>PSH</td>
+            <td>r2</td>
+            <td>0000 0001 10.. .rrr</td>
+            <td>PSH r1</td>
+            <td>Stack pointer auto adjusted</td>
+        </tr>
+        <tr style="height: 20px">
+          </tr>
+        <tr>
+            <td>Pop Word</td>
+            <td>PPW</td>
+            <td>r2</td>
+            <td>0000 0001 11.. .rrr</td>
+            <td>PPW r1</td>
+            <td>Stack pointer auto adjusted</td>
+        </tr>
+        <tr>
+            <td>Pop Low Word</td>
+            <td>PPL</td>
+            <td>r2</td>
+            <td>0000 0010 00.. .rrr</td>
+            <td>PPL r1</td>
+            <td>Stack pointer auto adjusted</td>
+        </tr>
+        <tr>
+            <td>Pop High Word</td>
+            <td>PPH</td>
+            <td>r2</td>
+            <td>0000 0010 01.. .rrr</td>
+            <td>PPH r1</td>
+            <td>Stack pointer auto adjusted</td>
+        </tr>
+        <tr style="height: 20px">
+          </tr>
+        <tr>
+            <td>Push Float</td>
+            <td>PSF</td>
+            <td>f2</td>
+            <td>0010 0001 00.. .rrr</td>
+            <td>PSF f1</td>
+            <td>Opcode matches PSW except type bits</td>
+        </tr>
+        <tr>
+            <td>Pop Float</td>
+            <td>PPF</td>
+            <td>f2</td>
+            <td>0010 0001 11.. .rrr</td>
+            <td>PPF f1</td>
+            <td>Opcode matches PPW except type bits</td>
+        </tr>
+        <tr style="height: 25px">
+          </tr>
+        <tr>
+            <th colspan=6>Register Management Instructions</th>
           </tr>
           <tr>
-            <td>Exchange</td>
+            <th>Name</th>
+            <th>Mnemonic</th>
+            <th>Type</th>
+            <th>Op Code</th>
+            <th>Example</th>
+            <th>Notes</th>
+          </tr>
+        <tr>
+            <td>Copy into Reg, from Reg</td>
+            <td>CRR</td>
+            <td>r2</td>
+            <td>/* Use MOV */</td>
+            <td>CRR r1, r2</td>
+            <td>Converts to 'MOV r1, r2'</td>
+        </tr>
+        <tr>
+            <td>Copy into Float, from Float</td>
+            <td>CFF</td>
+            <td>f2</td>
+            <td>/* Use MOV */</td>
+            <td>CFF r1, r2</td>
+            <td>Converts to 'MOV f1, f2'</td>
+        </tr>
+        <tr>
+            <td>Copy into Reg, from Float</td>
+            <td>CRF</td>
+            <td>r2</td>
+            <td>0000 0010 10tt tsss</td>
+            <td>CRF r1, f1</td>
+            <td>Truncates to integer</td>
+        </tr>
+        <tr>
+            <td>Copy into Float, from Reg</td>
+            <td>CFR¹</td>
+            <td>f2</td>
+            <td>0010 0010 10tt tsss</td>
+            <td>CFR f1, r1</td>
+            <td>Opcode matches CRF except type bits. See note.</td>
+        </tr>
+        <tr style="height: 20px">
+          </tr>
+        <tr>
+            <td>Exchange Registers</td>
             <td>XCH</td>
-            <td>r2</td>
-            <td>0100 0000 00</td>
+            <td>r2/f2</td>
+            <td>00?0 0010 11tt tsss</td>
             <td>XCH r1, r2</td>
-            <td>(r1,r2) = (r2,r1) (python)</td>
-            <td>0100 0000 0001 0001</td>
+            <td>Swaps contents of both registers</td>
+        </tr>
+        <tr style="height: 20px">
           </tr>
-          <tr style="height: 25px">
-          </tr>
-          <tr>
-            <td>Exchange Equal</td>
-            <td>XEQ</td>
+        <tr>
+            <td>Extend low byte into word</td>
+            <td>EXT</td>
             <td>r2</td>
-            <td>0100 0000 01</td>
-            <td>XEQ r1, r2</td>
-            <td>r1 = r2 if [Z]</td>
-            <td>0100 0000 0101 0001</td>
+            <td>0000 0011 00tt tsss</td>
+            <td>EXT r1, r2</td>
+            <td>Sign extends r2&lt;8..0&gt; into r1</td>
+        </tr>
+        <tr style="height: 25px">
           </tr>
           <tr>
-            <td>Exchange Not Equal</td>
-            <td>XNE</td>
-            <td>r2</td>
-            <td>0100 0000 10</td>
-            <td>XNE r1, r2</td>
-            <td>r1 = r2 if [!Z]</td>
-            <td>0100 0000 1001 0001</td>
-          </tr>
-          <tr style="height: 25px">
+           <th colspan=6>Pure Register Instructions</th>
           </tr>
           <tr>
-            <td>Exchange Less Than</td>
-            <td>XLT</td>
-            <td>r2</td>
-            <td>0100 0001 11</td>
-            <td>XLT r1, r2</td>
-            <td>r1 = r2 if [S != O]</td>
-            <td>0100 0000 1101 0001</td>
+            <th>Name</th>
+            <th>Mnemonic</th>
+            <th>Type</th>
+            <th>Op Code</th>
+            <th>Example</th>
+            <th>Notes</th>
           </tr>
-          <tr>
-            <td>Exchange Greater Than</td>
-            <td>XGT</td>
-            <td>r2</td>
-            <td>0100 0001 00</td>
-            <td>XGT r1, r2</td>
-            <td>r1 = r2 if [!Z & (S==F)]</td>
-            <td>0100 0001 0001 0001</td>
-          </tr>
-          <tr>
-            <td>Exchange Less Equal</td>
-            <td>XLE</td>
-            <td>r2</td>
-            <td>0100 0001 01</td>
-            <td>XLE r1, r2</td>
-            <td>r1 = r2 if [Z | (S!=O)]</td>
-            <td>0100 0001 0101 0001</td>
-          </tr>
-          <tr>
-            <td>Exchange Greater Equal</td>
-            <td>XGE</td>
-            <td>r2</td>
-            <td>0100 0001 10</td>
-            <td>XGE r1, r2</td>
-            <td>r1 = r2 if [S==O]</td>
-            <td>0100 0001 1001 0001</td>
-          </tr>
-          <tr style="height: 25px">
-          </tr>
-          <tr>
-            <td>Exchange Above Than</td>
-            <td>XAT</td>
-            <td>r2</td>
-            <td>0100 0001 11</td>
-            <td>XAT r1, r2</td>
-            <td>r1 = r2 if [!C & !Z]</td>
-            <td>0100 0001 1101 0001</td>
-          </tr>
-          <tr>
-            <td>Exchange Below Than</td>
-            <td>XBT</td>
-            <td>r2 </td>
-            <td>0100 0010 00</td>
-            <td>XBT r1, r2</td>
-            <td>r1 = r2 if [C]</td>
-            <td>0100 0010 0001 0001</td>
-          </tr>
-          <tr>
-            <td>Exchange Above Equal</td>
-            <td>XAE</td>
-            <td>r2</td>
-            <td>0100 0010 01</td>
-            <td>XAE r1, r2</td>
-            <td>r1 = r2 if [!C]</td>
-            <td>0100 0010 0101 0001</td>
-          </tr>
-          <tr>
-            <td>Exchange Below Equal</td>
-            <td>XBE</td>
-            <td>r2 </td>
-            <td>0100 0010 10</td>
-            <td>XBE r1, r2</td>
-            <td>r1 = r2 if [C | Z]</td>
-            <td>0100 0010 1001 0001</td>
-          </tr>
-          <tr style="height: 25px">
-          </tr>
-          <tr>
-            <td>Exchange Zero</td>
-            <td>XYZ</td>
-            <td>r2</td>
-            <td>0100 0010 11</td>
-            <td>XYZ r1, r2</td>
-            <td>r1 = r2 if [Z]</td>
-            <td>0100 0010 1101 0001</td>
-          </tr>
-          <tr>
-            <td>Exchange Not Zero</td>
-            <td>XNZ</td>
-            <td>r2</td>
-            <td>0100 0011 00</td>
-            <td>XNZ r1, r2</td>
-            <td>r1 = r2 if [!Z]</td>
-            <td>0100 0011 0001 0001</td>
-          </tr>
-          <tr>
-            <td>Exchange Carry</td>
-            <td>XYC</td>
-            <td>r2</td>
-            <td>0100 0011 01</td>
-            <td>XYC r1, r2</td>
-            <td>r1 = r2 if [C]</td>
-            <td>0100 0011 0101 0001</td>
-          </tr>
-          <tr>
-            <td>Exchange Not Carry</td>
-            <td>XNC</td>
-            <td>r2</td>
-            <td>0100 0011 10</td>
-            <td>XNC r1, r2</td>
-            <td>r1 = r2 if [!C]</td>
-            <td>0100 0011 1001 0001</td>
-          </tr>
-`         <tr>
-            <td>Exchange Overflow</td>
-            <td>XYO</td>
-            <td>r2</td>
-            <td>0100 0011 11</td>
-            <td>XYO r1, r2</td>
-            <td>r1 = r2 if [O]</td>
-            <td>0100 0011 1101 0001</td>
-          </tr>
-          <tr>
-            <td>Exchange Not Overflow</td>
-            <td>XNO</td>
-            <td>r2</td>
-            <td>0100 0100 00</td>
-            <td>XNO r1, r2</td>
-            <td>r1 = r2 if [!O]</td>
-            <td>0100 0100 0001 0001</td>
-          </tr>
-          <tr>
-            <td>Exchange Sign</td>
-            <td>XYS</td>
-            <td>r2</td>
-            <td>0100 0100 01</td>
-            <td>XYS r1, r2</td>
-            <td>r1 = r2 if [S]</td>
-            <td>0100 0100 0101 0001</td>
-          </tr>
-          <tr>
-            <td>Exchange Not Sign</td>
-            <td>XNS</td>
-            <td>r2</td>
-            <td>0100 0100 10</td>
-            <td>XNS r1, r2</td>
-            <td>r1 = r2 if [!S]</td>
-            <td>0100 0100 1001 0001</td> 
-          </tr>
-          <tr>
-            <td>Exchange Parity</td>
-            <td>XYP</td>
-            <td>r2</td>
-            <td>0100 0100 11</td>
-            <td>XYP r1, r2</td>
-            <td>r1 = r2 if [P]</td>
-            <td>0100 0100 1101 0001</td>
-          </tr>
-          <tr>
-            <td>Exchange Not Parity</td>
-            <td>XNP</td>
-            <td>r2</td>
-            <td>0100 0101 00</td>
-            <td>XNP r1, r2</td>
-            <td>r1 = r2 if [!P]</td>
-            <td>0100 0101 0001 0001</td>
-          </tr>
-          <tr style="height: 25px">
-          </tr>
-          <tr>
-            <td>Bitwise Add</td>
+        <tr>
+            <td>Add</td>
             <td>ADD</td>
-            <td>r3</td>
-            <td>0110 000</td>
+            <td>r3/f3</td>
+            <td>01?0 000t ttss srrr</td>
             <td>ADD r1, r2, r3</td>
-            <td>r1 = r2 + r3</td>
-            <td>0110 0000 1101 0001</td>
-          </tr>
-          <tr>
-            <td>Bitwise Add w/ Carry</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Add with Carry</td>
             <td>ADC</td>
-            <td>r3</td>
-            <td>0110 001</td>
+            <td>r3/f3</td>
+            <td>01?0 001t ttss srrr</td>
             <td>ADC r1, r2, r3</td>
-            <td>r1 = r2 + r3 + CF</td>
-            <td>0110 0010 1101 0001</td>
-          </tr>
-          <tr>
-            <td>Bitwise Subtract</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Sub</td>
             <td>SUB</td>
-            <td>r3</td>
-            <td>0110 010</td>
+            <td>r3/f3</td>
+            <td>01?0 010t ttss srrr</td>
             <td>SUB r1, r2, r3</td>
-            <td>r1 = r2 - r3</td>
-            <td>0110 0100 1101 0001</td>
-          </tr>
-          <tr>
-            <td>Bitwise Sub w/ Borrow</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Sub with Carry</td>
             <td>SBB</td>
-            <td>r3</td>
-            <td>0110 011</td>
-            <td>SBC r1, r2, r3</td>
-            <td>r1 = r2 - r3 - CF</td>
-            <td>0110 0110 1101 0001</td>
+            <td>r3/f3</td>
+            <td>01?0 011t ttss srrr</td>
+            <td>SBB r1, r2, r3</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Multiply</td>
+            <td>MUL²</td>
+            <td>r3/f3</td>
+            <td>01?0 100t ttss srrr</td>
+            <td>MUL r1, r2, r3</td>
+            <td>See note.</td>
+        </tr>
+        <tr>
+            <td>Divide</td>
+            <td>DIV²</td>
+            <td>r3/f3</td>
+            <td>01?0 101t ttss srrr</td>
+            <td>DIV r1, r2, r3</td>
+            <td>See note.</td>
+        </tr>
+        <tr style="height: 20px">
           </tr>
-          <tr>
-            <td>Bitwise And</td>
-            <td>AND</td>
-            <td>r3</td>
-            <td>0110 100</td>
-            <td>AND r1, r2, r3</td>
-            <td>r1 = r2 & r3</td>
-            <td>0110 1000 1101 0001</td>
-          </tr>
-          <tr>
-            <td>Bitwise Or</td>
-            <td>ORR</td>
-            <td>r3</td>
-            <td>0110 101</td>
-            <td>OR r1, r2, r3</td>
-            <td>r1 = r2 | r3</td>
-            <td>0110 1010 1101 0001</td>
-          </tr>
-          <tr>
-            <td>Bitwise Xor</td>
-            <td>XOR</td>
-            <td>r3</td>
-            <td>0110 110</td>
-            <td>XOR r1, r2, r3</td>
-            <td>r1 = r2 ^ r3</td>
-            <td>0110 1100 1101 0001</td>
-          </tr>
-          <tr>
-            <td>Bitwise Multiply¹</td>
-            <td>MUL</td>
-            <td>r3</td>
-            <td>0110 111</td>
-            <td>MUL r2, r3, r4</td>
-            <td>[r(2-1),r1] = r3 * r4</td>
-            <td>0110 1111 0001 1010</td>
-          </tr>
-          <tr>
-            <td>Bitwise Divide¹</td>
-            <td>DIV</td>
-            <td>r3</td>
-            <td>0111 000</td>
-            <td>DIV r2, r3, r4</td>
-            <td>r2 = r3/r4, r(2-1) = r3%r4</td>
-            <td>0111 0001 0001 1010</td>
-          </tr>
-          <tr style="height: 25px">
-          </tr>
-          <tr>
+        <tr>
+            <td>Negate</td>
+            <td>NEG</td>
+            <td>r2/f2</td>
+            <td>00?0 0011 01tt tsss</td>
+            <td>NEG r1, r2</td>
+            <td></td>
+        </tr>
+        <tr>
             <td>Bitwise Not</td>
             <td>NOT</td>
             <td>r2</td>
-            <td>0100 0101 01</td>
+            <td>0000 0011 10tt tsss</td>
             <td>NOT r1, r2</td>
-            <td>r1 = ~r2</td>
-            <td>0100 0101 0101 0001</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Bitwise And</td>
+            <td>AND</td>
+            <td>r3</td>
+            <td>0100 110t ttss srrr</td>
+            <td>AND r1, r2, r3</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Bitwise Or</td>
+            <td>ORR</td>
+            <td>r3</td>
+            <td>0100 111t ttss srrr</td>
+            <td>ORR r1, r2, r3</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Bitwise Xor</td>
+            <td>XOR</td>
+            <td>r3</td>
+            <td>0101 000t ttss srrr</td>
+            <td>XOR r1, r2, r3</td>
+            <td></td>
+        </tr>
+        <tr style="height: 20px">
           </tr>
-          <tr>
-            <td>Bitwise Neg</td>
-            <td>NEG</td>
-            <td>r2</td>
-            <td>0100 0101 10</td>
-            <td>NEG r1, r2</td>
-            <td>r1 = -r2</td>
-            <td>0100 0101 1001 0001</td>
-          </tr>
-          <tr style="height: 25px">
-          </tr>
-          <tr>
-            <td>Bitwise Add Imm</td>
-            <td>ADI</td>
-            <td>r2i</td>
-            <td>1100 0000 00</td>
-            <td>ADI r1, r2, 15</td>
-            <td>r1 = r2 + 15</td>
-            <td>1100 0000 0001 0001 | 0000 0000 0000 1111</td>
-          </tr>
-          <tr>
-            <td>Bitwise Subtract Imm</td>
-            <td>SBI</td>
-            <td>r2i</td>
-            <td>1100 0000 01</td>
-            <td>SBI r1, r2, 15</td>
-            <td>r1 = r2 - 15</td>
-            <td>1100 0000 0101 0001 | 0000 0000 0000 1111</td>
-          </tr>
-          <tr>
-            <td>Bit. Add Imm w/ Carry</td>
-            <td>ACI</td>
-            <td>r2i</td>
-            <td>1100 0000 10</td>
-            <td>ACI r1, r2, 15</td>
-            <td>r1 = r2 + 15 + CF</td>
-            <td>1100 0000 1001 0001 | 0000 0000 0000 1111</td>
-          </tr>
-          <tr>
-            <td>Bit. Sub Imm w/ Borrow</td>
-            <td>SBI</td>
-            <td>r2i</td>
-            <td>1100 0000 11</td>
-            <td>SBI r1, r2, 15</td>
-            <td>r1 = r2 - 15 - CF</td>
-            <td>1100 0000 1101 0001 | 0000 0000 0000 1111</td>
-          </tr>
-          <tr>
-            <td>Bitwise And Imm</td>
-            <td>ANI</td>
-            <td>r2i</td>
-            <td>1100 0001 00</td>
-            <td>ANI r1, r2, 15</td>
-            <td>r1 = r2 & 15</td>
-            <td>1100 0001 0001 0001 | 0000 0000 0000 1111</td>
-          </tr>
-          <tr>
-            <td>Bitwise Or Imm</td>
-            <td>ORI</td>
-            <td>r2i</td>
-            <td>1100 0001 01</td>
-            <td>ORI r1, r2, 15</td>
-            <td>r1 = r2 | 15</td>
-            <td>1100 0001 0101 0001 | 0000 0000 0000 1111</td>
-          </tr>
-`         <tr>
-            <td>Bitwise Xor Imm</td>
-            <td>XRI</td>
-            <td>r2i</td>
-            <td>1100 0001 10</td>
-            <td>XRI r1, r2, 15</td>
-            <td>r1 = r2 ^ 15</td>
-            <td>1100 0001 1001 0001 | 0000 0000 0000 1111</td>
-          </tr>
-          <tr style="height: 25px">
-          </tr>
-          <tr>
+        <tr>
             <td>Arith. Shift Left</td>
             <td>ASL</td>
             <td>r3</td>
-            <td>0111 001</td>
+            <td>0101 001t ttss srrr</td>
             <td>ASL r1, r2, r3</td>
-            <td>r1 = r2 <img src="chevron-double-left.svg"/> r3</td>
-            <td>0111 0010 1101 0001</td>
-          </tr>
-          <tr>
+            <td></td>
+        </tr>
+        <tr>
             <td>Arith. Shift Right</td>
             <td>ASR</td>
             <td>r3</td>
-            <td>0111 010</td>
+            <td>0101 010t ttss srrr</td>
             <td>ASR r1, r2, r3</td>
-            <td>r1 = r2 <img src="chevron-double-right.svg"/> r3</td>
-            <td>0111 0100 1101 0001</td>
-          </tr>
-          <tr>
+            <td></td>
+        </tr>
+        <tr>
             <td>Logic Shift Left</td>
             <td>LSL</td>
-            <td colspan=2>/* Use ASL r#, r#, r# */</td>
+            <td>r3</td>
+            <td>/* Use ASL */</td>
             <td>LSL r1, r2, r3</td>
-            <td>r1 = r2 <img src="chevron-double-left.svg"/> r3</td>
-          </tr>
-          <tr>
+            <td>Converts to 'ASL r1, r2, r3'</td>
+        </tr>
+        <tr>
             <td>Logic Shift Right</td>
             <td>LSR</td>
             <td>r3</td>
-            <td>0111 011</td>
+            <td>0101 011t ttss srrr</td>
             <td>LSR r1, r2, r3</td>
-            <td>r1 = r2 >>> r3 (java)</td>
-            <td>0111 0110 1101 0001</td>
-          </tr>
-          <tr>
+            <td></td>
+        </tr>
+        <tr>
             <td>Rotate Left</td>
             <td>RTL</td>
             <td>r3</td>
-            <td>0111 100</td>
+            <td>0101 100t ttss srrr</td>
             <td>RTL r1, r2, r3</td>
-            <td>r1 = r2 rotated by r3</td>
-            <td>0111 1000 1101 0001</td>
-          </tr>
-          <tr>
+            <td></td>
+        </tr>
+        <tr>
             <td>Rotate Right</td>
             <td>RTR</td>
             <td>r3</td>
-            <td>0111 101</td>
+            <td>0101 101t ttss srrr</td>
             <td>RTR r1, r2, r3</td>
-            <td>r1 = r2 rotated by r3</td>
-            <td>0111 1010 1101 0001</td>
-          </tr>
-          <tr>
-            <td>Rotate Left w/ Carry</td>
-            <td>RLC</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Rotate with Carry Left</td>
+            <td>RCL</td>
             <td>r3</td>
-            <td>0111 110</td>
-            <td>RLC r1, r2, r3</td>
-            <td>r1 = [CF,r2] rotated by r3</td>
-            <td>0111 1100 1101 0001</td>
-          </tr>
-          <tr>
-            <td>Rotate Right w/ Carry</td>
-            <td>RRC</td>
+            <td>0101 110t ttss srrr</td>
+            <td>RCL r1, r2, r3</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Rotate with Carry Right</td>
+            <td>RCR</td>
             <td>r3</td>
-            <td>0111 111</td>
-            <td>RRC r1, r2, r3</td>
-            <td>r1 = [r2,CF] rotated by r3</td>
-            <td>0111 1110 1101 0001</td>
+            <td>0101 111t ttss srrr</td>
+            <td>RCR r1, r2, r3</td>
+            <td></td>
+        </tr>
+        <tr style="height: 20px">
           </tr>
-          <tr style="height: 25px">
+        <tr>
+            <td>Floor</td>
+            <td>FLR</td>
+            <td>f2</td>
+            <td>0010 0000 00tt tsss</td>
+            <td>FLR f1, f2</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Ceiling</td>
+            <td>CEL</td>
+            <td>f2</td>
+            <td>0010 0000 01tt tsss</td>
+            <td>CEL f1, f2</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Round</td>
+            <td>RND</td>
+            <td>f2</td>
+            <td>0010 0000 10tt tsss</td>
+            <td>RND f1, f2</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Absolute Value</td>
+            <td>ABS³</td>
+            <td>r2/f2</td>
+            <td>00?0 0011 11tt tsss</td>
+            <td>ABS f1, f2</td>
+            <td>See Note.</td>
+        </tr>
+        <tr style="height: 20px">
+          </tr>
+        <tr>
+            <td>Bit Scan Forward</td>
+            <td>BSF</td>
+            <td>r2</td>
+            <td>0000 0100 00tt tsss</td>
+            <td>BSF r1, r2</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Bit Scan Reverse</td>
+            <td>BSR</td>
+            <td>r2</td>
+            <td>0000 0100 01tt tsss</td>
+            <td>BSR r1, r2</td>
+            <td></td>
+        </tr>
+        <tr style="height: 25px">
           </tr>
           <tr>
+           <th colspan=6>Small Immediate Mathematics</th>
+          </tr>
+          <tr>
+            <th>Name</th>
+            <th>Mnemonic</th>
+            <th>Type</th>
+            <th>Op Code</th>
+            <th>Example</th>
+            <th>Notes</th>
+          </tr>
+        <tr>
+            <td>Increment</td>
+            <td>INC</td>
+            <td>rs</td>
+            <td>1000 00ii iiss srrr</td>
+            <td>INC r1, r2</td>
+            <td>Defaults to adding 1: r1 = r2 + 1</td>
+        </tr>
+        <tr>
+            <td>Decrement</td>
+            <td>DEC</td>
+            <td>rs</td>
+            <td>1000 01ii iiss srrr</td>
+            <td>DEC r1, r2, 4</td>
+            <td>Can specify amount. r1 = r2 - 4</td>
+        </tr>
+        <tr style="height: 20px">
+          </tr>
+        <tr>
+            <td>Shift Arith. Left</td>
+            <td>SAL</td>
+            <td>rs</td>
+            <td>1000 10ii iiss srrr</td>
+            <td>SAL r1, r2</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Shift Arith. Right</td>
+            <td>SAR</td>
+            <td>rs</td>
+            <td>1000 11ii iiss srrr</td>
+            <td>SAR r1, r2</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Shift Logic Left</td>
+            <td>SLL</td>
+            <td>rs</td>
+            <td>/* Use SAL */</td>
+            <td>SLL r1, r2</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Shift Logic Right</td>
+            <td>SLR</td>
+            <td>rs</td>
+            <td>1001 00ii iiss srrr</td>
+            <td>SLR r1, r2, 4</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Rotate Left</td>
+            <td>RTL</td>
+            <td>rs</td>
+            <td>1001 01ii iiss srrr</td>
+            <td>RTL r1, r2</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Rotate Right</td>
+            <td>RTR</td>
+            <td>rs</td>
+            <td>1001 10ii iiss srrr</td>
+            <td>RTR r1, r2, 4</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Rotate with Carry Left</td>
+            <td>RCL</td>
+            <td>rs</td>
+            <td>1001 11ii iiss srrr</td>
+            <td>RCL r1, r2</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Rotate with Carry Right</td>
+            <td>RCR</td>
+            <td>rs</td>
+            <td>1010 00ii iiss srrr</td>
+            <td>RCR r1, r2, 4</td>
+            <td></td>
+        </tr>
+        <tr style="height: 25px">
+          </tr>
+          <tr>
+           <th colspan=6>Large Immediate Mathematics</th>
+          </tr>
+          <tr>
+            <th>Name</th>
+            <th>Mnemonic</th>
+            <th>Type</th>
+            <th>Op Code</th>
+            <th>Example</th>
+            <th>Notes</th>
+          </tr>
+        <tr>
+            <td>Add Immediate</td>
+            <td>ADI</td>
+            <td>rm/fm</td>
+            <td>11?0 0011 1.cc crrr</td>
+            <td>ADI r1, r2, 1024</td>
+            <td>'cccc' here would be '0010' to encode r2</td>
+        </tr>
+        <tr>
+            <td>Subtract Immediate</td>
+            <td>SBI</td>
+            <td>rm/fm</td>
+            <td>11?0 0100 0.cc crrr</td>
+            <td>SBI r1, r2, 1024</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Add Immediate with Carry</td>
+            <td>AIC</td>
+            <td>rm/fm</td>
+            <td>11?0 0100 1.cc crrr</td>
+            <td>AIC r1, r2, 1024</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Subtract Immediate with Borrow</td>
+            <td>SIB</td>
+            <td>rm/fm</td>
+            <td>11?0 0101 0.cc crrr</td>
+            <td>SIB r1, r2, 1024</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>And Immediate</td>
+            <td>ANI</td>
+            <td>rm/fm</td>
+            <td>11?0 0101 1.cc crrr</td>
+            <td>ANI r1, r2, 1024</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Or Immediate</td>
+            <td>ORI</td>
+            <td>rm/fm</td>
+            <td>11?0 0110 0.cc crrr</td>
+            <td>ORI r1, r2, 1024</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Xor Immediate</td>
+            <td>XRI</td>
+            <td>rm/fm</td>
+            <td>11?0 0110 1.cc crrr</td>
+            <td>XRI r1, r2, 1024</td>
+            <td></td>
+        </tr>
+        <tr style="height: 25px">
+          </tr>
+          <tr>
+           <th colspan=6>Decision Making</th>
+          </tr>
+          <tr>
+            <th>Name</th>
+            <th>Mnemonic</th>
+            <th>Type</th>
+            <th>Op Code</th>
+            <th>Example</th>
+            <th>Notes</th>
+          </tr>
+        <tr>
             <td>Compare</td>
             <td>CMP</td>
-            <td>r2</td>
-            <td>0100 0101 11</td>
+            <td>r2/f2</td>
+            <td>00?0 0100 10tt tsss</td>
             <td>CMP r1, r2</td>
-            <td>flags set by r1 - r2</td>
-            <td>0100 0101 1110 0001</td>
-          </tr>
-          <tr>
+            <td></td>
+        </tr>
+        <tr>
             <td>Test</td>
             <td>TST</td>
-            <td>r2</td>
-            <td>0100 0110 00</td>
+            <td>r2/f2</td>
+            <td>00?0 0100 11tt tsss</td>
             <td>TST r1, r2</td>
-            <td>flags set by r1 & r2</td>
-            <td>0100 0110 0010 0001</td>
+            <td></td>
+        </tr>
+        <tr style="height: 20px">
           </tr>
-          <tr style="height: 25px">
+        <tr>
+            <td>Set Sign Flag</td>
+            <td>STS</td>
+            <td>r2</td>
+            <td>0000 0101 00.. ....</td>
+            <td>STS</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Clear Sign Flag</td>
+            <td>CLS</td>
+            <td>r2</td>
+            <td>0000 0101 01.. ....</td>
+            <td>CLS</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Set Parity Flag</td>
+            <td>STP</td>
+            <td>r2</td>
+            <td>0000 0101 10.. ....</td>
+            <td>STP</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Clear Parity Flag</td>
+            <td>CLP</td>
+            <td>r2</td>
+            <td>0000 0101 11.. ....</td>
+            <td>CLP</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Set Overflow Flag</td>
+            <td>STO</td>
+            <td>r2</td>
+            <td>0000 0110 00.. ....</td>
+            <td>STO</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Clear Overflow Flag</td>
+            <td>CLO</td>
+            <td>r2</td>
+            <td>0000 0110 01.. ....</td>
+            <td>CLO</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Set Carry Flag</td>
+            <td>STC</td>
+            <td>r2</td>
+            <td>0000 0110 10.. ....</td>
+            <td>STC</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Clear Carry Flag</td>
+            <td>CLC</td>
+            <td>r2</td>
+            <td>0000 0110 11.. ....</td>
+            <td>CLC</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Set Zero Flag</td>
+            <td>STZ</td>
+            <td>r2</td>
+            <td>0000 0111 00.. ....</td>
+            <td>STZ</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Clear Zero Flag</td>
+            <td>CLZ</td>
+            <td>r2</td>
+            <td>0000 0111 01.. ....</td>
+            <td>CLZ</td>
+            <td></td>
+        </tr>
+        <tr style="height: 20px">
           </tr>
-          <tr>
-            <td>Set Flags explicit</td>
-            <td>FLG</td>
-            <td>r1</td>
-            <td>0010 0000 0000 0</td>
-            <td>FLG r1</td>
-            <td>flags set with r1<img src="chevron-left.svg"/>5..0<img src="chevron-right.svg"/></td>
-            <td>0010 0000 0000 0001</td>
+        <tr>
+            <td>Load flags into low byte</td>
+            <td>LFL</td>
+            <td>r2</td>
+            <td>0000 0111 10.. .rrr</td>
+            <td>LFL r1</td>
+            <td>r1&lt;8..0&gt; = 000SPOCZ</td>
+        </tr>
+        <tr>
+            <td>Store low byte into flags</td>
+            <td>SFL</td>
+            <td>r2</td>
+            <td>0000 0111 11.. .rrr</td>
+            <td>SFL r1</td>
+            <td>000SPOCZ = r1&lt;8..0&gt;</td>
+        </tr>
+        <tr style="height: 20px">
           </tr>
-          <tr>
-            <td>Set Flags w/ reg val</td>
-            <td>FLR</td>
-            <td>r1</td>
-            <td>0010 0000 0000 1</td>
-            <td>FLR r1</td>
-            <td>flags set by r1</td>
-            <td>0010 0000 0000 1001</td>
+        <tr>
+            <td>Move (Unconditional)</td>
+            <td>MOV</td>
+            <td>r2/f2</td>
+            <td>00?0 1000 00ss srrr</td>
+            <td>MOV r1, r2</td>
+            <td></td>
+        </tr>
+        <tr style="height: 20px">
           </tr>
-          <tr style="height: 25px">
+        <tr>
+            <td>Move if Equal</td>
+            <td>MEQ</td>
+            <td>r2/f2</td>
+            <td>/*    Use MYZ    */</td>
+            <td>MEQ r1, r2</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Move if Not Equal</td>
+            <td>MNE</td>
+            <td>r2/f2</td>
+            <td>/*    Use MNZ    */</td>
+            <td>MNE r1, r2</td>
+            <td></td>
+        </tr>
+        <tr style="height: 20px">
           </tr>
-          <tr>
-            <td>Jump Unconditional</td>
+        <tr>
+            <td>Move if Less Than</td>
+            <td>MLT</td>
+            <td>r2/f2</td>
+            <td>00?0 1000 01ss srrr</td>
+            <td>MLT r1, r2</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Move if Greater Than</td>
+            <td>MGT</td>
+            <td>r2/f2</td>
+            <td>00?0 1000 10ss srrr</td>
+            <td>MGT r1, r2</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Move if Less or Equal</td>
+            <td>MLE</td>
+            <td>r2/f2</td>
+            <td>00?0 1000 11ss srrr</td>
+            <td>MLE r1, r2</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Move if Greater or Equal</td>
+            <td>MGE</td>
+            <td>r2/f2</td>
+            <td>00?0 1001 00ss srrr</td>
+            <td>MGE r1, r2</td>
+            <td></td>
+        </tr>
+        <tr style="height: 20px">
+          </tr>
+        <tr>
+            <td>Move if Above Than</td>
+            <td>MAT</td>
+            <td>r2/f2</td>
+            <td>00?0 1001 01ss srrr</td>
+            <td>MAT r1, r2</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Move if Below Than</td>
+            <td>MBT</td>
+            <td>r2/f2</td>
+            <td>/*    Use MYC    */</td>
+            <td>MBT r1, r2</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Move if Above or Equal</td>
+            <td>MAE</td>
+            <td>r2/f2</td>
+            <td>/*    Use MNC    */</td>
+            <td>MAE r1, r2</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Move if Below or Equal</td>
+            <td>MBE</td>
+            <td>r2/f2</td>
+            <td>00?0 1001 10ss srrr</td>
+            <td>MBE r1, r2</td>
+            <td></td>
+        </tr>
+        <tr style="height: 20px">
+          </tr>
+        <tr>
+            <td>Move if (Yes) Sign Flag</td>
+            <td>MYS</td>
+            <td>r2/f2</td>
+            <td>00?0 1001 11ss srrr</td>
+            <td>MYS r1, r2</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Move if not (No) Sign Flag</td>
+            <td>MNS</td>
+            <td>r2/f2</td>
+            <td>00?0 1010 00ss srrr</td>
+            <td>MNS r1, r2</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Move if (Yes) Parity Flag</td>
+            <td>MYP</td>
+            <td>r2/f2</td>
+            <td>00?0 1010 01ss srrr</td>
+            <td>MYP r1, r2</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Move if not (No) Parity Flag</td>
+            <td>MNP</td>
+            <td>r2/f2</td>
+            <td>00?0 1010 10ss srrr</td>
+            <td>MNP r1, r2</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Move if (Yes) Overflow Flag</td>
+            <td>MYO</td>
+            <td>r2/f2</td>
+            <td>00?0 1010 11ss srrr</td>
+            <td>MYO r1, r2</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Move if not (No) Overflow Flag</td>
+            <td>MNO</td>
+            <td>r2/f2</td>
+            <td>00?0 1011 00ss srrr</td>
+            <td>MNO r1, r2</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Move if (Yes) Carry Flag</td>
+            <td>MYC</td>
+            <td>r2/f2</td>
+            <td>00?0 1011 01ss srrr</td>
+            <td>MYC r1, r2</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Move if not (No) Carry Flag</td>
+            <td>MNC</td>
+            <td>r2/f2</td>
+            <td>00?0 1011 10ss srrr</td>
+            <td>MNC r1, r2</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Move if (Yes) Zero Flag</td>
+            <td>MYZ</td>
+            <td>r2/f2</td>
+            <td>00?0 1011 11ss srrr</td>
+            <td>MYZ r1, r2</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Move if not (No) Zero Flag</td>
+            <td>MNZ</td>
+            <td>r2/f2</td>
+            <td>00?0 1100 00ss srrr</td>
+            <td>MNZ r1, r2</td>
+            <td></td>
+        </tr>
+        <tr style="height: 20px">
+          </tr>
+        <tr>
+            <td>Jump (Unconditional)</td>
             <td>JMP</td>
-            <td>j</td>
-            <td>1010 0000 0</td>
-            <td>JMP label</td>
-            <td>jump to label</td>
-            <td>1010 0000 0000 0000 | ???? ? label ? ????</td>
+            <td>rm</td>
+            <td>11?0 01110.cc crrr</td>
+            <td>JMP Label</td>
+            <td></td>
+        </tr>
+        <tr style="height: 20px">
           </tr>
-          <tr style="height: 25px">
+        <tr>
+            <td>Jump if Equal</td>
+            <td>JEQ⁴</td>
+            <td>rm/fm</td>
+            <td>/*    Use JYZ    */</td>
+            <td>JEQ r1, r2, Label</td>
+            <td>See note.</td>
+        </tr>
+        <tr>
+            <td>Jump if Not Equal</td>
+            <td>JNE⁴</td>
+            <td>rm/fm</td>
+            <td>/*    Use JNZ    */</td>
+            <td>JNE r1, r2, Label</td>
+            <td>See note.</td>
+        </tr>
+        <tr style="height: 20px">
           </tr>
-          <tr>
-            <td>Jump Equal</td>
-            <td>JEQ</td>
-            <td>j</td>
-            <td>1010 0000 01</td>
-            <td>JEQ r1, r2, label</td>
-            <td>jump if [Z]</td>
-            <td>1010 0000 0101 0001 | ???? ? label ? ????</td>
+        <tr>
+            <td>Jump if Less Than</td>
+            <td>JLT⁴ </td>
+            <td>rm/fm</td>
+            <td>11?0 0111 1.cc crrr</td>
+            <td>JLT r1, r2, Label</td>
+            <td>See note.</td>
+        </tr>
+        <tr>
+            <td>Jump if Greater Than</td>
+            <td>JGT⁴</td>
+            <td>rm/fm</td>
+            <td>11?0 1000 0.cc crrr</td>
+            <td>JGT r1, r2, Label</td>
+            <td>See note.</td>
+        </tr>
+        <tr>
+            <td>Jump if Less or Equal</td>
+            <td>JLE⁴</td>
+            <td>rm/fm</td>
+            <td>11?0 1000 1.cc crrr</td>
+            <td>JLE r1, r2, Label</td>
+            <td>See note.</td>
+        </tr>
+        <tr>
+            <td>Jump if Greater or Equal</td>
+            <td>JGE⁴</td>
+            <td>rm/fm</td>
+            <td>11?0 1001 0.cc crrr</td>
+            <td>JGE r1, r2, Label</td>
+            <td>See note.</td>
+        </tr>
+        <tr style="height: 20px">
           </tr>
-          <tr>
-            <td>Jump Not Equal</td>
-            <td>JNE</td>
-            <td>j</td>
-            <td>1010 0000 10</td>
-            <td>JNE r1, r2, label</td>
-            <td>jump if [!Z]</td>
-            <td>1010 0000 1001 0001 | ???? ? label ? ????</td>
+        <tr>
+            <td>Jump if Above Than</td>
+            <td>JAT⁴</td>
+            <td>rm/fm</td>
+            <td>11?0 1001 1.cc crrr</td>
+            <td>JAT r1, r2, Label</td>
+            <td>See note.</td>
+        </tr>
+        <tr>
+            <td>Jump if Below Than</td>
+            <td>JBT⁴ </td>
+            <td>rm/fm</td>
+            <td>/*    Use JYC    */</td>
+            <td>JBT r1, r2, Label</td>
+            <td>See note.</td>
+        </tr>
+        <tr>
+            <td>Jump if Above or Equal</td>
+            <td>JAE⁴</td>
+            <td>rm/fm</td>
+            <td>/*    Use JNC    */</td>
+            <td>JAE r1, r2, Label</td>
+            <td>See note.</td>
+        </tr>
+        <tr>
+            <td>Jump if Below of Equal</td>
+            <td>JBE⁴</td>
+            <td>rm/fm</td>
+            <td>11?0 1010 0.cc crrr</td>
+            <td>JBE r1, r2, Label</td>
+            <td>See note.</td>
+        </tr>
+        <tr style="height: 20px">
           </tr>
-          <tr style="height: 25px">
+        <tr>
+            <td>Jump if (Yes) Sign Flag</td>
+            <td>JYS⁴</td>
+            <td>rm/fm</td>
+            <td>11?0 1010 1.cc crrr</td>
+            <td>JYS r1, r2, Label</td>
+            <td>See note.</td>
+        </tr>
+        <tr>
+            <td>Jump if not (No) Sign Flag</td>
+            <td>JNS⁴</td>
+            <td>rm/fm</td>
+            <td>11?0 1011 0.cc crrr</td>
+            <td>JNS r1, r2, Label </td>
+            <td>See note.</td>
+        </tr>
+        <tr>
+            <td>Jump if (Yes) Parity Flag</td>
+            <td>JYP⁴</td>
+            <td>rm/fm</td>
+            <td>11?0 1011 1.cc crrr</td>
+            <td>JYP r1, r2, Label</td>
+            <td>See note.</td>
+        </tr>
+        <tr>
+            <td>Jump if not (No) Parity Flag</td>
+            <td>JNP⁴</td>
+            <td>rm/fm</td>
+            <td>11?0 1100 0.cc crrr</td>
+            <td>JNP r1, r2, Label</td>
+            <td>See note.</td>
+        </tr>
+        <tr>
+            <td>Jump if (Yes) Overflow Flag</td>
+            <td>JYO⁴</td>
+            <td>rm/fm</td>
+            <td>11?0 1100 1.cc crrr</td>
+            <td>JYO r1, r2, Label</td>
+            <td>See note.</td>
+        </tr>
+        <tr>
+            <td>Jump if not (No) Overflow Flag</td>
+            <td>JNO⁴</td>
+            <td>rm/fm</td>
+            <td>11?0 1101 0.cc crrr</td>
+            <td>JNO r1, r2, Label</td>
+            <td>See note.</td>
+        </tr>
+        <tr>
+            <td>Jump if (Yes) Carry Flag</td>
+            <td>JYC⁴</td>
+            <td>rm/fm</td>
+            <td>11?0 1101 1.cc crrr</td>
+            <td>JYC r1, r2, Label</td>
+            <td>See note.</td>
+        </tr>
+        <tr>
+            <td>Jump if not (No) Carry Flag</td>
+            <td>JNC⁴</td>
+            <td>rm/fm</td>
+            <td>11?0 1110 0.cc crrr</td>
+            <td>JNC r1, r2, Label</td>
+            <td>See note.</td>
+        </tr>
+        <tr>
+            <td>Jump if (Yes) Zero Flag</td>
+            <td>JYZ⁴</td>
+            <td>rm/fm</td>
+            <td>11?0 1110 1.cc crrr</td>
+            <td>JYZ r1, r2, Label</td>
+            <td>See note.</td>
+        </tr>
+        <tr>
+            <td>Jump if not (No) Zero Flag</td>
+            <td>JNZ⁴</td>
+            <td>rm/fm</td>
+            <td>11?0 1111 0.cc crrr</td>
+            <td>JNZ r1, r2, Label</td>
+            <td>See note.</td>
+        </tr>
+        <tr style="height: 20px">
           </tr>
-          <tr>
-            <td>Jump Less Than</td>
-            <td>JLT</td>
-            <td>j</td>
-            <td>1010 0000 11</td>
-            <td>JLT r1, r2, label</td>
-            <td>jump if [S!=O]</td>
-            <td>1010 0000 1101 0001 | ???? ? label ? ????</td>
-          </tr>
-          <tr>
-            <td>Jump Greater Than</td>
-            <td>JGT</td>
-            <td>j</td>
-            <td>1010 0001 00</td>
-            <td>JGT r1, r2, label</td>
-            <td>jump if [!Z & !S]</td>
-            <td>1010 0001 0001 0001 | ???? ? label ? ????</td>
-          </tr>
-          <tr>
-            <td>Jump Less Equal</td>
-            <td>JLE</td>
-            <td>j</td>
-            <td>1010 0001 01</td>
-            <td>JLE r1, r2, label</td>
-            <td>jump if [Z | (S != O)]</td>
-            <td>1010 0001 0101 0001 | ???? ? label ? ????</td>
-          </tr>
-          <tr>
-            <td>Jump Greater Equal</td>
-            <td>JGE</td>
-            <td>j</td>
-            <td>1010 0001 10</td>
-            <td>JGE r1, r2, label</td>
-            <td>jump if [S==O]</td>
-            <td>1010 0001 1001 0001 | ???? ? label ? ????</td>
-          </tr>
-          <tr style="height: 25px">
-          </tr>
-          <tr>
-            <td>Jump Above Than</td>
-            <td>JAT</td>
-            <td>j</td>
-            <td>1010 0001 11</td>
-            <td>JAT r1, r2, label</td>
-            <td>jump if [!C & !Z]</td>
-            <td>1010 0001 1101 0001 | ???? ? label ? ????</td>
-          </tr>
-          <tr>
-            <td>Jump Below Than</td>
-            <td>JBT</td>
-            <td>j</td>
-            <td>1010 0010 00</td>
-            <td>JBT r1, r2, label</td>
-            <td>jump if [C]</td>
-            <td>1010 0010 0001 0001 | ???? ? label ? ????</td>
-          </tr>
-          <tr>
-            <td>Jump Above Equal</td>
-            <td>JAE</td>
-            <td>j</td>
-            <td>1010 0010 01</td>
-            <td>JAE r1, r2, label</td>
-            <td>jump if [!C]</td>
-            <td>1010 0010 0101 0001 | ???? ? label ? ????</td>
-          </tr>
-          <tr>
-            <td>Jump Below Equal</td>
-            <td>JBE</td>
-            <td>j</td>
-            <td>1010 0010 10</td>
-            <td>JBE r1, r2, label</td>
-            <td>jump if [C | Z]</td>
-            <td>1010 0010 1001 0001 | ???? ? label ? ????</td>
-          </tr>
-          <tr style="height: 25px">
-          </tr>
-          <tr>
-            <td>Jump Zero</td>
-            <td>JYZ</td>
-            <td>j</td>
-            <td>1010 0010 11</td>
-            <td>JYZ r1, r2, label</td>
-            <td>jump if [Z]</td>
-            <td>1010 0010 1101 0001 | ???? ? label ? ????</td>
-          </tr>
-          <tr>
-            <td>Jump Not Zero</td>
-            <td>JNZ</td>
-            <td>j</td>
-            <td>1010 0011 00</td>
-            <td>JNZ r1, r2, label</td>
-            <td>jump if [!Z]</td>
-            <td>1010 0011 0001 0001 | ???? ? label ? ????</td>
-          </tr>
-          <tr>
-            <td>Jump Carry</td>
-            <td>JYC</td>
-            <td>j</td>
-            <td>1010 0011 01</td>
-            <td>JYC r1, r2, label</td>
-            <td>jump if [C]</td>
-            <td>1010 0011 0101 0001 | ???? ? label ? ????</td>
-          </tr>
-          <tr>
-            <td>Jump Not Carry</td>
-            <td>JNC</td>
-            <td>j</td>
-            <td>1010 0011 10</td>
-            <td>JNC r1, r2, label</td>
-            <td>jump if [!C]</td>
-            <td>1010 0011 1001 0001 | ???? ? label ? ????</td>
-          </tr>
-          <tr>
-            <td>Jump Overflow</td>
-            <td>JYO</td>
-            <td>j</td>
-            <td>1010 0011 11</td>
-            <td>JYO r1, r2, label</td>
-            <td>jump if [O]</td>
-            <td>1010 0011 1101 0001 | ???? ? label ? ????</td>
-          </tr>
-          <tr>
-            <td>Jump Not Overflow</td>
-            <td>JNO</td>
-            <td>j</td>
-            <td>1010 0100 00</td>
-            <td>JNO r1, r2, label</td>
-            <td>jump if [!O]</td>
-            <td>1010 0100 0001 0001 | ???? ? label ? ????</td>
-          </tr>
-          <tr>
-            <td>Jump Sign</td>
-            <td>JYS</td>
-            <td>j</td>
-            <td>1010 0100 01</td>
-            <td>JYS r1, r2, label</td>
-            <td>jump if [S]</td>
-            <td>1010 0100 0101 0001 | ???? ? label ? ????</td>
-          </tr>
-          <tr>
-            <td>Jump Not Sign</td>
-            <td>JNS</td>
-            <td>j</td>
-            <td>1010 0100 10</td>
-            <td>JNS r1, r2, label</td>
-            <td>jump if [!S]</td>
-            <td>1010 0100 1001 0001 | ???? ? label ? ????</td>
-          </tr>
-          <tr>
-            <td>Jump Parity</td>
-            <td>JYP</td>
-            <td>j</td>
-            <td>1010 0100 11</td>
-            <td>JYP r1, r2, label</td>
-            <td>jump if [P]</td>
-            <td>1010 0100 1101 0001 | ???? ? label ? ????</td>
-          </tr>
-          <tr>
-            <td>Jump Not Parity</td>
-            <td>JNP</td>
-            <td>j</td>
-            <td>1010 0101 00</td>
-            <td>JNP r1, r2, label</td>
-            <td>jump if [!P]</td>
-            <td>1010 0101 0001 0001 | ???? ? label ? ????</td>
-          </tr>
-          <tr style="height: 25px">
-          </tr>
-          <tr>
-            <td>Loop Not Zero & Dec</td>
-            <td>LOP</td>
-            <td>j</td>
-            <td>1010 0101 01</td>
-            <td>LOP r1, r2, label</td>
-            <td>jump if [!Z]; r1 = r1 - 1</td>
-            <td>1010 0101 0101 0001 | ???? ? label ? ????</td>
-          </tr> 
-          <tr style="height: 25px">
-          </tr>
-          <tr>
-            <td>Push Word to stack</td>
-            <td>PSW</td>
-            <td>r1</td>
-            <td>0010 0000 0001 0</td>
-            <td>PSW r1</td>
-            <td>push r1 to stack</td>
-            <td>0010 0000 0001 0001</td>
-          </tr>
-          <tr>
-            <td>Push Byte (low)</td>
-            <td>PSL</td>
-            <td>r1</td>
-            <td>0010 0000 0001 1</td>
-            <td>PSL r1</td>
-            <td>push r1<img src="chevron-left.svg"/>8..0<img src="chevron-right.svg"/> to stack</td>
-            <td>0010 0000 0001 1001</td>
-          </tr>
-          <tr>
-            <td>Push Byte (high)</td>
-            <td>PSH</td>
-            <td>r1</td>
-            <td>0010 0000 0010 0</td>
-            <td>PSH r1</td>
-            <td>push r1<img src="chevron-left.svg"/>16..9<img src="chevron-right.svg"/> to stack</td>
-            <td>0010 0000 0010 0001</td>
-          </tr>
-          <tr>
-            <td>Pop Word from stack</td>
-            <td>PPW</td>
-            <td>r1</td>
-            <td>0010 0000 0010 1</td>
-            <td>PPW r1</td>
-            <td>pop from stack to r1</td>
-            <td>0010 0000 0010 1001</td>
-          </tr>
-          <tr>
-            <td>Pop Byte (low)</td>
-            <td>PPL</td>
-            <td>r1</td>
-            <td>0010 0000 0011 0</td>
-            <td>PPL r1</td>
-            <td>pop from stack to r1<img src="chevron-left.svg"/>8..0<img src="chevron-right.svg"/></td>
-            <td>0010 0000 0011 0001</td>
-          </tr>
-          <tr>
-            <td>Pop Byte (high)</td>
-            <td>PPH</td>
-            <td>r1</td>
-            <td>0010 0000 0011 1</td>
-            <td>PPH r1</td>
-            <td>pop from stack to r1<img src="chevron-left.svg"/>16..9<img src="chevron-right.svg"/></td>
-            <td>0010 0000 0011 1001</td>
-          </tr>
-          <tr style="height: 25px">
-          </tr>
+        <tr>
+            <td>Loop</td>
+            <td>LOP⁵</td>
+            <td>rm</td>
+            <td>1100 1111 1.cc crrr</td>
+            <td>LOP r1, Label</td>
+            <td>See note.</td>
+        </tr>
+        <tr>
+            <th colspan=6>Notes</th>
+        </tr>
+        <tr>
+            <td colspan=6>¹ Note: CFR needs to econvert integer into floating point, but floating point cannot hold all values integer can. May throw errors.</td>
+        </tr>
+        <tr>
+            <td colspan=6>² Note: Muliplication and Division are complicated.<br /><br />
+
+        - <b>Muliplication: MUL r2, r3, r4</b><br />
+            Computes the value of r3 * r4. Stores the lower 16 bits in r2, and the upper 16 bits in the previous register, so r1.<br />
+            Using r1 as the destination discards those high bits, since r0 cannot be written to.
+            R0 cannot be picked as a destination<br /><br />
+
+            Signed and unsigned integer multiplication are different: set the sign bit to perform signed multiplication, clear it to perform unsigned.<br /><br />
+
+                Signed:     0xFFFF * 0xFFFF   =>   -1 * -1         =>            1   =>   0x00000001<br />
+                Unsigned:   0xFFFF * 0xFFFF   =>   65535 * 65535   =>   4294836225   =>   0xFFFE0001<br><br /><br />
+
+        - <b>Division: DIV r2, r3, r4</b><br />
+            Computes the value of r3 / r4. Stores the result in r2, and the remainder in the previous register, so r1.<br />
+            Using r1 as the destination discards the remainder, since r0 cannot be written to.
+            R0 cannot be picked as a destination<br /><br />
+
+            Signed and unsigned integer division are different: set the sign bit to perform signed division, clear it to perform unsigned.<br /><br />
+
+                Signed:<br />
+                    Non-integer results are truncated towards 0.<br />
+                    The remainder always has the same sign as the dividend (left-hand side).<br />
+                    The absolute value of the remainder is always smaller than the absolute value of the divisor (right-hand side).<br /><br />
+
+                    0x0005 / 0x0003   =>   +5 / +3   =>   +1.67 r +2   =>   +1 r +2<br />
+                    0xFFFB / 0x0003   =>   -5 / +3   =>   -1.67 r -2   =>   -1 r -2<br />
+                    0x0005 / 0xFFFD   =>   +5 / -3   =>   -1.67 r +2   =>   -1 r +2<br />
+                    0xFFFB / 0xFFFD   =>   -5 / -3   =>   +1.67 r -2   =>   +1 r -2<br /><br />
+
+                Unsigned:<br />
+                    Just signed division but only with positive operands<br /><br />
+
+                    0x0005 / 0x0003   =>   +    5 / +    3   =>   +    1.67 r +    2   =>   +    1 r +2<br />
+                    0xFFFB / 0x0003   =>   +65531 / +    3   =>   +21843.67 r +    2   =>   +21843 r +2<br />
+                    0x0005 / 0xFFFD   =>   +    5 / +65533   =>   +    0.00 r +    5   =>   +    0 r +5<br />
+                    0xFFFB / 0xFFFD   =>   +65531 / +65533   =>   +    0.00 r +65531   =>   +    0 r +65531</td>
+        </tr>
+         <tr>
+            <td colspan=6>³ Note: ABS - there are more negative numbers than there are positive numbers (because of zero).<br /> So
+                ABS(0x8000) throws an error. NEG(0x8000) = 0x8000, so no problems there. There is no positive
+                counterpart to 0x8000 in signed notation.</td>
+        </tr>
+        <tr>
+            <td colspan=6>⁴ Note: All jumps use the two given registers to determine whether they should take the jump or not.<br /> The second register
+                is subtracted from the first (as in a CMP instruction) and the resulting flags are considered.<br /><br />
+
+        - WARNING: The jump instruction does not update the flags register. It uses temporary flags to determine whether to jump.<br /><br />
+
+        - If the two given registers are BOTH r0 or BOTH f0, then there is no point checking. Instead, to improve functionality,<br />
+            the jump will consider the actual flags register (but not change it!) when determining whether to take the jump.</td>
+        </tr>
+         <tr>
+            <td colspan=6>⁵ Note: LOP r1, Label<br /><br />
+
+        - Pseudocode: r1 = r1 - 1; if (r1 != 0) { jump to label }<br /><br />
+
+        - WARNING: The LOP instruction does not update the flags register. It uses temporary flags to determine whether to jump.</td>
+        </tr>
           
         </table>
     </div>
 </div>
-
-
-
-
-@code {
-
-}
