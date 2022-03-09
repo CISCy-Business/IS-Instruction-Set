@@ -8,7 +8,42 @@
 [![Deployment][deployment-shield]][deployment-url]
 [![Language][language-shield]][language-url]
 
-# IS Instruction Set
+<h1 align="center">IS Instruction Set</h1>
+<p align="center">Assembler, Disassembler, and Executor for the IS Instruction Set</p>
+<p align="center"><a href="https://instruction-set.azurewebsites.net">Live Demo »</a></p>
+
+## Project Information
+
+This project implements an assembler, a disassembler, and a simulated execution for the IS Instruction Set. Documentation for the IS Instruction Set can be found on the project [demo website](https://instruction-set.azurewebsites.net/help).
+
+## Getting Started
+
+1. Clone the repository
+``` cmd
+git clone https://github.com/CISCy-Business/IS-Instruction-Set
+```
+2. Build the solution
+``` cmd
+dotnet build
+```
+3. Run the frontend project
+``` cmd
+dotnet run --project InstructionSetProject.Frontend
+```
+
+## Contributing
+
+For those outside of the organization:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/NewFeature`)
+3. Commit your changes (`git commit -m 'Add new feature'`)
+4. Push to the branch (`git push origin feature/NewFeature`)
+5. Open a pull request on this repository
+
+## License
+
+Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 [contributors-shield]: https://img.shields.io/github/contributors/CISCy-Business/IS-Instruction-Set.svg?style=flat
 [contributors-url]: https://github.com/CISCy-Business/IS-Instruction-Set/graphs/contributors
