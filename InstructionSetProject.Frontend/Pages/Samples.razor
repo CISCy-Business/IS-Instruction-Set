@@ -44,34 +44,61 @@
     .sample_btns2 {
         transform: translateX(-33px);
     }
+
+    .dark-mode-sample-textarea {
+        background-color: black;
+        color: #adadad;
+    }
+
+    .dark-mode-sample-btn {
+        background-color: #002833;
+        color: #adadad;
+        border: 2px solid #003033;
+    }
+
+    .dark-mode-sample-btn:hover {
+        background-color: #004a52;
+        color: #adadad;
+        border: 2px solid #003033;
+    } 
+
+    .dark-mode-sample-label {
+        color: #DEB992;
+        font-family: Courier New, sans-serif;
+    }
+
+    .dark-mode-sample-p {
+        color: #1BA098;
+        font-family: Courier New, sans-serif;
+    }
 </style>
 
 <div class="code_input" style="width:100%">
     <br />
-    <h1>Sample Code</h1>
+    <h1 class="sampleLabel">Sample Code</h1>
 
     <hr />
     <br />
 
-    <h2>Addition and Subtraction</h2>
+    <h2 class="sampleLabel">Addition and Subtraction</h2>
 
     <div class="row">
         <div class="col-sm-2"></div>
         <div class="col-sm-3">
-            <label>Assembly Code</label><br />
-            <textarea id="idAddSubAssem1" readonly>@addSubAssem1</textarea><br />
+            <label class="sampleLabel">Assembly Code</label><br />
+            <textarea id="idAddSubAssem1" class="sampleTextarea" readonly>@addSubAssem1</textarea><br />
             <div class="sample_btns1">
-                <button class="btn btn-primary btn-lg" @onclick="() => NavigateAssemblerSample(addSubAssem1)">Open Source</button>
-                <button @onclick="() => NavigateExecutorAssemblySample(addSubAssem1)" type="button" class="btn btn-primary btn-lg float-end">Open Executor</button>
+                <button class="btn btn-primary btn-lg sampleBtn" @onclick="() => NavigateAssemblerSample(addSubAssem1)">Open Source</button>
+                <button @onclick="() => NavigateExecutorAssemblySample(addSubAssem1)" type="button" class="btn btn-primary btn-lg float-end sampleBtn">Open Executor</button>
             </div>
         </div>
         <div class="col-sm-2"><img src="arrow-left-right.svg"/></div>
         <div class="col-sm-3">
-            <label>Machine Code</label><br />
-            <textarea id="idAddSubMach1" readonly>@addSubMach1</textarea>
+            <label class="sampleLabel">Machine Code</label><br />
+            <textarea id="idAddSubMach1" class="sampleTextarea" readonly>@addSubMach1</textarea>
             <div class="sample_btns2">
-                <button class="btn btn-primary btn-lg" @onclick="() => NavigateDisassemblerSample(addSubMach1)">Open Machine</button>
-                <button @onclick="() => NavigateExecutorMachineSample(addSubMach1)" type="button" class="btn btn-primary btn-lg float-end">Open Executor</button>
+                <button class="btn btn-primary btn-lg sampleBtn" @onclick="() => NavigateDisassemblerSample(addSubMach1)">Open Machine</button>
+                <button @onclick="() => NavigateExecutorMachineSample(addSubMach1)" type="button" class="btn btn-primary btn-lg float-end sampleBtn">Open Executor</button>
             </div>
         </div>
         <div class="col-sm-2"></div>
@@ -81,8 +108,8 @@
         <div class="row">
             <div class="col-sm-2"></div>
             <div class="col-sm-8">
-                <label>What does this code do?</label>
-                <p>
+                <label class="sampleLabel">What does this code do?</label>
+                <p class="sampleP">
                     This code contains 2 lines and starting from the first line <strong>ADD r1, r2, r3</strong> it takes
                     the values in r2 and r3 and adds them together and stores that output in r1. The second line containing
                     <strong>SUB r1, r3, r5</strong> takes the values located in r3 and r5 and subtracts the two values and 
@@ -96,25 +123,25 @@
     <hr />
     <br />
 
-    <h2>Load and Store</h2>
+    <h2 class="sampleLabel">Load and Store</h2>
 
     <div class="row">
         <div class="col-sm-2"></div>
         <div class="col-sm-3">
-            <label>Assembly Code</label><br />
-            <textarea id="idLoadStoreAssem1" readonly>@loadStoreAssem1</textarea>
+            <label class="sampleLabel">Assembly Code</label><br />
+            <textarea id="idLoadStoreAssem1" class="sampleTextarea" readonly>@loadStoreAssem1</textarea>
             <div class="sample_btns1">
-                <button class="btn btn-primary btn-lg" @onclick="() => NavigateAssemblerSample(loadStoreAssem1)">Open Source</button>
-                <button @onclick="() => NavigateExecutorAssemblySample(loadStoreAssem1)" type="button" class="btn btn-primary btn-lg float-end">Open Executor</button>
+                <button class="btn btn-primary btn-lg sampleBtn" @onclick="() => NavigateAssemblerSample(loadStoreAssem1)">Open Source</button>
+                <button @onclick="() => NavigateExecutorAssemblySample(loadStoreAssem1)" type="button" class="btn btn-primary btn-lg float-end sampleBtn">Open Executor</button>
             </div>
         </div>
         <div class="col-sm-2"><img src="arrow-left-right.svg"/></div>
         <div class="col-sm-3">
-            <label>Machine Code</label><br />
-            <textarea id="idLoadStoreMach1" readonly>@loadStoreMach1</textarea>
+            <label class="sampleLabel">Machine Code</label><br />
+            <textarea id="idLoadStoreMach1" class="sampleTextarea" readonly>@loadStoreMach1</textarea>
             <div class="sample_btns2">
-                <button class="btn btn-primary btn-lg" @onclick="() => NavigateDisassemblerSample(loadStoreMach1)">Open Machine</button>
-                <button @onclick="() => NavigateExecutorMachineSample(loadStoreMach1)" type="button" class="btn btn-primary btn-lg float-end">Open Executor</button>
+                <button class="btn btn-primary btn-lg sampleBtn" @onclick="() => NavigateDisassemblerSample(loadStoreMach1)">Open Machine</button>
+                <button @onclick="() => NavigateExecutorMachineSample(loadStoreMach1)" type="button" class="btn btn-primary btn-lg float-end sampleBtn">Open Executor</button>
             </div>
         </div>
         <div class="col-sm-2"></div>
@@ -124,8 +151,8 @@
         <div class="row">
             <div class="col-sm-2"></div>
             <div class="col-sm-8">
-                <label>What does this code do?</label>
-                <p>
+                <label class="sampleLabel">What does this code do?</label>
+                <p class="sampleP">
                     This code contains 2 lines and starting from the first line <strong>LDW r1, r2, rd</strong> it takes
                     the value located in r2 and goes to that point in memory and grabs what is there and stores it in r1. 
                     The second line containing <strong>STW r1, 1AB2, id</strong> takes the value located in r1 and stores it
@@ -139,25 +166,25 @@
     <hr />
     <br />
 
-    <h2>Jump</h2>
+    <h2 class="sampleLabel">Jump</h2>
 
     <div class="row">
         <div class="col-sm-2"></div>
         <div class="col-sm-3">
-            <label>Assembly Code</label><br />
-            <textarea id="idJumpAssem1" readonly>@jumpAssem1</textarea><br />
+            <label class="sampleLabel">Assembly Code</label><br />
+            <textarea id="idJumpAssem1" class="sampleTextarea" readonly>@jumpAssem1</textarea><br />
             <div class="sample_btns1">
-                <button class="btn btn-primary btn-lg" @onclick="() => NavigateAssemblerSample(jumpAssem1)">Open Source</button>
-                <button @onclick="() => NavigateExecutorAssemblySample(jumpAssem1)" type="button" class="btn btn-primary btn-lg float-end">Open Executor</button>
+                <button class="btn btn-primary btn-lg sampleBtn" @onclick="() => NavigateAssemblerSample(jumpAssem1)">Open Source</button>
+                <button @onclick="() => NavigateExecutorAssemblySample(jumpAssem1)" type="button" class="btn btn-primary btn-lg float-end sampleBtn">Open Executor</button>
             </div>
         </div>
         <div class="col-sm-2"><img src="arrow-left-right.svg"/></div>
         <div class="col-sm-3">
-            <label>Machine Code</label><br />
-            <textarea id="idJumpMach1" readonly>@jumpMach1</textarea>
+            <label class="sampleLabel">Machine Code</label><br />
+            <textarea id="idJumpMach1" class="sampleTextarea" readonly>@jumpMach1</textarea>
             <div class="sample_btns2">
-                <button class="btn btn-primary btn-lg" @onclick="() => NavigateDisassemblerSample(jumpMach1)">Open Machine</button>
-                <button @onclick="() => NavigateExecutorMachineSample(jumpMach1)" type="button" class="btn btn-primary btn-lg float-end">Open Executor</button>
+                <button class="btn btn-primary btn-lg sampleBtn" @onclick="() => NavigateDisassemblerSample(jumpMach1)">Open Machine</button>
+                <button @onclick="() => NavigateExecutorMachineSample(jumpMach1)" type="button" class="btn btn-primary btn-lg float-end sampleBtn">Open Executor</button>
             </div>
         </div>
         <div class="col-sm-2"></div>
@@ -167,8 +194,8 @@
         <div class="row">
             <div class="col-sm-2"></div>
             <div class="col-sm-8">
-                <label>What does this code do?</label>
-                <p>
+                <label class="sampleLabel">What does this code do?</label>
+                <p class="sampleP">
                     This code contains 3 lines and starting from the first line <strong>JEQ r1, r2, 0006</strong> it <i>jumps</i> in execution
                     to the address of the label given, in this case <strong>0006</strong> in the event that r1 and r2 are <strong>equal</strong>.
                     Let us say <strong>r1 == 5</strong> and <strong>r2 == 5</strong>, they are equal therefore we jump to address 0006.
@@ -184,25 +211,25 @@
     <hr />
     <br />
 
-    <h2>Push and Pop</h2>
+    <h2 class="sampleLabel">Push and Pop</h2>
 
     <div class="row">
         <div class="col-sm-2"></div>
         <div class="col-sm-3">
-            <label>Assembly Code</label><br />
-            <textarea id="idPushPopAssem1" readonly>@pushPopAssem1</textarea><br />
+            <label class="sampleLabel">Assembly Code</label><br />
+            <textarea id="idPushPopAssem1" class="sampleTextarea" readonly>@pushPopAssem1</textarea><br />
             <div class="sample_btns1">
-                <button class="btn btn-primary btn-lg" @onclick="() => NavigateAssemblerSample(pushPopAssem1)">Open Source</button>
-                <button @onclick="() => NavigateExecutorAssemblySample(pushPopAssem1)" type="button" class="btn btn-primary btn-lg float-end">Open Executor</button>
+                <button class="btn btn-primary btn-lg sampleBtn" @onclick="() => NavigateAssemblerSample(pushPopAssem1)">Open Source</button>
+                <button @onclick="() => NavigateExecutorAssemblySample(pushPopAssem1)" type="button" class="btn btn-primary btn-lg float-end sampleBtn">Open Executor</button>
             </div>
         </div>
         <div class="col-sm-2"><img src="arrow-left-right.svg"/></div>
         <div class="col-sm-3">
-            <label>Machine Code</label><br />
-            <textarea id="idPushPopMach1" readonly>@pushPopMach1</textarea>
+            <label class="sampleLabel">Machine Code</label><br />
+            <textarea id="idPushPopMach1" class="sampleTextarea" readonly>@pushPopMach1</textarea>
             <div class="sample_btns2">
-                <button class="btn btn-primary btn-lg" @onclick="() => NavigateDisassemblerSample(pushPopMach1)">Open Machine</button>
-                <button @onclick="() => NavigateExecutorMachineSample(pushPopMach1)" type="button" class="btn btn-primary btn-lg float-end">Open Executor</button>
+                <button class="btn btn-primary btn-lg sampleBtn" @onclick="() => NavigateDisassemblerSample(pushPopMach1)">Open Machine</button>
+                <button @onclick="() => NavigateExecutorMachineSample(pushPopMach1)" type="button" class="btn btn-primary btn-lg float-end sampleBtn">Open Executor</button>
             </div>
         </div>
         <div class="col-sm-2"></div>
@@ -212,8 +239,8 @@
         <div class="row">
             <div class="col-sm-2"></div>
             <div class="col-sm-8">
-                <label>What does this code do?</label>
-                <p>
+                <label class="sampleLabel">What does this code do?</label>
+                <p class="sampleP">
                     This code contains 4 lines and starting from the first line <strong>PSW r1</strong> which takes r1 and <i>pushes</i>
                     it onto the stack for use later or if r1 need to be used by another instruction right now. The second line containing 
                     <strong>PPW r1</strong> <i>pops</i> r1 off the stack by moving the stack to the memory location of r1. The third line
@@ -228,25 +255,25 @@
     <hr />
     <br />
 
-    <h2>Large Sample</h2>
+    <h2 class="sampleLabel">Large Sample</h2>
 
     <div class="row">
         <div class="col-sm-2"></div>
         <div class="col-sm-3">
-            <label>Assembly Code</label><br />
-            <textarea id="idLargeTestAssem1" readonly>@largeSampleAssem1</textarea><br />
+            <label class="sampleLabel">Assembly Code</label><br />
+            <textarea id="idLargeTestAssem1" class="sampleTextarea" readonly>@largeSampleAssem1</textarea><br />
             <div class="sample_btns1">
-                <button class="btn btn-primary btn-lg" @onclick="() => NavigateAssemblerSample(largeSampleAssem1)">Open Source</button>
-                <button @onclick="() => NavigateExecutorAssemblySample(largeSampleAssem1)" type="button" class="btn btn-primary btn-lg float-end">Open Executor</button>
+                <button class="btn btn-primary btn-lg sampleBtn" @onclick="() => NavigateAssemblerSample(largeSampleAssem1)">Open Source</button>
+                <button @onclick="() => NavigateExecutorAssemblySample(largeSampleAssem1)" type="button" class="btn btn-primary btn-lg float-end sampleBtn">Open Executor</button>
             </div>
         </div>
         <div class="col-sm-2"><img src="arrow-left-right.svg"/></div>
         <div class="col-sm-3">
-            <label>Machine Code</label><br />
-            <textarea id="idLargeTestMach1" readonly>@largeSampleMach1</textarea>
+            <label class="sampleLabel">Machine Code</label><br />
+            <textarea id="idLargeTestMach1" class="sampleTextarea" readonly>@largeSampleMach1</textarea>
             <div class="sample_btns2">
-                <button class="btn btn-primary btn-lg" @onclick="() => NavigateDisassemblerSample(largeSampleMach1)">Open Machine</button>
-                <button @onclick="() => NavigateExecutorMachineSample(largeSampleMach1)" type="button" class="btn btn-primary btn-lg float-end">Open Executor</button>
+                <button class="btn btn-primary btn-lg sampleBtn" @onclick="() => NavigateDisassemblerSample(largeSampleMach1)">Open Machine</button>
+                <button @onclick="() => NavigateExecutorMachineSample(largeSampleMach1)" type="button" class="btn btn-primary btn-lg float-end sampleBtn">Open Executor</button>
             </div>
         </div>
         <div class="col-sm-2"></div>
@@ -279,6 +306,18 @@
     "\nPSW r1\nPSW r2\n\n# Write some values to memory\nSTW r4, r3, rd\nSTW r5, CDCF, id\n\n# Set R6 so that we hit our second jump\nADD r6, r0, r1\n\n# Jump back to the start of execution\nJMP StartExecution\n\nEndExecution:\n# Swap the values pushed onto the stack" + 
     "\nPPW r1\nPPW r2\n\n# Swap the values loaded into memory\nLDW r5, r3, rd\nLDW r4, CDCF, id";
     private string largeSampleMach1 = "C3 81 00 AA C3 82 12 34 C3 83 CD CD C3 84 0D AD C3 85 FF FF E3 81 45 66 E3 82 40 99 60 53 CE B1 00 34 01 01 01 02 C1 94 00 03 C1 85 CD CF 40 46 C7 00 00 1C 01 C1 01 C2 C0 15 00 03 C0 04 CD CF";
+
+    bool darkModeSamplePage = FrontendVariables.darkMode;
+
+    protected override async Task OnAfterRenderAsync (bool firstRender)
+    {
+        if (darkModeSamplePage == true)
+        {
+            await JSRuntime.InvokeVoidAsync("toggleDarkModeJS", darkModeSamplePage);
+            FrontendVariables.darkModeSample = darkModeSamplePage;
+            FrontendVariables.darkModeSampleChanged = true;
+        }
+    }
 
     void NavigateAssemblerSample(string textToPush)
     {

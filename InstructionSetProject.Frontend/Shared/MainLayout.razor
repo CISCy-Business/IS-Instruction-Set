@@ -1,4 +1,6 @@
 ﻿@inherits LayoutComponentBase
+@inject IJSRuntime JSRuntime
+@using InstructionSetProject.Backend.StaticFrontend;
 
 <style>
     body {
@@ -50,7 +52,14 @@
         white-space: pre;
     }
 
-    .code_input {
+    .code_input_disassembler {
+        background-color: #20639B;
+        padding: 0px 20px 20px 20px;
+        margin-top: 10px;
+        border: solid 2px darkslategray;
+    }
+
+    .code_input_assembler {
         background-color: #20639B;
         padding: 0px 20px 20px 20px;
         margin-top: 10px;
@@ -115,27 +124,136 @@
     #topnav-right {
         position: absolute;
         right: 30px;
+        cursor: pointer;
+    }
+
+    #topnav-right-help {
+        position: absolute;
+        right: 130px;
     }
 
     #topnav-right-samples {
         position: absolute;
-        right: 110px;
+        right: 190px;
     }
 
     #footer {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      height: 2.5rem;            /* Footer height */
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 2.5rem;
     }
 
     #page-container {
-      position: relative;
-      min-height: 100vh;
+        position: relative;
+        min-height: 100vh;
     }
 
     #content-wrap {
-      padding-bottom: 2.5rem;    /* Footer height */
+        padding-bottom: 2.5rem;
+    }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 47px;
+        height: 23px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 14px;
+        width: 14px;
+        left: 5px;
+        bottom: 5px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(24px);
+        -ms-transform: translateX(24px);
+        transform: translateX(24px);
+    }
+
+    .slider.round {
+        border-radius: 32px;
+    }
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
+
+    .toggleDarkModeLabel {
+        transform: translateY(-37px);
+        font-size: 22px;
+    }
+
+    .dark-mode {
+        background-color: #051622;
+        color: white;
+    }
+
+    .dark-mode-container {
+        background-color: #051622;
+        color: white;
+    }
+
+    .modalDiv {
+        position: absolute;
+        top: 10%;
+        transform: translate(105px, -50%);
+    }
+
+    .modalDiv1 {
+        position: absolute;
+        top: 35%;
+        transform: translate(10px, -50%);
+    }
+
+    .modalBtn {
+        position: absolute;
+        top: 90%;
+        transform: translate(127px, -50%);
+        background-color: #20639B;
+        color: white;
+    }
+
+    .dark-mode-modal {
+        background-color: #102833;
+        color: white;   
+    }
+
+    dialog {
+        padding: 0px;
     }
 </style>
 
@@ -154,12 +272,32 @@
             <div id="topnav-right-samples">
                 <a class="nav-item nav-link"  href="/samples"><h3>Samples</h3></a>
             </div>
-            <div id="topnav-right">
+            <div id="topnav-right-help">
                 <a class="nav-item nav-link"  href="/help"><h3>Help</h3></a>
+            </div>
+            <div id="topnav-right">
+                <a class="nav-item nav-link" @onclick="e => IsModalOpened = true" ><h3>Settings</h3></a>
             </div>
         </div>
     </div>
  </nav>
+
+<Modal @bind-Open="IsModalOpened" Close="OnClose">
+    <form class="modalForm" method="dialog" style="width: 300px; height: 300px; align-content: flex-start">
+        <div class="modalDiv">
+            <span style="font-size: 24px">Settings</span>
+        </div>
+        <div class="modalDiv1">
+            <label class="toggleDarkModeLabel">Dark Mode: </label>
+            <label class="switch">
+                <input type="checkbox" class="inputCheckbox" @onchange="toggleDarkMode">
+                <span class="slider round"  style="transform: translateY(-18px)"></span>
+            </label>
+        </div>
+         <button class="modalBtn" value="cancel">Close</button>
+    </form>
+</Modal>
+
 
 
 <div class="main">
@@ -167,6 +305,28 @@
         @Body
     </div>
 </div>
+
+@code {
+
+    public bool IsModalOpened { get; set; }
+    bool visible { get; set; } = false;
+
+    void toggleVisible ()
+    {
+        visible = !visible;
+    }
+
+    void OnClose(string value)
+    {
+        
+    }
+
+    public async void toggleDarkMode ()
+    {
+        FrontendVariables.darkMode = !FrontendVariables.darkMode;
+        await JSRuntime.InvokeVoidAsync("toggleDarkModeJS", FrontendVariables.darkMode, FrontendVariables.darkMode, FrontendVariables.darkMode, FrontendVariables.darkMode);
+    }
+}
 
 
 

@@ -1,5 +1,7 @@
 ﻿@page "/"
 @inject NavigationManager UriHelper
+@inject IJSRuntime JSRuntime
+@using InstructionSetProject.Backend.StaticFrontend;
 
 <style>
     .cont-parent {
@@ -15,39 +17,66 @@
     p {
         font-size: 20px; 
     }
+
+    .dark-mode-container {
+        border: none;
+        background-color: #051622;
+        color: white;
+    }
+
+    .dark-mode-index-header {
+        color: #DEB992;
+        font-family: Courier New, sans-serif;
+        font-size: 38px;
+    }
+
+    .dark-mode-index-p-elem {
+        color: #1BA098;
+        font-family: Courier New, sans-serif;
+    }
+
+    .dark-mode-index-header-3 {
+        color: #DEB992;
+        font-family: Courier New, sans-serif;
+    }
+
+    .dark-mode-index-p-list {
+        color: #DEB992;
+        font-family: Courier New, sans-serif;
+    }
 </style>
 
 <div class="cont-parent">
     <div class="container">
         <br />
-        <h1>Come try out our instruction set!</h1><br /><hr /><br />
+        <h1 class="indexHeader1">Our ISA</h1><br /><hr /><br />
 
-        <p>We currently offer three options for this architecture:</p>
-        <p>Disassembly<br />Assembly<br />Execution with 5 stage pipelining</p><br />
+        <p class="indexPElem">We currently offer three options for this architecture:</p>
+        <p class="indexPList">Disassembly<br />Assembly<br />Execution with 5 stage pipelining</p><br />
 
-        <p>All of these options are available in the top navigation menu.</p><br /><hr /><br />
+        <p class="indexPElem">All of these options are available in the top navigation menu.</p><br /><hr /><br />
 
-        <h3 @onclick="() => NavigateDisassembler()">Disassembler</h3>
+        <h3 class="indexHeader3" @onclick="() => NavigateDisassembler()">Disassembler</h3>
 
-        <p>
+        <p class="indexPElem">
             Our disassembler allows you to type in your machine (hex) code into the left hand text box and
             by clicking the arrow button in the middle it will disassemble your code into its assembly code
             counterpart.
         </p>
         <br />
 
-        <h3 @onclick="() => NavigateAssembler()">Assembler</h3>
+        <h3 class="indexHeader3" @onclick="() => NavigateAssembler()">Assembler</h3>
 
-        <p>
+        <p class="indexPElem">
             Our assembler allows you to type in the assembly (IS Instruction Set) code into the left hand text
             box and by clicking the arrow button in the middle it will assemble your code into its machine code
             variant.
         </p>
         <br />
         
-        <h3 @onclick="() => NavigateExecutor()">Execution (New)</h3>
+        <h3 class="indexHeader3" @onclick="() => NavigateExecutor()">Execution (New)</h3>
 
-        <p>
+        <p class="indexPElem">
             Our executor allows you to type in assembly code from our instruction set in the Executor tab and there
             are many options for execution along the top toolbar. From here you can build, run, debug, step, clock, 
             continue, stop, and view our data path. The data path allows you to see how each instruction interacts 
@@ -60,6 +89,18 @@
 
 
 @code {
+    bool darkModeIndexPage = FrontendVariables.darkMode;
+
+    protected override async Task OnAfterRenderAsync (bool firstRender)
+    {
+        if (darkModeIndexPage == true)
+        {
+            await JSRuntime.InvokeVoidAsync("toggleDarkModeJS", darkModeIndexPage);
+            FrontendVariables.darkModeIndex = darkModeIndexPage;
+            FrontendVariables.darkModeIndexChanged = true;
+        }
+    }
+
     void NavigateAssembler()
     {
         UriHelper.NavigateTo("assembler");
