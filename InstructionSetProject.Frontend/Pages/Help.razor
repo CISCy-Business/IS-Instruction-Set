@@ -1,4 +1,6 @@
 ﻿@page "/help"
+@inject IJSRuntime JSRuntime;
+@using InstructionSetProject.Backend.StaticFrontend;
 
 <style>
     table, th, td {
@@ -28,19 +30,34 @@
     label {
         font-size: 34px;
     }
+
+    .dark-mode-help-table {
+        background-color: grey;
+        color: black;
+    }
+
+    .dark-mode-help-label {
+        color: #DEB992;
+        font-family: Courier New, sans-serif;
+    }
+
+    .dark-mode-help-p {
+        color: #1BA098;
+        font-family: Courier New, sans-serif;
+    }
 </style>
 
 
 <div class="code_input" style="width:100%">
-    <br /><h1>IS Instruction Set Architecture</h1><br />
+    <br /><h1 class="helpLabel" style="font-size: 38px">IS Instruction Set Architecture</h1><br /><hr /><br />
 
-    <p style="font-size: 18px">
+    <p class="helpP" style="font-size: 18px">
         Here you can find our entire instruction set up to this point as well as examples for each.
     </p>
 
     <div>
-        <label>Addressing Modes</label>
-        <table style="width:60%">
+        <label class="helpLabel">Addressing Modes</label>
+        <table class="helpTable" style="width:60%">
           <tr>
             <th>Name</th>
             <th>Letters</th>
@@ -166,8 +183,8 @@
     </div>
 
     <div>
-        <label>Registers</label>
-        <table style="width:60%">
+        <label class="helpLabel">Registers</label>
+        <table class="helpTable" style="width:60%">
           <tr>
             <th colspan=2>Accessible</th>
           </tr>
@@ -268,8 +285,8 @@
     </div>
 
     <div>
-        <label>Types of Instructions</label>
-        <table style="width:60%">
+        <label class="helpLabel">Types of Instructions</label>
+        <table class="helpTable" style="width:60%">
           <tr>
             <th>Legend</th>
             <th>Definition</th>
@@ -307,7 +324,7 @@
 
         <br />
 
-        <table style="width:70%">
+        <table class="helpTable" style="width:70%">
           <tr>
             <th>Type</th>
             <th>Name</th>
@@ -382,8 +399,8 @@
     </div>
 
     <div>
-        <label>Instructions</label>
-        <table style="width:90%">
+        <label class="helpLabel">Instructions</label>
+        <table class="helpTable" style="width:90%">
             <tr>
                 <th colspan=6>Process Control Instructions</th>
             </tr>
@@ -1614,3 +1631,18 @@
         </table>
     </div>
 </div>
+
+
+@code {
+    bool darkModeHelpPage = FrontendVariables.darkMode;
+
+    protected override async Task OnAfterRenderAsync (bool firstRender)
+    {
+        if (darkModeHelpPage == true)
+        {
+            await JSRuntime.InvokeVoidAsync("toggleDarkModeJS", darkModeHelpPage);
+            FrontendVariables.darkModeHelpPage = darkModeHelpPage;
+            FrontendVariables.darkModeHelpChanged = true;
+        }
+    }
+}

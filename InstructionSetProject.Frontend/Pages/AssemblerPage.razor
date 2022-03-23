@@ -4,7 +4,35 @@
 @inject NavigationManager UriHelper
 @inject IJSRuntime JSRuntime
 
-<div class="code_input">
+<style>
+    .dark-mode-assembler-code-input {
+        background-color: #002833;
+        padding: 0px 20px 20px 20px;
+        margin-top: 10px;
+        border: solid 2px #003033;
+        color: #DEB992;
+        font-family: 'Courier New', sans-serif;
+    }
+
+    .dark-mode-assembler-textarea {
+        background-color: black;
+        color: #adadad;
+    }
+
+    .dark-mode-assembler-btn {
+        background-color: #051622;
+        color: #adadad;
+        border: 2px solid #003033;
+    }
+
+    .dark-mode-assembler-btn:hover {
+        background-color: #004a52;
+        color: #adadad;
+        border: 2px solid #003033;
+    } 
+</style>
+
+<div class="code_input_assembler">
     <div class="code_input_wrapper">
         <div class="row">
             <div class="col-sm-5">
@@ -33,15 +61,15 @@
             <div class="col-sm-5">
                 <textarea @bind="currentCodeAss" id="assemble" name="assemble" placeholder="@assemblyPlaceholder"></textarea>
                 <p>
-                    <button @onclick="SaveAssemblyCode" type="button" name="ass_btn" class="btn btn-primary btn-lg">Save Code</button>
-                    <button @onclick="OpenAssemblyCodeExecutor" type="button" name="ass_btn" class="btn btn-primary btn-lg float-end">Open Executor</button>
+                    <button @onclick="SaveAssemblyCode" type="button" name="ass_btn" class="btn btn-primary btn-lg assBtn">Save Code</button>
+                    <button @onclick="OpenAssemblyCodeExecutor" type="button" name="ass_btn" class="btn btn-primary btn-lg float-end assBtn">Open Executor</button>
                 </p>
             </div>
     
             <div class="col-sm-2">
                 <div>
-                    <button @onclick="Assemble" type="button" name="ass_btn" class="btn btn-primary btn-lg">
-                        <img src="chevron-double-right.svg"/>
+                    <button @onclick="Assemble" type="button" name="ass_btn" class="btn btn-primary btn-lg assBtn">
+                        &raquo;
                     </button>
                 </div>
             </div>
@@ -49,7 +77,7 @@
             <div class="col-sm-5">
                 <textarea @bind="currentCodeOutAss" id="outputAss" name="outputAss" readonly></textarea>
                 <p>
-                    <button @onclick="SaveOutput" type="button" name="ass_btn" class="btn btn-primary btn-lg">Save Output</button>
+                    <button @onclick="SaveOutput" type="button" name="ass_btn" class="btn btn-primary btn-lg assBtn">Save Output</button>
                 </p>
             </div>
         </div>
@@ -66,6 +94,18 @@
     private List<byte> machineCode = new List<byte>();
 
     private string fileContent = "";
+
+    bool darkModeAssemblerPage = FrontendVariables.darkMode;
+
+    protected override async Task OnAfterRenderAsync (bool firstRender)
+    {
+        if (darkModeAssemblerPage == true)
+        {
+            await JSRuntime.InvokeVoidAsync("toggleDarkModeJS", darkModeAssemblerPage);
+            FrontendVariables.darkModeAssembler = darkModeAssemblerPage;
+            FrontendVariables.darkModeAssemblerChanged = true;
+        }
+    }
 
     private void Assemble()
     {

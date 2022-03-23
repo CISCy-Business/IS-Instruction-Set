@@ -5,6 +5,7 @@ using InstructionSetProject.Backend.InstructionTypes;
 using InstructionSetProject.Backend.StaticFrontend;
 using InstructionSetProject.Backend.StaticPipeline;
 using InstructionSetProject.Backend.Utilities;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
 using Syncfusion.Blazor.Diagram;
@@ -15,11 +16,21 @@ namespace InstructionSetProject.Frontend.Pages
 {
     public partial class ExecutorPage
     {
+        ElementReference SyntaxCode;
+
         private string ExecMachineCode = "";
         private string ExecAssemblyCode = "";
         private string statsString = "";
         private string space = " ";
         private int charCount = 0;
+        bool isGranted = true;
+
+        protected override bool ShouldRender()
+        {
+            return true;
+        }
+
+        bool darkModeExecutorPage = FrontendVariables.darkMode;
         public string MemDumpStart { get; set; } = "";
 
         public string MemDumpContent => SPEx != null
@@ -144,6 +155,12 @@ namespace InstructionSetProject.Frontend.Pages
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
+            if (darkModeExecutorPage == true)
+            {
+                await JSRuntime.InvokeVoidAsync("toggleDarkModeJS", darkModeExecutorPage);
+                FrontendVariables.darkModeExecutor = darkModeExecutorPage;
+                FrontendVariables.darkModeExecutorChanged = true;
+            }
             if (debugRender)
             {
                 await JSRuntime.InvokeVoidAsync("selectDebugTab");
@@ -153,6 +170,11 @@ namespace InstructionSetProject.Frontend.Pages
                 await JSRuntime.InvokeVoidAsync("autoSelectFirstTab");
             }
             debugRender = false;
+        }
+
+        async Task ChangedCode()
+        {
+            await JSRuntime.InvokeVoidAsync("handleKeyPress", SyntaxCode);
         }
 
         protected override async Task OnInitializedAsync()
@@ -241,7 +263,7 @@ namespace InstructionSetProject.Frontend.Pages
         bool IsSelectedMemory(IInstruction instr) => instr == SPEx.memoryInstruction;
         bool IsSelectedWrite(IInstruction instr) => instr == SPEx.writingBackInstruction;
 
-        string DivCSS(IInstruction instr) => IsSelectedFetch(instr) ? "bg-fetch text-white" : (IsSelectedDecode(instr) ? "bg-decode text-white" : (IsSelectedExecute(instr) ? "bg-execute text-white" : (IsSelectedMemory(instr) ? "bg-memory text-white" : (IsSelectedWrite(instr) ? "bg-write text-white" : "bg-white"))));
+        string DivCSS(IInstruction instr) => IsSelectedFetch(instr) ? "bg-fetch text-white" : (IsSelectedDecode(instr) ? "bg-decode text-white" : (IsSelectedExecute(instr) ? "bg-execute text-white" : (IsSelectedMemory(instr) ? "bg-memory text-white" : (IsSelectedWrite(instr) ? "bg-write text-white" : (FrontendVariables.darkMode ? "bg-dark-mode" : "bg-white")))));
 
         void ClockTick()
         {

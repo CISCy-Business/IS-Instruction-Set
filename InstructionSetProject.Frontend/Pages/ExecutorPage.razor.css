@@ -149,7 +149,7 @@
     padding: 0px;
     color: black;
     margin-top: 5px;
-    width: 70px;
+    width: 90px;
 }
 
 .byteAddressInput {
@@ -159,7 +159,7 @@
 }
 
 .memDumpLabel > label {
-    transform: translateX(-40px);
+    transform: translateX(-50px);
     margin-top: 10px;
 }
 
@@ -284,4 +284,12 @@ p {
 
 .bg-write {
     background-color: rgb(182, 191, 2);
+}
+
+.bg-dark-mode {
+    background-color: black;
+}
+
+#syntaxDiv {
+    caret-color: black;
 }

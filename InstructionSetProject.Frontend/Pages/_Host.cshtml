@@ -68,6 +68,545 @@
       var elem = document.getElementById('debugCodeId');
       elem.scrollTop = 0;
     }
+
+    function handleKeyPress(e){
+        var key=e.keyCode || e.which;
+        if (key==13){
+             var elem = document.getElementById('syntaxDiv');
+             SyntaxHighlight(elem);
+        }
+    }
+
+    function SyntaxHighlight(element)
+    {
+        var mnemonic = /(ADD|SUB)/g;
+        var string = element.innerHTML,
+        parsed = string.replace(mnemonic,'<span style="color: red">ADD</span>');
+
+        element.innerHTML = parsed;
+    }
+
+    function toggleDarkModeJS (index, disassembler, assembler, executor)
+    {
+        var element = document.body;
+        if (index == true)
+        {
+            element.classList.add("dark-mode");
+        }
+        else
+        {
+            if (element.classList.contains("dark-mode"))
+            {
+                element.classList.remove("dark-mode");
+            }
+            else
+            {
+                element.classList.add("dark-mode");
+            }
+        }
+
+        var element1 = document.getElementsByClassName("container");
+        if (element1 != null && index != false)
+        {
+            for (i = 0; i < element1.length; i++) {
+                element1[i].classList.add("dark-mode-container");
+            }
+        }
+        else
+        {
+            if (element1 != null && index == false)
+            {
+                for (i = 0; i < element1.length; i++) {
+                    element1[i].classList.remove("dark-mode-container");
+                }
+            }      
+        }
+
+        var element2 = document.getElementsByClassName("indexHeader1");
+        if (element2 != null && index != false)
+        {
+            for (i = 0; i < element2.length; i++) {
+                element2[i].classList.add("dark-mode-index-header");
+            }
+        }
+        else
+        {
+            if (element2 != null && index == false)
+            {
+                for (i = 0; i < element2.length; i++) {
+                    element2[i].classList.remove("dark-mode-index-header");
+                }
+            }      
+        }
+
+        var element3 = document.getElementsByClassName("indexPElem");
+        if (element3 != null && index != false)
+        {
+            for (i = 0; i < element3.length; i++) {
+                element3[i].classList.add("dark-mode-index-p-elem");
+            }
+        }
+        else
+        {
+            if (element3 != null && index == false)
+            {
+                for (i = 0; i < element3.length; i++) {
+                    element3[i].classList.remove("dark-mode-index-p-elem");
+                }
+            }      
+        }
+
+        var element4 = document.getElementsByClassName("indexHeader3");
+        if (element4 != null && index != false)
+        {
+            for (i = 0; i < element4.length; i++) {
+                element4[i].classList.add("dark-mode-index-header-3");
+            }
+        }
+        else
+        {
+            if (element4 != null && index == false)
+            {
+                for (i = 0; i < element4.length; i++) {
+                    element4[i].classList.remove("dark-mode-index-header-3");
+                }
+            }      
+        }
+
+        var element5 = document.getElementsByClassName("indexPList");
+        if (element5 != null && index != false)
+        {
+            for (i = 0; i < element5.length; i++) {
+                element5[i].classList.add("dark-mode-index-p-list");
+            }
+        }
+        else
+        {
+            if (element5 != null && index == false)
+            {
+                for (i = 0; i < element5.length; i++) {
+                    element5[i].classList.remove("dark-mode-index-p-list");
+                }
+            }      
+        }
+
+
+        var element6 = document.getElementsByClassName("code_input_disassembler");
+        if (element6 != null && disassembler != false)
+        {
+            for (i = 0; i < element6.length; i++) {
+                element6[i].classList.add("dark-mode-disassembler-code-input");
+            }
+        }
+        else
+        {
+            if (element6 != null && disassembler == false)
+            {
+                for (i = 0; i < element6.length; i++) {
+                    element6[i].classList.remove("dark-mode-disassembler-code-input");
+                }
+            }      
+        }
+        
+        var element7 = document.getElementById("disassemble");
+        if (element7 != null && disassembler != false)
+        {
+            element7.classList.add("dark-mode-disassembler-textarea");
+        }
+        else
+        {
+            if (element7 != null && disassembler == false)
+            {
+                element7.classList.remove("dark-mode-disassembler-textarea");
+            }      
+        }
+        element7 = document.getElementById("outputDis");
+        if (element7 != null && disassembler != false)
+        {
+            element7.classList.add("dark-mode-disassembler-textarea");
+        }
+        else
+        {
+            if (element7 != null && disassembler == false)
+            {
+                element7.classList.remove("dark-mode-disassembler-textarea");
+            }      
+        }
+
+        var element8 = document.getElementsByClassName("disBtn");
+        if (element8 != null && disassembler != false)
+        {
+            for (i = 0; i < element8.length; i++) {
+                element8[i].classList.add("dark-mode-disassembler-btn");
+            }
+        }
+        else
+        {
+            if (element8 != null && disassembler == false)
+            {
+                for (i = 0; i < element8.length; i++) {
+                    element8[i].classList.remove("dark-mode-disassembler-btn");
+                }
+            }      
+        }
+
+        var element9 = document.getElementsByClassName("code_input_assembler");
+        if (element9 != null && assembler != false)
+        {
+            for (i = 0; i < element9.length; i++) {
+                element9[i].classList.add("dark-mode-assembler-code-input");
+            }
+        }
+        else
+        {
+            if (element9 != null && assembler == false)
+            {
+                for (i = 0; i < element9.length; i++) {
+                    element9[i].classList.remove("dark-mode-assembler-code-input");
+                }
+            }      
+        }
+        
+        var element10 = document.getElementById("assemble");
+        if (element10 != null && assembler != false)
+        {
+            element10.classList.add("dark-mode-assembler-textarea");
+        }
+        else
+        {
+            if (element10 != null && assembler == false)
+            {
+                element10.classList.remove("dark-mode-assembler-textarea");
+            }      
+        }
+        element10 = document.getElementById("outputAss");
+        if (element10 != null && assembler != false)
+        {
+            element10.classList.add("dark-mode-assembler-textarea");
+        }
+        else
+        {
+            if (element10 != null && assembler == false)
+            {
+                element10.classList.remove("dark-mode-assembler-textarea");
+            }      
+        }
+
+        var element11 = document.getElementsByClassName("assBtn");
+        if (element11 != null && assembler != false)
+        {
+            for (i = 0; i < element11.length; i++) {
+                element11[i].classList.add("dark-mode-assembler-btn");
+            }
+        }
+        else
+        {
+            if (element11 != null && assembler == false)
+            {
+                for (i = 0; i < element11.length; i++) {
+                    element11[i].classList.remove("dark-mode-assembler-btn");
+                }
+            }      
+        }
+
+        var element12 = document.getElementsByClassName("code_input_executor");
+        if (element12 != null && executor != false)
+        {
+            for (i = 0; i < element12.length; i++) {
+                element12[i].classList.add("dark-mode-executor-code-input");
+            }
+        }
+        else
+        {
+            if (element12 != null && executor == false)
+            {
+                for (i = 0; i < element12.length; i++) {
+                    element12[i].classList.remove("dark-mode-executor-code-input");
+                }
+            }      
+        }
+        element12 = document.getElementsByClassName("tab");
+        if (element12 != null && executor != false)
+        {
+            for (i = 0; i < element12.length; i++) {
+                element12[i].classList.add("dark-mode-executor-code-input");
+            }
+        }
+        else
+        {
+            if (element12 != null && executor == false)
+            {
+                for (i = 0; i < element12.length; i++) {
+                    element12[i].classList.remove("dark-mode-executor-code-input");
+                }
+            }      
+        }
+
+        var element13 = document.getElementById("assemblyTextBox");
+        if (element13 != null && executor != false)
+        {
+            element13.classList.add("dark-mode-executor-textarea");
+        }
+        else
+        {
+            if (element13 != null && executor == false)
+            {
+                element13.classList.remove("dark-mode-executor-textarea");
+            }      
+        }
+        element13 = document.getElementById("statsTabTextarea");
+        if (element13 != null && executor != false)
+        {
+            element13.classList.add("dark-mode-executor-textarea");
+        }
+        else
+        {
+            if (element13 != null && executor == false)
+            {
+                element13.classList.remove("dark-mode-executor-textarea");
+            }      
+        }
+        element13 = document.getElementById("debugCodeId");
+        if (element13 != null && executor != false)
+        {
+            element13.classList.add("dark-mode-executor-textarea");
+        }
+        else
+        {
+            if (element13 != null && executor == false)
+            {
+                element13.classList.remove("dark-mode-executor-textarea");
+            }      
+        }
+        element13 = document.getElementById("machineTextBox");
+        if (element13 != null && executor != false)
+        {
+            element13.classList.add("dark-mode-executor-textarea");
+        }
+        else
+        {
+            if (element13 != null && executor == false)
+            {
+                element13.classList.remove("dark-mode-executor-textarea");
+            }      
+        }
+        element13 = document.getElementsByClassName("registerTextArea");
+        if (element13 != null && executor != false)
+        {
+            for (i = 0; i < element13.length; i++) {
+                element13[i].classList.add("dark-mode-executor-register-pane");
+            }
+        }
+        else
+        {
+            if (element13 != null && executor == false)
+            {
+                for (i = 0; i < element13.length; i++) {
+                    element13[i].classList.remove("dark-mode-executor-register-pane");
+                }
+            }      
+        }
+        element13 = document.getElementsByClassName("registerLabel");
+        if (element13 != null && executor != false)
+        {
+            for (i = 0; i < element13.length; i++) {
+                element13[i].classList.add("dark-mode-executor-register-label");
+            }
+        }
+        else
+        {
+            if (element13 != null && executor == false)
+            {
+                for (i = 0; i < element13.length; i++) {
+                    element13[i].classList.remove("dark-mode-executor-register-label");
+                }
+            }      
+        }
+        element13 = document.getElementsByClassName("ExIOTextarea");
+        if (element13 != null && executor != false)
+        {
+            for (i = 0; i < element13.length; i++) {
+                element13[i].classList.add("dark-mode-executor-textarea");
+            }
+        }
+        else
+        {
+            if (element13 != null && executor == false)
+            {
+                for (i = 0; i < element13.length; i++) {
+                    element13[i].classList.remove("dark-mode-executor-textarea");
+                }
+            }      
+        }
+        element13 = document.getElementById("memDumpId");
+        if (element13 != null && executor != false)
+        {
+            element13.classList.add("dark-mode-executor-textarea");
+        }
+        else
+        {
+            if (element13 != null && executor == false)
+            {
+                element13.classList.remove("dark-mode-executor-textarea");
+            }      
+        }
+
+        var element14 = document.getElementsByClassName("helpTable");
+        if (element14 != null && executor != false)
+        {
+            for (i = 0; i < element14.length; i++) {
+                element14[i].classList.add("dark-mode-help-table");
+            }
+        }
+        else
+        {
+            if (element14 != null && executor == false)
+            {
+                for (i = 0; i < element14.length; i++) {
+                    element14[i].classList.remove("dark-mode-help-table");
+                }
+            }      
+        }
+
+        var element15 = document.getElementsByClassName("helpLabel");
+        if (element15 != null && executor != false)
+        {
+            for (i = 0; i < element15.length; i++) {
+                element15[i].classList.add("dark-mode-help-label");
+            }
+        }
+        else
+        {
+            if (element15 != null && executor == false)
+            {
+                for (i = 0; i < element15.length; i++) {
+                    element15[i].classList.remove("dark-mode-help-label");
+                }
+            }      
+        }
+
+        var element16 = document.getElementsByClassName("helpP");
+        if (element16 != null && executor != false)
+        {
+            for (i = 0; i < element16.length; i++) {
+                element16[i].classList.add("dark-mode-help-p");
+            }
+        }
+        else
+        {
+            if (element16 != null && executor == false)
+            {
+                for (i = 0; i < element16.length; i++) {
+                    element16[i].classList.remove("dark-mode-help-p");
+                }
+            }      
+        }
+
+        var element17 = document.getElementsByClassName("sampleTextarea");
+        if (element17 != null && executor != false)
+        {
+            for (i = 0; i < element17.length; i++) {
+                element17[i].classList.add("dark-mode-sample-textarea");
+            }
+        }
+        else
+        {
+            if (element17 != null && executor == false)
+            {
+                for (i = 0; i < element17.length; i++) {
+                    element17[i].classList.remove("dark-mode-sample-textarea");
+                }
+            }      
+        }
+
+        var element18 = document.getElementsByClassName("sampleBtn");
+        if (element18 != null && executor != false)
+        {
+            for (i = 0; i < element18.length; i++) {
+                element18[i].classList.add("dark-mode-sample-btn");
+            }
+        }
+        else
+        {
+            if (element18 != null && executor == false)
+            {
+                for (i = 0; i < element18.length; i++) {
+                    element18[i].classList.remove("dark-mode-sample-btn");
+                }
+            }      
+        }
+
+        var element19 = document.getElementsByClassName("sampleLabel");
+        if (element19 != null && executor != false)
+        {
+            for (i = 0; i < element19.length; i++) {
+                element19[i].classList.add("dark-mode-sample-label");
+            }
+        }
+        else
+        {
+            if (element19 != null && executor == false)
+            {
+                for (i = 0; i < element19.length; i++) {
+                    element19[i].classList.remove("dark-mode-sample-label");
+                }
+            }      
+        }
+
+        var element20 = document.getElementsByClassName("sampleP");
+        if (element20 != null && executor != false)
+        {
+            for (i = 0; i < element20.length; i++) {
+                element20[i].classList.add("dark-mode-sample-p");
+            }
+        }
+        else
+        {
+            if (element20 != null && executor == false)
+            {
+                for (i = 0; i < element20.length; i++) {
+                    element20[i].classList.remove("dark-mode-sample-p");
+                }
+            }      
+        }
+
+        var element21 = document.getElementsByClassName("modalForm");
+        if (element21 != null && executor != false)
+        {
+            for (i = 0; i < element21.length; i++) {
+                element21[i].classList.add("dark-mode-modal");
+            }
+        }
+        else
+        {
+            if (element21 != null && executor == false)
+            {
+                for (i = 0; i < element21.length; i++) {
+                    element21[i].classList.remove("dark-mode-modal");
+                }
+            }      
+        }
+
+    }
+
+    function blazorInitializeModal(dialog, reference) {
+        dialog.addEventListener("close", async e => {
+            await reference.invokeMethodAsync("OnClose", dialog.returnValue);
+        });
+    }
+
+    function blazorOpenModal(dialog) {
+        if (!dialog.open) {
+            dialog.showModal();
+        }
+    }
+
+    function blazorCloseModal(dialog) {
+        if (dialog.open) {
+            dialog.close();
+        }
+    }
+    
 </script>
 
 

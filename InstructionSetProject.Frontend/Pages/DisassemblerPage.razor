@@ -4,8 +4,36 @@
 @inject NavigationManager UriHelper
 @inject IJSRuntime JSRuntime
 
+<style>
+    .dark-mode-disassembler-code-input {
+        background-color: #002833;
+        padding: 0px 20px 20px 20px;
+        margin-top: 10px;
+        border: solid 2px #003033;
+        color: #DEB992;
+        font-family: 'Courier New', sans-serif;
+    }
 
-<div class="code_input">
+    .dark-mode-disassembler-textarea {
+        background-color: black;
+        color: #adadad;
+    }
+
+    .dark-mode-disassembler-btn {
+        background-color: #051622;
+        color: #adadad;
+        border: 2px solid #003033;
+    }
+
+    .dark-mode-disassembler-btn:hover {
+        background-color: #004a52;
+        color: #adadad;
+        border: 2px solid #003033;
+    } 
+</style>
+
+
+<div class="code_input_disassembler">
     <div class="code_input_wrapper">
         <div class="row">
             <div class="col-sm-5">
@@ -35,15 +63,15 @@
             <div class="col-sm-5">
                 <textarea @bind="currentCodeDis" id="disassemble" name="disassemble" placeholder="@machinePlaceholder"></textarea>
                 <p>
-                    <button @onclick="SaveMachineCode" type="button" name="dis_btn" class="btn btn-primary btn-lg">Save Code</button>
-                    <button @onclick="OpenMachineCodeExecutor" type="button" name="dis_exec_btn" class="btn btn-primary btn-lg float-end">Open Executor</button>
+                    <button @onclick="SaveMachineCode" type="button" name="dis_btn" class="btn btn-primary btn-lg disBtn">Save Code</button>
+                    <button @onclick="OpenMachineCodeExecutor" type="button" name="dis_exec_btn" class="btn btn-primary btn-lg float-end disBtn">Open Executor</button>
                 </p>
             </div>
     
             <div class="col-sm-2">
                 <div>
-                    <button @onclick="Disassemble" type="button" name="dis_btn" class="btn btn-primary btn-lg">
-                        <img src="chevron-double-right.svg"/>
+                    <button @onclick="Disassemble" type="button" name="dis_btn" class="btn btn-primary btn-lg disBtn">
+                        &raquo;
                     </button>
                 </div>
             </div>
@@ -51,7 +79,7 @@
             <div class="col-sm-5">
                 <textarea @bind="currentCodeOutDis" id="outputDis" name="outputDis" readonly></textarea>
                 <p>
-                    <button @onclick="SaveOutput" type="button" name="dis_btn" class="btn btn-primary btn-lg">Save Output</button>
+                    <button @onclick="SaveOutput" type="button" name="dis_btn" class="btn btn-primary btn-lg disBtn">Save Output</button>
                 </p>
             </div>
         </div>
@@ -65,6 +93,18 @@
 
     private string fileContent = "";
     private string assemblyCode = "";
+
+    bool darkModeDisassemblerPage = FrontendVariables.darkMode;
+
+    protected override async Task OnAfterRenderAsync (bool firstRender)
+    {
+        if (darkModeDisassemblerPage == true)
+        {
+            await JSRuntime.InvokeVoidAsync("toggleDarkModeJS", darkModeDisassemblerPage);
+            FrontendVariables.darkModeDisassembler = darkModeDisassemblerPage;
+            FrontendVariables.darkModeDisassemblerChanged = true;
+        }
+    }
 
     private void Disassemble()
     {
