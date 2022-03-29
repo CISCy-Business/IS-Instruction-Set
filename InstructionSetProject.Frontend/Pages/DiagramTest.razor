@@ -1,0 +1,359 @@
+﻿@page "/diagramTest"
+@using Syncfusion.Blazor.Diagram
+@using Syncfusion.Blazor.Diagram.SymbolPalette
+@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Inputs
+@using Microsoft.JSInterop
+@using shapes = Syncfusion.Blazor.Diagram.Shapes
+
+@inject IJSRuntime jsRuntime
+@inject HttpClient http
+
+
+<div style="width: 100%;height: 90%">
+    <div id="palette-space" class="sb-mobile-palette">
+        <SfSymbolPaletteComponent Height="350px"
+                                    SymbolHeight="60"
+                                    SymbolWidth="60"
+                                    SymbolMargin="@symbolMargin"
+                                    SymbolDragPreviewSize="@symbolDragPreviewSize"
+                                    @ref="@symbolPalette"
+                                    Palettes="@palettes">
+        </SfSymbolPaletteComponent>
+    </div>
+    <div id="diagram-space" class="sb-mobile-diagram">
+        <div class="content-wrapper">
+            <SfDiagramComponent @ref="@diagram" Height="665px"
+                                @bind-Nodes="@nodes"
+                                @bind-Connectors="@connectors"
+                                ConnectorCreating="@ConnectorCreating">
+                <SnapSettings>
+                    <HorizontalGridLines LineColor="#e0e0e0 " LineIntervals="@GridLineIntervals">
+                    </HorizontalGridLines>
+                    <VerticalGridLines LineColor="#e0e0e0" LineIntervals="@GridLineIntervals">
+                    </VerticalGridLines>
+                </SnapSettings>
+            </SfDiagramComponent>
+            <span id='diagramName' style="display:none">UntitledDiagram</span>
+        </div>
+    </div>
+        <SfUploader @ref="@uploadFiles" ID="UploadFiles" ShowFileList="false" AllowedExtensions="@ExtensionType">
+            <UploaderEvents OnUploadStart="@OnUploadFileSelected"></UploaderEvents>
+            <UploaderAsyncSettings SaveUrl="https://aspnetmvc.syncfusion.com/services/api/uploadbox/Save" RemoveUrl="https://aspnetmvc.syncfusion.com/services/api/uploadbox/Remove"></UploaderAsyncSettings>
+        </SfUploader>        
+</div>
+@code
+{
+    private int connectorCount;
+    private string fileName;
+    private string ExtensionType = ".json";
+    private string data = "";
+    //Define palettes symbol margin
+    SymbolMargin symbolMargin = new SymbolMargin { Left = 15, Right = 15, Top = 15, Bottom = 15 };
+    // Reference to symbol palette
+    SfSymbolPaletteComponent symbolPalette;
+    //Define palettes symboldrag preview size
+    DiagramSize symbolDragPreviewSize = new DiagramSize() { Height = 100, Width = 100 };
+    // Defines symbolpalette's palette collection
+    public DiagramObjectCollection<Palette> palettes;
+    //Reference to uploder
+    SfUploader uploadFiles;
+    // Reference to diagram
+    SfDiagramComponent diagram;
+    // Defines diagram's nodes collection
+    public DiagramObjectCollection<Node> nodes { get; set; }
+    // Defines diagram's connector collection
+    public DiagramObjectCollection<Connector> connectors { get; set; }
+    // Defines interval values for GridLines
+    public double[] GridLineIntervals { get; set; }
+    // Defines palette's flow-shape collection
+    public DiagramObjectCollection<NodeBase> FlowShapeList { get; set; }
+    // Defines palette's connector collection
+    public DiagramObjectCollection<NodeBase> ConnectorList { get; set; }
+    // Defines Symbol info
+    public SymbolInfo SymbolInfo { get; set; }
+    protected override void OnInitialized()
+    {
+        InitDiagramModel();
+        InitPaletteModel();
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        symbolPalette.Targets = new DiagramObjectCollection<SfDiagramComponent>
+        {
+            diagram
+        };
+    }
+    //Method to clear the diagram
+    public void ClearDiagram(Syncfusion.Blazor.Navigations.ClickEventArgs args)
+    {
+        diagram.Nodes.Clear();
+        diagram.Connectors.Clear();
+        diagram.ClearSelection();
+        StateHasChanged();
+    }
+    //Method to upload selected files
+    public async Task OnUploadFileSelected(UploadingEventArgs args)
+    {
+        if (args.FileData.Type == "json")
+        {
+            string? json = await http.GetFromJsonAsync<string>(args.FileData.FileSource);
+            json = json.Replace(System.Environment.NewLine, string.Empty);
+            await diagram.LoadDiagram(json.ToString());
+            await uploadFiles.ClearAll();
+        }
+    }
+    //Method to define upload success
+    public void OnUploadSuccess(SuccessEventArgs args)
+    {
+        if (args.Operation != "remove")
+        {
+            var file1 = args.File;
+            var file = file1.RawFile;
+            var fileType = file1.Type.ToString();
+        }
+    }
+    //Method to save the diagram
+    public async Task SaveDiagram()
+    {
+        fileName = await jsRuntime.InvokeAsync<string>("getDiagramFileName", "");
+        await DownloadDiagram(fileName);
+    }
+     //Method to download the diagram
+    public async Task DownloadDiagram(string fileName)
+    {
+        string data = diagram.SaveDiagram();
+        await SaveAs(jsRuntime, data, fileName);
+    }
+    //Method to load the diagram
+    public async Task LoadDiagram()
+    {
+        diagram.BeginUpdate();
+        ExtensionType = ".json";
+        await Click(jsRuntime);
+        await diagram.EndUpdate();
+    }
+
+    public async static Task Click(IJSRuntime js)
+    {
+        await js.InvokeAsync<object>(
+            "click").ConfigureAwait(true);
+    }
+
+    public async static Task SaveAs(IJSRuntime js, string data, string fileName)
+    {
+        await js.InvokeAsync<object>(
+        "saveDiagram",
+        // Specify IFormatProvider
+        Convert.ToString(data), fileName).ConfigureAwait(true);
+        // Specify IFormatProvider
+    }
+
+    private void InitDiagramModel()
+    {
+        GridLineIntervals = new double[] 
+        {
+            1, 9, 0.25, 9.75, 0.25, 9.75, 0.25, 9.75, 0.25, 9.75, 0.25, 9.75, 0.25, 9.75, 0.25, 9.75, 0.25, 9.75, 0.25, 9.75
+        };
+        nodes = new DiagramObjectCollection<Node>();
+        connectors = new DiagramObjectCollection<Connector>();
+        CreateNode("Start", 450, 80, FlowShapeType.Terminator, "Start", "#D0F0F1", "#797979");
+        CreateNode("Alarm", 450, 195, FlowShapeType.Process, "Alarm rings", "#FBFDC5", "#797979");
+        CreateNode("Ready", 450, 315, FlowShapeType.Decision, "Ready to Getup?", "#C5EFAF", "#797979");
+        CreateNode("Climb", 450, 435, FlowShapeType.Process, "Climb out of bed", "#FBFDC5", "#797979");
+        CreateNode("End", 450, 560, FlowShapeType.Terminator, "End", "#D0F0F1", "#797979");
+        CreateNode("Delay", 650, 195, FlowShapeType.Delay, "Delay", "#F8EEE5", "#797979");
+        CreateNode("Hit", 650, 315, FlowShapeType.Process, "Hit snooze button", "#FBFDC5", "#797979");
+        CreateConnector("Start", "Alarm");
+        CreateConnector("Alarm", "Ready");
+        CreateConnector("Ready", "Climb", "Yes");
+        CreateConnector("Climb", "End");
+        CreateConnector("Ready", "Hit", "No");
+        CreateConnector("Hit", "Delay");
+        CreateConnector("Delay", "Alarm");
+    }
+    //Method to define common style for connector
+    private void ConnectorCreating(IDiagramObject obj)
+    {
+        Connector ConnectorCreating = new Connector()
+        {
+            TargetDecorator = new DecoratorSettings()
+            {
+                Height = 5,
+                Width = 5,
+                Style = new ShapeStyle() { Fill = "#797979", StrokeColor = "#797979" },
+            },
+            Style = new ShapeStyle() { StrokeColor = "#797979" }
+        };
+    }
+    //Method to define create nodes
+    private void CreateNode(string id, double x, double y, FlowShapeType shape, string label, string fillColor, string stroke)
+    {
+        ShapeAnnotation annotation = new ShapeAnnotation() { Content = label };
+        annotation.Style = new TextStyle()
+        {
+            Color = "black",
+            Fill = "transparent"
+        };
+        Node diagramNode = new Node()
+        {
+            ID = id,
+            OffsetX = x,
+            OffsetY = y,
+            Width = 120,
+            Height = 70,
+            Shape = new FlowShape() { Type = shapes.Flow, Shape = shape },
+            Style = new ShapeStyle() { Fill = fillColor, StrokeColor = stroke },
+            Annotations = new DiagramObjectCollection<ShapeAnnotation>() { annotation },
+        };
+        if (diagramNode.ID.ToString() == "Ready")
+        {
+            diagramNode.Height = 100;
+            diagramNode.Width = 140;
+        }
+        nodes.Add(diagramNode);
+    }
+    //Method to define create connectors
+    private void CreateConnector(string sourceId, string targetId, string label = default(string))
+    {
+        ShapeStyle shapeStyle = new ShapeStyle() { StrokeColor = "#797979", Fill = "black" };
+        Connector diagramConnector = new Connector()
+        {
+            ID = string.Format("connector{0}", ++connectorCount),
+            SourceID = sourceId,
+            TargetID = targetId,
+            Style = new ShapeStyle() { StrokeWidth = 1, StrokeColor = "#797979" },
+            TargetDecorator = new DecoratorSettings() { Style = shapeStyle }
+        };
+        if (label != default(string))
+        {
+            PathAnnotation annotation = new PathAnnotation()
+            {
+                Content = label,
+                Style = new TextStyle() { Fill = "white" }
+            };
+            diagramConnector.Annotations = new DiagramObjectCollection<PathAnnotation>() { annotation };
+        }
+        connectors.Add(diagramConnector);
+    }
+    private void InitPaletteModel()
+    {
+        palettes = new DiagramObjectCollection<Palette>();
+        SymbolInfo = new SymbolInfo() { Fit = true };
+        FlowShapeList = new DiagramObjectCollection<NodeBase>();
+        CreatePaletteNode(FlowShapeType.Terminator, "Terminator");
+        CreatePaletteNode(FlowShapeType.Process, "Process");
+        CreatePaletteNode(FlowShapeType.Decision, "Decision");
+        CreatePaletteNode(FlowShapeType.Document, "Document");
+        CreatePaletteNode(FlowShapeType.PreDefinedProcess, "PreDefined Process");
+        CreatePaletteNode(FlowShapeType.PaperTap, "Punched Tape");
+        CreatePaletteNode(FlowShapeType.DirectData, "Direct Data");
+        CreatePaletteNode(FlowShapeType.SequentialData, "Sequential Data");
+        CreatePaletteNode(FlowShapeType.Sort, "Sort");
+        CreatePaletteNode(FlowShapeType.MultiDocument, "MultiDocument");
+        CreatePaletteNode(FlowShapeType.Collate, "Collate");
+        CreatePaletteNode(FlowShapeType.SummingJunction, "Summing Junction");
+        CreatePaletteNode(FlowShapeType.Or, "Or");
+        CreatePaletteNode(FlowShapeType.InternalStorage, "Internal Storage");
+        CreatePaletteNode(FlowShapeType.Extract, "Extract");
+        CreatePaletteNode(FlowShapeType.SequentialAccessStorage, "Sequential Access Storage");
+        CreatePaletteNode(FlowShapeType.Annotation, "Annotation");
+        CreatePaletteNode(FlowShapeType.Data, "Data");
+        CreatePaletteNode(FlowShapeType.Card, "Card");
+        CreatePaletteNode(FlowShapeType.Delay, "Delay");
+        ConnectorList = new DiagramObjectCollection<NodeBase>();
+        CreatePaletteConnector("Link1", ConnectorSegmentType.Orthogonal, DecoratorShape.Arrow);
+        CreatePaletteConnector("Link2", ConnectorSegmentType.Orthogonal, DecoratorShape.None);
+        CreatePaletteConnector("Link3", ConnectorSegmentType.Straight, DecoratorShape.Arrow);
+        CreatePaletteConnector("Link4", ConnectorSegmentType.Straight, DecoratorShape.None);
+        CreatePaletteConnector("Link5", ConnectorSegmentType.Bezier, DecoratorShape.None);
+        palettes.Add(
+            new Palette()
+            {
+                ID = "flowshapepalette",
+                IsExpanded = true,
+                Symbols = FlowShapeList,
+                Title = "Flow Shapes"
+            }
+        );
+        palettes.Add(
+            new Palette()
+            {
+                ID = "connectorpalette",
+                IsExpanded = true,
+                Symbols = ConnectorList,
+                Title = "Connectors"
+            }
+        );
+    }
+    //Method to define create palette nodes
+    private void CreatePaletteNode(FlowShapeType flowShape, string id)
+    {
+        Node diagramNode = new Node()
+        {
+            ID = id,
+            Shape = new FlowShape() { Type = shapes.Flow, Shape = flowShape },
+            Style = new ShapeStyle() { StrokeColor = "#797979", Fill = "Transparent", StrokeWidth = 2 },
+        };
+        string shape = flowShape.ToString();
+        switch (shape)
+        {
+            case "PreDefinedProcess":
+                diagramNode.ID = "PreDefined Process";
+                break;
+            case "DirectData":
+                diagramNode.ID = "Direct Data";
+                break;
+            case "PaperTap":
+                diagramNode.ID = "Punched Tape";
+                break;
+            case "SequentialData":
+                diagramNode.ID = "Sequential Data";
+                break;
+            case "MultiDocument":
+                diagramNode.ID = "MultiDocument";
+                break;
+            case "SummingJunction":
+                diagramNode.ID = "Summing Junction";
+                break;
+            case "InternalStorage":
+                diagramNode.ID = "Internal Storage";
+                break;
+            case "ManualOperation":
+                diagramNode.ID = "Manual operation";
+                break;
+            case "OffPageReference":
+                diagramNode.ID = "Off-Page reference";
+                break;
+            case "SequentialAccessStorage":
+                diagramNode.ID = "Sequential Access Storage";
+                break;
+            case "ManualInput":
+                diagramNode.ID = "Manual Input";
+                break;
+            case "LoopLimit":
+                diagramNode.ID = "Loop Limit";
+                break;
+            case "StoredData":
+                diagramNode.ID = "Stored Data";
+                break;
+        }
+        FlowShapeList.Add(diagramNode);
+    }
+    //Method to define create palette connectors
+    private void CreatePaletteConnector(string id, ConnectorSegmentType type, DecoratorShape decoratorShape)
+    {
+        ShapeStyle shapeStyle = new ShapeStyle() { StrokeColor = "#797979", Fill = "black" };
+        Connector diagramConnector = new Connector()
+        {
+            ID = id,
+            Type = type,
+            SourcePoint = new DiagramPoint() { X = 0, Y = 0 },
+            TargetPoint = new DiagramPoint() { X = 60, Y = 60 },
+            Style = new ShapeStyle() { StrokeWidth = 1, StrokeColor = "#797979" },
+            TargetDecorator = new DecoratorSettings() { Shape = decoratorShape, Style = shapeStyle }
+        };
+        ConnectorList.Add(diagramConnector);
+    }
+}
