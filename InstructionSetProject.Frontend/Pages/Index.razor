@@ -44,6 +44,10 @@
         color: #DEB992;
         font-family: Courier New, sans-serif;
     }
+
+    ::-webkit-scrollbar {
+        display: none;
+    }
 </style>
 
 <div class="cont-parent">
@@ -52,7 +56,7 @@
         <h1 class="indexHeader1">Our ISA</h1><br /><hr /><br />
 
         <p class="indexPElem">We currently offer three options for this architecture:</p>
-        <p class="indexPList">Disassembly<br />Assembly<br />Execution with 5 stage pipelining</p><br />
+        <p class="indexPList">Disassembly<br />Assembly<br />Execution with 5 stage static AND dynamic pipelining</p><br />
 
         <p class="indexPElem">All of these options are available in the top navigation menu.</p><br /><hr /><br />
 
@@ -74,13 +78,14 @@
         </p>
         <br />
         
-        <h3 class="indexHeader3" @onclick="() => NavigateExecutor()">Execution (New)</h3>
+        <h3 class="indexHeader3" @onclick="() => NavigateExecutor()">Execution</h3>
 
         <p class="indexPElem">
             Our executor allows you to type in assembly code from our instruction set in the Executor tab and there
             are many options for execution along the top toolbar. From here you can build, run, debug, step, clock, 
             continue, stop, and view our data path. The data path allows you to see how each instruction interacts 
             with a hypothetical CPU. There is highlighting of instructions throughout each stage in the pipeline. 
+            The pipeline style can be toggled in the toolbar menu inside this page between static and dynamic.
             There are many other tools to play around with and details to discover so go give it a try!
         </p>
         <br />

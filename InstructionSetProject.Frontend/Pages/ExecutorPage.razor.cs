@@ -1,4 +1,5 @@
 ﻿using System.Collections.Specialized;
+using BlazorMonaco;
 using InstructionSetProject.Backend;
 using InstructionSetProject.Backend.Execution;
 using InstructionSetProject.Backend.InstructionTypes;
@@ -24,6 +25,7 @@ namespace InstructionSetProject.Frontend.Pages
         private string space = " ";
         private int charCount = 0;
         bool isGranted = true;
+        bool StaticMode = true;
 
         protected override bool ShouldRender()
         {
@@ -84,10 +86,29 @@ namespace InstructionSetProject.Frontend.Pages
         private string fileContent = "";
 
         public bool ShowItem { get; set; } = true;
-        private bool Visibility { get; set; } = false;
+        private bool StaticVisibility { get; set; } = false;
+        private bool DynamicVisibility { get; set; } = false;
         private bool errorVis { get; set; } = false;
         private bool ShowButton { get; set; } = false;
         private ResizeDirection[] dialogResizeDirections { get; set; } = new ResizeDirection[] { ResizeDirection.All };
+
+        public bool IsModalOpened { get; set; }
+        bool visible { get; set; } = false;
+
+        void toggleVisible()
+        {
+            visible = !visible;
+        }
+
+        void OnClose(string value)
+        {
+
+        }
+
+        void toggleStaticDynamicMode()
+        {
+            StaticMode = !StaticMode;
+        }
 
         private async Task LoadFile(InputFileChangeEventArgs e)
         {
@@ -254,7 +275,10 @@ namespace InstructionSetProject.Frontend.Pages
             OnItemClick();
             debugRender = true;
             JSRuntime.InvokeVoidAsync("debugScrollToTop");
-            UpdateDiagram();
+            if (StaticMode == true)
+                UpdateStaticDiagram();
+            else if (StaticMode == false)
+                UpdateDynamicDiagram();
         }
 
         bool IsSelectedFetch(IInstruction instr) => instr == SPEx.fetchingInstruction;
@@ -280,7 +304,10 @@ namespace InstructionSetProject.Frontend.Pages
             //JSRuntime.InvokeVoidAsync("stepScroll");
             Statistics();
             debugRender = true;
-            UpdateDiagram();
+            if (StaticMode == true)
+                UpdateStaticDiagram();
+            else if (StaticMode == false)
+                UpdateDynamicDiagram();
         }
 
         void step()
@@ -298,7 +325,10 @@ namespace InstructionSetProject.Frontend.Pages
             //JSRuntime.InvokeVoidAsync("stepScroll");
             Statistics();
             debugRender = true;
-            UpdateDiagram();
+            if (StaticMode == true)
+                UpdateStaticDiagram();
+            else if (StaticMode == false)
+                UpdateDynamicDiagram();
         }
 
         void Continue()
@@ -320,7 +350,14 @@ namespace InstructionSetProject.Frontend.Pages
         void Stop()
         {
             SPEx = null;
-            InitDiagramModel();
+            if (StaticMode == true)
+            {
+                InitStaticDiagramModel();
+            }
+            else if (StaticMode == false)
+            {
+                InitDynamicDiagramModel();
+            }
         }
 
         #region ColorCodes
@@ -334,7 +371,607 @@ namespace InstructionSetProject.Frontend.Pages
         private const string ControlDash = "4,2";
         #endregion
 
-        void UpdateDiagram()
+        void UpdateDynamicDiagram()
+        {
+
+        }
+
+        private void InitDynamicDiagramModel()
+        {
+            NodeCollection = new DiagramObjectCollection<Node>();
+            ConnectorCollection = new DiagramObjectCollection<Connector>();
+
+            #region Ports
+            List<PointPort> ReorderBufferPorts1 = new List<PointPort>();
+            ReorderBufferPorts1.Add(AddPort("port1ReorderBuffer", 0.2, 0));
+            ReorderBufferPorts1.Add(AddPort("port2ReorderBuffer", 0.8, 0));
+            ReorderBufferPorts1.Add(AddPort("port3ReorderBuffer", 0.5, 1));
+            ReorderBufferPorts1.Add(AddPort("port4ReorderBuffer", 0.9, 1));
+
+            List<PointPort> ReorderBufferPorts2 = new List<PointPort>();
+
+
+            List<PointPort> InstrQueuePorts1 = new List<PointPort>();
+            InstrQueuePorts1.Add(AddPort("port1InstrQueue", 0.5, 0));
+            InstrQueuePorts1.Add(AddPort("port2InstrQueue", 0.4, 1));
+            InstrQueuePorts1.Add(AddPort("port3InstrQueue", 0.7, 1));
+
+            List<PointPort> InstrQueuePorts2 = new List<PointPort>();
+
+
+            List<PointPort> RegFilePorts1 = new List<PointPort>();
+            RegFilePorts1.Add(AddPort("port1RegFile", 0.41, 0));
+            RegFilePorts1.Add(AddPort("port2RegFile", 0.695, 0));
+            RegFilePorts1.Add(AddPort("port3RegFile", 0.1, 1));
+            RegFilePorts1.Add(AddPort("port4RegFile", 0.2, 1));
+
+            List<PointPort> RegFilePorts2 = new List<PointPort>();
+
+
+            List<PointPort> IssueQueuePorts1 = new List<PointPort>();
+            IssueQueuePorts1.Add(AddPort("port1IssueQueue", 0.5, 1));
+
+            List<PointPort> IssueQueuePorts2 = new List<PointPort>();
+
+
+            List<PointPort> AddressUnitPorts = new List<PointPort>();
+            AddressUnitPorts.Add(AddPort("port1AddressUnit", 0.5, 0));
+            AddressUnitPorts.Add(AddPort("port2AddressUnit", 0.6, 1));
+            AddressUnitPorts.Add(AddPort("port3AddressUnit", 0, .5));
+            AddressUnitPorts.Add(AddPort("port4AddressUnit", 1, .5));
+
+
+            List<PointPort> LoadBufferPorts1 = new List<PointPort>();
+            LoadBufferPorts1.Add(AddPort("port1LoadBuffer", 0.5, 0));
+            LoadBufferPorts1.Add(AddPort("port2LoadBuffer", 0.15, 1));
+
+            List<PointPort> LoadBufferPorts2 = new List<PointPort>();
+
+
+            List<PointPort> MemoryUnitPorts = new List<PointPort>();
+            MemoryUnitPorts.Add(AddPort("port1MemoryUnit", 0.1, 0));
+            MemoryUnitPorts.Add(AddPort("port2MemoryUnit", 0.45, 0));
+            MemoryUnitPorts.Add(AddPort("port3MemoryUnit", 0.89, 0));
+            MemoryUnitPorts.Add(AddPort("port4MemoryUnit", 0.5, 1));
+
+
+            List<PointPort> Res1Ports1 = new List<PointPort>();
+            Res1Ports1.Add(AddPort("port1Res1", 0.5, 0));
+            Res1Ports1.Add(AddPort("port2Res1", 0.5, 1));
+
+            List<PointPort> Res1Ports2 = new List<PointPort>();
+
+
+            List<PointPort> FPAdderPorts = new List<PointPort>();
+            FPAdderPorts.Add(AddPort("port1FPAdder", 0.3, 0));
+            FPAdderPorts.Add(AddPort("port2FPAdder", 0.95, 0));
+            FPAdderPorts.Add(AddPort("port3FPAdder", 0.5, 1));
+
+
+            List<PointPort> Res2Ports1 = new List<PointPort>();
+            Res2Ports1.Add(AddPort("port1Res2", 0.5, 0));
+            Res2Ports1.Add(AddPort("port2Res2", 0.5, 1));
+
+            List<PointPort> Res2Ports2 = new List<PointPort>();
+
+
+            List<PointPort> FPMultPorts = new List<PointPort>();
+            FPMultPorts.Add(AddPort("port1FPMult", 0.25, 0));
+            FPMultPorts.Add(AddPort("port2FPMult", 0.9, 0));
+            FPMultPorts.Add(AddPort("port3FPMult", 0.5, 1));
+
+
+            List<PointPort> Res3Ports1 = new List<PointPort>();
+            Res3Ports1.Add(AddPort("port1Res3", 0.5, 0));
+            Res3Ports1.Add(AddPort("port2Res3", 0.5, 1));
+
+            List<PointPort> Res3Ports2 = new List<PointPort>();
+
+
+            List<PointPort> IntUnitPorts = new List<PointPort>();
+            IntUnitPorts.Add(AddPort("port1IntUnit", 0.3, 0));
+            IntUnitPorts.Add(AddPort("port2IntUnit", 0.95, 0));
+            IntUnitPorts.Add(AddPort("port3IntUnit", 0.5, 1));
+
+
+            List<PointPort> CDBPorts = new List<PointPort>();
+            CDBPorts.Add(AddPort("port1CDB", 0, 0.5));
+            CDBPorts.Add(AddPort("port2CDB", 0.5, 0));
+            CDBPorts.Add(AddPort("port3CDB", 1, 0.5));
+            CDBPorts.Add(AddPort("port4CDB", 0.5, 1));
+
+            List<PointPort> OpBusPorts = new List<PointPort>();
+            OpBusPorts.Add(AddPort("port1OpBus", 0, 0.5));
+            OpBusPorts.Add(AddPort("port2OpBus", 0.5, 0));
+            OpBusPorts.Add(AddPort("port3OpBus", 1, 0.5));
+            OpBusPorts.Add(AddPort("port4OpBus", 0.5, 1));
+
+            List<PointPort> OperationBusPorts = new List<PointPort>();
+            OperationBusPorts.Add(AddPort("port1OperationBus", 0, 0.5));
+            OperationBusPorts.Add(AddPort("port2OperationBus", 0.5, 0));
+            OperationBusPorts.Add(AddPort("port3OperationBus", 1, 0.5));
+            OperationBusPorts.Add(AddPort("port4OperationBus", 0.5, 1));
+
+
+            List<PointPort> WinSizePorts = new List<PointPort>();
+            #endregion
+
+            #region Variables To Move Node Groups and Entire Diagram
+            // Move entire datapath
+            int DatapathXOffset = 130;
+            int DatapathYOffset = -20;
+
+            // Change to move the entire RBuffer Component as a unit
+            int RBufferXOffset = 600 + DatapathXOffset;
+            int RBufferYOffset = 75 + DatapathYOffset;
+            int RBufferLabelXOffset = 70;
+            int RBufferItemWidth = 120;
+            int RBufferItemHeight = 20;
+
+            // Change to move the entire InstrQueue Component as a unit
+            int InstrQueueXOffset = 350 + DatapathXOffset;
+            int InstrQueueYOffset = 250 + DatapathYOffset;
+            int InstrQueueLabelXOffset = 70;
+            int InstrQueueItemWidth = 120;
+            int InstrQueueItemHeight = 20;
+
+            // Change to move the entire RegFile Component as a unit
+            int RegFileXOffset = 615 + DatapathXOffset;
+            int RegFileYOffset = 250 + DatapathYOffset;
+            int RegFileLabelXOffset = 95;
+            int RegFileItemWidth = 170;
+            int RegFileItemHeight = 20;
+
+            // Change to move the entire IssueQueue Component as a unit
+            int IssueQueueXOffset = 350 + DatapathXOffset;
+            int IssueQueueYOffset = 75 + DatapathYOffset;
+            int IssueQueueLabelXOffset = 70;
+            int IssueQueueItemWidth = 120;
+            int IssueQueueItemHeight = 20;
+
+            // Change to move the entire AddressUnit Component as a unit
+            int AddressUnitXOffset = 130 + DatapathXOffset;
+            int AddressUnitYOffset = 390 + DatapathYOffset;
+            int AddressUnitItemWidth = 100;
+            int AddressUnitItemHeight = 20;
+
+            // Change to move the entire LoadBuffers Component as a unit
+            int LoadBufferXOffset = 140 + DatapathXOffset;
+            int LoadBufferYOffset = 440 + DatapathYOffset;
+            int LoadBufferLabelXOffset = 40;
+            int LoadBufferItemWidth = 60;
+            int LoadBufferItemHeight = 20;
+
+            // Change to move the entire MemoryUnit Component as a unit
+            int MemoryUnitXOffset = 80 + DatapathXOffset;
+            int MemoryUnitYOffset = 640 + DatapathYOffset;
+            int MemoryUnitItemWidth = 100;
+            int MemoryUnitItemHeight = 20;
+
+            // Change to move the entire Res 1 Component as a unit
+            int Res1XOffset = 220 + DatapathXOffset;
+            int Res1YOffset = 545 + DatapathYOffset;
+            int Res1LabelXOffset = 20;
+            int Res1ItemWidth1 = 20;
+            int Res1ItemWidth2 = 60;
+            int Res1ItemWidth3 = 75;
+            int Res1ItemHeight = 20;
+
+            // Change to move the entire FP Adder Component as a unit
+            int FPAdderXOffset = 275 + DatapathXOffset;
+            int FPAdderYOffset = 640 + DatapathYOffset;
+            int FPAdderItemWidth = 100;
+            int FPAdderItemHeight = 20;
+
+            // Change to move the entire Res 2 Component as a unit
+            int Res2XOffset = 450 + DatapathXOffset;
+            int Res2YOffset = 545 + DatapathYOffset;
+            int Res2LabelXOffset = 20;
+            int Res2ItemWidth1 = 20;
+            int Res2ItemWidth2 = 60;
+            int Res2ItemWidth3 = 75;
+            int Res2ItemHeight = 20;
+
+            // Change to move the entire FP Multiplier Component as a unit
+            int FPMultXOffset = 510 + DatapathXOffset;
+            int FPMultYOffset = 640 + DatapathYOffset;
+            int FPMultItemWidth = 100;
+            int FPMultItemHeight = 20;
+
+            // Change to move the entire Res 3 Component as a unit
+            int Res3XOffset = 670 + DatapathXOffset;
+            int Res3YOffset = 545 + DatapathYOffset;
+            int Res3LabelXOffset = 20;
+            int Res3ItemWidth1 = 20;
+            int Res3ItemWidth2 = 60;
+            int Res3ItemWidth3 = 75;
+            int Res3ItemHeight = 20;
+
+            // CDB Node width and height
+            int CDBNodeItemWidth = 3;
+            int CDBNodeItemHeight = 3;
+
+            // OpBus node Width and Height
+            int OpBusNodeItemWidth = 3;
+            int OpBusNodeItemHeight = 3;
+
+            // OpBus node Width and Height
+            int OperationBusNodeItemWidth = 3;
+            int OperationBusNodeItemHeight = 3;
+
+            // Change to move the entire Integer Unit Component as a unit
+            int IntUnitXOffset = 725 + DatapathXOffset;
+            int IntUnitYOffset = 640 + DatapathYOffset;
+            int IntUnitItemWidth = 100;
+            int IntUnitItemHeight = 20;
+
+            // Change to move the entire CDB Component as a unit
+            int CDBNode1XOffset = 80 + DatapathXOffset;
+            int CDBNode1YOffset = 690 + DatapathYOffset;
+            int CDBNode1ItemWidth = CDBNodeItemWidth;
+            int CDBNode1ItemHeight = CDBNodeItemHeight;
+
+            // Change to move the entire CDB Component as a unit
+            int CDBNode2XOffset = 850 + DatapathXOffset;
+            int CDBNode2YOffset = 690 + DatapathYOffset;
+            int CDBNode2ItemWidth = CDBNodeItemWidth;
+            int CDBNode2ItemHeight = CDBNodeItemHeight;
+
+            // Change to move the entire CDB Component as a unit
+            int CDBNode3XOffset = 850 + DatapathXOffset;
+            int CDBNode3YOffset = 500 + DatapathYOffset;
+            int CDBNode3ItemWidth = CDBNodeItemWidth;
+            int CDBNode3ItemHeight = CDBNodeItemHeight;
+
+            // Change to move the entire CDB FP Adder Component as a unit
+            int CDBNode4XOffset = 275 + DatapathXOffset;
+            int CDBNode4YOffset = 690 + DatapathYOffset;
+            int CDBNode4ItemWidth = CDBNodeItemWidth;
+            int CDBNode4ItemHeight = CDBNodeItemHeight;
+
+            // Change to move the entire CDB FP Multiplier Component as a unit
+            int CDBNode5XOffset = 510 + DatapathXOffset;
+            int CDBNode5YOffset = 690 + DatapathYOffset;
+            int CDBNode5ItemWidth = CDBNodeItemWidth;
+            int CDBNode5ItemHeight = CDBNodeItemHeight;
+
+            // Change to move the entire CDB Integer Unit Component as a unit
+            int CDBNode6XOffset = 725 + DatapathXOffset;
+            int CDBNode6YOffset = 690 + DatapathYOffset;
+            int CDBNode6ItemWidth = CDBNodeItemWidth;
+            int CDBNode6ItemHeight = CDBNodeItemHeight;
+
+            // Change to move the entire CDB Component as a unit
+            int CDBNode7XOffset = 255 + DatapathXOffset;
+            int CDBNode7YOffset = 500 + DatapathYOffset;
+            int CDBNode7ItemWidth = CDBNodeItemWidth;
+            int CDBNode7ItemHeight = CDBNodeItemHeight;
+
+            // Change to move the entire CDB Component as a unit
+            int CDBNode8XOffset = 320 + DatapathXOffset;
+            int CDBNode8YOffset = 500 + DatapathYOffset;
+            int CDBNode8ItemWidth = CDBNodeItemWidth;
+            int CDBNode8ItemHeight = CDBNodeItemHeight;
+
+            // Change to move the entire CDB Component as a unit
+            int CDBNode9XOffset = 485 + DatapathXOffset;
+            int CDBNode9YOffset = 500 + DatapathYOffset;
+            int CDBNode9ItemWidth = CDBNodeItemWidth;
+            int CDBNode9ItemHeight = CDBNodeItemHeight;
+
+            // Change to move the entire CDB Component as a unit
+            int CDBNode10XOffset = 550 + DatapathXOffset;
+            int CDBNode10YOffset = 500 + DatapathYOffset;
+            int CDBNode10ItemWidth = CDBNodeItemWidth;
+            int CDBNode10ItemHeight = CDBNodeItemHeight;
+
+            // Change to move the entire CDB Component as a unit
+            int CDBNode11XOffset = 705 + DatapathXOffset;
+            int CDBNode11YOffset = 500 + DatapathYOffset;
+            int CDBNode11ItemWidth = CDBNodeItemWidth;
+            int CDBNode11ItemHeight = CDBNodeItemHeight;
+
+            // Change to move the entire CDB Component as a unit
+            int CDBNode12XOffset = 770 + DatapathXOffset;
+            int CDBNode12YOffset = 500 + DatapathYOffset;
+            int CDBNode12ItemWidth = CDBNodeItemWidth;
+            int CDBNode12ItemHeight = CDBNodeItemHeight;
+
+            // Change to move the entire CDB Component as a unit
+            int CDBNode13XOffset = 850 + DatapathXOffset;
+            int CDBNode13YOffset = 44 + DatapathYOffset;
+            int CDBNode13ItemWidth = CDBNodeItemWidth;
+            int CDBNode13ItemHeight = CDBNodeItemHeight;
+
+
+            // Change to move the entire OpBus Component as a unit
+            int OpBusNode1XOffset = 255 + DatapathXOffset;
+            int OpBusNode1YOffset = 420 + DatapathYOffset;
+            int OpBusNode1ItemWidth = OpBusNodeItemWidth;
+            int OpBusNode1ItemHeight = OpBusNodeItemHeight;
+
+            // Change to move the entire OpBus Component as a unit
+            int OpBusNode2XOffset = 485 + DatapathXOffset;
+            int OpBusNode2YOffset = 420 + DatapathYOffset;
+            int OpBusNode2ItemWidth = OpBusNodeItemWidth;
+            int OpBusNode2ItemHeight = OpBusNodeItemHeight;
+
+            // Change to move the entire OpBus Component as a unit
+            int OpBusNode3XOffset = 564 + DatapathXOffset;
+            int OpBusNode3YOffset = 440 + DatapathYOffset;
+            int OpBusNode3ItemWidth = OpBusNodeItemWidth;
+            int OpBusNode3ItemHeight = OpBusNodeItemHeight;
+
+            // Change to move the entire OpBus Component as a unit
+            int OpBusNode4XOffset = 450 + DatapathXOffset;
+            int OpBusNode4YOffset = 420 + DatapathYOffset;
+            int OpBusNode4ItemWidth = OpBusNodeItemWidth;
+            int OpBusNode4ItemHeight = OpBusNodeItemHeight;
+
+            // Change to move the entire OpBus Component as a unit
+            int OpBusNode5XOffset = 450 + DatapathXOffset;
+            int OpBusNode5YOffset = 185 + DatapathYOffset;
+            int OpBusNode5ItemWidth = OpBusNodeItemWidth;
+            int OpBusNode5ItemHeight = OpBusNodeItemHeight;
+
+            // Change to move the entire OpBus Component as a unit
+            int OpBusNode6XOffset = 470 + DatapathXOffset;
+            int OpBusNode6YOffset = 440 + DatapathYOffset;
+            int OpBusNode6ItemWidth = OpBusNodeItemWidth;
+            int OpBusNode6ItemHeight = OpBusNodeItemHeight;
+
+            // Change to move the entire OpBus Component as a unit
+            int OpBusNode7XOffset = 470 + DatapathXOffset;
+            int OpBusNode7YOffset = 185 + DatapathYOffset;
+            int OpBusNode7ItemWidth = OpBusNodeItemWidth;
+            int OpBusNode7ItemHeight = OpBusNodeItemHeight;
+
+
+            // Change to move the entire OperationBus Component as a unit
+            int OperationBusNode1XOffset = 374 + DatapathXOffset;
+            int OperationBusNode1YOffset = 460 + DatapathYOffset;
+            int OperationBusNode1ItemWidth = OperationBusNodeItemWidth;
+            int OperationBusNode1ItemHeight = OperationBusNodeItemHeight;
+
+            #endregion
+
+            #region Nodes
+            CreateNode("ReorderBufferLabel", RBufferXOffset - (RBufferLabelXOffset), RBufferYOffset + 40, RBufferItemHeight * 5, RBufferItemHeight, -90, 0, ReorderBufferPorts2, FlowShapeType.Process, "Reorder Buffer", "white", "8,0", "black");
+            CreateNode("ReorderBuffer1", RBufferXOffset, RBufferYOffset, RBufferItemWidth, RBufferItemHeight, 0, 0, ReorderBufferPorts1, FlowShapeType.Process, "RBuffer 1", "white", "8,0", "black");
+            CreateNode("ReorderBuffer2", RBufferXOffset, RBufferYOffset+20, RBufferItemWidth, RBufferItemHeight, 0, 0, ReorderBufferPorts2, FlowShapeType.Process, "RBuffer 2", "white", "8,0", "black");
+            CreateNode("ReorderBuffer3", RBufferXOffset, RBufferYOffset+40, RBufferItemWidth, RBufferItemHeight, 0, 0, ReorderBufferPorts2, FlowShapeType.Process, "RBuffer 3", "white", "8,0", "black");
+            CreateNode("ReorderBuffer4", RBufferXOffset, RBufferYOffset+60, RBufferItemWidth, RBufferItemHeight, 0, 0, ReorderBufferPorts2, FlowShapeType.Process, "RBuffer 4", "white", "8,0", "black");
+            CreateNode("ReorderBuffer5", RBufferXOffset, RBufferYOffset+80, RBufferItemWidth, RBufferItemHeight, 0, 0, ReorderBufferPorts1, FlowShapeType.Process, "RBuffer 5", "white", "8,0", "black");
+
+            CreateNode("InstrQueueLabel", InstrQueueXOffset - (InstrQueueLabelXOffset), InstrQueueYOffset + 40, InstrQueueItemHeight * 5, InstrQueueItemHeight, -90, 0, InstrQueuePorts2, FlowShapeType.Process, "Instr. Queue", "white", "8,0", "black");
+            CreateNode("InstrQueue1", InstrQueueXOffset, InstrQueueYOffset, InstrQueueItemWidth, InstrQueueItemHeight, 0, 0, InstrQueuePorts1, FlowShapeType.Process, "IQueue 1", "white", "8,0", "black");
+            CreateNode("InstrQueue2", InstrQueueXOffset, InstrQueueYOffset + 20, InstrQueueItemWidth, InstrQueueItemHeight, 0, 0, InstrQueuePorts2, FlowShapeType.Process, "IQueue 2", "white", "8,0", "black");
+            CreateNode("InstrQueue3", InstrQueueXOffset, InstrQueueYOffset + 40, InstrQueueItemWidth, InstrQueueItemHeight, 0, 0, InstrQueuePorts2, FlowShapeType.Process, "IQueue 3", "white", "8,0", "black");
+            CreateNode("InstrQueue4", InstrQueueXOffset, InstrQueueYOffset + 60, InstrQueueItemWidth, InstrQueueItemHeight, 0, 0, InstrQueuePorts2, FlowShapeType.Process, "IQueue 4", "white", "8,0", "black");
+            CreateNode("InstrQueue5", InstrQueueXOffset, InstrQueueYOffset + 80, InstrQueueItemWidth, InstrQueueItemHeight, 0, 0, InstrQueuePorts1, FlowShapeType.Process, "IQueue 5", "white", "8,0", "black");
+
+            CreateNode("RegisterFileLabel", RegFileXOffset - (RegFileLabelXOffset), RegFileYOffset + 40, RegFileItemHeight * 5, RegFileItemHeight, -90, 0, RegFilePorts2, FlowShapeType.Process, "Reg File", "white", "8,0", "black");
+            CreateNode("RegFile1", RegFileXOffset, RegFileYOffset, RegFileItemWidth, RegFileItemHeight, 0, 0, RegFilePorts1, FlowShapeType.Process, "Reg File 1", "white", "8,0", "black");
+            CreateNode("RegFile2", RegFileXOffset, RegFileYOffset + 20, RegFileItemWidth, RegFileItemHeight, 0, 0, RegFilePorts2, FlowShapeType.Process, "Reg File 2", "white", "8,0", "black");
+            CreateNode("RegFile3", RegFileXOffset, RegFileYOffset + 40, RegFileItemWidth, RegFileItemHeight, 0, 0, RegFilePorts2, FlowShapeType.Process, "Reg File 3", "white", "8,0", "black");
+            CreateNode("RegFile4", RegFileXOffset, RegFileYOffset + 60, RegFileItemWidth, RegFileItemHeight, 0, 0, RegFilePorts2, FlowShapeType.Process, "Reg File 4", "white", "8,0", "black");
+            CreateNode("RegFile5", RegFileXOffset, RegFileYOffset + 80, RegFileItemWidth, RegFileItemHeight, 0, 0, RegFilePorts1, FlowShapeType.Process, "Reg File 5", "white", "8,0", "black");
+
+            CreateNode("IssueQueueLabel", IssueQueueXOffset - (IssueQueueLabelXOffset), IssueQueueYOffset + 40, IssueQueueItemHeight * 5, IssueQueueItemHeight, -90, 0, IssueQueuePorts2, FlowShapeType.Process, "Issue Queue", "white", "8,0", "black");
+            CreateNode("IssueQueue1", IssueQueueXOffset, IssueQueueYOffset, IssueQueueItemWidth, IssueQueueItemHeight, 0, 0, IssueQueuePorts1, FlowShapeType.Process, "Issue Queue 1", "white", "8,0", "black");
+            CreateNode("IssueQueue2", IssueQueueXOffset, IssueQueueYOffset + 20, IssueQueueItemWidth, IssueQueueItemHeight, 0, 0, IssueQueuePorts2, FlowShapeType.Process, "Issue Queue 2", "white", "8,0", "black");
+            CreateNode("IssueQueue3", IssueQueueXOffset, IssueQueueYOffset + 40, IssueQueueItemWidth, IssueQueueItemHeight, 0, 0, IssueQueuePorts2, FlowShapeType.Process, "Issue Queue 3", "white", "8,0", "black");
+            CreateNode("IssueQueue4", IssueQueueXOffset, IssueQueueYOffset + 60, IssueQueueItemWidth, IssueQueueItemHeight, 0, 0, IssueQueuePorts2, FlowShapeType.Process, "Issue Queue 4", "white", "8,0", "black");
+            CreateNode("IssueQueue5", IssueQueueXOffset, IssueQueueYOffset + 80, IssueQueueItemWidth, IssueQueueItemHeight, 0, 0, IssueQueuePorts1, FlowShapeType.Process, "Issue Queue 5", "white", "8,0", "black");
+
+            CreateNode("AddressUnit", AddressUnitXOffset, AddressUnitYOffset, AddressUnitItemWidth, AddressUnitItemHeight, 0, 0, AddressUnitPorts, FlowShapeType.Process, "Address Unit", "darkgray", "8,0", "black");
+
+            CreateNode("LoadBufferLabel", LoadBufferXOffset - (LoadBufferLabelXOffset), LoadBufferYOffset + 40, LoadBufferItemHeight * 5, LoadBufferItemHeight, -90, 0, LoadBufferPorts2, FlowShapeType.Process, "Load Buffers", "white", "8,0", "black");
+            CreateNode("LoadBuffer1", LoadBufferXOffset, LoadBufferYOffset, LoadBufferItemWidth, LoadBufferItemHeight, 0, 0, LoadBufferPorts1, FlowShapeType.Process, "LoadBuff 1", "white", "8,0", "black");
+            CreateNode("LoadBuffer2", LoadBufferXOffset, LoadBufferYOffset + 20, LoadBufferItemWidth, LoadBufferItemHeight, 0, 0, LoadBufferPorts2, FlowShapeType.Process, "LoadBuff 2", "white", "8,0", "black");
+            CreateNode("LoadBuffer3", LoadBufferXOffset, LoadBufferYOffset + 40, LoadBufferItemWidth, LoadBufferItemHeight, 0, 0, LoadBufferPorts2, FlowShapeType.Process, "LoadBuff 3", "white", "8,0", "black");
+            CreateNode("LoadBuffer4", LoadBufferXOffset, LoadBufferYOffset + 60, LoadBufferItemWidth, LoadBufferItemHeight, 0, 0, LoadBufferPorts2, FlowShapeType.Process, "LoadBuff 4", "white", "8,0", "black");
+            CreateNode("LoadBuffer5", LoadBufferXOffset, LoadBufferYOffset + 80, LoadBufferItemWidth, LoadBufferItemHeight, 0, 0, LoadBufferPorts1, FlowShapeType.Process, "LoadBuff 5", "white", "8,0", "black");
+
+            CreateNode("MemoryUnit", MemoryUnitXOffset, MemoryUnitYOffset, MemoryUnitItemWidth, MemoryUnitItemHeight, 0, 0, MemoryUnitPorts, FlowShapeType.Process, "Memory Unit", "darkgray", "8,0", "black");
+
+            CreateNode("ResStation1Label", Res1XOffset - (Res1LabelXOffset), Res1YOffset + 20, Res1ItemHeight * 3, Res1ItemHeight, -90, 0, Res1Ports2, FlowShapeType.Process, "Res 1", "white", "8,0", "black");
+            CreateNode("Res1OpBus1", Res1XOffset, Res1YOffset, Res1ItemWidth1, Res1ItemHeight, 0, 0, Res1Ports1, FlowShapeType.Process, "3", "white", "8,0", "black");
+            CreateNode("Res1OpBus2", Res1XOffset, Res1YOffset + 20, Res1ItemWidth1, Res1ItemHeight, 0, 0, Res1Ports2, FlowShapeType.Process, "2", "white", "8,0", "black");
+            CreateNode("Res1OpBus3", Res1XOffset, Res1YOffset + 40, Res1ItemWidth1, Res1ItemHeight, 0, 0, Res1Ports2, FlowShapeType.Process, "1", "white", "8,0", "black");
+            CreateNode("Res1DataBus1", Res1XOffset + (Res1ItemWidth1 + 15), Res1YOffset, Res1ItemWidth2, Res1ItemHeight, 0, 0, Res1Ports1, FlowShapeType.Process, "", "white", "8,0", "black");
+            CreateNode("Res1DataBus2", Res1XOffset + (Res1ItemWidth1 + 15), Res1YOffset + 20, Res1ItemWidth2, Res1ItemHeight, 0, 0, Res1Ports2, FlowShapeType.Process, "", "white", "8,0", "black");
+            CreateNode("Res1DataBus3", Res1XOffset + (Res1ItemWidth1 + 15), Res1YOffset + 40, Res1ItemWidth2, Res1ItemHeight, 0, 0, Res1Ports1, FlowShapeType.Process, "", "white", "8,0", "black");
+            CreateNode("Res1OperandBus1", Res1XOffset + (Res1ItemWidth2 + Res1ItemWidth1 + 20), Res1YOffset, Res1ItemWidth3, Res1ItemHeight, 0, 0, Res1Ports1, FlowShapeType.Process, "", "white", "8,0", "black");
+            CreateNode("Res1OperandBus2", Res1XOffset + (Res1ItemWidth2 + Res1ItemWidth1 + 20), Res1YOffset + 20, Res1ItemWidth3, Res1ItemHeight, 0, 0, Res1Ports2, FlowShapeType.Process, "", "white", "8,0", "black");
+            CreateNode("Res1OperandBus3", Res1XOffset + (Res1ItemWidth2 + Res1ItemWidth1 + 20), Res1YOffset + 40, Res1ItemWidth3, Res1ItemHeight, 0, 0, Res1Ports1, FlowShapeType.Process, "", "white", "8,0", "black");
+
+            CreateNode("FPAdder", FPAdderXOffset, FPAdderYOffset, FPAdderItemWidth, FPAdderItemHeight, 0, 0, FPAdderPorts, FlowShapeType.Process, "FP Adder", "darkgray", "8,0", "black");
+
+            CreateNode("ResStation2Label", Res2XOffset - (Res2LabelXOffset), Res2YOffset + 20, Res2ItemHeight * 3, Res2ItemHeight, -90, 0, Res2Ports2, FlowShapeType.Process, "Res 2", "white", "8,0", "black");
+            CreateNode("Res2OpBus1", Res2XOffset, Res2YOffset, Res2ItemWidth1, Res2ItemHeight, 0, 0, Res2Ports1, FlowShapeType.Process, "3", "white", "8,0", "black");
+            CreateNode("Res2OpBus2", Res2XOffset, Res2YOffset + 20, Res2ItemWidth1, Res2ItemHeight, 0, 0, Res2Ports2, FlowShapeType.Process, "2", "white", "8,0", "black");
+            CreateNode("Res2OpBus3", Res2XOffset, Res2YOffset + 40, Res2ItemWidth1, Res2ItemHeight, 0, 0, Res2Ports2, FlowShapeType.Process, "1", "white", "8,0", "black");
+            CreateNode("Res2DataBus1", Res2XOffset + (Res2ItemWidth1 + 15), Res2YOffset, Res2ItemWidth2, Res2ItemHeight, 0, 0, Res2Ports1, FlowShapeType.Process, "", "white", "8,0", "black");
+            CreateNode("Res2DataBus2", Res2XOffset + (Res2ItemWidth1 + 15), Res2YOffset + 20, Res2ItemWidth2, Res2ItemHeight, 0, 0, Res2Ports2, FlowShapeType.Process, "", "white", "8,0", "black");
+            CreateNode("Res2DataBus3", Res2XOffset + (Res2ItemWidth1 + 15), Res2YOffset + 40, Res2ItemWidth2, Res2ItemHeight, 0, 0, Res2Ports1, FlowShapeType.Process, "", "white", "8,0", "black");
+            CreateNode("Res2OperandBus1", Res2XOffset + (Res2ItemWidth2 + Res2ItemWidth1 + 20), Res2YOffset, Res2ItemWidth3, Res2ItemHeight, 0, 0, Res2Ports1, FlowShapeType.Process, "", "white", "8,0", "black");
+            CreateNode("Res2OperandBus2", Res2XOffset + (Res2ItemWidth2 + Res2ItemWidth1 + 20), Res2YOffset + 20, Res2ItemWidth3, Res2ItemHeight, 0, 0, Res2Ports2, FlowShapeType.Process, "", "white", "8,0", "black");
+            CreateNode("Res2OperandBus3", Res2XOffset + (Res2ItemWidth2 + Res2ItemWidth1 + 20), Res2YOffset + 40, Res2ItemWidth3, Res2ItemHeight, 0, 0, Res2Ports1, FlowShapeType.Process, "", "white", "8,0", "black");
+
+            CreateNode("FPMult", FPMultXOffset, FPMultYOffset, FPMultItemWidth, FPMultItemHeight, 0, 0, FPMultPorts, FlowShapeType.Process, "FP Multiplier", "darkgray", "8,0", "black");
+
+            CreateNode("ResStation3Label", Res3XOffset - (Res3LabelXOffset), Res3YOffset + 20, Res3ItemHeight * 3, Res3ItemHeight, -90, 0, Res3Ports2, FlowShapeType.Process, "Res 3", "white", "8,0", "black");
+            CreateNode("Res3OpBus1", Res3XOffset, Res3YOffset, Res3ItemWidth1, Res3ItemHeight, 0, 0, Res3Ports1, FlowShapeType.Process, "3", "white", "8,0", "black");
+            CreateNode("Res3OpBus2", Res3XOffset, Res3YOffset + 20, Res3ItemWidth1, Res3ItemHeight, 0, 0, Res3Ports2, FlowShapeType.Process, "2", "white", "8,0", "black");
+            CreateNode("Res3OpBus3", Res3XOffset, Res3YOffset + 40, Res3ItemWidth1, Res3ItemHeight, 0, 0, Res3Ports2, FlowShapeType.Process, "1", "white", "8,0", "black");
+            CreateNode("Res3DataBus1", Res3XOffset + (Res3ItemWidth1 + 15), Res3YOffset, Res3ItemWidth2, Res3ItemHeight, 0, 0, Res3Ports1, FlowShapeType.Process, "", "white", "8,0", "black");
+            CreateNode("Res3DataBus2", Res3XOffset + (Res3ItemWidth1 + 15), Res3YOffset + 20, Res3ItemWidth2, Res3ItemHeight, 0, 0, Res3Ports2, FlowShapeType.Process, "", "white", "8,0", "black");
+            CreateNode("Res3DataBus3", Res3XOffset + (Res3ItemWidth1 + 15), Res3YOffset + 40, Res3ItemWidth2, Res3ItemHeight, 0, 0, Res3Ports1, FlowShapeType.Process, "", "white", "8,0", "black");
+            CreateNode("Res3OperandBus1", Res3XOffset + (Res3ItemWidth2 + Res3ItemWidth1 + 20), Res3YOffset, Res3ItemWidth3, Res3ItemHeight, 0, 0, Res3Ports1, FlowShapeType.Process, "", "white", "8,0", "black");
+            CreateNode("Res3OperandBus2", Res3XOffset + (Res3ItemWidth2 + Res3ItemWidth1 + 20), Res3YOffset + 20, Res3ItemWidth3, Res3ItemHeight, 0, 0, Res3Ports2, FlowShapeType.Process, "", "white", "8,0", "black");
+            CreateNode("Res3OperandBus3", Res3XOffset + (Res3ItemWidth2 + Res3ItemWidth1 + 20), Res3YOffset + 40, Res3ItemWidth3, Res3ItemHeight, 0, 0, Res3Ports1, FlowShapeType.Process, "", "white", "8,0", "black");
+
+            CreateNode("IntUnit", IntUnitXOffset, IntUnitYOffset, IntUnitItemWidth, IntUnitItemHeight, 0, 0, IntUnitPorts, FlowShapeType.Process, "Integer Unit", "darkgray", "8,0", "black");
+
+
+
+            // CDB Nodes
+            CreateNode("CDBNode1", CDBNode1XOffset, CDBNode1YOffset, CDBNode1ItemWidth, CDBNode1ItemHeight, 0, 0, CDBPorts, FlowShapeType.Process, "", "black", "8,0", "black");
+            CreateNode("CDBNode2", CDBNode2XOffset, CDBNode2YOffset, CDBNode2ItemWidth, CDBNode2ItemHeight, 0, 0, CDBPorts, FlowShapeType.Process, "", "black", "8,0", "black");
+            CreateNode("CDBNode3", CDBNode3XOffset, CDBNode3YOffset, CDBNode3ItemWidth, CDBNode3ItemHeight, 0, 0, CDBPorts, FlowShapeType.Process, "", "black", "8,0", "black");
+
+            CreateNode("CDBFPAdderNode", CDBNode4XOffset, CDBNode4YOffset, CDBNode4ItemWidth, CDBNode4ItemHeight, 0, 0, CDBPorts, FlowShapeType.Process, "", "black", "8,0", "black");
+            CreateNode("CDBFPMultNode", CDBNode5XOffset, CDBNode5YOffset, CDBNode5ItemWidth, CDBNode5ItemHeight, 0, 0, CDBPorts, FlowShapeType.Process, "", "black", "8,0", "black");
+            CreateNode("CDBIntegerUnitNode", CDBNode6XOffset, CDBNode6YOffset, CDBNode6ItemWidth, CDBNode6ItemHeight, 0, 0, CDBPorts, FlowShapeType.Process, "", "black", "8,0", "black");
+
+            CreateNode("CDBNode7", CDBNode7XOffset, CDBNode7YOffset, CDBNode7ItemWidth, CDBNode7ItemHeight, 0, 0, CDBPorts, FlowShapeType.Process, "", "black", "8,0", "black");
+            CreateNode("CDBNode8", CDBNode8XOffset, CDBNode8YOffset, CDBNode8ItemWidth, CDBNode8ItemHeight, 0, 0, CDBPorts, FlowShapeType.Process, "", "black", "8,0", "black");
+            CreateNode("CDBNode9", CDBNode9XOffset, CDBNode9YOffset, CDBNode9ItemWidth, CDBNode9ItemHeight, 0, 0, CDBPorts, FlowShapeType.Process, "", "black", "8,0", "black");
+            CreateNode("CDBNode10", CDBNode10XOffset, CDBNode10YOffset, CDBNode10ItemWidth, CDBNode10ItemHeight, 0, 0, CDBPorts, FlowShapeType.Process, "", "black", "8,0", "black");
+            CreateNode("CDBNode11", CDBNode11XOffset, CDBNode11YOffset, CDBNode11ItemWidth, CDBNode11ItemHeight, 0, 0, CDBPorts, FlowShapeType.Process, "", "black", "8,0", "black");
+            CreateNode("CDBNode12", CDBNode12XOffset, CDBNode12YOffset, CDBNode12ItemWidth, CDBNode12ItemHeight, 0, 0, CDBPorts, FlowShapeType.Process, "", "black", "8,0", "black");
+
+            CreateNode("CDBNode13", CDBNode13XOffset, CDBNode13YOffset, CDBNode13ItemWidth, CDBNode13ItemHeight, 0, 0, CDBPorts, FlowShapeType.Process, "", "black", "8,0", "black");
+
+
+            // Operand Bus Nodes
+            CreateNode("OpBusNode1", OpBusNode1XOffset, OpBusNode1YOffset, OpBusNode1ItemWidth, OpBusNode1ItemHeight, 0, 0, OpBusPorts, FlowShapeType.Process, "", "black", "8,0", "black");
+            CreateNode("OpBusNode2", OpBusNode2XOffset, OpBusNode2YOffset, OpBusNode2ItemWidth, OpBusNode2ItemHeight, 0, 0, OpBusPorts, FlowShapeType.Process, "", "black", "8,0", "black");
+            CreateNode("OpBusNode3", OpBusNode3XOffset, OpBusNode3YOffset, OpBusNode3ItemWidth, OpBusNode3ItemHeight, 0, 0, OpBusPorts, FlowShapeType.Process, "", "black", "8,0", "black");
+            CreateNode("OpBusNode4", OpBusNode4XOffset, OpBusNode4YOffset, OpBusNode4ItemWidth, OpBusNode4ItemHeight, 0, 0, OpBusPorts, FlowShapeType.Process, "", "black", "8,0", "black");
+            CreateNode("OpBusNode5", OpBusNode5XOffset, OpBusNode5YOffset, OpBusNode5ItemWidth, OpBusNode5ItemHeight, 0, 0, OpBusPorts, FlowShapeType.Process, "", "black", "8,0", "black");
+            CreateNode("OpBusNode6", OpBusNode6XOffset, OpBusNode6YOffset, OpBusNode6ItemWidth, OpBusNode6ItemHeight, 0, 0, OpBusPorts, FlowShapeType.Process, "", "black", "8,0", "black");
+            CreateNode("OpBusNode7", OpBusNode7XOffset, OpBusNode7YOffset, OpBusNode7ItemWidth, OpBusNode7ItemHeight, 0, 0, OpBusPorts, FlowShapeType.Process, "", "black", "8,0", "black");
+
+
+            // Operation Bus Nodes
+            CreateNode("OperationBusNode1", OperationBusNode1XOffset, OperationBusNode1YOffset, OperationBusNode1ItemWidth, OperationBusNode1ItemHeight, 0, 0, OperationBusPorts, FlowShapeType.Process, "", "black", "8,0", "black");
+            
+
+            CreateNode("sizeNodeYX", 1170, 700, 1, 1, 0, 0, WinSizePorts, FlowShapeType.Process, "", "white", "8,0", "white");
+            #endregion
+
+            #region Connectors
+            CreateConnector(ReorderBuffToRegFileData, "ReorderBuffer5", "port4ReorderBuffer", "RegFile1", "port2RegFile", "8,0", "black");
+            CreateConnector(ReorderBuffToRegFileRegNum, "ReorderBuffer5", "port3ReorderBuffer", "RegFile1", "port1RegFile", "8,0", "black");
+
+            CreateConnector(IssueQueueToInstrQueue, "IssueQueue5", "port1IssueQueue", "InstrQueue1", "port1InstrQueue", "8,0", "black");
+
+            CreateConnector(InstrQueueToAddressUnit, "InstrQueue5", "port2InstrQueue", "AddressUnit", "port1AddressUnit", "8,0", "black", "Load/Store\nOperations", AnnotationAlignment.After, 0.8);
+
+            CreateConnector(AddressUnitToLoadBuffers, "AddressUnit", "port2AddressUnit", "LoadBuffer1", "port1LoadBuffer", "8,0", "black");
+
+            CreateConnector(LoadBufferToMemoryUnit, "LoadBuffer5", "port2LoadBuffer", "MemoryUnit", "port3MemoryUnit", "8,0", "black", "Load Addr", AnnotationAlignment.Center, .8);
+
+            CreateConnector(ReorderBufferDataToMemoryUnit, "ReorderBuffer5", "port4ReorderBuffer", "MemoryUnit", "port1MemoryUnit", "8,0", "black", "Store Data", AnnotationAlignment.Center, .98);
+
+            CreateConnector(ReorderBufferStoreAddrToMemoryUnit, "ReorderBuffer5", "port3ReorderBuffer", "MemoryUnit", "port2MemoryUnit", "8,0", "black", "Store Addr", AnnotationAlignment.Center, .95);
+
+            CreateConnector(AddressUnitToReorderBuffer, "AddressUnit", "port3AddressUnit", "ReorderBuffer1", "port1ReorderBuffer", "8,0", "black");
+
+            CreateConnector(Res1DataBusToFPAdder1, "Res1DataBus3", "port2Res1", "FPAdder", "port1FPAdder", "8,0", "black");
+            CreateConnector(Res1OperandBusToFPAdder1, "Res1OperandBus3", "port2Res1", "FPAdder", "port2FPAdder", "8,0", "black");
+
+            CreateConnector(Res2DataBusToFPMult1, "Res2DataBus3", "port2Res2", "FPMult", "port1FPMult", "8,0", "black");
+            CreateConnector(Res2OperandBusToFPMult1, "Res2OperandBus3", "port2Res2", "FPMult", "port2FPMult", "8,0", "black");
+
+            CreateConnector(Res3DataBusToIntUnit1, "Res3DataBus3", "port2Res3", "IntUnit", "port1IntUnit", "8,0", "black");
+            CreateConnector(Res3OperandBusToIntUnit1, "Res3OperandBus3", "port2Res3", "IntUnit", "port2IntUnit", "8,0", "black");
+
+
+
+
+            // CDB Connectors
+            CreateConnector(CDBNode1ToCDBNode2, "CDBNode1", "port3CDB", "CDBNode2", "port1CDB", "8,0", "black", "Common Data Bus", AnnotationAlignment.After, 0.5, default, default, default, DecoratorShape.None);
+            CreateConnector(MemoryUnitToCDBNode1, "MemoryUnit", "port4MemoryUnit", "CDBNode1", "port2CDB", "8,0", "black");
+            CreateConnector(FPAdderToCDBNode4, "FPAdder", "port3FPAdder", "CDBFPAdderNode", "port2CDB", "8,0", "black");
+            CreateConnector(FPMultToCDBNode5, "FPMult", "port3FPMult", "CDBFPMultNode", "port2CDB", "8,0", "black");
+            CreateConnector(IntUnitToCDBNode6, "IntUnit", "port3IntUnit", "CDBIntegerUnitNode", "port2CDB", "8,0", "black");
+            CreateConnector(CDBNode3ToCDBNode7, "CDBNode3", "port1CDB", "CDBNode7", "port3CDB", "8,0", "black", default, default, default, default, default, default, DecoratorShape.None);
+            CreateConnector(CDBNode2ToCDBNode13, "CDBNode2", "port2CDB", "CDBNode13", "port4CDB", "8,0", "black", default, default, default, default, default, default, DecoratorShape.None);
+            CreateConnector(CDBNode13ToReorderBuffer, "CDBNode13", "port1CDB", "ReorderBuffer1", "port2ReorderBuffer", "8,0", "black");
+
+
+            // OPBus Connectors
+            CreateConnector(RegFile5ToOpBusNode2, "RegFile5", "port3RegFile", "OpBusNode2", "port3OpBus", "8,0", "black", default, default, default, default, default, default, DecoratorShape.None);
+            CreateConnector(OpBusNode2ToRes1DataBus, "OpBusNode2", "port1OpBus", "Res1DataBus1", "port1Res1", "8,0", "black", "FP Operations", AnnotationAlignment.After, 0.35);
+            CreateConnector(OpBusNode1ToAddressUnit, "OpBusNode1", "port2OpBus", "AddressUnit", "port4AddressUnit", "8,0", "black");
+            CreateConnector(DataToOpBusNode4, "OpBusNode5", "port4OpBus", "OpBusNode4", "port2OpBus", "8,0", "black");
+            CreateConnector(DataToOpBusNode6, "OpBusNode7", "port4OpBus", "OpBusNode6", "port2OpBus", "8,0", "black");
+            CreateConnector(RegFileToOpBusNode3, "RegFile5", "port4RegFile", "OpBusNode3", "port2OpBus", "8,0", "black", "Operand\nBuses", AnnotationAlignment.After, 0.2);
+            CreateConnector(OpBusNode2ToRes2DataBus, "OpBusNode2", "port4OpBus", "Res2DataBus1", "port1Res2", "8,0", "black");
+            CreateConnector(OpBusNode2ToRes3DataBus, "OpBusNode2", "port3OpBus", "Res3DataBus1", "port1Res3", "8,0", "black");
+            CreateConnector(OpBusNode3ToRes1OperandBus, "OpBusNode3", "port1OpBus", "Res1OperandBus1", "port1Res1", "8,0", "black");
+            CreateConnector(OpBusNode3ToRes2OperandBus, "OpBusNode3", "port1OpBus", "Res2OperandBus1", "port1Res2", "8,0", "black");
+            CreateConnector(OpBusNode3ToRes3OperandBus, "OpBusNode3", "port3OpBus", "Res3OperandBus1", "port1Res3", "8,0", "black");
+
+
+            // OperationBus Connectors
+            CreateConnector(InstrQueueToOperationBus, "InstrQueue5", "port3InstrQueue", "OperationBusNode1", "port2OperationBus", "8,0", "black");
+            CreateConnector(OperationBusToRes1OpBus, "OperationBusNode1", "port1OperationBus", "Res1OpBus1", "port1OpBus", "8,0", "black");
+            CreateConnector(OperationBusToRes2OpBus, "OperationBusNode1", "port3OperationBus", "Res2OpBus1", "port1OpBus", "8,0", "black", "Operation Bus", AnnotationAlignment.After, 0);
+            CreateConnector(OperationBusToRes3OpBus, "OperationBusNode1", "port3OperationBus", "Res3OpBus1", "port1OpBus", "8,0", "black");
+
+
+            #endregion
+        }
+
+        #region Dynamic Connector Strings
+        // Connector Strings
+        private string ReorderBuffToRegFileData = "ReorderBuffToRegFileData";
+        private string ReorderBuffToRegFileRegNum = "ReorderBuffToRegFileRegNum";
+        private string IssueQueueToInstrQueue = "IssueQueueToInstrQueue";
+        private string InstrQueueToAddressUnit = "InstrQueueToAddressUnit";
+        private string AddressUnitToLoadBuffers = "AddressUnitToLoadBuffers";
+        private string LoadBufferToMemoryUnit = "LoadBufferToMemoryUnit";
+        private string ReorderBufferDataToMemoryUnit = "ReorderBufferDataToMemoryUnit";
+        private string ReorderBufferStoreAddrToMemoryUnit = "ReorderBufferStoreAddrToMemoryUnit";
+        private string AddressUnitToReorderBuffer = "AddressUnitToReorderBuffer";
+
+        private string Res1DataBusToFPAdder1 = "Res1DataBusToFPAdder1";
+        private string Res1OperandBusToFPAdder1 = "Res1OperandBusToFPAdder1";
+
+        private string Res2DataBusToFPMult1 = "Res2DataBusToFPMult1";
+        private string Res2OperandBusToFPMult1 = "Res2OperandBusToFPMult1";
+
+        private string Res3DataBusToIntUnit1 = "Res3DataBusToIntUnit1";
+        private string Res3OperandBusToIntUnit1 = "Res3OperandBusToIntUnit1";
+
+        // CDB strings
+        private string CDBNode1ToCDBNode2 = "CDBNode1ToCDBNode2";
+        private string MemoryUnitToCDBNode1 = "MemoryUnitToCDBNode1";
+        private string FPAdderToCDBNode4 = "FPAdderToCDBNode4";
+        private string FPMultToCDBNode5 = "FPMultToCDBNode5";
+        private string IntUnitToCDBNode6 = "IntUnitToCDBNode6";
+        private string CDBNode3ToCDBNode7 = "CDBNode3ToCDBNode7";
+        private string CDBNode2ToCDBNode13 = "CDBNode2ToCDBNode13";
+        private string CDBNode13ToReorderBuffer = "CDBNode13ToReorderBuffer";
+
+        // OpBus strings
+        private string RegFile5ToOpBusNode2 = "RegFile5ToOpBusNode2";
+        private string OpBusNode2ToRes1DataBus = "OpBusNode2ToRes1DataBus";
+        private string OpBusNode1ToAddressUnit = "OpBusNode1ToAddressUnit";
+        private string DataToOpBusNode4 = "DataToOpBusNode4";
+        private string DataToOpBusNode6 = "DataToOpBusNode6";
+        private string RegFileToOpBusNode3 = "RegFileToOpBusNode3";
+        private string OpBusNode2ToRes2DataBus = "OpBusNode2ToRes2DataBus";
+        private string OpBusNode2ToRes3DataBus = "OpBusNode2ToRes3DataBus";
+        private string OpBusNode3ToRes1OperandBus = "OpBusNode3ToRes1OperandBus";
+        private string OpBusNode3ToRes2OperandBus = "OpBusNode3ToRes2OperandBus";
+        private string OpBusNode3ToRes3OperandBus = "OpBusNode3ToRes3OperandBus";
+
+        // Operation Bus Strings
+        private string InstrQueueToOperationBus = "InstrQueueToOperationBus";
+        private string OperationBusToRes1OpBus = "OperationBusToRes1OpBus";
+        private string OperationBusToRes2OpBus = "OperationBusToRes2OpBus";
+        private string OperationBusToRes3OpBus = "OperationBusToRes3OpBus";
+
+        #endregion
+
+        #region Static Diagram Updates
+
+        void UpdateStaticDiagram()
         {
             if (SPEx != null && ConnectorCollection.Count != 0)
             {
@@ -743,6 +1380,8 @@ namespace InstructionSetProject.Frontend.Pages
             }
         }
 
+        #endregion
+
         #region DataLabels
         private PathAnnotation idExRsD1 = new();
         private PathAnnotation idExRsD2 = new();
@@ -757,7 +1396,7 @@ namespace InstructionSetProject.Frontend.Pages
         private ShapeAnnotation rdReg = new();
         #endregion
 
-        private void InitDiagramModel()
+        private void InitStaticDiagramModel()
         {
             NodeCollection = new DiagramObjectCollection<Node>();
             ConnectorCollection = new DiagramObjectCollection<Connector>();
@@ -1173,7 +1812,7 @@ namespace InstructionSetProject.Frontend.Pages
 
             #endregion
 
-            UpdateDiagram();
+            UpdateStaticDiagram();
         }
 
         #region Connector Variables
@@ -1249,7 +1888,7 @@ namespace InstructionSetProject.Frontend.Pages
         public string RegistersRdReg = "r2";
 
         private void CreateConnector(string id, string sourceId, string sourcePortId, string targetId, string targetPortId, string strokeDash, string strokeColor, string label = default,
-                                     AnnotationAlignment align = AnnotationAlignment.Before, double offset = 1, PathAnnotation pAnnotate = null, OrthogonalSegment segment1 = null, OrthogonalSegment segment2 = null)
+                                     AnnotationAlignment align = AnnotationAlignment.Before, double offset = 1, PathAnnotation pAnnotate = null, OrthogonalSegment segment1 = null, OrthogonalSegment segment2 = null, DecoratorShape decoratorShape = DecoratorShape.Arrow)
         {
             Connector diagramConnector = new Connector()
             {
@@ -1261,7 +1900,8 @@ namespace InstructionSetProject.Frontend.Pages
                 Style = new ShapeStyle() { StrokeWidth = 1, StrokeColor = strokeColor, StrokeDashArray = strokeDash },
                 TargetDecorator = new DecoratorSettings()
                 {
-                    Style = new ShapeStyle() { StrokeColor = strokeColor, Fill = strokeColor }
+                    Style = new ShapeStyle() { StrokeColor = strokeColor, Fill = strokeColor },
+                    Shape = decoratorShape
                 }
             };
             diagramConnector.Constraints |= ConnectorConstraints.DragSegmentThumb;
@@ -1408,13 +2048,75 @@ namespace InstructionSetProject.Frontend.Pages
         }
         private void OnClicked()
         {
-            InitDiagramModel();
-            this.Visibility = true;
+            if (StaticMode == true)
+            {
+                InitStaticDiagramModel();
+                StaticVisibility = true;
+            }    
+            else if (StaticMode == false)
+            {
+                InitDynamicDiagramModel();
+                DynamicVisibility = true;
+            }
         }
 
         private void errorClose(Object args)
         {
             this.errorVis = false;
+        }
+
+        private StandaloneEditorConstructionOptions EditorConstructionOptions(MonacoEditor editor)
+        {
+            return new StandaloneEditorConstructionOptions
+            {
+                AutomaticLayout = true,
+                Language = "javascript",
+                Value = "function xyz() {\n" +
+                        "   console.log(\"Hello world!\");\n" +
+                        "}"
+            };
+        }
+
+        private async Task EditorOnDidInit(MonacoEditorBase editor)
+        {
+            var newDecorations = new ModelDeltaDecoration[]
+            {
+                new ModelDeltaDecoration
+                {
+                    Range = new BlazorMonaco.Range(3,1,3,1),
+                    Options = new ModelDecorationOptions
+                    {
+                        IsWholeLine = true,
+                        ClassName = "decorationContentClass",
+                        GlyphMarginClassName = "decorationGlyphMarginClass"
+                    }
+                }
+            };
+
+            string keyword = "ADD";
+
+            await MonacoEditorBase.DefineTheme("my-custom-theme", new StandaloneThemeData
+            {
+                Base = "vs-dark",
+                Inherit = true,
+                Rules = new List<TokenThemeRule>
+                {
+                    new TokenThemeRule { Background = "363636", Foreground = "E0E0E0" },
+                    new TokenThemeRule { Token = keyword, Foreground = "0000FF" },
+                    new TokenThemeRule { Token = "operator.sql", Foreground = "59ADFF" },
+                    new TokenThemeRule { Token = "number", Foreground = "66CC66" },
+                    new TokenThemeRule { Token = "string.sql", Foreground = "E65C5C" },
+                    new TokenThemeRule { Token = "comment", Foreground = "7A7A7A" }
+                },
+                Colors = new Dictionary<string, string>
+                {
+                    ["editor.background"] = "#363636",
+                    ["editorCursor.foreground"] = "#E0E0E0",
+                    ["editorLineNumber.foreground"] = "#7A7A7A"
+                }
+            });
+
+            await MonacoEditorBase.SetTheme("my-custom-theme");
         }
 
     }
