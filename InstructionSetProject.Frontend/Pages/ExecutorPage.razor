@@ -91,7 +91,86 @@
         background-color: black !important;
     }
 
+    .e-sizing .e-tbar-btn-text {
+        font-size: 22px;
+    }
+
+    .modalDivEx {
+        position: absolute;
+        top: 10%;
+        transform: translate(160px, -50%);
+    }
+
+    .modalDivEx1 {
+        position: absolute;
+        top: 25%;
+        transform: translate(10px, -50%);
+    }
+
+    .modalExBtn {
+        position: absolute;
+        top: 90%;
+        transform: translate(180px, -50%);
+        background-color: #20639B;
+        color: white;
+    }
+
+    .modalDivEx2 {
+        position: absolute;
+        top: 55%;
+        transform: translate(85px, -50%);
+    }
+
+    ::-webkit-scrollbar {
+        display: none;
+    }
+
+    .monacoEditorCSS {
+        margin-top: 10px;
+        width: 100%;
+        height: 500px;
+        border: 2px solid gray;
+    }
+
 </style>
+
+<Modal @bind-Open="IsModalOpened" Close="OnClose">
+    <form class="modalForm" method="dialog" style="width: 400px; height: 500px; align-content: flex-start">
+        <div class="modalDivEx">
+            <span style="font-size: 24px">Settings</span>
+        </div>
+        <div class="modalDivEx1">
+            <label class="staticLabel" style="transform: translateY(-35px); font-family: monospace">@(StaticMode == true ? "Static" : "Dynamic") -> </label>
+            <label class="switch">
+                <input type="checkbox" class="inputCheckbox" @onchange="toggleStaticDynamicMode">
+                <span class="slider round"  style="transform: translateY(-18px)"></span>
+            </label>
+        </div>
+        <!-- Add a stage legend right here in this spot where this comment is located-->
+        @if(StaticMode == true)
+        {
+            <div class="modalDivEx2">
+                <p class="bg-fetch" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px); text-align: center"><b>Fetch</b></p>
+                <p class="bg-decode" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px); text-align: center"><b>Decode</b></p>
+                <p class="bg-execute" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px); text-align: center"><b>Execute</b></p>
+                <p class="bg-memory" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px); text-align: center"><b>Memory</b></p>
+                <p class="bg-write" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px); text-align: center"><b>WriteBack</b></p>
+            </div>
+        }
+        else if(StaticMode == false)
+        {
+            <div class="modalDivEx2">
+                <p class="bg-fetch" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px); text-align: center"><b>Issue</b></p>
+                <p class="bg-decode" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px); text-align: center"><b>Execute</b></p>
+                <p class="bg-execute" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px); text-align: center"><b>Read</b></p>
+                <p class="bg-memory" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px); text-align: center"><b>Write</b></p>
+                <p class="bg-write" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px); text-align: center"><b>Commit</b></p>
+            </div>
+        }
+
+         <button class="modalExBtn" value="cancel">Close</button>
+    </form>
+</Modal>
 
 <div class="code_input_executor">
     <div class="code_input_wrapper">
@@ -102,22 +181,23 @@
                     <ToolbarItem PrefixIcon="e-icons e-chevron-right-fill" Text="Run" Type="ItemType.Button" OnClick="runCode" TooltipText="Run the code"></ToolbarItem>
                     <ToolbarItem PrefixIcon="e-icons e-properties-1" Text="Debug" TooltipText="Start debugging the code" OnClick="Debug"></ToolbarItem>
                     <ToolbarItem Type="ItemType.Separator"></ToolbarItem>
-                    <ToolbarItem PrefixIcon="e-icons e-clock" Text="Clock Tick" OnClick="ClockTick" TooltipText="Perform on clock tick" Disabled="@(SPEx == null)"></ToolbarItem>
-                    <ToolbarItem PrefixIcon="e-icons e-text-wrap" Text="Step" OnClick="step" TooltipText="Step through each line of code upon debugging" Disabled="@(SPEx == null)"></ToolbarItem>
-                    <ToolbarItem PrefixIcon="e-icons e-check" Text="Continue" OnClick="Continue" TooltipText="Continue through the rest of the program" Disabled="@(SPEx == null)"></ToolbarItem>
-                    <ToolbarItem PrefixIcon="e-icons e-bullet-3" Text="Stop" OnClick="Stop" TooltipText="Stop the program" Disabled="@(SPEx == null)"></ToolbarItem>
+                    <ToolbarItem PrefixIcon="e-icons e-clock" Text="Clock Tick" OnClick="ClockTick" TooltipText="Perform on clock tick" Disabled="@(SPEx == null || (SPEx.fetchingInstruction == null && SPEx.executingInstruction == null && SPEx.decodingInstruction == null && SPEx.memoryInstruction == null && SPEx.writingBackInstruction == null))"></ToolbarItem>
+                    <ToolbarItem PrefixIcon="e-icons e-text-wrap" Text="Step" OnClick="step" TooltipText="Step through each line of code upon debugging" Disabled="@(SPEx == null || (SPEx.fetchingInstruction == null && SPEx.executingInstruction == null && SPEx.decodingInstruction == null && SPEx.memoryInstruction == null && SPEx.writingBackInstruction == null))"></ToolbarItem>
+                    <ToolbarItem PrefixIcon="e-icons e-check" Text="Continue" OnClick="Continue" TooltipText="Continue through the rest of the program" Disabled="@(SPEx == null || (SPEx.fetchingInstruction == null && SPEx.executingInstruction == null && SPEx.decodingInstruction == null && SPEx.memoryInstruction == null && SPEx.writingBackInstruction == null))"></ToolbarItem>
+                    <ToolbarItem PrefixIcon="e-icons e-bullet-3" Text="Stop" OnClick="Stop" TooltipText="Stop the program" Disabled="@(SPEx == null || (SPEx.fetchingInstruction == null && SPEx.executingInstruction == null && SPEx.decodingInstruction == null && SPEx.memoryInstruction == null && SPEx.writingBackInstruction == null))"></ToolbarItem>
                     <ToolbarItem Type="ItemType.Separator"></ToolbarItem>
                     <ToolbarItem Text="DataPath" TooltipText="Show the data path of instructions" Disabled="@ShowButton" OnClick="OnClicked"></ToolbarItem>
                     <ToolbarItem Type="ItemType.Separator"></ToolbarItem>
+                    <ToolbarItem Text="Settings" TooltipText="Executor Settings" OnClick="e => IsModalOpened = true" Align="ItemAlign.Right" CssClass="e-sizing" Disabled="@(SPEx != null && (SPEx.fetchingInstruction != null || SPEx.executingInstruction != null || SPEx.decodingInstruction != null || SPEx.memoryInstruction != null || SPEx.writingBackInstruction != null))"></ToolbarItem>
                 </ToolbarItems> 
             </SfToolbar>
             
 
-            <SfDialog Target="#target" Width="1225px" Height="850px" ResizeHandles="@dialogResizeDirections" AllowDragging="true" EnableResize="true" ShowCloseIcon="true" @bind-Visible="Visibility">
+            <SfDialog Target="#target" Width="1225px" Height="850px" ResizeHandles="@dialogResizeDirections" AllowDragging="true" EnableResize="true" ShowCloseIcon="true" @bind-Visible="StaticVisibility">
                 <DialogTemplates>
-                    <Header>Datapath: 
-                        <Syncfusion.Blazor.Buttons.SfButton OnClick="step" Content="Step" Disabled="@(SPEx == null)" IsPrimary="true" style="transform: translateY(5px)"></Syncfusion.Blazor.Buttons.SfButton>
-                        <Syncfusion.Blazor.Buttons.SfButton OnClick="ClockTick" Content="Clock Tick" Disabled="@(SPEx == null)" IsPrimary="true" style="transform: translateY(5px)"></Syncfusion.Blazor.Buttons.SfButton>
+                    <Header>Static Datapath: 
+                        <Syncfusion.Blazor.Buttons.SfButton OnClick="step" Content="Step" Disabled="@(SPEx == null || (SPEx.fetchingInstruction == null && SPEx.executingInstruction == null && SPEx.decodingInstruction == null && SPEx.memoryInstruction == null && SPEx.writingBackInstruction == null))" IsPrimary="true" style="transform: translateY(5px)"></Syncfusion.Blazor.Buttons.SfButton>
+                        <Syncfusion.Blazor.Buttons.SfButton OnClick="ClockTick" Content="Clock Tick" Disabled="@(SPEx == null || (SPEx.fetchingInstruction == null && SPEx.executingInstruction == null && SPEx.decodingInstruction == null && SPEx.memoryInstruction == null && SPEx.writingBackInstruction == null))" IsPrimary="true" style="transform: translateY(5px)"></Syncfusion.Blazor.Buttons.SfButton>
                     </Header>
                     <Content>
                         <SfDiagramComponent Height="680px" Constraints="DiagramConstraints.None" Nodes="@NodeCollection" Connectors="@ConnectorCollection" @ref="@diagram">
@@ -129,6 +209,22 @@
                         <textarea style="height: 35px; width: 237px; text-align: center" readonly>@executeMnemonic</textarea>
                         <textarea style="height: 35px; width: 252px; text-align: center" readonly>@memoryMnemonic</textarea>
                         <textarea style="height: 35px; width: 118px; text-align: center" readonly>@writeMnemonic</textarea>
+                    </Content>
+                </DialogTemplates>
+                <DialogEvents Opened="@DialogOpen" Closed="@DialogClose"></DialogEvents>
+            </SfDialog>
+
+            <SfDialog Target="#target" Width="1225px" Height="850px" ResizeHandles="@dialogResizeDirections" AllowDragging="true" EnableResize="true" ShowCloseIcon="true" @bind-Visible="DynamicVisibility">
+                <DialogTemplates>
+                    <Header>Dynamic Datapath: 
+                        <Syncfusion.Blazor.Buttons.SfButton OnClick="step" Content="Step" Disabled="@(SPEx == null)" IsPrimary="true" style="transform: translateY(5px)"></Syncfusion.Blazor.Buttons.SfButton>
+                        <Syncfusion.Blazor.Buttons.SfButton OnClick="ClockTick" Content="Clock Tick" Disabled="@(SPEx == null)" IsPrimary="true" style="transform: translateY(5px)"></Syncfusion.Blazor.Buttons.SfButton>
+                    </Header>
+                    <Content>
+                        <SfDiagramComponent Height="720px" Constraints="DiagramConstraints.None" Nodes="@NodeCollection" Connectors="@ConnectorCollection" @ref="@diagram">
+                            <SnapSettings Constraints=SnapConstraints.None>
+                            </SnapSettings>
+                        </SfDiagramComponent>
                     </Content>
                 </DialogTemplates>
                 <DialogEvents Opened="@DialogOpen" Closed="@DialogClose"></DialogEvents>
@@ -158,9 +254,11 @@
                                 <label id="exLabel"><b>Source Code</b></label>
                                 <button @onclick="SaveAssemblyCode" type="button" class="float-end" id="saveButton">Save File</button>
                             </div>
-                            <!-- Remove the comment below when syntax highlighting is ready-->
-                            <!-- <div contenteditable="true" @ref=SyntaxCode id="syntaxDiv" style="text-align: left; background-color: white; margin-top: 10px; color: black" onkeypress="handleKeyPress(event)"></div> -->
 
+                            <!--Monaco Editor currently in the works-->
+                            <!--<MonacoEditor Id="MonacoEditorID" ConstructionOptions="EditorConstructionOptions" CssClass="monacoEditorCSS" OnDidInit="EditorOnDidInit"/>-->
+
+                            <!-- Remove this next line of code to use the original text editor-->
                             <textarea @bind="ExecAssemblyCode" id="assemblyTextBox" class="assemblyCodeBoxToUpdate" placeholder="Write your assembly code here..."></textarea><br />
                             <div>
                                 <label id="exLabel"><b>Machine Code</b></label>
@@ -214,16 +312,7 @@
                                     <textarea readonly class="registerTextArea">@FL</textarea><br/>
                                         
                                     <label class="registerLabel"><b>MP:</b></label>
-                                    <textarea readonly class="registerTextArea">@MBP</textarea><br/><br/>
-
-                                    <!-- Add a stage legend right here in this spot where this comment is located-->
-                                    <div>
-                                        <p class="bg-fetch" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px); text-align: center"><b>Fetch</b></p>
-                                        <p class="bg-decode" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px); text-align: center"><b>Decode</b></p>
-                                        <p class="bg-execute" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px); text-align: center"><b>Execute</b></p>
-                                        <p class="bg-memory" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px); text-align: center"><b>Memory</b></p>
-                                        <p class="bg-write" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px); text-align: center"><b>WriteBack</b></p>
-                                    </div>
+                                    <textarea readonly class="registerTextArea">@MBP</textarea><br/>
                                 </div>
 
                                 <div class="col-sm-4">
