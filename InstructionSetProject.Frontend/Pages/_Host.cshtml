@@ -77,15 +77,6 @@
         }
     }
 
-    function SyntaxHighlight(element)
-    {
-        var mnemonic = /(ADD|SUB)/g;
-        var string = element.innerHTML,
-        parsed = string.replace(mnemonic,'<span style="color: red">ADD</span>');
-
-        element.innerHTML = parsed;
-    }
-
 
     function getDiagramFileName(dialogName) 
     {
@@ -118,7 +109,22 @@
         document.getElementById('UploadFiles').click();
     }
 
+    function setupMonacoLanguage() {
+        
+        monaco.languages.register({ id: 'ISInstructionSet' });
 
+        monaco.languages.setMonarchTokensProvider( 'ISInstructionSet', {
+            tokenizer: {
+		        root: [
+			        [/^\s*[A-Z]{3}/g, 'mnemonic'],
+                    [/(r|f)[0-7]/g, 'register'],
+                    [/#.*/g, 'comment'],
+                    [/ id| rd| in| rn| xd| xn| xo| xf| sd| sn| so| sf| sxd| sxn| sxo| sxf$/g, 'addressModes'],
+                    [/.*:/g, 'branchLabel'],
+		        ]
+	        }
+        });
+    }
 
 
 

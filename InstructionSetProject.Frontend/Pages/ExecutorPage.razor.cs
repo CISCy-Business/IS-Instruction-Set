@@ -18,6 +18,7 @@ namespace InstructionSetProject.Frontend.Pages
     public partial class ExecutorPage
     {
         ElementReference SyntaxCode;
+        private MonacoEditor _editor { get; set; }
 
         private string ExecMachineCode = "";
         private string ExecAssemblyCode = "";
@@ -2065,15 +2066,22 @@ namespace InstructionSetProject.Frontend.Pages
             this.errorVis = false;
         }
 
+
+
+
+
+
+
+
+        // Monaco Editor
+
         private StandaloneEditorConstructionOptions EditorConstructionOptions(MonacoEditor editor)
         {
             return new StandaloneEditorConstructionOptions
             {
                 AutomaticLayout = true,
-                Language = "javascript",
-                Value = "function xyz() {\n" +
-                        "   console.log(\"Hello world!\");\n" +
-                        "}"
+                Language = "ISInstructionSet",
+                Value = ExecAssemblyCode
             };
         }
 
@@ -2093,30 +2101,30 @@ namespace InstructionSetProject.Frontend.Pages
                 }
             };
 
-            string keyword = "ADD";
-
-            await MonacoEditorBase.DefineTheme("my-custom-theme", new StandaloneThemeData
+            await MonacoEditorBase.DefineTheme("ISTheme", new StandaloneThemeData
             {
                 Base = "vs-dark",
-                Inherit = true,
+                Inherit = false,
                 Rules = new List<TokenThemeRule>
                 {
-                    new TokenThemeRule { Background = "363636", Foreground = "E0E0E0" },
-                    new TokenThemeRule { Token = keyword, Foreground = "0000FF" },
-                    new TokenThemeRule { Token = "operator.sql", Foreground = "59ADFF" },
-                    new TokenThemeRule { Token = "number", Foreground = "66CC66" },
-                    new TokenThemeRule { Token = "string.sql", Foreground = "E65C5C" },
-                    new TokenThemeRule { Token = "comment", Foreground = "7A7A7A" }
+                    new TokenThemeRule { Background = "000000", Foreground = "E0E0E0" },
+                    new TokenThemeRule { Token = "mnemonic", Foreground = "4353FA" },
+                    new TokenThemeRule { Token = "register", Foreground = "999900" },
+                    new TokenThemeRule { Token = "comment", Foreground = "119922" },
+                    new TokenThemeRule { Token = "addressModes", Foreground = "FF7DA4" },
+                    new TokenThemeRule { Token = "branchLabel", Foreground = "7E5EFF" },
                 },
                 Colors = new Dictionary<string, string>
                 {
-                    ["editor.background"] = "#363636",
+                    ["editor.background"] = "#000000",
                     ["editorCursor.foreground"] = "#E0E0E0",
                     ["editorLineNumber.foreground"] = "#7A7A7A"
                 }
             });
 
-            await MonacoEditorBase.SetTheme("my-custom-theme");
+            await MonacoEditorBase.SetTheme("ISTheme");
+
+            await JSRuntime.InvokeVoidAsync("setupMonacoLanguage");
         }
 
     }

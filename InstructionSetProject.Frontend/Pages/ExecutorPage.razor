@@ -256,10 +256,10 @@
                             </div>
 
                             <!--Monaco Editor currently in the works-->
-                            <!--<MonacoEditor Id="MonacoEditorID" ConstructionOptions="EditorConstructionOptions" CssClass="monacoEditorCSS" OnDidInit="EditorOnDidInit"/>-->
+                            <MonacoEditor @ref="_editor" Id="MonacoEditorID" ConstructionOptions="EditorConstructionOptions" CssClass="monacoEditorCSS" OnDidInit="EditorOnDidInit"/>
 
                             <!-- Remove this next line of code to use the original text editor-->
-                            <textarea @bind="ExecAssemblyCode" id="assemblyTextBox" class="assemblyCodeBoxToUpdate" placeholder="Write your assembly code here..."></textarea><br />
+                            <!--<textarea @bind="ExecAssemblyCode" id="assemblyTextBox" class="assemblyCodeBoxToUpdate" placeholder="Write your assembly code here..."></textarea><br />-->
                             <div>
                                 <label id="exLabel"><b>Machine Code</b></label>
                             </div>
