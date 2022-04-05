@@ -174,7 +174,6 @@
 
 .registerTextArea {
     max-width: 150px;
-    min-width: 75px;
     height: 35px;
     overflow-x: hidden;
     overflow-y: hidden;

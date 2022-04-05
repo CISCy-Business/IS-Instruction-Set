@@ -306,9 +306,9 @@
     private string pushPopAssem1 = "PSW r1\nPPW r1\nSTW r1, 01AA, id";
     private string pushPopMach1 = "01 01 01 C1 C1 81 01 AA";
     private string largeSampleAssem1 = "# Load Registers with Immediates\nADI r1, r0, AA\nADI r2, r0, 1234\nADI r3, r0, CDCD\nADI r4, r0, DAD\nADI r5, r0, FFFF\nADI f1, f0, 4566\nADI f2, f0, 4099\n\n" +
-    "StartExecution:\n# Float16 5.4 (4566) + 2.3 (4099) = 7.7 (47B2)\n# Uses forwarding to avoid hazard with F2\nADD f3, f2, f1\n\n# Will skip jump on first pass, take jump on second\nJEQ r1, r6, EndExecution\n\n# Push R1 and R2 onto stack" + 
-    "\nPSW r1\nPSW r2\n\n# Write some values to memory\nSTW r4, r3, rd\nSTW r5, CDCF, id\n\n# Set R6 so that we hit our second jump\nADD r6, r0, r1\n\n# Jump back to the start of execution\nJMP StartExecution\n\nEndExecution:\n# Swap the values pushed onto the stack" + 
-    "\nPPW r1\nPPW r2\n\n# Swap the values loaded into memory\nLDW r5, r3, rd\nLDW r4, CDCF, id";
+    "StartExecution:\n\t# Float16 5.4 (4566) + 2.3 (4099) = 7.7 (47B2)\n\t# Uses forwarding to avoid hazard with F2\n\tADD f3, f2, f1\n\n\t# Will skip jump on first pass, take jump on second\n\tJEQ r1, r6, EndExecution\n\n\t# Push R1 and R2 onto stack" + 
+    "\n\tPSW r1\n\tPSW r2\n\n\t# Write some values to memory\n\tSTW r4, r3, rd\n\tSTW r5, CDCF, id\n\n\t# Set R6 so that we hit our second jump\n\tADD r6, r0, r1\n\n\t# Jump back to the start of execution\n\tJMP StartExecution\n\nEndExecution:\n\t# Swap the values pushed onto the stack" + 
+    "\n\tPPW r1\n\tPPW r2\n\n\t# Swap the values loaded into memory\n\tLDW r5, r3, rd\n\tLDW r4, CDCF, id";
     private string largeSampleMach1 = "C3 81 00 AA C3 82 12 34 C3 83 CD CD C3 84 0D AD C3 85 FF FF E3 81 45 66 E3 82 40 99 60 53 CE B1 00 34 01 01 01 02 C1 94 00 03 C1 85 CD CF 40 46 C7 00 00 1C 01 C1 01 C2 C0 15 00 03 C0 04 CD CF";
 
     bool darkModeSamplePage = FrontendVariables.darkMode;
