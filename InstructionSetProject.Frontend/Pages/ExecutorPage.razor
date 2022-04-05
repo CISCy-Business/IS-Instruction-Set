@@ -177,8 +177,8 @@
         <div>
             <SfToolbar Height="65px">
                 <ToolbarItems>
-                    <ToolbarItem PrefixIcon="e-icons e-settings" Text="Build" OnClick="buildCode" TooltipText="Build the source/machine code prior to running"></ToolbarItem>
-                    <ToolbarItem PrefixIcon="e-icons e-chevron-right-fill" Text="Run" Type="ItemType.Button" OnClick="runCode" TooltipText="Run the code"></ToolbarItem>
+                    <ToolbarItem PrefixIcon="e-icons e-settings" Text="Build" OnClick="buildCodeAsync" TooltipText="Build the source/machine code prior to running"></ToolbarItem>
+                    <ToolbarItem PrefixIcon="e-icons e-chevron-right-fill" Text="Run" Type="ItemType.Button" OnClick="runCodeAsync" TooltipText="Run the code"></ToolbarItem>
                     <ToolbarItem PrefixIcon="e-icons e-properties-1" Text="Debug" TooltipText="Start debugging the code" OnClick="Debug"></ToolbarItem>
                     <ToolbarItem Type="ItemType.Separator"></ToolbarItem>
                     <ToolbarItem PrefixIcon="e-icons e-clock" Text="Clock Tick" OnClick="ClockTick" TooltipText="Perform on clock tick" Disabled="@(SPEx == null || (SPEx.fetchingInstruction == null && SPEx.executingInstruction == null && SPEx.decodingInstruction == null && SPEx.memoryInstruction == null && SPEx.writingBackInstruction == null))"></ToolbarItem>

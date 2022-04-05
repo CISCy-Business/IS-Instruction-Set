@@ -1,4 +1,5 @@
 ﻿using System.Collections.Specialized;
+using System.Text;
 using BlazorMonaco;
 using InstructionSetProject.Backend;
 using InstructionSetProject.Backend.Execution;
@@ -119,12 +120,12 @@ namespace InstructionSetProject.Frontend.Pages
             var buffer = new byte[file.Size];
             await file.OpenReadStream(maxsize).ReadAsync(buffer);
             fileContent = System.Text.Encoding.UTF8.GetString(buffer);
-            ExecAssemblyCode = fileContent;
+            await _editor.SetValue(fileContent);
         }
 
         private async Task SaveAssemblyCode()
         {
-            byte[] file = System.Text.Encoding.UTF8.GetBytes(ExecAssemblyCode);
+            byte[] file = System.Text.Encoding.UTF8.GetBytes(await _editor.GetValue());
             await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "assemblyCode.txt", "text/plain", file);
         }
         private async Task SaveStats()
@@ -213,13 +214,13 @@ namespace InstructionSetProject.Frontend.Pages
             FrontendVariables.currentAssemblyCodeExecutor = "";
         }
 
-        void buildCode()
+        async Task buildCodeAsync()
         {
-            if (ExecAssemblyCode.Length != 0)
+            if (!_editor.GetValue().Equals(""))
             {
                 try
                 {
-                    machineCode = Assembler.Assemble(ExecAssemblyCode);
+                    machineCode = Assembler.Assemble(await _editor.GetValue());
                     string hexCode = BitConverter.ToString(machineCode.ToArray());
                     ExecMachineCode = hexCode.Replace("-", " ");
                     output = "";
@@ -236,11 +237,11 @@ namespace InstructionSetProject.Frontend.Pages
             }
         }
 
-        void runCode()
+        async Task runCodeAsync()
         {
             try
             {
-                SPEx = (StaticPipelineExecution)StaticPipelineExecutor.Execute(ExecAssemblyCode);
+                SPEx = (StaticPipelineExecution)StaticPipelineExecutor.Execute(await _editor.GetValue());
                 output = "";
             }
             catch (Exception ex)
@@ -262,11 +263,11 @@ namespace InstructionSetProject.Frontend.Pages
             Statistics();
         }
 
-        void Debug()
+        async Task Debug()
         {
             try
             {
-                SPEx = (StaticPipelineExecution)StaticPipelineExecutor.Execute(ExecAssemblyCode);
+                SPEx = (StaticPipelineExecution)StaticPipelineExecutor.Execute(await _editor.GetValue());
                 output = "";
             }
             catch (Exception ex)
@@ -275,7 +276,7 @@ namespace InstructionSetProject.Frontend.Pages
             }
             OnItemClick();
             debugRender = true;
-            JSRuntime.InvokeVoidAsync("debugScrollToTop");
+            _ = JSRuntime.InvokeVoidAsync("debugScrollToTop");
             if (StaticMode == true)
                 UpdateStaticDiagram();
             else if (StaticMode == false)
@@ -2081,7 +2082,7 @@ namespace InstructionSetProject.Frontend.Pages
             {
                 AutomaticLayout = true,
                 Language = "ISInstructionSet",
-                Value = ExecAssemblyCode
+                Value = ""
             };
         }
 
@@ -2110,7 +2111,7 @@ namespace InstructionSetProject.Frontend.Pages
                     new TokenThemeRule { Background = "000000", Foreground = "E0E0E0" },
                     new TokenThemeRule { Token = "mnemonic", Foreground = "4353FA" },
                     new TokenThemeRule { Token = "register", Foreground = "999900" },
-                    new TokenThemeRule { Token = "comment", Foreground = "119922" },
+                    new TokenThemeRule { Token = "comment", Foreground = "119922", FontStyle = "italic" },
                     new TokenThemeRule { Token = "addressModes", Foreground = "FF7DA4" },
                     new TokenThemeRule { Token = "branchLabel", Foreground = "7E5EFF" },
                 },
@@ -2123,6 +2124,11 @@ namespace InstructionSetProject.Frontend.Pages
             });
 
             await MonacoEditorBase.SetTheme("ISTheme");
+
+            if (ExecAssemblyCode != "")
+            {
+                await _editor.SetValue(ExecAssemblyCode);
+            }
 
             await JSRuntime.InvokeVoidAsync("setupMonacoLanguage");
         }

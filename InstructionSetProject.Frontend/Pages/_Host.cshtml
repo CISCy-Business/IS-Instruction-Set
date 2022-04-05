@@ -124,6 +124,469 @@
 		        ]
 	        }
         });
+
+        monaco.languages.registerCompletionItemProvider( 'ISInstructionSet', {
+            provideCompletionItems: function (model, position) {
+                var word = model.getWordUntilPosition(position);
+                var range = {
+                    startLineNumber: position.lineNumber,
+                    endLineNumber: position.lineNumber,
+                    startColumn: word.startColumn,
+                    endColumn: word.endColumn
+                }
+
+                return {
+                    suggestions: [
+                        // Pure Register Instructions
+                        {
+                            label: '"ADD"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'add' instruction:\n\tSyntax -> ADD destinationReg, sourceReg1, sourceReg2\n\nExample:\n\tr1 = 10;\n\tr2 = 15;\n\tr3 = 0;\n\n\tADD r3, r1, r2;\n\n\tr3 = 25 now",
+                            insertText: "ADD ${1:r1}, ${2:r2}, ${3:r3}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"SUB"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'subtract' instruction:\n\tSyntax -> SUB destinationReg, sourceReg1, sourceReg2\n\nExample:\n\tr1 = 10;\n\tr2 = 15;\n\tr3 = 0;\n\n\tSUB r3, r2, r1;\n\n\tr3 = 5 now",
+                            insertText: "SUB ${1:r1}, ${2:r2}, ${3:r3}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"ADC"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'add with carry' instruction:\n\tSyntax -> ADC destinationReg, sourceReg1, sourceReg2\n\n",
+                            insertText: "ADC ${1:r1}, ${2:r2}, ${3:r3}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"SBB"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'subtract with borrow' instruction:\n\tSyntax -> SBB destinationReg, sourceReg1, sourceReg2\n\n",
+                            insertText: "SBB ${1:r1}, ${2:r2}, ${3:r3}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"NEG"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'negate' instruction:\n\tSyntax -> NEG destinationReg, sourceReg\n\n",
+                            insertText: "NEG ${1:r1}, ${2:r2}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"NOT"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'bitwise not' instruction:\n\tSyntax -> NOT destinationReg, sourceReg\n\n",
+                            insertText: "NOT ${1:r1}, ${2:r2}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"AND"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'bitwise and' instruction:\n\tSyntax -> AND destinationReg, sourceReg1, sourceReg2\n\n",
+                            insertText: "AND ${1:r1}, ${2:r2}, ${3:r3}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"ORR"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'bitwise or' instruction:\n\tSyntax -> ORR destinationReg, sourceReg1, sourceReg2\n\n",
+                            insertText: "ORR ${1:r1}, ${2:r2}, ${3:r3}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"XOR"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'bitwise exclusive or' instruction:\n\tSyntax -> XOR destinationReg, sourceReg1, sourceReg2\n\n",
+                            insertText: "XOR ${1:r1}, ${2:r2}, ${3:r3}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"ABS"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'absolute value' instruction:\n\tSyntax -> XOR destinationReg(r/f), sourceReg(r/f)\n\n",
+                            insertText: "ABS ${1:f1}, ${2:f2}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        // Small Immediate Mathematics
+                        {
+                            label: '"DEC"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'decrement' instruction:\n\tSyntax -> DEC destinationReg, sourceReg, decrementValue\n\n",
+                            insertText: "DEC ${1:r1}, ${2:r2}, ${3:DecrementValue}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"INC"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'increment' instruction:\n\tSyntax -> INC destinationReg, sourceReg\n\n",
+                            insertText: "INC ${1:r1}, ${2:r2}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        // Large Immediate Mathematics
+                        {
+                            label: '"ADI"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'add immediate' instruction:\n\tSyntax -> ADI destinationReg(r/f), sourceReg(r/f), immediateValue\n\n",
+                            insertText: "ADI ${1:r1}, ${2:r2}, ${3:ImmediateValue}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"SBI"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'subtract immediate' instruction:\n\tSyntax -> SBI destinationReg(r/f), sourceReg(r/f), immediateValue\n\n",
+                            insertText: "SBI ${1:r1}, ${2:r2}, ${3:ImmediateValue}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"AIC"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'add immediate with carry' instruction:\n\tSyntax -> AIC destinationReg(r/f), sourceReg(r/f), immediateValue\n\n",
+                            insertText: "AIC ${1:r1}, ${2:r2}, ${3:ImmediateValue}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"SIB"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'subtract immediate with borrow' instruction:\n\tSyntax -> SIB destinationReg(r/f), sourceReg(r/f), immediateValue\n\n",
+                            insertText: "SIB ${1:r1}, ${2:r2}, ${3:ImmediateValue}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"ANI"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'and immediate' instruction:\n\tSyntax -> ANI destinationReg(r/f), sourceReg(r/f), immediateValue\n\n",
+                            insertText: "ANI ${1:r1}, ${2:r2}, ${3:ImmediateValue}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"ORI"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'or immediate' instruction:\n\tSyntax -> ORI destinationReg(r/f), sourceReg(r/f), immediateValue\n\n",
+                            insertText: "ORI ${1:r1}, ${2:r2}, ${3:ImmediateValue}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"XRI"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'exclusive or immediate' instruction:\n\tSyntax -> XRI destinationReg(r/f), sourceReg(r/f), immediateValue\n\n",
+                            insertText: "XRI ${1:r1}, ${2:r2}, ${3:ImmediateValue}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        // Decision Making
+                        {
+                            label: '"CMP"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'compare' instruction:\n\tSyntax -> CMP sourceReg1(r/f), sourceReg2(r/f)\n\n",
+                            insertText: "CMP ${1:r1}, ${2:r2}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"TST"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'test' instruction:\n\tSyntax -> TST sourceReg1(r/f), sourceReg2(r/f)\n\n",
+                            insertText: "TST ${1:r1}, ${2:r2}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"STS"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'set sign flag' instruction:\n\tSyntax -> STS\n\n",
+                            insertText: "STS",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"CLS"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'clear sign flag' instruction:\n\tSyntax -> CLS\n\n",
+                            insertText: "CLS",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"STP"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'set parity flag' instruction:\n\tSyntax -> STP\n\n",
+                            insertText: "STP",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"CLP"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'clear parity flag' instruction:\n\tSyntax -> CLP\n\n",
+                            insertText: "CLP",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"STO"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'set overflow flag' instruction:\n\tSyntax -> STO\n\n",
+                            insertText: "STO",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"CLO"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'clear overflow flag' instruction:\n\tSyntax -> CLO\n\n",
+                            insertText: "CLO",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"STC"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'set carry flag' instruction:\n\tSyntax -> STC\n\n",
+                            insertText: "STC",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"CLC"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'clear carry flag' instruction:\n\tSyntax -> CLC\n\n",
+                            insertText: "CLC",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"STZ"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'set zero flag' instruction:\n\tSyntax -> STZ\n\n",
+                            insertText: "STZ",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"CLZ"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'clear zero flag' instruction:\n\tSyntax -> CLZ\n\n",
+                            insertText: "CLZ",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"JMP"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'jump unconditional' instruction:\n\tSyntax -> JMP labelToJumpTo\n\n",
+                            insertText: "JMP ${1:label}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"JEQ"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'jump if equal' instruction:\n\tSyntax -> JEQ sourceReg1(r/f), sourceReg2(r/f), labelToJumpTo\n\n",
+                            insertText: "JEQ ${1:r1}, ${2:r2}, ${3:label}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"JNE"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'jump if not equal' instruction:\n\tSyntax -> JNE sourceReg1(r/f), sourceReg2(r/f), labelToJumpTo\n\n",
+                            insertText: "JNE ${1:r1}, ${2:r2}, ${3:label}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"JYS"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'jump if (yes) sign flag' instruction:\n\tSyntax -> JYS sourceReg1(r/f), sourceReg2(r/f), labelToJumpTo\n\n",
+                            insertText: "JYS ${1:r1}, ${2:r2}, ${3:label}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"JNS"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'jump if not (no) sign flag' instruction:\n\tSyntax -> JNS sourceReg1(r/f), sourceReg2(r/f), labelToJumpTo\n\n",
+                            insertText: "JNS ${1:r1}, ${2:r2}, ${3:label}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"JYP"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'jump if (yes) parity flag' instruction:\n\tSyntax -> JYP sourceReg1(r/f), sourceReg2(r/f), labelToJumpTo\n\n",
+                            insertText: "JYP ${1:r1}, ${2:r2}, ${3:label}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"JNP"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'jump if not (no) parity flag' instruction:\n\tSyntax -> JNP sourceReg1(r/f), sourceReg2(r/f), labelToJumpTo\n\n",
+                            insertText: "JNP ${1:r1}, ${2:r2}, ${3:label}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"JYO"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'jump if (yes) overflow flag' instruction:\n\tSyntax -> JYO sourceReg1(r/f), sourceReg2(r/f), labelToJumpTo\n\n",
+                            insertText: "JYO ${1:r1}, ${2:r2}, ${3:label}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"JNO"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'jump if not (no) overflow flag' instruction:\n\tSyntax -> JNO sourceReg1(r/f), sourceReg2(r/f), labelToJumpTo\n\n",
+                            insertText: "JNO ${1:r1}, ${2:r2}, ${3:label}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"JYC"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'jump if (yes) carry flag' instruction:\n\tSyntax -> JYC sourceReg1(r/f), sourceReg2(r/f), labelToJumpTo\n\n",
+                            insertText: "JYC ${1:r1}, ${2:r2}, ${3:label}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"JNC"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'jump if not (no) carry flag' instruction:\n\tSyntax -> JNC sourceReg1(r/f), sourceReg2(r/f), labelToJumpTo\n\n",
+                            insertText: "JNC ${1:r1}, ${2:r2}, ${3:label}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"JYZ"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'jump if (yes) zero flag' instruction:\n\tSyntax -> JYZ sourceReg1(r/f), sourceReg2(r/f), labelToJumpTo\n\n",
+                            insertText: "JYZ ${1:r1}, ${2:r2}, ${3:label}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"JNZ"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'jump if not (no) zero flag' instruction:\n\tSyntax -> JNZ sourceReg1(r/f), sourceReg2(r/f), labelToJumpTo\n\n",
+                            insertText: "JNZ ${1:r1}, ${2:r2}, ${3:label}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        // Process Control Instructions
+                        {
+                            label: '"HLT"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'halt program' instruction:\n\tSyntax -> HLT\n\n",
+                            insertText: "HLT",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"NOP"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'no operation' instruction:\n\tSyntax -> NOP\n\n",
+                            insertText: "NOP",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        // Memory Management Instructions
+                        {
+                            label: '"LDW"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'load word' instruction:\n\tSyntax -> LDW destinationReg, immediateValue, addressingMode\n\n",
+                            insertText: "LDW ${1:r1}, ${2:15}, ${3:id}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"STW"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'store word' instruction:\n\tSyntax -> LDW storingReg, memoryPointToStoreAt, addressingMode\n\n",
+                            insertText: "STW ${1:r1}, ${2:0000}, ${3:id}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"SMP"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'set memory base pointer' instruction:\n\tSyntax -> SMP memoryBaseLocation\n\n",
+                            insertText: "SMP ${1:memoryBaseAddress}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"LDF"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'load float' instruction:\n\tSyntax -> LDF destinationReg, immediateValue, addressingMode\n\n",
+                            insertText: "LDF ${1:r1}, ${2:15}, ${3:id}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"STF"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'store float' instruction:\n\tSyntax -> STF storingReg, memoryPointToStoreAt, addressingMode\n\n",
+                            insertText: "STF ${1:r1}, ${2:0000}, ${3:id}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"PSW"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'push word onto stack' instruction:\n\tSyntax -> PSW sourceRegToPush\n\n",
+                            insertText: "PSW ${1:r1}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"PPW"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'pop word off stack' instruction:\n\tSyntax -> PPW destinationReg\n\n",
+                            insertText: "PPW ${1:r1}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"PPF"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'pop float off stack' instruction:\n\tSyntax -> PPF destinationReg\n\n",
+                            insertText: "PPF ${1:f1}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                        {
+                            label: '"PSF"',
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            documentation: "This is the 'push float onto stack' instruction:\n\tSyntax -> PSF sourceRegToPush\n\n",
+                            insertText: "PSF ${1:f1}",
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            range: range
+                        },
+                    ]
+                }
+            }
+        });
     }
 
 
