@@ -30,11 +30,11 @@ namespace InstructionSetProject.Backend.DynamicPipeline
         {
             dataStructures = new();
             alu = new(dataStructures);
-            instrQueue = new InstructionQueue(instrList, dataStructures.InstructionPointer);
             machineCode = Assembler.Assemble(instrList);
             dataStructures.Memory.AddInstructionCode(machineCode);
             statistics = new();
             dependencyManager = new DependencyManager(dataStructures);
+            instrQueue = new InstructionQueue(instrList, dataStructures.InstructionPointer, dependencyManager);
             reorderBuffer = new ReorderBuffer(dataStructures);
             memoryUnit = new MemoryUnit(dataStructures);
             commonDataBus = new();
@@ -62,7 +62,8 @@ namespace InstructionSetProject.Backend.DynamicPipeline
                 integerReservationStation.instructions.Count != 0 ||
                 integerUnit != null ||
                 commonDataBus.Count != 0 ||
-                reorderBuffer.buffers.Count != 0
+                reorderBuffer.buffers.Count != 0 ||
+                instrQueue.instructions.InstructionOffsetDictionary.ContainsKey(dataStructures.InstructionPointer.value)
             );
         }
 
@@ -215,6 +216,7 @@ namespace InstructionSetProject.Backend.DynamicPipeline
             memoryUnit.loadBuffers = new Queue<InstructionInFlight>(
                 memoryUnit.loadBuffers.Where((instr) => instr.Index < instrIndex));
             instrQueue.nextBatch = instrQueue.nextBatch.Where((instr) => instr.Index < instrIndex).ToList();
+            instrQueue.instructionIndex = instrIndex;
         }
 
         private void ClockTickInstructionQueue()
@@ -228,7 +230,6 @@ namespace InstructionSetProject.Backend.DynamicPipeline
                     case InstructionUnit.Integer:
                         if (integerReservationStation.instructions.Count < 3)
                         {
-                            dependencyManager.CheckDependencies(instr);
                             integerReservationStation.instructions.Enqueue(instr);
                         }
                         else
@@ -237,7 +238,6 @@ namespace InstructionSetProject.Backend.DynamicPipeline
                     case InstructionUnit.FpAdder:
                         if (fpAdderReservationStation.instructions.Count < 3)
                         {
-                            dependencyManager.CheckDependencies(instr);
                             fpAdderReservationStation.instructions.Enqueue(instr);
                         }
                         else
@@ -246,7 +246,6 @@ namespace InstructionSetProject.Backend.DynamicPipeline
                     case InstructionUnit.FpMul:
                         if (fpMulReservationStation.instructions.Count < 3)
                         {
-                            dependencyManager.CheckDependencies(instr);
                             fpMulReservationStation.instructions.Enqueue(instr);
                         }
                         else
@@ -255,7 +254,6 @@ namespace InstructionSetProject.Backend.DynamicPipeline
                     default:
                         if (memoryUnit.loadBuffers.Count < 5)
                         {
-                            dependencyManager.CheckDependencies(instr);
                             memoryUnit.loadBuffers.Enqueue(instr);
                         }
                         else

@@ -14,12 +14,14 @@ namespace InstructionSetProject.Backend.DynamicPipeline
         public InstructionList instructions { get; set; }
         private Register<ushort> instructionPointer { get; set; }
         public List<InstructionInFlight> nextBatch { get; set; } = new();
-        private int instructionIndex { get; set; } = 0;
+        public int instructionIndex { get; set; } = 0;
+        private DependencyManager depManager { get; set; }
 
-        public InstructionQueue(InstructionList instructions, Register<ushort> instructionPointer)
+        public InstructionQueue(InstructionList instructions, Register<ushort> instructionPointer, DependencyManager depManager)
         {
             this.instructions = instructions;
             this.instructionPointer = instructionPointer;
+            this.depManager = depManager;
             LoadNextBatch();
         }
 
@@ -41,13 +43,13 @@ namespace InstructionSetProject.Backend.DynamicPipeline
             if (instr is JumpUnconditional)
             {
                 instructionPointer.value = instr.immediate ?? (ushort)(instructionPointer.value + instr.lengthInBytes);
-            }
-            else
-            {
-                instructionPointer.value += instr.lengthInBytes;
+                return GetNextInstruction();
             }
 
+            instructionPointer.value += instr.lengthInBytes;
+
             var instrInFlight = new InstructionInFlight(instr, instructionIndex);
+            depManager.CheckDependencies(instrInFlight);
             instructionIndex++;
             return instrInFlight;
         }
