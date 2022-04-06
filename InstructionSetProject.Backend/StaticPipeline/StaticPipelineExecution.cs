@@ -11,9 +11,9 @@ namespace InstructionSetProject.Backend.StaticPipeline
     public class StaticPipelineExecution : IExecution
     {
         public InstructionList InstrList;
-        public StaticPipelineDataStructures DataStructures;
+        public PipelineDataStructures DataStructures;
         public List<byte> MachineCode;
-        public StaticPipelineStatistics Statistics;
+        public PipelineStatistics Statistics;
 
         public Alu Alu;
 

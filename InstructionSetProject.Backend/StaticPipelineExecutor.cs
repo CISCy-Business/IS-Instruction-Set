@@ -5,11 +5,11 @@ namespace InstructionSetProject.Backend
 {
     public static class StaticPipelineExecutor
     {
-        public static IExecution Execute(List<byte> machineCode) => Execute(GenerateInstructionList.FromBytes(machineCode));
+        public static StaticPipelineExecution Execute(List<byte> machineCode) => Execute(GenerateInstructionList.FromBytes(machineCode));
 
-        public static IExecution Execute(string assemblyCode) => Execute(GenerateInstructionList.FromString(assemblyCode));
+        public static StaticPipelineExecution Execute(string assemblyCode) => Execute(GenerateInstructionList.FromString(assemblyCode));
 
-        public static IExecution Execute(InstructionList instructions)
+        public static StaticPipelineExecution Execute(InstructionList instructions)
         {
             var exec = new StaticPipelineExecution(instructions);
             return exec;

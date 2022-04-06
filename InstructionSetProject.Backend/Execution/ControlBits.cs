@@ -1,4 +1,4 @@
-﻿namespace InstructionSetProject.Backend.StaticPipeline
+﻿namespace InstructionSetProject.Backend.Execution
 {
     public class ControlBits
     {

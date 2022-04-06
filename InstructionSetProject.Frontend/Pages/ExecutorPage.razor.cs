@@ -241,7 +241,7 @@ namespace InstructionSetProject.Frontend.Pages
         {
             try
             {
-                SPEx = (StaticPipelineExecution)StaticPipelineExecutor.Execute(await _editor.GetValue());
+                SPEx = StaticPipelineExecutor.Execute(await _editor.GetValue());
                 output = "";
             }
             catch (Exception ex)
