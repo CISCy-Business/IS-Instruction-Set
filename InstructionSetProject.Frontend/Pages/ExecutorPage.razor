@@ -181,14 +181,14 @@
                     <ToolbarItem PrefixIcon="e-icons e-chevron-right-fill" Text="Run" Type="ItemType.Button" OnClick="runCodeAsync" TooltipText="Run the code"></ToolbarItem>
                     <ToolbarItem PrefixIcon="e-icons e-properties-1" Text="Debug" TooltipText="Start debugging the code" OnClick="Debug"></ToolbarItem>
                     <ToolbarItem Type="ItemType.Separator"></ToolbarItem>
-                    <ToolbarItem PrefixIcon="e-icons e-clock" Text="Clock Tick" OnClick="ClockTick" TooltipText="Perform on clock tick" Disabled="@(SPEx == null || (SPEx.fetchingInstruction == null && SPEx.executingInstruction == null && SPEx.decodingInstruction == null && SPEx.memoryInstruction == null && SPEx.writingBackInstruction == null))"></ToolbarItem>
-                    <ToolbarItem PrefixIcon="e-icons e-text-wrap" Text="Step" OnClick="step" TooltipText="Step through each line of code upon debugging" Disabled="@(SPEx == null || (SPEx.fetchingInstruction == null && SPEx.executingInstruction == null && SPEx.decodingInstruction == null && SPEx.memoryInstruction == null && SPEx.writingBackInstruction == null))"></ToolbarItem>
-                    <ToolbarItem PrefixIcon="e-icons e-check" Text="Continue" OnClick="Continue" TooltipText="Continue through the rest of the program" Disabled="@(SPEx == null || (SPEx.fetchingInstruction == null && SPEx.executingInstruction == null && SPEx.decodingInstruction == null && SPEx.memoryInstruction == null && SPEx.writingBackInstruction == null))"></ToolbarItem>
-                    <ToolbarItem PrefixIcon="e-icons e-bullet-3" Text="Stop" OnClick="Stop" TooltipText="Stop the program" Disabled="@(SPEx == null || (SPEx.fetchingInstruction == null && SPEx.executingInstruction == null && SPEx.decodingInstruction == null && SPEx.memoryInstruction == null && SPEx.writingBackInstruction == null))"></ToolbarItem>
+                    <ToolbarItem PrefixIcon="e-icons e-clock" Text="Clock Tick" OnClick="ClockTick" TooltipText="Perform on clock tick" Disabled="@(StaticMode ? (SPEx == null || SPEx.IsExecutionFinished()) : (DPEx == null || DPEx.IsExecutionFinished()))"></ToolbarItem>
+                    <ToolbarItem PrefixIcon="e-icons e-text-wrap" Text="Step" OnClick="step" TooltipText="Step through each line of code upon debugging" Disabled="@(StaticMode ? (SPEx == null || SPEx.IsExecutionFinished()) : (DPEx == null || DPEx.IsExecutionFinished()))"></ToolbarItem>
+                    <ToolbarItem PrefixIcon="e-icons e-check" Text="Continue" OnClick="Continue" TooltipText="Continue through the rest of the program" Disabled="@(StaticMode ? (SPEx == null || SPEx.IsExecutionFinished()) : (DPEx == null || DPEx.IsExecutionFinished()))"></ToolbarItem>
+                    <ToolbarItem PrefixIcon="e-icons e-bullet-3" Text="Stop" OnClick="Stop" TooltipText="Stop the program" Disabled="@(StaticMode ? (SPEx == null || SPEx.IsExecutionFinished()) : (DPEx == null || DPEx.IsExecutionFinished()))"></ToolbarItem>
                     <ToolbarItem Type="ItemType.Separator"></ToolbarItem>
                     <ToolbarItem Text="DataPath" TooltipText="Show the data path of instructions" Disabled="@ShowButton" OnClick="OnClicked"></ToolbarItem>
                     <ToolbarItem Type="ItemType.Separator"></ToolbarItem>
-                    <ToolbarItem Text="Settings" TooltipText="Executor Settings" OnClick="e => IsModalOpened = true" Align="ItemAlign.Right" CssClass="e-sizing" Disabled="@(SPEx != null && (SPEx.fetchingInstruction != null || SPEx.executingInstruction != null || SPEx.decodingInstruction != null || SPEx.memoryInstruction != null || SPEx.writingBackInstruction != null))"></ToolbarItem>
+                    <ToolbarItem Text="Settings" TooltipText="Executor Settings" OnClick="e => IsModalOpened = true" Align="ItemAlign.Right" CssClass="e-sizing" Disabled="@(StaticMode ? (SPEx != null && !SPEx.IsExecutionFinished()) : (DPEx != null && !DPEx.IsExecutionFinished()))"></ToolbarItem>
                 </ToolbarItems> 
             </SfToolbar>
             
@@ -196,8 +196,8 @@
             <SfDialog Target="#target" Width="1225px" Height="850px" ResizeHandles="@dialogResizeDirections" AllowDragging="true" EnableResize="true" ShowCloseIcon="true" @bind-Visible="StaticVisibility">
                 <DialogTemplates>
                     <Header>Static Datapath: 
-                        <Syncfusion.Blazor.Buttons.SfButton OnClick="step" Content="Step" Disabled="@(SPEx == null || (SPEx.fetchingInstruction == null && SPEx.executingInstruction == null && SPEx.decodingInstruction == null && SPEx.memoryInstruction == null && SPEx.writingBackInstruction == null))" IsPrimary="true" style="transform: translateY(5px)"></Syncfusion.Blazor.Buttons.SfButton>
-                        <Syncfusion.Blazor.Buttons.SfButton OnClick="ClockTick" Content="Clock Tick" Disabled="@(SPEx == null || (SPEx.fetchingInstruction == null && SPEx.executingInstruction == null && SPEx.decodingInstruction == null && SPEx.memoryInstruction == null && SPEx.writingBackInstruction == null))" IsPrimary="true" style="transform: translateY(5px)"></Syncfusion.Blazor.Buttons.SfButton>
+                        <Syncfusion.Blazor.Buttons.SfButton OnClick="step" Content="Step" Disabled="@(StaticMode ? (SPEx == null || SPEx.IsExecutionFinished()) : (DPEx == null || DPEx.IsExecutionFinished()))" IsPrimary="true" style="transform: translateY(5px)"></Syncfusion.Blazor.Buttons.SfButton>
+                        <Syncfusion.Blazor.Buttons.SfButton OnClick="ClockTick" Content="Clock Tick" Disabled="@(StaticMode ? (SPEx == null || SPEx.IsExecutionFinished()) : (DPEx == null || DPEx.IsExecutionFinished()))" IsPrimary="true" style="transform: translateY(5px)"></Syncfusion.Blazor.Buttons.SfButton>
                     </Header>
                     <Content>
                         <SfDiagramComponent Height="680px" Constraints="DiagramConstraints.None" Nodes="@NodeCollection" Connectors="@ConnectorCollection" @ref="@diagram">
@@ -217,8 +217,8 @@
             <SfDialog Target="#target" Width="1225px" Height="850px" ResizeHandles="@dialogResizeDirections" AllowDragging="true" EnableResize="true" ShowCloseIcon="true" @bind-Visible="DynamicVisibility">
                 <DialogTemplates>
                     <Header>Dynamic Datapath: 
-                        <Syncfusion.Blazor.Buttons.SfButton OnClick="step" Content="Step" Disabled="@(SPEx == null)" IsPrimary="true" style="transform: translateY(5px)"></Syncfusion.Blazor.Buttons.SfButton>
-                        <Syncfusion.Blazor.Buttons.SfButton OnClick="ClockTick" Content="Clock Tick" Disabled="@(SPEx == null)" IsPrimary="true" style="transform: translateY(5px)"></Syncfusion.Blazor.Buttons.SfButton>
+                        <Syncfusion.Blazor.Buttons.SfButton OnClick="step" Content="Step" Disabled="@(StaticMode ? SPEx == null : DPEx == null)" IsPrimary="true" style="transform: translateY(5px)"></Syncfusion.Blazor.Buttons.SfButton>
+                        <Syncfusion.Blazor.Buttons.SfButton OnClick="ClockTick" Content="Clock Tick" Disabled="@(StaticMode ? SPEx == null : DPEx == null)" IsPrimary="true" style="transform: translateY(5px)"></Syncfusion.Blazor.Buttons.SfButton>
                     </Header>
                     <Content>
                         <SfDiagramComponent Height="720px" Constraints="DiagramConstraints.None" Nodes="@NodeCollection" Connectors="@ConnectorCollection" @ref="@diagram">
@@ -273,9 +273,9 @@
                                 <label id="exLabel"><b>Stack Trace</b></label>
                             </div>
                             <div class="debugContainer" id="debugCodeId">
-                                @if (SPEx != null)
+                                @if (StaticMode ? SPEx != null : DPEx != null)
                                 {
-                                    @foreach (var instr in SPEx.InstrList.InstructionOffsetDictionary)
+                                    @foreach (var instr in (StaticMode ? SPEx.InstrList : DPEx.instrQueue.instructions).InstructionOffsetDictionary)
                                     {
                                         <p class="@DivCSS(instr.Value)"><a class="@DivCSS(instr.Value)" title="Jump To @instr.Key.ToString("X4")" style="color: blue; text-decoration: underline; cursor: pointer" @onclick="() => selectMemDumpText(instr.Key)">@instr.Key.ToString("X4")</a>:     @instr.Value.Disassemble()</p>
                                     }
@@ -399,11 +399,11 @@
                                 </div>
                             </div>
                             <div class="memoryContainer" id="memDumpId">
-                                @if (SPEx != null)
+                                @if (StaticMode ? SPEx != null : DPEx != null)
                                 {
                                     @if (MemDumpStart == String.Empty || Convert.ToUInt32(MemDumpStart, 16) == 0)
                                     {
-                                        @foreach (var instr in SPEx.InstrList.InstructionOffsetDictionary)
+                                        @foreach (var instr in (StaticMode ? SPEx.InstrList : DPEx.instrQueue.instructions).InstructionOffsetDictionary)
                                         {
                                             <span class="@DivCSS(instr.Value)">
                                                 @foreach (var character in MemDumpContent.Substring((int) (instr.Key * 2), (int) (instr.Value.lengthInBytes * 2)))
@@ -422,7 +422,7 @@
                                             </span>
                                             @space
                                         }
-                                        @foreach (var character in MemDumpContent.Substring((int) (SPEx.InstrList.InstructionOffsetDictionary.Keys.Last() + SPEx.InstrList.InstructionOffsetDictionary.Values.Last().lengthInBytes * 2) * 2))
+                                        @foreach (var character in MemDumpContent.Substring((int) ((StaticMode ? SPEx.InstrList : DPEx.instrQueue.instructions).InstructionOffsetDictionary.Keys.Last() + (StaticMode ? SPEx.InstrList : DPEx.instrQueue.instructions).InstructionOffsetDictionary.Values.Last().lengthInBytes * 2) * 2))
                                         {
                                             @character
                                             IncrementCharCount();

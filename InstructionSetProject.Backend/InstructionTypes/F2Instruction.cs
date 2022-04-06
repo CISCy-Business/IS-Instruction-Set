@@ -20,6 +20,7 @@ namespace InstructionSetProject.Backend.InstructionTypes
         public ushort? immediate { get => null; set { } }
         public virtual int cyclesNeededInExecute => 1;
         public virtual int cyclesNeededInMemory => 1;
+        public virtual InstructionUnit instructionUnit => InstructionUnit.FpAdder;
 
         public abstract string GetMnemonic();
         public abstract ushort GetOpCode();

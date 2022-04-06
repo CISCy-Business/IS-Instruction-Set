@@ -42,11 +42,6 @@ namespace InstructionSetProject.Backend.DynamicPipeline
                 activeInstruction.result = PerformMemRead(activeInstruction);
             }
 
-            else if (activeInstruction.instruction.controlBits.MemWrite)
-            {
-                PerformMemWrite(activeInstruction);
-            }
-
             var instr = activeInstruction;
             activeInstruction = null;
             return instr;
@@ -56,6 +51,7 @@ namespace InstructionSetProject.Backend.DynamicPipeline
         {
             if (loadBuffers.Count == 0) return null;
             var nextInstr = loadBuffers.Peek();
+            if (nextInstr.StillHasDependencies()) return null;
 
             if (nextInstr.instruction.controlBits.MemRead)
             {
@@ -78,9 +74,10 @@ namespace InstructionSetProject.Backend.DynamicPipeline
         {
             if (instr.instruction is LoadWord || instr.instruction is LoadFloat)
             {
-                if (instr.lhsValue == null || instr.instruction.addressingMode == null)
+                var readTarget = (instr.instruction.addressingMode == 0b001_0000 || instr.instruction.addressingMode == 0b001_1000) ? instr.lhsValue : instr.instruction.immediate;
+                if (readTarget == null || instr.instruction.addressingMode == null)
                     throw new Exception("Null read values");
-                return dataStructures.Memory.ReadUshort(instr.lhsValue ?? 0, instr.instruction.addressingMode ?? 0);
+                return dataStructures.Memory.ReadUshort(readTarget ?? 0, instr.instruction.addressingMode ?? 0);
             }
 
             if (instr.instruction is PopWord || instr.instruction is PopFloat)
@@ -89,25 +86,6 @@ namespace InstructionSetProject.Backend.DynamicPipeline
             }
 
             throw new Exception("Unsupported read instruction");
-        }
-
-        private void PerformMemWrite(InstructionInFlight instr)
-        {
-            if (instr.instruction is StoreWord || instr.instruction is StoreFloat)
-            {
-                if (instr.lhsValue == null || instr.instruction.addressingMode == null || instr.rhsValue == null)
-                    throw new Exception("Null write values");
-                dataStructures.Memory.WriteUshort(instr.lhsValue ?? 0, instr.rhsValue ?? 0, instr.instruction.addressingMode ?? 0);
-                return;
-            }
-
-            if (instr.instruction is PushWord || instr.instruction is PushFloat)
-            {
-                dataStructures.Memory.StackPushWord(instr.rhsValue ?? 0);
-                return;
-            }
-
-            throw new Exception("Unsupported write instruction");
         }
     }
 }

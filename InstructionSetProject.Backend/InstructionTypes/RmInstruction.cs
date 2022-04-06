@@ -20,6 +20,7 @@ namespace InstructionSetProject.Backend.InstructionTypes
         public RegisterType? thirdRegisterType => null;
         public virtual int cyclesNeededInExecute => 1;
         public virtual int cyclesNeededInMemory => 1;
+        public virtual InstructionUnit instructionUnit => InstructionUnit.Integer;
 
         public abstract string GetMnemonic();
         public abstract ushort GetOpCode();

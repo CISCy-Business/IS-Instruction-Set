@@ -16,6 +16,8 @@ namespace InstructionSetProject.Backend.Instructions.F3Types
 
         public override int cyclesNeededInExecute => 10;
 
+        public override InstructionUnit instructionUnit => InstructionUnit.FpMul;
+
         public override string GetMnemonic()
         {
             return Mnemonic;

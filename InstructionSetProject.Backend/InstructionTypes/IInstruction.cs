@@ -16,6 +16,7 @@ namespace InstructionSetProject.Backend.InstructionTypes
         public ushort? immediate { get; set; }
         public ControlBits controlBits { get; }
         public AluOperation? aluOperation { get; }
+        public InstructionUnit instructionUnit { get; }
         public ushort lengthInBytes { get; }
         public int cyclesNeededInExecute { get; }
         public int cyclesNeededInMemory { get; }

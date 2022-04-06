@@ -2,6 +2,7 @@
 using System.Text;
 using BlazorMonaco;
 using InstructionSetProject.Backend;
+using InstructionSetProject.Backend.DynamicPipeline;
 using InstructionSetProject.Backend.Execution;
 using InstructionSetProject.Backend.InstructionTypes;
 using InstructionSetProject.Backend.StaticFrontend;
@@ -37,38 +38,47 @@ namespace InstructionSetProject.Frontend.Pages
         bool darkModeExecutorPage = FrontendVariables.darkMode;
         public string MemDumpStart { get; set; } = "";
 
-        public string MemDumpContent => SPEx != null
+        public string MemDumpContent => StaticMode ? SPEx != null
             ? String.Join("",
                 SPEx.DataStructures.Memory
                     .GetBytesAtAddress(MemDumpStart != string.Empty ? Convert.ToUInt32(MemDumpStart, 16) : 0)
                     .Select((memByte) => memByte.ToString("X2")))
-            : "";
+            : ""
+            :
+            DPEx != null
+                ? String.Join("",
+                    DPEx.dataStructures.Memory
+                        .GetBytesAtAddress(MemDumpStart != string.Empty ? Convert.ToUInt32(MemDumpStart, 16) : 0)
+                        .Select((memByte) => memByte.ToString("X2")))
+                : ""
+            ;
 
         private StaticPipelineExecution? SPEx;
+        private DynamicPipelineExecution? DPEx;
 
         public byte[]? MemoryBytes => SPEx != null ? SPEx.DataStructures.Memory.Bytes : null;
 
-        public string r0 => SPEx != null ? SPEx.DataStructures.R0.value.ToString("X4") : "0000";
-        public string r1 => SPEx != null ? SPEx.DataStructures.R1.value.ToString("X4") : "0000";
-        public string r2 => SPEx != null ? SPEx.DataStructures.R2.value.ToString("X4") : "0000";
-        public string r3 => SPEx != null ? SPEx.DataStructures.R3.value.ToString("X4") : "0000";
-        public string r4 => SPEx != null ? SPEx.DataStructures.R4.value.ToString("X4") : "0000";
-        public string r5 => SPEx != null ? SPEx.DataStructures.R5.value.ToString("X4") : "0000";
-        public string r6 => SPEx != null ? SPEx.DataStructures.R6.value.ToString("X4") : "0000";
-        public string r7 => SPEx != null ? SPEx.DataStructures.R7.value.ToString("X4") : "0000";
-        public string f0 => SPEx != null ? SPEx.DataStructures.F0.value.ToString("X4") : "0000";
-        public string f1 => SPEx != null ? SPEx.DataStructures.F1.value.ToString("X4") : "0000";
-        public string f2 => SPEx != null ? SPEx.DataStructures.F2.value.ToString("X4") : "0000";
-        public string f3 => SPEx != null ? SPEx.DataStructures.F3.value.ToString("X4") : "0000";
-        public string f4 => SPEx != null ? SPEx.DataStructures.F4.value.ToString("X4") : "0000";
-        public string f5 => SPEx != null ? SPEx.DataStructures.F5.value.ToString("X4") : "0000";
-        public string f6 => SPEx != null ? SPEx.DataStructures.F6.value.ToString("X4") : "0000";
-        public string f7 => SPEx != null ? SPEx.DataStructures.F7.value.ToString("X4") : "0000";
-        public string IP => SPEx != null ? SPEx.DataStructures.InstructionPointer.value.ToString("X4") : "0000";
-        public string SP => SPEx != null ? SPEx.DataStructures.StackPointer.value.ToString("X4") : "0000";
-        public string FL => SPEx != null ? SPEx.DataStructures.Flags.AsRegisterValue().ToString("X4") : "0000";
-        public string PC => SPEx != null ? SPEx.DataStructures.InstructionPointer.value.ToString("X4") : "0000";
-        public string MBP => SPEx != null ? SPEx.DataStructures.MemoryBasePointer.value.ToString("X4") : "0000";
+        public string r0 => StaticMode ? SPEx != null ? SPEx.DataStructures.R0.value.ToString("X4") : "0000" : DPEx != null ? DPEx.dataStructures.R0.value.ToString("X4") : "0000";
+        public string r1 => StaticMode ? SPEx != null ? SPEx.DataStructures.R1.value.ToString("X4") : "0000" : DPEx != null ? DPEx.dataStructures.R1.value.ToString("X4") : "0000";
+        public string r2 => StaticMode ? SPEx != null ? SPEx.DataStructures.R2.value.ToString("X4") : "0000" : DPEx != null ? DPEx.dataStructures.R2.value.ToString("X4") : "0000";
+        public string r3 => StaticMode ? SPEx != null ? SPEx.DataStructures.R3.value.ToString("X4") : "0000" : DPEx != null ? DPEx.dataStructures.R3.value.ToString("X4") : "0000";
+        public string r4 => StaticMode ? SPEx != null ? SPEx.DataStructures.R4.value.ToString("X4") : "0000" : DPEx != null ? DPEx.dataStructures.R4.value.ToString("X4") : "0000";
+        public string r5 => StaticMode ? SPEx != null ? SPEx.DataStructures.R5.value.ToString("X4") : "0000" : DPEx != null ? DPEx.dataStructures.R5.value.ToString("X4") : "0000";
+        public string r6 => StaticMode ? SPEx != null ? SPEx.DataStructures.R6.value.ToString("X4") : "0000" : DPEx != null ? DPEx.dataStructures.R6.value.ToString("X4") : "0000";
+        public string r7 => StaticMode ? SPEx != null ? SPEx.DataStructures.R7.value.ToString("X4") : "0000" : DPEx != null ? DPEx.dataStructures.R7.value.ToString("X4") : "0000";
+        public string f0 => StaticMode ? SPEx != null ? SPEx.DataStructures.F0.value.ToString("X4") : "0000" : DPEx != null ? DPEx.dataStructures.F0.value.ToString("X4") : "0000";
+        public string f1 => StaticMode ? SPEx != null ? SPEx.DataStructures.F1.value.ToString("X4") : "0000" : DPEx != null ? DPEx.dataStructures.F1.value.ToString("X4") : "0000";
+        public string f2 => StaticMode ? SPEx != null ? SPEx.DataStructures.F2.value.ToString("X4") : "0000" : DPEx != null ? DPEx.dataStructures.F2.value.ToString("X4") : "0000";
+        public string f3 => StaticMode ? SPEx != null ? SPEx.DataStructures.F3.value.ToString("X4") : "0000" : DPEx != null ? DPEx.dataStructures.F3.value.ToString("X4") : "0000";
+        public string f4 => StaticMode ? SPEx != null ? SPEx.DataStructures.F4.value.ToString("X4") : "0000" : DPEx != null ? DPEx.dataStructures.F4.value.ToString("X4") : "0000";
+        public string f5 => StaticMode ? SPEx != null ? SPEx.DataStructures.F5.value.ToString("X4") : "0000" : DPEx != null ? DPEx.dataStructures.F5.value.ToString("X4") : "0000";
+        public string f6 => StaticMode ? SPEx != null ? SPEx.DataStructures.F6.value.ToString("X4") : "0000" : DPEx != null ? DPEx.dataStructures.F6.value.ToString("X4") : "0000";
+        public string f7 => StaticMode ? SPEx != null ? SPEx.DataStructures.F7.value.ToString("X4") : "0000" : DPEx != null ? DPEx.dataStructures.F7.value.ToString("X4") : "0000";
+        public string IP => StaticMode ? SPEx != null ? SPEx.DataStructures.InstructionPointer.value.ToString("X4") : "0000" : DPEx != null ? DPEx.dataStructures.InstructionPointer.value.ToString("X4") : "0000";
+        public string SP => StaticMode ? SPEx != null ? SPEx.DataStructures.StackPointer.value.ToString("X4") : "0000" : DPEx != null ? DPEx.dataStructures.StackPointer.value.ToString("X4") : "0000";
+        public string FL => StaticMode ? SPEx != null ? SPEx.DataStructures.Flags.AsRegisterValue().ToString("X4") : "0000" : DPEx != null ? DPEx.dataStructures.Flags.AsRegisterValue().ToString("X4") : "0000";
+        public string PC => StaticMode ? SPEx != null ? SPEx.DataStructures.InstructionPointer.value.ToString("X4") : "0000" : DPEx != null ? DPEx.dataStructures.InstructionPointer.value.ToString("X4") : "0000";
+        public string MBP => StaticMode ? SPEx != null ? SPEx.DataStructures.MemoryBasePointer.value.ToString("X4") : "0000" : DPEx != null ? DPEx.dataStructures.MemoryBasePointer.value.ToString("X4") : "0000";
 
         private bool debugRender = false;
 
@@ -154,24 +164,26 @@ namespace InstructionSetProject.Frontend.Pages
         public string Statistics()
         {
             statsString = "";
-            if (SPEx == null) return "No Statistics Yet";
+            if (StaticMode && SPEx == null) return "No Statistics Yet";
+            if (!StaticMode && DPEx == null) return "No Statistics Yet";
+            var stats = StaticMode ? SPEx.Statistics : DPEx.statistics;
             statsString += "Instruction Types\n";
             statsString += "-----------------\n";
-            statsString += "R2 Type: " + SPEx.Statistics.R2InstructionCount + "\n";
-            statsString += "R3 Type: " + SPEx.Statistics.R3InstructionCount + "\n";
-            statsString += "Rm Type: " + SPEx.Statistics.RmInstructionCount + "\n";
-            statsString += "Rs Type: " + SPEx.Statistics.RsInstructionCount + "\n";
-            statsString += "F2 Type: " + SPEx.Statistics.F2InstructionCount + "\n";
-            statsString += "F3 Type: " + SPEx.Statistics.F3InstructionCount + "\n";
-            statsString += "Fm Type: " + SPEx.Statistics.FmInstructionCount + "\n\n";
+            statsString += "R2 Type: " + stats.R2InstructionCount + "\n";
+            statsString += "R3 Type: " + stats.R3InstructionCount + "\n";
+            statsString += "Rm Type: " + stats.RmInstructionCount + "\n";
+            statsString += "Rs Type: " + stats.RsInstructionCount + "\n";
+            statsString += "F2 Type: " + stats.F2InstructionCount + "\n";
+            statsString += "F3 Type: " + stats.F3InstructionCount + "\n";
+            statsString += "Fm Type: " + stats.FmInstructionCount + "\n\n";
 
             statsString += "Clock\n";
             statsString += "-----\n";
-            statsString += "Total Clock Ticks: " + SPEx.Statistics.ClockTicks + "\n\n";
+            statsString += "Total Clock Ticks: " + stats.ClockTicks + "\n\n";
 
             statsString += "Flush\n";
             statsString += "-----\n";
-            statsString += "Total Flushes: " + SPEx.Statistics.FlushCount;
+            statsString += "Total Flushes: " + stats.FlushCount;
 
             return statsString;
         }
@@ -241,7 +253,11 @@ namespace InstructionSetProject.Frontend.Pages
         {
             try
             {
-                SPEx = StaticPipelineExecutor.Execute(await _editor.GetValue());
+                if (StaticMode)
+                    SPEx = StaticPipelineExecutor.Execute(await _editor.GetValue());
+                else
+                    DPEx = DynamicPipelineExecutor.Execute(await _editor.GetValue());
+
                 output = "";
             }
             catch (Exception ex)
@@ -252,7 +268,10 @@ namespace InstructionSetProject.Frontend.Pages
             debugRender = true;
             try
             {
-                SPEx.Continue();
+                if (StaticMode)
+                    SPEx.Continue();
+                else
+                    DPEx.Continue();
                 output = "";
             }
             catch (Exception ex)
@@ -267,7 +286,10 @@ namespace InstructionSetProject.Frontend.Pages
         {
             try
             {
-                SPEx = (StaticPipelineExecution)StaticPipelineExecutor.Execute(await _editor.GetValue());
+                if (StaticMode)
+                    SPEx = StaticPipelineExecutor.Execute(await _editor.GetValue());
+                else
+                    DPEx = DynamicPipelineExecutor.Execute(await _editor.GetValue());
                 output = "";
             }
             catch (Exception ex)
@@ -283,11 +305,23 @@ namespace InstructionSetProject.Frontend.Pages
                 UpdateDynamicDiagram();
         }
 
-        bool IsSelectedFetch(IInstruction instr) => instr == SPEx.fetchingInstruction;
-        bool IsSelectedDecode(IInstruction instr) => instr == SPEx.decodingInstruction;
-        bool IsSelectedExecute(IInstruction instr) => instr == SPEx.executingInstruction;
-        bool IsSelectedMemory(IInstruction instr) => instr == SPEx.memoryInstruction;
-        bool IsSelectedWrite(IInstruction instr) => instr == SPEx.writingBackInstruction;
+        bool IsSelectedFetch(IInstruction instr) => StaticMode ? instr == SPEx.fetchingInstruction : DPEx.instrQueue.nextBatch.Exists((search) => search.instruction == instr);
+        bool IsSelectedDecode(IInstruction instr) => StaticMode ? instr == SPEx.decodingInstruction : 
+            (
+                DPEx.integerUnit?.instruction == instr ||
+                DPEx.integerReservationStation.instructions.FirstOrDefault((search) => search.instruction == instr)?.instruction == instr ||
+                DPEx.fpAdder?.instruction == instr ||
+                DPEx.fpAdderReservationStation.instructions.FirstOrDefault((search) => search.instruction == instr)?.instruction == instr ||
+                DPEx.fpMul?.instruction == instr ||
+                DPEx.fpMulReservationStation.instructions.FirstOrDefault((search) => search.instruction == instr)?.instruction == instr
+            );
+        bool IsSelectedExecute(IInstruction instr) => StaticMode ? instr == SPEx.executingInstruction : 
+            (
+                DPEx.memoryUnit.activeInstruction?.instruction == instr ||
+                DPEx.memoryUnit.loadBuffers.FirstOrDefault((search) => search.instruction == instr)?.instruction == instr
+            );
+        bool IsSelectedMemory(IInstruction instr) => StaticMode ? instr == SPEx.memoryInstruction : DPEx.commonDataBus.Exists((search) => search.instruction == instr);
+        bool IsSelectedWrite(IInstruction instr) => StaticMode ? instr == SPEx.writingBackInstruction : DPEx.reorderBuffer.buffers.UnorderedItems.FirstOrDefault((search) => search.Element.instruction == instr).Element?.instruction == instr;
 
         string DivCSS(IInstruction instr) => IsSelectedFetch(instr) ? "bg-fetch text-white" : (IsSelectedDecode(instr) ? "bg-decode text-white" : (IsSelectedExecute(instr) ? "bg-execute text-white" : (IsSelectedMemory(instr) ? "bg-memory text-white" : (IsSelectedWrite(instr) ? "bg-write text-white" : (FrontendVariables.darkMode ? "bg-dark-mode" : "bg-white")))));
 
@@ -296,7 +330,10 @@ namespace InstructionSetProject.Frontend.Pages
             debugRender = true;
             try
             {
-                SPEx.ClockTick();
+                if (StaticMode)
+                    SPEx.ClockTick();
+                else
+                    DPEx.ClockTick();
                 output = "";
             }
             catch (Exception ex)
@@ -317,7 +354,10 @@ namespace InstructionSetProject.Frontend.Pages
             debugRender = true;
             try
             {
-                SPEx.Step();
+                if (StaticMode)
+                    SPEx.Step();
+                else
+                    DPEx.Step();
                 output = "";
             }
             catch (Exception ex)
@@ -338,7 +378,10 @@ namespace InstructionSetProject.Frontend.Pages
             debugRender = true;
             try
             {
-                SPEx.Continue();
+                if (StaticMode)
+                    SPEx.Continue();
+                else
+                    DPEx.Continue();
                 output = "";
             }
             catch (Exception ex)
@@ -352,6 +395,7 @@ namespace InstructionSetProject.Frontend.Pages
         void Stop()
         {
             SPEx = null;
+            DPEx = null;
             if (StaticMode == true)
             {
                 InitStaticDiagramModel();

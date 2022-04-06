@@ -34,10 +34,17 @@ namespace InstructionSetProject.Backend.DynamicPipeline
                     instr.lhsDependency = integerDependencies[(int)readReg1Index];
                 else if (readReg1Index != null)
                     instr.lhsValue = GetIntegerRegValue((int)readReg1Index);
-                if (readReg2Index != null && integerDependencies[(int)readReg2Index] != null)
-                    instr.rhsDependency = integerDependencies[(int)readReg2Index];
-                else if (readReg2Index != null)
-                    instr.rhsValue = GetIntegerRegValue((int)readReg2Index);
+                if (instr.instruction.controlBits.ALUSrc && (instr.instruction.addressingMode != 0b001_0000 || instr.instruction.addressingMode != 0b0011000))
+                {
+                    instr.rhsValue = instr.instruction.immediate ?? 0;
+                }
+                else
+                {
+                    if (readReg2Index != null && integerDependencies[(int)readReg2Index] != null)
+                        instr.rhsDependency = integerDependencies[(int)readReg2Index];
+                    else if (readReg2Index != null)
+                        instr.rhsValue = GetIntegerRegValue((int)readReg2Index);
+                }
             }
             else
             {
@@ -47,10 +54,17 @@ namespace InstructionSetProject.Backend.DynamicPipeline
                     instr.lhsDependency = floatDependencies[(int)readReg1Index];
                 else if (readReg1Index != null)
                     instr.lhsValue = GetFloatRegValue((int)readReg1Index);
-                if (readReg2Index != null && floatDependencies[(int)readReg2Index] != null)
-                    instr.rhsDependency = floatDependencies[(int)readReg2Index];
-                else if (readReg2Index != null)
-                    instr.rhsValue = GetFloatRegValue((int)readReg2Index);
+                if (instr.instruction.controlBits.ALUSrc && (instr.instruction.addressingMode != 0b001_0000 || instr.instruction.addressingMode != 0b0011000))
+                {
+                    instr.rhsValue = instr.instruction.immediate ?? 0;
+                }
+                else
+                {
+                    if (readReg2Index != null && floatDependencies[(int)readReg2Index] != null)
+                        instr.rhsDependency = floatDependencies[(int)readReg2Index];
+                    else if (readReg2Index != null)
+                        instr.rhsValue = GetFloatRegValue((int)readReg2Index);
+                }
             }
         }
 
@@ -90,10 +104,13 @@ namespace InstructionSetProject.Backend.DynamicPipeline
         {
             if (!IsInstructionFloat(instr.instruction))
             {
-                for(var i = 0; i < integerDependencies.Length; i++)
+                for (var i = 0; i < integerDependencies.Length; i++)
                 {
                     if (integerDependencies[i] == instr.Index)
+                    {
                         integerDependencies[i] = null;
+                        break;
+                    }
                 }
             }
             else
@@ -101,7 +118,10 @@ namespace InstructionSetProject.Backend.DynamicPipeline
                 for (var i = 0; i < floatDependencies.Length; i++)
                 {
                     if (floatDependencies[i] == instr.Index)
+                    {
                         floatDependencies[i] = null;
+                        break;
+                    }
                 }
 
             }

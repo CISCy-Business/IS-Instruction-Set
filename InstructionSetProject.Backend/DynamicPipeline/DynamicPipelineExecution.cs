@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InstructionSetProject.Backend.InstructionTypes;
 
 namespace InstructionSetProject.Backend.DynamicPipeline
 {
@@ -44,7 +45,25 @@ namespace InstructionSetProject.Backend.DynamicPipeline
 
         public void Continue()
         {
+            while (!IsExecutionFinished())
+                Step();
+        }
 
+        public bool IsExecutionFinished()
+        {
+            return !(
+                instrQueue.nextBatch.Count != 0 ||
+                memoryUnit.loadBuffers.Count != 0 ||
+                memoryUnit.activeInstruction != null ||
+                fpAdderReservationStation.instructions.Count != 0 ||
+                fpAdder != null ||
+                fpMulReservationStation.instructions.Count != 0 ||
+                fpMul != null ||
+                integerReservationStation.instructions.Count != 0 ||
+                integerUnit != null ||
+                commonDataBus.Count != 0 ||
+                reorderBuffer.buffers.Count != 0
+            );
         }
 
         public void Step()
@@ -59,6 +78,7 @@ namespace InstructionSetProject.Backend.DynamicPipeline
             reorderBuffer.ClockTick();
             ClockTickCommonDataBus();
             ClockTickUnits();
+            ClockTickInstructionQueue();
             statistics.ClockTicks++;
         }
 
@@ -67,7 +87,29 @@ namespace InstructionSetProject.Backend.DynamicPipeline
             foreach (var instr in commonDataBus)
             {
                 dependencyManager.UpdateDependency(instr);
+                ResolveDependencies(instr);
                 reorderBuffer.buffers.Enqueue(instr, instr.Index);
+            }
+            commonDataBus.Clear();
+        }
+
+        private void ResolveDependencies(InstructionInFlight instr)
+        {
+            ResolveDependencies(instr, instrQueue.nextBatch);
+            ResolveDependencies(instr, memoryUnit.loadBuffers);
+            ResolveDependencies(instr, integerReservationStation.instructions);
+            ResolveDependencies(instr, fpAdderReservationStation.instructions);
+            ResolveDependencies(instr, fpMulReservationStation.instructions);
+        }
+
+        private void ResolveDependencies(InstructionInFlight instr, IEnumerable<InstructionInFlight> collection)
+        {
+            foreach (var collectionInstr in collection)
+            {
+                if (collectionInstr.lhsDependency == instr.Index)
+                    collectionInstr.SetLhsFromDependency(instr.result ?? 0);
+                if (collectionInstr.rhsDependency == instr.Index)
+                    collectionInstr.SetRhsFromDependency(instr.result ?? 0);
             }
         }
 
@@ -137,10 +179,93 @@ namespace InstructionSetProject.Backend.DynamicPipeline
             }
 
             var (result, flags) = alu.Execute((AluOperation)integerUnit.instruction.aluOperation, integerUnit.lhsValue, integerUnit.rhsValue);
+            if (integerUnit.instruction.controlBits.PCSrc && integerUnit.instruction.immediate != null)
+            {
+                if (integerUnit.instruction is IFlagInstruction flagInstr)
+                {
+                    if (flags.IsFlagSet(flagInstr.flagToCheck) == flagInstr.flagEnabled)
+                    {
+                        dataStructures.InstructionPointer.value = integerUnit.instruction.immediate ??
+                                                                  dataStructures.InstructionPointer.value;
+                        FlushPipeline(integerUnit.Index);
+                    }
+                }
+            }
             integerUnit.result = result;
             var instr = integerUnit;
             integerUnit = null;
             return instr;
+        }
+
+        private void FlushPipeline(int instrIndex)
+        {
+            var newReorderBuffer = new PriorityQueue<InstructionInFlight, int>();
+            newReorderBuffer.EnqueueRange(reorderBuffer.buffers.UnorderedItems.Where((instr) => instr.Element.Index < instrIndex));
+            reorderBuffer.buffers = newReorderBuffer;
+            if (fpAdder?.Index >= instrIndex) fpAdder = null;
+            if (fpMul?.Index >= instrIndex) fpMul = null;
+            if (integerUnit?.Index >= instrIndex) integerUnit = null;
+            fpAdderReservationStation.instructions = new Queue<InstructionInFlight>(
+                fpAdderReservationStation.instructions.Where((instr) => instr.Index < instrIndex));
+            fpMulReservationStation.instructions = new Queue<InstructionInFlight>(
+                fpMulReservationStation.instructions.Where((instr) => instr.Index < instrIndex));
+            integerReservationStation.instructions = new Queue<InstructionInFlight>(
+                integerReservationStation.instructions.Where((instr) => instr.Index < instrIndex));
+            if (memoryUnit.activeInstruction?.Index >= instrIndex) memoryUnit.activeInstruction = null;
+            memoryUnit.loadBuffers = new Queue<InstructionInFlight>(
+                memoryUnit.loadBuffers.Where((instr) => instr.Index < instrIndex));
+            instrQueue.nextBatch = instrQueue.nextBatch.Where((instr) => instr.Index < instrIndex).ToList();
+        }
+
+        private void ClockTickInstructionQueue()
+        {
+            List<InstructionInFlight> instructionsHeldForNextBatch = new();
+            for (int i = 0; i < instrQueue.nextBatch.Count; i++)
+            {
+                var instr = instrQueue.nextBatch[i];
+                switch (instr.instruction.instructionUnit)
+                {
+                    case InstructionUnit.Integer:
+                        if (integerReservationStation.instructions.Count < 3)
+                        {
+                            dependencyManager.CheckDependencies(instr);
+                            integerReservationStation.instructions.Enqueue(instr);
+                        }
+                        else
+                            instructionsHeldForNextBatch.Add(instr);
+                        break;
+                    case InstructionUnit.FpAdder:
+                        if (fpAdderReservationStation.instructions.Count < 3)
+                        {
+                            dependencyManager.CheckDependencies(instr);
+                            fpAdderReservationStation.instructions.Enqueue(instr);
+                        }
+                        else
+                            instructionsHeldForNextBatch.Add(instr);
+                        break;
+                    case InstructionUnit.FpMul:
+                        if (fpMulReservationStation.instructions.Count < 3)
+                        {
+                            dependencyManager.CheckDependencies(instr);
+                            fpMulReservationStation.instructions.Enqueue(instr);
+                        }
+                        else
+                            instructionsHeldForNextBatch.Add(instr);
+                        break;
+                    default:
+                        if (memoryUnit.loadBuffers.Count < 5)
+                        {
+                            dependencyManager.CheckDependencies(instr);
+                            memoryUnit.loadBuffers.Enqueue(instr);
+                        }
+                        else
+                            instructionsHeldForNextBatch.Add(instr);
+                        break;
+                }
+            }
+
+            instrQueue.nextBatch = instructionsHeldForNextBatch;
+            instrQueue.LoadNextBatch();
         }
     }
 }

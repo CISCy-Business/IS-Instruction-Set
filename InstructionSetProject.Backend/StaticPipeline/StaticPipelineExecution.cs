@@ -47,8 +47,14 @@ namespace InstructionSetProject.Backend.StaticPipeline
 
         public void Continue()
         {
-            while (fetchingInstruction != null || decodingInstruction != null || executingInstruction != null || memoryInstruction != null || writingBackInstruction != null)
+            while (!IsExecutionFinished())
                 Step();
+        }
+
+        public bool IsExecutionFinished()
+        {
+            return !(fetchingInstruction != null || decodingInstruction != null || executingInstruction != null ||
+                     memoryInstruction != null || writingBackInstruction != null);
         }
 
         public void Step()

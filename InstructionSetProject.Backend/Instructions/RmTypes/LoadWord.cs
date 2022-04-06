@@ -16,6 +16,8 @@ namespace InstructionSetProject.Backend.Instructions.RmTypes
 
         public override int cyclesNeededInMemory => 3;
 
+        public override InstructionUnit instructionUnit => InstructionUnit.Memory;
+
         public override string GetMnemonic()
         {
             return Mnemonic;
