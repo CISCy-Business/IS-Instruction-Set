@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace InstructionSetProject.Backend.StaticPipeline
+namespace InstructionSetProject.Backend.Execution
 {
-    public class StaticPipelineStatistics
+    public class PipelineStatistics
     {
         public int FlushCount { get; set; } = 0;
         public int ClockTicks { get; set; } = 0;

@@ -11,9 +11,9 @@ namespace InstructionSetProject.Backend.StaticPipeline
     public class StaticPipelineExecution : IExecution
     {
         public InstructionList InstrList;
-        public StaticPipelineDataStructures DataStructures;
+        public PipelineDataStructures DataStructures;
         public List<byte> MachineCode;
-        public StaticPipelineStatistics Statistics;
+        public PipelineStatistics Statistics;
 
         public Alu Alu;
 
@@ -47,8 +47,14 @@ namespace InstructionSetProject.Backend.StaticPipeline
 
         public void Continue()
         {
-            while (fetchingInstruction != null || decodingInstruction != null || executingInstruction != null || memoryInstruction != null || writingBackInstruction != null)
+            while (!IsExecutionFinished())
                 Step();
+        }
+
+        public bool IsExecutionFinished()
+        {
+            return !(fetchingInstruction != null || decodingInstruction != null || executingInstruction != null ||
+                     memoryInstruction != null || writingBackInstruction != null);
         }
 
         public void Step()

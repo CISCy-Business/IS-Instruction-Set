@@ -1,9 +1,8 @@
-﻿using InstructionSetProject.Backend.Execution;
-using InstructionSetProject.Backend.Utilities;
+﻿using InstructionSetProject.Backend.Utilities;
 
-namespace InstructionSetProject.Backend.StaticPipeline
+namespace InstructionSetProject.Backend.Execution
 {
-    public class StaticPipelineDataStructures
+    public class PipelineDataStructures
     {
         public Register<ushort> R0 = new("R0",0, false);
         public Register<ushort> R1 = new("R1");
@@ -30,7 +29,7 @@ namespace InstructionSetProject.Backend.StaticPipeline
 
         public Memory Memory;
 
-        public StaticPipelineDataStructures()
+        public PipelineDataStructures()
         {
             Memory = new(StackPointer, MemoryBasePointer, R7);
         }

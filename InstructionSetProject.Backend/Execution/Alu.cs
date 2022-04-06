@@ -7,9 +7,9 @@ namespace InstructionSetProject.Backend.Execution
     {
         private const ushort signBit = 0b1000_0000_0000_0000;
 
-        private StaticPipelineDataStructures dataStructures;
+        private PipelineDataStructures dataStructures;
 
-        public Alu(StaticPipelineDataStructures dataStructures)
+        public Alu(PipelineDataStructures dataStructures)
         {
             this.dataStructures = dataStructures;
         }

@@ -15,6 +15,7 @@ namespace InstructionSetProject.Backend.Instructions.F3Types
         public override AluOperation? aluOperation => null;
 
         public override int cyclesNeededInExecute => 5;
+        public override InstructionUnit instructionUnit => InstructionUnit.FpMul;
 
         public override string GetMnemonic()
         {
