@@ -189,6 +189,8 @@ namespace InstructionSetProject.Backend.DynamicPipeline
                         dataStructures.InstructionPointer.value = integerUnit.instruction.immediate ??
                                                                   dataStructures.InstructionPointer.value;
                         FlushPipeline(integerUnit.Index);
+
+                        return null;
                     }
                 }
             }
@@ -216,7 +218,7 @@ namespace InstructionSetProject.Backend.DynamicPipeline
             memoryUnit.loadBuffers = new Queue<InstructionInFlight>(
                 memoryUnit.loadBuffers.Where((instr) => instr.Index < instrIndex));
             instrQueue.nextBatch = instrQueue.nextBatch.Where((instr) => instr.Index < instrIndex).ToList();
-            instrQueue.instructionIndex = instrIndex;
+            if (instrQueue.instructionIndex > instrIndex) instrQueue.instructionIndex = instrIndex;
         }
 
         private void ClockTickInstructionQueue()

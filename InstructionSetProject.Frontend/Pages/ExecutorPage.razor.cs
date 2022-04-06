@@ -126,6 +126,8 @@ namespace InstructionSetProject.Frontend.Pages
         void toggleStaticDynamicMode()
         {
             StaticMode = !StaticMode;
+            ConnectorCollection.Clear();
+            NodeCollection.Clear();
         }
 
         void toggleMemoryDump()
@@ -541,9 +543,269 @@ namespace InstructionSetProject.Frontend.Pages
         private const string ControlDash = "4,2";
         #endregion
 
+        #region Dynamic pipeline variables
+
+        private string reorderBuffer1 = "ReorderBuffer1";
+        private string reorderBuffer2 = "ReorderBuffer2";
+        private string reorderBuffer3 = "ReorderBuffer3";
+        private string reorderBuffer4 = "ReorderBuffer4";
+        private string reorderBuffer5 = "ReorderBuffer5";
+        private string instrQueue1 = "InstrQueue1";
+        private string instrQueue2 = "InstrQueue2";
+        private string instrQueue3 = "InstrQueue3";
+        private string instrQueue4 = "InstrQueue4";
+        private string instrQueue5 = "InstrQueue5";
+        private string loadBuffer1 = "LoadBuffer1";
+        private string loadBuffer2 = "LoadBuffer2";
+        private string loadBuffer3 = "LoadBuffer3";
+        private string loadBuffer4 = "LoadBuffer4";
+        private string loadBuffer5 = "LoadBuffer5";
+        private string fpAdder1 = "Res1DataBus1";
+        private string fpAdder2 = "Res1DataBus2";
+        private string fpAdder3 = "Res1DataBus3";
+        private string fpMul1 = "Res2DataBus1";
+        private string fpMul2 = "Res2DataBus2";
+        private string fpMul3 = "Res2DataBus3";
+        private string integer1 = "Res3DataBus1";
+        private string integer2 = "Res3DataBus2";
+        private string integer3 = "Res3DataBus3";
+        private string fpAdderVal1 = "Res1OperandBus1";
+        private string fpAdderVal2 = "Res1OperandBus2";
+        private string fpAdderVal3 = "Res1OperandBus3";
+        private string fpMulVal1 = "Res2OperandBus1";
+        private string fpMulVal2 = "Res2OperandBus2";
+        private string fpMulVal3 = "Res2OperandBus3";
+        private string integerVal1 = "Res3OperandBus1";
+        private string integerVal2 = "Res3OperandBus2";
+        private string integerVal3 = "Res3OperandBus3";
+
+        #endregion
         void UpdateDynamicDiagram()
         {
+            if (DPEx == null || NodeCollection.Count == 0) return;
+            UpdateInstructionQueue();
+            UpdateLoadBuffers();
+            UpdateReservationStations();
+            UpdateReorderBuffer();
+        }
 
+        void UpdateInstructionQueue()
+        {
+            var firstInstr = DPEx.instrQueue.nextBatch.ElementAtOrDefault(0);
+            if (firstInstr != null)
+                GetNodeByID(instrQueue5).Annotations[0].Content = firstInstr.instruction.Disassemble();
+            else
+                GetNodeByID(instrQueue5).Annotations[0].Content = "";
+
+            var secondInstr = DPEx.instrQueue.nextBatch.ElementAtOrDefault(1);
+            if (secondInstr != null)
+                GetNodeByID(instrQueue4).Annotations[0].Content = secondInstr.instruction.Disassemble();
+            else
+                GetNodeByID(instrQueue4).Annotations[0].Content = "";
+
+            var thirdInstr = DPEx.instrQueue.nextBatch.ElementAtOrDefault(2);
+            if (thirdInstr != null)
+                GetNodeByID(instrQueue3).Annotations[0].Content = thirdInstr.instruction.Disassemble();
+            else
+                GetNodeByID(instrQueue3).Annotations[0].Content = "";
+
+            var fourthInstr = DPEx.instrQueue.nextBatch.ElementAtOrDefault(3);
+            if (fourthInstr != null)
+                GetNodeByID(instrQueue2).Annotations[0].Content = fourthInstr.instruction.Disassemble();
+            else
+                GetNodeByID(instrQueue2).Annotations[0].Content = "";
+
+            var fifthInstr = DPEx.instrQueue.nextBatch.ElementAtOrDefault(4);
+            if (fifthInstr != null)
+                GetNodeByID(instrQueue1).Annotations[0].Content = fifthInstr.instruction.Disassemble();
+            else
+                GetNodeByID(instrQueue1).Annotations[0].Content = "";
+        }
+
+        void UpdateLoadBuffers()
+        {
+            var firstInstr = DPEx.memoryUnit.loadBuffers.ElementAtOrDefault(0);
+            if (firstInstr != null)
+                GetNodeByID(loadBuffer5).Annotations[0].Content = firstInstr.instruction.GetMnemonic();
+            else
+                GetNodeByID(loadBuffer5).Annotations[0].Content = "";
+
+            var secondInstr = DPEx.memoryUnit.loadBuffers.ElementAtOrDefault(1);
+            if (secondInstr != null)
+                GetNodeByID(loadBuffer4).Annotations[0].Content = secondInstr.instruction.GetMnemonic();
+            else
+                GetNodeByID(loadBuffer4).Annotations[0].Content = "";
+
+            var thirdInstr = DPEx.memoryUnit.loadBuffers.ElementAtOrDefault(2);
+            if (thirdInstr != null)
+                GetNodeByID(loadBuffer3).Annotations[0].Content = thirdInstr.instruction.GetMnemonic();
+            else
+                GetNodeByID(loadBuffer3).Annotations[0].Content = "";
+
+            var fourthInstr = DPEx.memoryUnit.loadBuffers.ElementAtOrDefault(3);
+            if (fourthInstr != null)
+                GetNodeByID(loadBuffer2).Annotations[0].Content = fourthInstr.instruction.GetMnemonic();
+            else
+                GetNodeByID(loadBuffer2).Annotations[0].Content = "";
+
+            var fifthInstr = DPEx.memoryUnit.loadBuffers.ElementAtOrDefault(4);
+            if (fifthInstr != null)
+                GetNodeByID(loadBuffer1).Annotations[0].Content = fifthInstr.instruction.GetMnemonic();
+            else
+                GetNodeByID(loadBuffer1).Annotations[0].Content = "";
+        }
+
+        void UpdateReservationStations()
+        {
+            var fpAddInstr1 = DPEx.fpAdderReservationStation.instructions.ElementAtOrDefault(0);
+            if (fpAddInstr1 != null)
+            {
+                GetNodeByID(fpAdder3).Annotations[0].Content = fpAddInstr1.instruction.GetMnemonic();
+                GetNodeByID(fpAdderVal3).Annotations[0].Content =
+                    fpAddInstr1.StillHasDependencies() ? "wait" : "ready";
+            }
+            else
+            {
+                GetNodeByID(fpAdder3).Annotations[0].Content = "";
+                GetNodeByID(fpAdderVal3).Annotations[0].Content = "";
+            }
+
+            var fpAddInstr2 = DPEx.fpAdderReservationStation.instructions.ElementAtOrDefault(1);
+            if (fpAddInstr2 != null)
+            {
+                GetNodeByID(fpAdder2).Annotations[0].Content = fpAddInstr2.instruction.GetMnemonic();
+                GetNodeByID(fpAdderVal2).Annotations[0].Content =
+                    fpAddInstr2.StillHasDependencies() ? "wait" : "ready";
+            }
+            else
+            {
+                GetNodeByID(fpAdder2).Annotations[0].Content = "";
+                GetNodeByID(fpAdderVal2).Annotations[0].Content = "";
+            }
+
+            var fpAddInstr3 = DPEx.fpAdderReservationStation.instructions.ElementAtOrDefault(2);
+            if (fpAddInstr3 != null)
+            {
+                GetNodeByID(fpAdder1).Annotations[0].Content = fpAddInstr3.instruction.GetMnemonic();
+                GetNodeByID(fpAdderVal1).Annotations[0].Content =
+                    fpAddInstr3.StillHasDependencies() ? "wait" : "ready";
+            }
+            else
+            {
+                GetNodeByID(fpAdder1).Annotations[0].Content = "";
+                GetNodeByID(fpAdderVal1).Annotations[0].Content = "";
+            }
+
+            var fpMulInstr1 = DPEx.fpMulReservationStation.instructions.ElementAtOrDefault(0);
+            if (fpMulInstr1 != null)
+            {
+                GetNodeByID(fpMul3).Annotations[0].Content = fpMulInstr1.instruction.GetMnemonic();
+                GetNodeByID(fpMulVal3).Annotations[0].Content =
+                    fpMulInstr1.StillHasDependencies() ? "wait" : "ready";
+            }
+            else
+            {
+                GetNodeByID(fpMul3).Annotations[0].Content = "";
+                GetNodeByID(fpMulVal3).Annotations[0].Content = "";
+            }
+
+            var fpMulInstr2 = DPEx.fpMulReservationStation.instructions.ElementAtOrDefault(1);
+            if (fpMulInstr2 != null)
+            {
+                GetNodeByID(fpMul2).Annotations[0].Content = fpMulInstr2.instruction.GetMnemonic();
+                GetNodeByID(fpMulVal2).Annotations[0].Content =
+                    fpMulInstr2.StillHasDependencies() ? "wait" : "ready";
+            }
+            else
+            {
+                GetNodeByID(fpMul2).Annotations[0].Content = "";
+                GetNodeByID(fpMulVal2).Annotations[0].Content = "";
+            }
+
+            var fpMulInstr3 = DPEx.fpMulReservationStation.instructions.ElementAtOrDefault(2);
+            if (fpMulInstr3 != null)
+            {
+                GetNodeByID(fpMul1).Annotations[0].Content = fpMulInstr3.instruction.GetMnemonic();
+                GetNodeByID(fpMulVal1).Annotations[0].Content =
+                    fpMulInstr3.StillHasDependencies() ? "wait" : "ready";
+            }
+            else
+            {
+                GetNodeByID(fpMul1).Annotations[0].Content = "";
+                GetNodeByID(fpMulVal1).Annotations[0].Content = "";
+            }
+
+            var integerInstr1 = DPEx.integerReservationStation.instructions.ElementAtOrDefault(0);
+            if (integerInstr1 != null)
+            {
+                GetNodeByID(integer3).Annotations[0].Content = integerInstr1.instruction.GetMnemonic();
+                GetNodeByID(integerVal3).Annotations[0].Content =
+                    integerInstr1.StillHasDependencies() ? "wait" : "ready";
+            }
+            else
+            {
+                GetNodeByID(integer3).Annotations[0].Content = "";
+                GetNodeByID(integerVal3).Annotations[0].Content = "";
+            }
+
+            var integerInstr2 = DPEx.integerReservationStation.instructions.ElementAtOrDefault(1);
+            if (integerInstr2 != null)
+            {
+                GetNodeByID(integer2).Annotations[0].Content = integerInstr2.instruction.GetMnemonic();
+                GetNodeByID(integerVal2).Annotations[0].Content =
+                    integerInstr2.StillHasDependencies() ? "wait" : "ready";
+            }
+            else
+            {
+                GetNodeByID(integer2).Annotations[0].Content = "";
+                GetNodeByID(integerVal2).Annotations[0].Content = "";
+            }
+
+            var integerInstr3 = DPEx.integerReservationStation.instructions.ElementAtOrDefault(2);
+            if (integerInstr3 != null)
+            {
+                GetNodeByID(integer1).Annotations[0].Content = integerInstr3.instruction.GetMnemonic();
+                GetNodeByID(integerVal1).Annotations[0].Content =
+                    integerInstr3.StillHasDependencies() ? "wait" : "ready";
+            }
+            else
+            {
+                GetNodeByID(integer1).Annotations[0].Content = "";
+                GetNodeByID(integerVal1).Annotations[0].Content = "";
+            }
+        }
+
+        void UpdateReorderBuffer()
+        {
+            var firstInstr = DPEx.reorderBuffer.buffers.UnorderedItems.ElementAtOrDefault(4).Element;
+            if (firstInstr != null)
+                GetNodeByID(reorderBuffer1).Annotations[0].Content = firstInstr.instruction.Disassemble();
+            else
+                GetNodeByID(reorderBuffer1).Annotations[0].Content = "";
+
+            var secondInstr = DPEx.reorderBuffer.buffers.UnorderedItems.ElementAtOrDefault(3).Element;
+            if (secondInstr != null)
+                GetNodeByID(reorderBuffer2).Annotations[0].Content = secondInstr.instruction.Disassemble();
+            else
+                GetNodeByID(reorderBuffer2).Annotations[0].Content = "";
+
+            var thirdInstr = DPEx.reorderBuffer.buffers.UnorderedItems.ElementAtOrDefault(2).Element;
+            if (thirdInstr != null)
+                GetNodeByID(reorderBuffer3).Annotations[0].Content = thirdInstr.instruction.Disassemble();
+            else
+                GetNodeByID(reorderBuffer3).Annotations[0].Content = "";
+
+            var fourthInstr = DPEx.reorderBuffer.buffers.UnorderedItems.ElementAtOrDefault(1).Element;
+            if (fourthInstr != null)
+                GetNodeByID(reorderBuffer4).Annotations[0].Content = fourthInstr.instruction.Disassemble();
+            else
+                GetNodeByID(reorderBuffer4).Annotations[0].Content = "";
+
+            var fifthInstr = DPEx.reorderBuffer.buffers.UnorderedItems.ElementAtOrDefault(0).Element;
+            if (fifthInstr != null)
+                GetNodeByID(reorderBuffer5).Annotations[0].Content = fifthInstr.instruction.Disassemble();
+            else
+                GetNodeByID(reorderBuffer5).Annotations[0].Content = "";
         }
 
         private void InitDynamicDiagramModel()
@@ -903,14 +1165,14 @@ namespace InstructionSetProject.Frontend.Pages
 
             #region Nodes
             CreateNode("ReorderBufferLabel", RBufferXOffset - (RBufferLabelXOffset), RBufferYOffset + 40, RBufferItemHeight * 5, RBufferItemHeight, -90, 0, ReorderBufferPorts2, FlowShapeType.Process, "Reorder Buffer", "white", "8,0", "black");
-            CreateNode("ReorderBuffer1", RBufferXOffset, RBufferYOffset, RBufferItemWidth, RBufferItemHeight, 0, 0, ReorderBufferPorts1, FlowShapeType.Process, "RBuffer 1", "white", "8,0", "black");
+            CreateNode(reorderBuffer1, RBufferXOffset, RBufferYOffset, RBufferItemWidth, RBufferItemHeight, 0, 0, ReorderBufferPorts1, FlowShapeType.Process, "RBuffer 1", "white", "8,0", "black");
             CreateNode("ReorderBuffer2", RBufferXOffset, RBufferYOffset+20, RBufferItemWidth, RBufferItemHeight, 0, 0, ReorderBufferPorts2, FlowShapeType.Process, "RBuffer 2", "white", "8,0", "black");
             CreateNode("ReorderBuffer3", RBufferXOffset, RBufferYOffset+40, RBufferItemWidth, RBufferItemHeight, 0, 0, ReorderBufferPorts2, FlowShapeType.Process, "RBuffer 3", "white", "8,0", "black");
             CreateNode("ReorderBuffer4", RBufferXOffset, RBufferYOffset+60, RBufferItemWidth, RBufferItemHeight, 0, 0, ReorderBufferPorts2, FlowShapeType.Process, "RBuffer 4", "white", "8,0", "black");
             CreateNode("ReorderBuffer5", RBufferXOffset, RBufferYOffset+80, RBufferItemWidth, RBufferItemHeight, 0, 0, ReorderBufferPorts1, FlowShapeType.Process, "RBuffer 5", "white", "8,0", "black");
 
             CreateNode("InstrQueueLabel", InstrQueueXOffset - (InstrQueueLabelXOffset), InstrQueueYOffset + 40, InstrQueueItemHeight * 5, InstrQueueItemHeight, -90, 0, InstrQueuePorts2, FlowShapeType.Process, "Instr. Queue", "white", "8,0", "black");
-            CreateNode("InstrQueue1", InstrQueueXOffset, InstrQueueYOffset, InstrQueueItemWidth, InstrQueueItemHeight, 0, 0, InstrQueuePorts1, FlowShapeType.Process, "IQueue 1", "white", "8,0", "black");
+            CreateNode(instrQueue1, InstrQueueXOffset, InstrQueueYOffset, InstrQueueItemWidth, InstrQueueItemHeight, 0, 0, InstrQueuePorts1, FlowShapeType.Process, "IQueue 1", "white", "8,0", "black");
             CreateNode("InstrQueue2", InstrQueueXOffset, InstrQueueYOffset + 20, InstrQueueItemWidth, InstrQueueItemHeight, 0, 0, InstrQueuePorts2, FlowShapeType.Process, "IQueue 2", "white", "8,0", "black");
             CreateNode("InstrQueue3", InstrQueueXOffset, InstrQueueYOffset + 40, InstrQueueItemWidth, InstrQueueItemHeight, 0, 0, InstrQueuePorts2, FlowShapeType.Process, "IQueue 3", "white", "8,0", "black");
             CreateNode("InstrQueue4", InstrQueueXOffset, InstrQueueYOffset + 60, InstrQueueItemWidth, InstrQueueItemHeight, 0, 0, InstrQueuePorts2, FlowShapeType.Process, "IQueue 4", "white", "8,0", "black");
@@ -1071,6 +1333,8 @@ namespace InstructionSetProject.Frontend.Pages
 
 
             #endregion
+
+            UpdateDynamicDiagram();
         }
 
         #region Dynamic Connector Strings
@@ -1516,6 +1780,14 @@ namespace InstructionSetProject.Frontend.Pages
             if (connector == null)
                 throw new Exception($"Connector not found with ID: {id}");
             return connector;
+        }
+
+        Node GetNodeByID(string id)
+        {
+            var node = NodeCollection.FirstOrDefault(node => node.ID == id);
+            if (node == null)
+                throw new Exception($"Node not found with ID: {id}");
+            return node;
         }
 
         void EnableLines(List<Connector> lines, string color)
@@ -2116,7 +2388,8 @@ namespace InstructionSetProject.Frontend.Pages
                 Content = label,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
-                RotationAngle = rAngleAnnotation
+                RotationAngle = rAngleAnnotation,
+                Width = xSize
             };
             if (diagramPoint != null)
                 annotation.Offset = diagramPoint;
