@@ -189,6 +189,8 @@ namespace InstructionSetProject.Backend.DynamicPipeline
                         dataStructures.InstructionPointer.value = integerUnit.instruction.immediate ??
                                                                   dataStructures.InstructionPointer.value;
                         FlushPipeline(integerUnit.Index);
+
+                        return null;
                     }
                 }
             }
