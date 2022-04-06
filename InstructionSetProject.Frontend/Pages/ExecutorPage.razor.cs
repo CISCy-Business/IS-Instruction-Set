@@ -2467,6 +2467,7 @@ namespace InstructionSetProject.Frontend.Pages
             debugRender = true;
             this.ShowButton = true;
             debugRender = true;
+            UpdateCounters();
         }
         private void DialogClose(Object args)
         {
@@ -2474,6 +2475,7 @@ namespace InstructionSetProject.Frontend.Pages
             diagramContent = diagram.SaveDiagram();
             this.ShowButton = false;
             debugRender = true;
+            UpdateCounters();
         }
         private void OnClicked()
         {
