@@ -132,6 +132,17 @@
         border: 2px solid gray;
     }
 
+    .registerTextArea {
+        @(memoryDumpSwitch ? "max-width: 180px" : "max-width: 80px");
+        height: 35px;
+        overflow-x: hidden;
+        overflow-y: hidden;
+        text-align: center;
+        font-size: 18px;
+        color: black;
+        transform: translateY(10px);
+    }
+
 </style>
 
 <Modal @bind-Open="IsModalOpened" Close="OnClose">
@@ -167,6 +178,15 @@
                 <p class="bg-write" style="color: white; font-family: monospace; font-size: 20px; width: 200px; transform: translateX(15px); text-align: center"><b>Commit</b></p>
             </div>
         }
+
+        <div class="modalDivEx1">
+            <label class="staticLabel" style="font-family: monospace">MemDump Toggle -> </label>
+            <label class="switch">
+                <input type="checkbox" class="inputCheckbox" @onchange="toggleMemoryDump">
+                <span class="slider round"  style="transform: translateY(23px)"></span>
+            </label>
+        </div>
+
 
          <button class="modalExBtn" value="cancel">Close</button>
     </form>
@@ -239,7 +259,7 @@
             </SfDialog>
         </div>
         <div class="row">
-            <div class="col-4" style="width: 30% !important">
+            <div class="col-4" style=@(memoryDumpSwitch ? "width: 50% !important" : "width: 35% !important")>
                 <div class="codeDiv">
                     <div class="tab">
                         <button class="tablinks" onclick="swapTab(event, 'Executor')" id="defaultOpen">Executor</button>
@@ -296,7 +316,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-5" style="width: 40% !important">
+            <div class="col-5" style=@(memoryDumpSwitch ? "width: 50% !important" : "width: 25% !important")>
                 <div>
                     <div class="registerPane" id="RegisterPane">
                         <div>
@@ -387,12 +407,12 @@
                     </div>
                 </div>
             </div>
-            <div class="col-3" style="width: 30% !important">
+            <div class="col-3" style=@(memoryDumpSwitch ? "display: none !important" : "width: 40% !important")>
                 <div>
                     <div class="memDump">
                         <div class="memoryDumpContent">
                             <div class="MemLabelClass">
-                                <button class="byteAddressLabel float-start"> Jump To </button>
+                                <button class="byteAddressLabel float-start" @onclick="UpdateCounters"> Jump To </button>
                                 <input id="MemDumpStart" class="byteAddressInput float-start" placeholder="ex. 00AB" @bind-value="@MemDumpStart">
                                 <div class="memDumpLabel">
                                     <label id="exLabel"><b>Memory Dump</b></label>
@@ -405,27 +425,53 @@
                                     {
                                         @foreach (var instr in SPEx.InstrList.InstructionOffsetDictionary)
                                         {
-                                            <span class="@DivCSS(instr.Value)">
                                                 @foreach (var character in MemDumpContent.Substring((int) (instr.Key * 2), (int) (instr.Value.lengthInBytes * 2)))
                                                 {
-                                                    @character
+                                                    @if (progCharCount % 32 == 0 && (int) instr.Key != 0)
+                                                    {
+                                                        @printMemoryCharList();
+                                                        clearMemoryCharList();
+                                                        <span style="white-space: pre-wrap;">&#10;</span>
+                                                        @PrintProgCount();
+                                                        IncrementProgCount();
+                                                        ClearProgCharCount();
+                                                    }
+                                                    else if (progCharCount % 32 == 0 && (int) instr.Key == 0)
+                                                    {
+                                                        @PrintProgCount();
+                                                        IncrementProgCount();
+                                                        ClearProgCharCount();
+                                                    }
+                                                    <span class="@DivCSS(instr.Value)">@character</span>
+                                                    addToMemoryCharList(character);
                                                     IncrementCharCount();
-                                                    if (charCount == instr.Value.lengthInBytes * 2)
+                                                    IncrementProgCharCount();
+                                                    @if (charCount == instr.Value.lengthInBytes * 2)
                                                     {
                                                         ClearCharCount();
                                                     }
-                                                    if (charCount % 2 == 0 && charCount != 0 && charCount != (int) (instr.Value.lengthInBytes * 2))
+                                                    @if (charCount % 2 == 0 && charCount != 0 && charCount != (int) (instr.Value.lengthInBytes * 2))
                                                     {
-                                                        @space
+                                                        <span class="@DivCSS(instr.Value)">@space</span>
                                                     }
                                                 }
-                                            </span>
                                             @space
                                         }
                                         @foreach (var character in MemDumpContent.Substring((int) (SPEx.InstrList.InstructionOffsetDictionary.Keys.Last() + SPEx.InstrList.InstructionOffsetDictionary.Values.Last().lengthInBytes * 2) * 2))
                                         {
+                                            @if (progCharCount % 32 == 0)
+                                            {
+                                                @printMemoryCharList();
+                                                clearMemoryCharList();
+                                                <span style="white-space: pre-wrap;">&#10;</span>
+                                                @PrintProgCount();
+                                                IncrementProgCount();
+                                                ClearProgCharCount();
+                                            }
                                             @character
+                                            addToMemoryCharList(character);
                                             IncrementCharCount();
+                                            IncrementProgCharCount();
                                             if (charCount % 2 == 0)
                                             {
                                                 @space
@@ -438,20 +484,63 @@
                                     }
                                     else
                                     {
+                                        @PrintProgCount();
+                                        IncrementProgCount();
                                         @foreach (var character in MemDumpContent)
                                         {
                                             @character
+                                            addToMemoryCharList(character);
                                             IncrementCharCount();
-                                            if (charCount % 2 == 0)
+                                            IncrementProgCharCount();
+                                            @if (charCount % 2 == 0)
                                             {
                                                 @space
                                             }
-                                            if (charCount == MemDumpContent.Length)
+                                            @if (charCount == MemDumpContent.Length)
                                             {
                                                 ClearCharCount();
                                             }
+                                            @if (progCharCount % 32 == 0)
+                                            {
+                                                @printMemoryCharList();
+                                                clearMemoryCharList();
+                                                <span style="white-space: pre-wrap;">&#10;</span>
+                                                @PrintProgCount();
+                                                IncrementProgCount();
+                                                ClearProgCharCount();
+                                            }
                                         }
                                     }
+                                }
+                                else
+                                {
+                                    ClearProgCharCount();
+                                    ClearCharCount();
+                                    ClearProgCount();
+                                    clearMemoryCharList();
+                                    @PrintProgCount();
+                                    IncrementProgCount();
+                                    @for (int i = 0; i < 2000; i++)
+                                    {
+                                        @print0();
+                                        addToMemoryCharList('0');
+                                        IncrementCharCount();
+                                        IncrementProgCharCount();
+                                        @if (charCount % 2 == 0)
+                                        {
+                                            @space
+                                        }
+                                        @if (progCharCount % 32 == 0)
+                                        {
+                                            @printMemoryCharList();
+                                            clearMemoryCharList();
+                                            <span style="white-space: pre-wrap;">&#10;</span>
+                                            @PrintProgCount();
+                                            IncrementProgCount();
+                                            ClearProgCharCount();
+                                        }
+                                    }
+                                    ClearCharCount();
                                 }
                             </div>
                         </div>
