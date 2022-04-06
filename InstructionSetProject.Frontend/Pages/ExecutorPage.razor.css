@@ -172,17 +172,6 @@
     margin-bottom: 39px;
 }
 
-.registerTextArea {
-    max-width: 150px;
-    height: 35px;
-    overflow-x: hidden;
-    overflow-y: hidden;
-    text-align: center;
-    font-size: 18px;
-    color: black;
-    transform: translateY(10px);
-}
-
 .registerLabel {
     font-family: "Source Code Pro", monospace;
     font-size: 20px;
@@ -243,7 +232,7 @@ hr {
     margin-top: 0px;
     margin-bottom: 0px;
     overflow-y: auto;
-    overflow-wrap: break-word;
+    overflow-x: auto;
     transform: translateY(5px);
     background-color: white;
     color: black;

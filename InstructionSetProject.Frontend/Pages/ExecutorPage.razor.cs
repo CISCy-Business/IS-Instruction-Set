@@ -26,9 +26,13 @@ namespace InstructionSetProject.Frontend.Pages
         private string ExecAssemblyCode = "";
         private string statsString = "";
         private string space = " ";
+        private string newLine = "\n";
         private int charCount = 0;
+        private int progCount = 0;
+        private int progCharCount = 0;
         bool isGranted = true;
         bool StaticMode = true;
+        List<char> memoryCharList = new List<char>();
 
         protected override bool ShouldRender()
         {
@@ -107,6 +111,8 @@ namespace InstructionSetProject.Frontend.Pages
         public bool IsModalOpened { get; set; }
         bool visible { get; set; } = false;
 
+        bool memoryDumpSwitch { get; set; } = false;
+
         void toggleVisible()
         {
             visible = !visible;
@@ -120,6 +126,11 @@ namespace InstructionSetProject.Frontend.Pages
         void toggleStaticDynamicMode()
         {
             StaticMode = !StaticMode;
+        }
+
+        void toggleMemoryDump()
+        {
+            memoryDumpSwitch = !memoryDumpSwitch;
         }
 
         private async Task LoadFile(InputFileChangeEventArgs e)
@@ -142,6 +153,98 @@ namespace InstructionSetProject.Frontend.Pages
         {
             byte[] file = System.Text.Encoding.UTF8.GetBytes(statsString);
             await JSRuntime.InvokeVoidAsync("BlazorDownloadFile", "assemblyStats.txt", "text/plain", file);
+        }
+
+        void addToMemoryCharList(char character)
+        {
+            memoryCharList.Add(character);
+        }
+
+        void clearMemoryCharList()
+        {
+            memoryCharList.Clear();
+        }
+
+        string printMemoryCharList()
+        {
+            string ascii = " : ";
+
+            ascii += ConvertHex(String.Join("", memoryCharList));
+
+            return ascii;
+        }
+
+        public static string ConvertHex(String hexString)
+        {
+            try
+            {
+                string ascii = string.Empty;
+
+                for (int i = 0; i < hexString.Length; i += 2)
+                {
+                    String hs = string.Empty;
+
+                    hs = hexString.Substring(i, 2);
+                    uint decval = System.Convert.ToUInt32(hs, 16);
+                    char character = (decval > 126 || decval < 32) ? '.' : System.Convert.ToChar(decval);
+                    ascii += character;
+
+                }
+
+                return ascii;
+            }
+            catch (Exception ex) 
+            { 
+                Console.WriteLine(ex.Message); 
+            }
+
+            return string.Empty;
+        }
+
+        string PrintProgCount()
+        {
+            return progCount.ToString("X4") + "  :  ";
+        }
+
+        char print0()
+        {
+            return '0';
+        }
+
+        void UpdateCounters()
+        {
+            ClearProgCount();
+            ClearProgCharCount();
+            clearMemoryCharList();
+            setProgCounter();
+        }
+
+        void setProgCounter()
+        {
+            if (MemDumpStart != "")
+            {
+                progCount = (int) Convert.ToUInt32(MemDumpStart, 16);
+            }
+        }
+
+        void IncrementProgCount()
+        {
+            progCount+=16;
+        }
+
+        void ClearProgCount()
+        {
+            progCount = 0;
+        }
+
+        void IncrementProgCharCount()
+        {
+            progCharCount++;
+        }
+
+        void ClearProgCharCount()
+        {
+            progCharCount = 0;
         }
 
         void IncrementCharCount()
@@ -247,6 +350,9 @@ namespace InstructionSetProject.Frontend.Pages
             {
                 errorVis = true;
             }
+            ClearProgCount();
+            ClearProgCharCount();
+            clearMemoryCharList();
         }
 
         async Task runCodeAsync()
@@ -280,6 +386,9 @@ namespace InstructionSetProject.Frontend.Pages
             }
             debugRender = true;
             Statistics();
+            ClearProgCount();
+            ClearProgCharCount();
+            clearMemoryCharList();
         }
 
         async Task Debug()
@@ -303,6 +412,9 @@ namespace InstructionSetProject.Frontend.Pages
                 UpdateStaticDiagram();
             else if (StaticMode == false)
                 UpdateDynamicDiagram();
+            ClearProgCount();
+            ClearProgCharCount();
+            clearMemoryCharList();
         }
 
         bool IsSelectedFetch(IInstruction instr) => StaticMode ? instr == SPEx.fetchingInstruction : DPEx.instrQueue.nextBatch.Exists((search) => search.instruction == instr);
@@ -347,6 +459,9 @@ namespace InstructionSetProject.Frontend.Pages
                 UpdateStaticDiagram();
             else if (StaticMode == false)
                 UpdateDynamicDiagram();
+            ClearProgCount();
+            ClearProgCharCount();
+            clearMemoryCharList();
         }
 
         void step()
@@ -371,6 +486,9 @@ namespace InstructionSetProject.Frontend.Pages
                 UpdateStaticDiagram();
             else if (StaticMode == false)
                 UpdateDynamicDiagram();
+            ClearProgCount();
+            ClearProgCharCount();
+            clearMemoryCharList();
         }
 
         void Continue()
@@ -389,6 +507,9 @@ namespace InstructionSetProject.Frontend.Pages
                 output = "ERROR: " + ex.Message + "\n";
             }
             Statistics();
+            ClearProgCount();
+            ClearProgCharCount();
+            clearMemoryCharList();
             debugRender = true;
         }
 
@@ -404,6 +525,9 @@ namespace InstructionSetProject.Frontend.Pages
             {
                 InitDynamicDiagramModel();
             }
+            ClearProgCount();
+            ClearProgCharCount();
+            clearMemoryCharList();
         }
 
         #region ColorCodes
@@ -2134,21 +2258,21 @@ namespace InstructionSetProject.Frontend.Pages
 
             await MonacoEditorBase.DefineTheme("ISTheme", new StandaloneThemeData
             {
-                Base = "vs-dark",
+                Base = FrontendVariables.darkMode ? "vs-dark" : "vs",
                 Inherit = false,
                 Rules = new List<TokenThemeRule>
                 {
-                    new TokenThemeRule { Background = "000000", Foreground = "E0E0E0" },
-                    new TokenThemeRule { Token = "mnemonic", Foreground = "4353FA" },
-                    new TokenThemeRule { Token = "register", Foreground = "999900" },
-                    new TokenThemeRule { Token = "comment", Foreground = "119922", FontStyle = "italic" },
-                    new TokenThemeRule { Token = "addressModes", Foreground = "FF7DA4" },
-                    new TokenThemeRule { Token = "branchLabel", Foreground = "7E5EFF" },
+                    new TokenThemeRule { Background = (FrontendVariables.darkMode ? "000000" : "FFFFFF"), Foreground = (FrontendVariables.darkMode ? "E0E0E0" : "000000")},
+                    new TokenThemeRule { Token = "mnemonic", Foreground = (FrontendVariables.darkMode ? "4353FA" : "0524a3") },
+                    new TokenThemeRule { Token = "register", Foreground = (FrontendVariables.darkMode ? "999900" : "777700") },
+                    new TokenThemeRule { Token = "comment", Foreground = (FrontendVariables.darkMode ? "119922" : "11AA22"), FontStyle = "italic" },
+                    new TokenThemeRule { Token = "addressModes", Foreground = (FrontendVariables.darkMode ? "FF7DA4" : "94072d") },
+                    new TokenThemeRule { Token = "branchLabel", Foreground = (FrontendVariables.darkMode ? "7E5EFF" : "4b0774") },
                 },
                 Colors = new Dictionary<string, string>
                 {
-                    ["editor.background"] = "#000000",
-                    ["editorCursor.foreground"] = "#E0E0E0",
+                    ["editor.background"] = (FrontendVariables.darkMode ? "#000000" : "#FFFFFF"),
+                    ["editorCursor.foreground"] = (FrontendVariables.darkMode ? "#E0E0E0" : "#000000"),
                     ["editorLineNumber.foreground"] = "#7A7A7A"
                 }
             });
