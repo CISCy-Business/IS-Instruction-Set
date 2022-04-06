@@ -411,9 +411,7 @@ namespace InstructionSetProject.Frontend.Pages
 
 
             List<PointPort> IssueQueuePorts1 = new List<PointPort>();
-            IssueQueuePorts1.Add(AddPort("port1IssueQueue", 0.5, 1));
-
-            List<PointPort> IssueQueuePorts2 = new List<PointPort>();
+            IssueQueuePorts1.Add(AddPort("port1IssueQueue", 0.57, 1));
 
 
             List<PointPort> AddressUnitPorts = new List<PointPort>();
@@ -519,17 +517,15 @@ namespace InstructionSetProject.Frontend.Pages
 
             // Change to move the entire RegFile Component as a unit
             int RegFileXOffset = 615 + DatapathXOffset;
-            int RegFileYOffset = 250 + DatapathYOffset;
-            int RegFileLabelXOffset = 95;
+            int RegFileYOffset = 210 + DatapathYOffset;
             int RegFileItemWidth = 170;
-            int RegFileItemHeight = 20;
+            int RegFileItemHeight = 100;
 
             // Change to move the entire IssueQueue Component as a unit
-            int IssueQueueXOffset = 350 + DatapathXOffset;
-            int IssueQueueYOffset = 75 + DatapathYOffset;
-            int IssueQueueLabelXOffset = 70;
-            int IssueQueueItemWidth = 120;
-            int IssueQueueItemHeight = 20;
+            int IssueQueueXOffset = 340 + DatapathXOffset;
+            int IssueQueueYOffset = 55 + DatapathYOffset;
+            int IssueQueueItemWidth = 140;
+            int IssueQueueItemHeight = 60;
 
             // Change to move the entire AddressUnit Component as a unit
             int AddressUnitXOffset = 130 + DatapathXOffset;
@@ -752,19 +748,9 @@ namespace InstructionSetProject.Frontend.Pages
             CreateNode("InstrQueue4", InstrQueueXOffset, InstrQueueYOffset + 60, InstrQueueItemWidth, InstrQueueItemHeight, 0, 0, InstrQueuePorts2, FlowShapeType.Process, "IQueue 4", "white", "8,0", "black");
             CreateNode("InstrQueue5", InstrQueueXOffset, InstrQueueYOffset + 80, InstrQueueItemWidth, InstrQueueItemHeight, 0, 0, InstrQueuePorts1, FlowShapeType.Process, "IQueue 5", "white", "8,0", "black");
 
-            CreateNode("RegisterFileLabel", RegFileXOffset - (RegFileLabelXOffset), RegFileYOffset + 40, RegFileItemHeight * 5, RegFileItemHeight, -90, 0, RegFilePorts2, FlowShapeType.Process, "Reg File", "white", "8,0", "black");
-            CreateNode("RegFile1", RegFileXOffset, RegFileYOffset, RegFileItemWidth, RegFileItemHeight, 0, 0, RegFilePorts1, FlowShapeType.Process, "Reg File 1", "white", "8,0", "black");
-            CreateNode("RegFile2", RegFileXOffset, RegFileYOffset + 20, RegFileItemWidth, RegFileItemHeight, 0, 0, RegFilePorts2, FlowShapeType.Process, "Reg File 2", "white", "8,0", "black");
-            CreateNode("RegFile3", RegFileXOffset, RegFileYOffset + 40, RegFileItemWidth, RegFileItemHeight, 0, 0, RegFilePorts2, FlowShapeType.Process, "Reg File 3", "white", "8,0", "black");
-            CreateNode("RegFile4", RegFileXOffset, RegFileYOffset + 60, RegFileItemWidth, RegFileItemHeight, 0, 0, RegFilePorts2, FlowShapeType.Process, "Reg File 4", "white", "8,0", "black");
-            CreateNode("RegFile5", RegFileXOffset, RegFileYOffset + 80, RegFileItemWidth, RegFileItemHeight, 0, 0, RegFilePorts1, FlowShapeType.Process, "Reg File 5", "white", "8,0", "black");
+            CreateNode("RegisterFile", RegFileXOffset, RegFileYOffset + 80, RegFileItemWidth, RegFileItemHeight, 0, 0, RegFilePorts1, FlowShapeType.Process, "I/F Register File", "darkgray", "8,0", "black");
 
-            CreateNode("IssueQueueLabel", IssueQueueXOffset - (IssueQueueLabelXOffset), IssueQueueYOffset + 40, IssueQueueItemHeight * 5, IssueQueueItemHeight, -90, 0, IssueQueuePorts2, FlowShapeType.Process, "Issue Queue", "white", "8,0", "black");
-            CreateNode("IssueQueue1", IssueQueueXOffset, IssueQueueYOffset, IssueQueueItemWidth, IssueQueueItemHeight, 0, 0, IssueQueuePorts1, FlowShapeType.Process, "Issue Queue 1", "white", "8,0", "black");
-            CreateNode("IssueQueue2", IssueQueueXOffset, IssueQueueYOffset + 20, IssueQueueItemWidth, IssueQueueItemHeight, 0, 0, IssueQueuePorts2, FlowShapeType.Process, "Issue Queue 2", "white", "8,0", "black");
-            CreateNode("IssueQueue3", IssueQueueXOffset, IssueQueueYOffset + 40, IssueQueueItemWidth, IssueQueueItemHeight, 0, 0, IssueQueuePorts2, FlowShapeType.Process, "Issue Queue 3", "white", "8,0", "black");
-            CreateNode("IssueQueue4", IssueQueueXOffset, IssueQueueYOffset + 60, IssueQueueItemWidth, IssueQueueItemHeight, 0, 0, IssueQueuePorts2, FlowShapeType.Process, "Issue Queue 4", "white", "8,0", "black");
-            CreateNode("IssueQueue5", IssueQueueXOffset, IssueQueueYOffset + 80, IssueQueueItemWidth, IssueQueueItemHeight, 0, 0, IssueQueuePorts1, FlowShapeType.Process, "Issue Queue 5", "white", "8,0", "black");
+            CreateNode("IssueUnit", IssueQueueXOffset, IssueQueueYOffset + 80, IssueQueueItemWidth, IssueQueueItemHeight, 0, 0, IssueQueuePorts1, FlowShapeType.Process, "Issue Unit", "darkgray", "8,0", "black");
 
             CreateNode("AddressUnit", AddressUnitXOffset, AddressUnitYOffset, AddressUnitItemWidth, AddressUnitItemHeight, 0, 0, AddressUnitPorts, FlowShapeType.Process, "Address Unit", "darkgray", "8,0", "black");
 
@@ -855,10 +841,10 @@ namespace InstructionSetProject.Frontend.Pages
             #endregion
 
             #region Connectors
-            CreateConnector(ReorderBuffToRegFileData, "ReorderBuffer5", "port4ReorderBuffer", "RegFile1", "port2RegFile", "8,0", "black");
-            CreateConnector(ReorderBuffToRegFileRegNum, "ReorderBuffer5", "port3ReorderBuffer", "RegFile1", "port1RegFile", "8,0", "black");
+            CreateConnector(ReorderBuffToRegFileData, "ReorderBuffer5", "port4ReorderBuffer", "RegisterFile", "port2RegFile", "8,0", "black");
+            CreateConnector(ReorderBuffToRegFileRegNum, "ReorderBuffer5", "port3ReorderBuffer", "RegisterFile", "port1RegFile", "8,0", "black");
 
-            CreateConnector(IssueQueueToInstrQueue, "IssueQueue5", "port1IssueQueue", "InstrQueue1", "port1InstrQueue", "8,0", "black");
+            CreateConnector(IssueQueueToInstrQueue, "IssueUnit", "port1IssueQueue", "InstrQueue1", "port1InstrQueue", "8,0", "black");
 
             CreateConnector(InstrQueueToAddressUnit, "InstrQueue5", "port2InstrQueue", "AddressUnit", "port1AddressUnit", "8,0", "black", "Load/Store\nOperations", AnnotationAlignment.After, 0.8);
 
@@ -896,12 +882,12 @@ namespace InstructionSetProject.Frontend.Pages
 
 
             // OPBus Connectors
-            CreateConnector(RegFile5ToOpBusNode2, "RegFile5", "port3RegFile", "OpBusNode2", "port3OpBus", "8,0", "black", default, default, default, default, default, default, DecoratorShape.None);
+            CreateConnector(RegFile5ToOpBusNode2, "RegisterFile", "port3RegFile", "OpBusNode2", "port3OpBus", "8,0", "black", default, default, default, default, default, default, DecoratorShape.None);
             CreateConnector(OpBusNode2ToRes1DataBus, "OpBusNode2", "port1OpBus", "Res1DataBus1", "port1Res1", "8,0", "black", "FP Operations", AnnotationAlignment.After, 0.35);
             CreateConnector(OpBusNode1ToAddressUnit, "OpBusNode1", "port2OpBus", "AddressUnit", "port4AddressUnit", "8,0", "black");
             CreateConnector(DataToOpBusNode4, "OpBusNode5", "port4OpBus", "OpBusNode4", "port2OpBus", "8,0", "black");
             CreateConnector(DataToOpBusNode6, "OpBusNode7", "port4OpBus", "OpBusNode6", "port2OpBus", "8,0", "black");
-            CreateConnector(RegFileToOpBusNode3, "RegFile5", "port4RegFile", "OpBusNode3", "port2OpBus", "8,0", "black", "Operand\nBuses", AnnotationAlignment.After, 0.2);
+            CreateConnector(RegFileToOpBusNode3, "RegisterFile", "port4RegFile", "OpBusNode3", "port2OpBus", "8,0", "black", "Operand\nBuses", AnnotationAlignment.After, 0.2);
             CreateConnector(OpBusNode2ToRes2DataBus, "OpBusNode2", "port4OpBus", "Res2DataBus1", "port1Res2", "8,0", "black");
             CreateConnector(OpBusNode2ToRes3DataBus, "OpBusNode2", "port3OpBus", "Res3DataBus1", "port1Res3", "8,0", "black");
             CreateConnector(OpBusNode3ToRes1OperandBus, "OpBusNode3", "port1OpBus", "Res1OperandBus1", "port1Res1", "8,0", "black");
