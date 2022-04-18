@@ -1,0 +1,114 @@
+﻿[
+      {
+        "Name": "immediate direct",
+        "Letters": "id",
+        "Binary": "0000",
+        "Treatment": "Mem[operand]",
+        "Notes": ""
+      },
+      {
+        "Name": "immediate indirect",
+        "Letters": "in",
+        "Binary": "0001",
+        "Treatment": "Mem[Mem[operand]]",
+        "Notes": ""
+      },
+      {
+        "Name": "register direct",
+        "Letters": "rd",
+        "Binary": "0010",
+        "Treatment": "Mem[register operand]",
+        "Notes": "Can only accept integer registers\r\n                (cannot have a floating-point address)"
+      },
+      {
+        "Name": "register indirect",
+        "Letters": "rn",
+        "Binary": "0011",
+        "Treatment": "Mem[Mem[register operand]]",
+        "Notes": "Can only accept integer registers\r\n                (cannot have a floating-point address)"
+      },
+      {
+        "Name": "indexed direct",
+        "Letters": "xd",
+        "Binary": "0100",
+        "Treatment": "Mem[r7 + operand]",
+        "Notes": ""
+      },
+      {
+        "Name": "indexed indirect",
+        "Letters": "xn",
+        "Binary": "0101",
+        "Treatment": "Mem[Mem[r7 + operand]]",
+        "Notes": ""
+      },
+      {
+        "Name": "indexed offset",
+        "Letters": "xo",
+        "Binary": "0110",
+        "Treatment": "Mem[Mem[r7] + operand]",
+        "Notes": ""
+      },
+      {
+        "Name": "indexed deferred",
+        "Letters": "xf",
+        "Binary": "0111",
+        "Treatment": "Mem[Mem[operand] + r7]",
+        "Notes": ""
+      },
+      {
+        "Name": "stack direct",
+        "Letters": "sd",
+        "Binary": "1000",
+        "Treatment": "Mem[SP + operand]",
+        "Notes": ""
+      },
+      {
+        "Name": "stack indirect",
+        "Letters": "sn",
+        "Binary": "1001",
+        "Treatment": "Mem[Mem[SP + operand]]",
+        "Notes": ""
+      },
+      {
+        "Name": "stack offset",
+        "Letters": "so",
+        "Binary": "1010",
+        "Treatment": "Mem[Mem[SP] + operand]",
+        "Notes": ""
+      },
+      {
+        "Name": "stack deferred",
+        "Letters": "sf",
+        "Binary": "1011",
+        "Treatment": "Mem[SP + Mem[operand]]",
+        "Notes": ""
+      },
+      {
+        "Name": "stack indexed direct",
+        "Letters": "sxd",
+        "Binary": "1100",
+        "Treatment": "Mem[SP + r7 + operand]",
+        "Notes": ""
+      },
+      {
+        "Name": "stack indexed indirect",
+        "Letters": "sxn",
+        "Binary": "1101",
+        "Treatment": "Mem[Mem[SP + r7 + operand]]",
+        "Notes": ""
+      },
+      {
+        "Name": "stack indexed offset",
+        "Letters": "sxo",
+        "Binary": "1110",
+        "Treatment": "Mem[Mem[SP + r7] + operand]",
+        "Notes": ""
+      },
+      {
+        "Name": "stack indexed deferred",
+        "Letters": "sxf",
+        "Binary": "1111",
+        "Treatment": "Mem[Mem[SP + operand] + r7]",
+        "Notes": ""
+      }
+]

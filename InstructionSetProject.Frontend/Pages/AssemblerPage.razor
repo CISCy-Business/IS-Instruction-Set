@@ -34,6 +34,13 @@
     ::-webkit-scrollbar {
         display: none;
     }
+
+    .monacoEditorCSS {
+        margin-bottom: 8px;
+        width: 100%;
+        height: 595px;
+        border: 2px solid gray;
+    }
 </style>
 
 <div class="code_input_assembler">
@@ -63,7 +70,8 @@
 
         <div class="row">
             <div class="col-sm-5">
-                <textarea @bind="currentCodeAss" id="assemble" name="assemble" placeholder="@assemblyPlaceholder"></textarea>
+                <MonacoEditor @ref="_editorAss" Id="MonacoEditorID" ConstructionOptions="EditorConstructionOptions" CssClass="monacoEditorCSS" OnDidInit="EditorOnDidInit"/>
+                <!--<textarea @bind="currentCodeAss" id="assemble" name="assemble" placeholder="@assemblyPlaceholder"></textarea>-->
                 <p>
                     <button @onclick="SaveAssemblyCode" type="button" name="ass_btn" class="btn btn-primary btn-lg assBtn">Save Code</button>
                     <button @onclick="OpenAssemblyCodeExecutor" type="button" name="ass_btn" class="btn btn-primary btn-lg float-end assBtn">Open Executor</button>
@@ -101,6 +109,8 @@
 
     bool darkModeAssemblerPage = FrontendVariables.darkMode;
 
+    private MonacoEditor? _editorAss { get; set; }
+
     protected override async Task OnAfterRenderAsync (bool firstRender)
     {
         if (darkModeAssemblerPage == true)
@@ -109,11 +119,15 @@
             FrontendVariables.darkModeAssembler = darkModeAssemblerPage;
             FrontendVariables.darkModeAssemblerChanged = true;
         }
+        if (firstRender)
+        {
+            await _editorAss.SetValue("");
+        }
     }
 
-    private void Assemble()
+    private async Task Assemble()
     {
-        machineCode = Assembler.Assemble(currentCodeAss);
+        machineCode = Assembler.Assemble(await _editorAss.GetValue());
         string hexCode = BitConverter.ToString(machineCode.ToArray());
         currentCodeOutAss = hexCode.Replace("-", " ");
     }
@@ -156,6 +170,65 @@
     {
         currentCodeAss = FrontendVariables.currentCodeAssembler;
         FrontendVariables.currentCodeAssembler = "";
+    }
+
+    // Monaco Editor
+
+    private StandaloneEditorConstructionOptions EditorConstructionOptions(MonacoEditor editor)
+    {
+        return new StandaloneEditorConstructionOptions
+        {
+            AutomaticLayout = true,
+            Language = "ISInstructionSet",
+            Value = ""
+        };
+    }
+
+    private async Task EditorOnDidInit(MonacoEditorBase editor)
+    {
+        var newDecorations = new ModelDeltaDecoration[]
+        {
+            new ModelDeltaDecoration
+            {
+                Range = new BlazorMonaco.Range(3,1,3,1),
+                Options = new ModelDecorationOptions
+                {
+                    IsWholeLine = true,
+                    ClassName = "decorationContentClass",
+                    GlyphMarginClassName = "decorationGlyphMarginClass"
+                }
+            }
+        };
+
+        await MonacoEditorBase.DefineTheme("ISTheme", new StandaloneThemeData
+        {
+            Base = FrontendVariables.darkMode ? "vs-dark" : "vs",
+            Inherit = false,
+            Rules = new List<TokenThemeRule>
+            {
+                new TokenThemeRule { Background = (FrontendVariables.darkMode ? "000000" : "FFFFFF"), Foreground = (FrontendVariables.darkMode ? "E0E0E0" : "000000")},
+                new TokenThemeRule { Token = "mnemonic", Foreground = (FrontendVariables.darkMode ? "4353FA" : "0524a3") },
+                new TokenThemeRule { Token = "register", Foreground = (FrontendVariables.darkMode ? "999900" : "777700") },
+                new TokenThemeRule { Token = "comment", Foreground = (FrontendVariables.darkMode ? "119922" : "11AA22"), FontStyle = "italic" },
+                new TokenThemeRule { Token = "addressModes", Foreground = (FrontendVariables.darkMode ? "FF7DA4" : "94072d") },
+                new TokenThemeRule { Token = "branchLabel", Foreground = (FrontendVariables.darkMode ? "7E5EFF" : "4b0774") },
+            },
+            Colors = new Dictionary<string, string>
+            {
+                ["editor.background"] = (FrontendVariables.darkMode ? "#000000" : "#FFFFFF"),
+                ["editorCursor.foreground"] = (FrontendVariables.darkMode ? "#E0E0E0" : "#000000"),
+                ["editorLineNumber.foreground"] = "#7A7A7A"
+            }
+        });
+
+        await MonacoEditorBase.SetTheme("ISTheme");
+
+        if (currentCodeAss != "")
+        {
+            await _editorAss.SetValue(currentCodeAss);
+        }
+
+        await JSRuntime.InvokeVoidAsync("setupMonacoLanguage");
     }
 
 }

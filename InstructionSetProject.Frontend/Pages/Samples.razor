@@ -14,9 +14,10 @@
     }
 
     textarea {
-        height: 250px; 
+        height: 300px; 
         width: 100%;
-        font-size: 22px;
+        font-size: 20px;
+        border-radius: 7px;
     }
 
     img {
@@ -83,29 +84,30 @@
 
     <hr />
     <br />
+    <br />
 
     <h2 class="sampleLabel">Addition and Subtraction</h2>
 
     <div class="row">
-        <div class="col-sm-2"></div>
-        <div class="col-sm-3">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-4">
             <label class="sampleLabel">Assembly Code</label><br />
             <textarea id="idAddSubAssem1" class="sampleTextarea" readonly>@addSubAssem1</textarea><br />
             <div class="sample_btns1">
-                <button class="btn btn-primary btn-lg sampleBtn" @onclick="() => NavigateAssemblerSample(addSubAssem1)">Open Source</button>
-                <button @onclick="() => NavigateExecutorAssemblySample(addSubAssem1)" type="button" class="btn btn-primary btn-lg float-end sampleBtn">Open Executor</button>
+                <button class="btn btn-primary btn-lg sampleBtn float-start" style="margin-left: 35px" @onclick="() => NavigateAssemblerSample(addSubAssem1)">Open Source</button>
+                <button @onclick="() => NavigateExecutorAssemblySample(addSubAssem1)" type="button" class="btn btn-primary btn-lg float-end sampleBtn" style="transform: translateX(35px)">Open Executor</button>
             </div>
         </div>
         <div class="col-sm-2"><img src="arrow-left-right.svg"/></div>
-        <div class="col-sm-3">
+        <div class="col-sm-4">
             <label class="sampleLabel">Machine Code</label><br />
             <textarea id="idAddSubMach1" class="sampleTextarea" readonly>@addSubMach1</textarea>
             <div class="sample_btns2">
-                <button class="btn btn-primary btn-lg sampleBtn" @onclick="() => NavigateDisassemblerSample(addSubMach1)">Open Machine</button>
-                <button @onclick="() => NavigateExecutorMachineSample(addSubMach1)" type="button" class="btn btn-primary btn-lg float-end sampleBtn">Open Executor</button>
+                <button class="btn btn-primary btn-lg sampleBtn float-start" style="margin-left: 35px" @onclick="() => NavigateDisassemblerSample(addSubMach1)">Open Machine</button>
+                <button @onclick="() => NavigateExecutorMachineSample(addSubMach1)" type="button" class="btn btn-primary btn-lg float-end sampleBtn" style="transform: translateX(35px)">Open Executor</button>
             </div>
         </div>
-        <div class="col-sm-2"></div>
+        <div class="col-sm-1"></div>
     </div>
 
     <div>
@@ -130,25 +132,25 @@
     <h2 class="sampleLabel">Load and Store</h2>
 
     <div class="row">
-        <div class="col-sm-2"></div>
-        <div class="col-sm-3">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-4">
             <label class="sampleLabel">Assembly Code</label><br />
             <textarea id="idLoadStoreAssem1" class="sampleTextarea" readonly>@loadStoreAssem1</textarea>
             <div class="sample_btns1">
-                <button class="btn btn-primary btn-lg sampleBtn" @onclick="() => NavigateAssemblerSample(loadStoreAssem1)">Open Source</button>
-                <button @onclick="() => NavigateExecutorAssemblySample(loadStoreAssem1)" type="button" class="btn btn-primary btn-lg float-end sampleBtn">Open Executor</button>
+                <button class="btn btn-primary btn-lg sampleBtn float-start" style="margin-left: 35px" @onclick="() => NavigateAssemblerSample(loadStoreAssem1)">Open Source</button>
+                <button @onclick="() => NavigateExecutorAssemblySample(loadStoreAssem1)" type="button" class="btn btn-primary btn-lg float-end sampleBtn" style="transform: translateX(35px)">Open Executor</button>
             </div>
         </div>
         <div class="col-sm-2"><img src="arrow-left-right.svg"/></div>
-        <div class="col-sm-3">
+        <div class="col-sm-4">
             <label class="sampleLabel">Machine Code</label><br />
             <textarea id="idLoadStoreMach1" class="sampleTextarea" readonly>@loadStoreMach1</textarea>
             <div class="sample_btns2">
-                <button class="btn btn-primary btn-lg sampleBtn" @onclick="() => NavigateDisassemblerSample(loadStoreMach1)">Open Machine</button>
-                <button @onclick="() => NavigateExecutorMachineSample(loadStoreMach1)" type="button" class="btn btn-primary btn-lg float-end sampleBtn">Open Executor</button>
+                <button class="btn btn-primary btn-lg sampleBtn float-start" style="margin-left: 35px" @onclick="() => NavigateDisassemblerSample(loadStoreMach1)">Open Machine</button>
+                <button @onclick="() => NavigateExecutorMachineSample(loadStoreMach1)" type="button" class="btn btn-primary btn-lg float-end sampleBtn" style="transform: translateX(35px)">Open Executor</button>
             </div>
         </div>
-        <div class="col-sm-2"></div>
+        <div class="col-sm-1"></div>
     </div>
 
     <div>
@@ -173,25 +175,25 @@
     <h2 class="sampleLabel">Jump</h2>
 
     <div class="row">
-        <div class="col-sm-2"></div>
-        <div class="col-sm-3">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-4">
             <label class="sampleLabel">Assembly Code</label><br />
             <textarea id="idJumpAssem1" class="sampleTextarea" readonly>@jumpAssem1</textarea><br />
             <div class="sample_btns1">
-                <button class="btn btn-primary btn-lg sampleBtn" @onclick="() => NavigateAssemblerSample(jumpAssem1)">Open Source</button>
-                <button @onclick="() => NavigateExecutorAssemblySample(jumpAssem1)" type="button" class="btn btn-primary btn-lg float-end sampleBtn">Open Executor</button>
+                <button class="btn btn-primary btn-lg sampleBtn float-start" style="margin-left: 35px" @onclick="() => NavigateAssemblerSample(jumpAssem1)">Open Source</button>
+                <button @onclick="() => NavigateExecutorAssemblySample(jumpAssem1)" type="button" class="btn btn-primary btn-lg float-end sampleBtn" style="transform: translateX(35px)">Open Executor</button>
             </div>
         </div>
         <div class="col-sm-2"><img src="arrow-left-right.svg"/></div>
-        <div class="col-sm-3">
+        <div class="col-sm-4">
             <label class="sampleLabel">Machine Code</label><br />
             <textarea id="idJumpMach1" class="sampleTextarea" readonly>@jumpMach1</textarea>
             <div class="sample_btns2">
-                <button class="btn btn-primary btn-lg sampleBtn" @onclick="() => NavigateDisassemblerSample(jumpMach1)">Open Machine</button>
-                <button @onclick="() => NavigateExecutorMachineSample(jumpMach1)" type="button" class="btn btn-primary btn-lg float-end sampleBtn">Open Executor</button>
+                <button class="btn btn-primary btn-lg sampleBtn float-start" style="margin-left: 35px" @onclick="() => NavigateDisassemblerSample(jumpMach1)">Open Machine</button>
+                <button @onclick="() => NavigateExecutorMachineSample(jumpMach1)" type="button" class="btn btn-primary btn-lg float-end sampleBtn" style="transform: translateX(35px)">Open Executor</button>
             </div>
         </div>
-        <div class="col-sm-2"></div>
+        <div class="col-sm-1"></div>
     </div>
 
     <div>
@@ -218,25 +220,25 @@
     <h2 class="sampleLabel">Push and Pop</h2>
 
     <div class="row">
-        <div class="col-sm-2"></div>
-        <div class="col-sm-3">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-4">
             <label class="sampleLabel">Assembly Code</label><br />
             <textarea id="idPushPopAssem1" class="sampleTextarea" readonly>@pushPopAssem1</textarea><br />
             <div class="sample_btns1">
-                <button class="btn btn-primary btn-lg sampleBtn" @onclick="() => NavigateAssemblerSample(pushPopAssem1)">Open Source</button>
-                <button @onclick="() => NavigateExecutorAssemblySample(pushPopAssem1)" type="button" class="btn btn-primary btn-lg float-end sampleBtn">Open Executor</button>
+                <button class="btn btn-primary btn-lg sampleBtn float-start" style="margin-left: 35px" @onclick="() => NavigateAssemblerSample(pushPopAssem1)">Open Source</button>
+                <button @onclick="() => NavigateExecutorAssemblySample(pushPopAssem1)" type="button" class="btn btn-primary btn-lg float-end sampleBtn" style="transform: translateX(35px)">Open Executor</button>
             </div>
         </div>
         <div class="col-sm-2"><img src="arrow-left-right.svg"/></div>
-        <div class="col-sm-3">
+        <div class="col-sm-4">
             <label class="sampleLabel">Machine Code</label><br />
             <textarea id="idPushPopMach1" class="sampleTextarea" readonly>@pushPopMach1</textarea>
             <div class="sample_btns2">
-                <button class="btn btn-primary btn-lg sampleBtn" @onclick="() => NavigateDisassemblerSample(pushPopMach1)">Open Machine</button>
-                <button @onclick="() => NavigateExecutorMachineSample(pushPopMach1)" type="button" class="btn btn-primary btn-lg float-end sampleBtn">Open Executor</button>
+                <button class="btn btn-primary btn-lg sampleBtn float-start" style="margin-left: 35px" @onclick="() => NavigateDisassemblerSample(pushPopMach1)">Open Machine</button>
+                <button @onclick="() => NavigateExecutorMachineSample(pushPopMach1)" type="button" class="btn btn-primary btn-lg float-end sampleBtn" style="transform: translateX(35px)">Open Executor</button>
             </div>
         </div>
-        <div class="col-sm-2"></div>
+        <div class="col-sm-1"></div>
     </div>
 
     <div>
@@ -262,25 +264,25 @@
     <h2 class="sampleLabel">Large Sample</h2>
 
     <div class="row">
-        <div class="col-sm-2"></div>
-        <div class="col-sm-3">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-4">
             <label class="sampleLabel">Assembly Code</label><br />
             <textarea id="idLargeTestAssem1" class="sampleTextarea" readonly>@largeSampleAssem1</textarea><br />
             <div class="sample_btns1">
-                <button class="btn btn-primary btn-lg sampleBtn" @onclick="() => NavigateAssemblerSample(largeSampleAssem1)">Open Source</button>
-                <button @onclick="() => NavigateExecutorAssemblySample(largeSampleAssem1)" type="button" class="btn btn-primary btn-lg float-end sampleBtn">Open Executor</button>
+                <button class="btn btn-primary btn-lg sampleBtn float-start" style="margin-left: 35px" @onclick="() => NavigateAssemblerSample(largeSampleAssem1)">Open Source</button>
+                <button @onclick="() => NavigateExecutorAssemblySample(largeSampleAssem1)" type="button" class="btn btn-primary btn-lg float-end sampleBtn" style="transform: translateX(35px)">Open Executor</button>
             </div>
         </div>
         <div class="col-sm-2"><img src="arrow-left-right.svg"/></div>
-        <div class="col-sm-3">
+        <div class="col-sm-4">
             <label class="sampleLabel">Machine Code</label><br />
             <textarea id="idLargeTestMach1" class="sampleTextarea" readonly>@largeSampleMach1</textarea>
             <div class="sample_btns2">
-                <button class="btn btn-primary btn-lg sampleBtn" @onclick="() => NavigateDisassemblerSample(largeSampleMach1)">Open Machine</button>
-                <button @onclick="() => NavigateExecutorMachineSample(largeSampleMach1)" type="button" class="btn btn-primary btn-lg float-end sampleBtn">Open Executor</button>
+                <button class="btn btn-primary btn-lg sampleBtn float-start" style="margin-left: 35px" @onclick="() => NavigateDisassemblerSample(largeSampleMach1)">Open Machine</button>
+                <button @onclick="() => NavigateExecutorMachineSample(largeSampleMach1)" type="button" class="btn btn-primary btn-lg float-end sampleBtn" style="transform: translateX(35px)">Open Executor</button>
             </div>
         </div>
-        <div class="col-sm-2"></div>
+        <div class="col-sm-1"></div>
     </div>
 
     <div>

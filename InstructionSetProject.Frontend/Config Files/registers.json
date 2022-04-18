@@ -1,0 +1,90 @@
+﻿[
+    {
+        "Reg": "r0",
+        "UseCase": "cannot be assigned to, hardcoded zero"
+    },
+    {
+        "Reg": "r1",
+        "UseCase": "general purpose"
+    },
+    {
+        "Reg": "r2",
+        "UseCase": "general purpose"
+    },
+    {
+        "Reg": "r3",
+        "UseCase": "general purpose"
+    },
+    {
+        "Reg": "r4",
+        "UseCase": "general purpose"
+    },
+    {
+        "Reg": "r5",
+        "UseCase": "general purpose"
+    },
+    {
+        "Reg": "r6",
+        "UseCase": "general purpose"
+    },
+    {
+        "Reg": "r7",
+        "UseCase": "general purpose"
+    },
+    {},
+    {
+        "Reg": "f0",
+        "UseCase": "cannot be assigned to, hardcoded zero"
+    },
+    {
+        "Reg": "f1",
+        "UseCase": "general purpose"
+    },
+    {
+        "Reg": "f2",
+        "UseCase": "general purpose"
+    },
+    {
+        "Reg": "f3",
+        "UseCase": "general purpose"
+    },
+    {
+        "Reg": "f4",
+        "UseCase": "general purpose"
+    },
+    {
+        "Reg": "f5",
+        "UseCase": "general purpose"
+    },
+    {
+        "Reg": "f6",
+        "UseCase": "general purpose"
+    },
+    {
+        "Reg": "f7",
+        "UseCase": "general purpose"
+    },
+    {
+        "Reg": "Inaccessible"
+    },
+    {
+        "Reg": "Reg",
+        "UseCase": "Use Case"
+    },
+    {
+        "Reg": "IP",
+        "UseCase": "instruction pointer"
+    },
+    {
+        "Reg": "SP",
+        "UseCase": "stack pointer"
+    },
+    {
+        "Reg": "FL",
+        "UseCase": "flags registers"
+    },
+    {
+        "Reg": "MBP",
+        "UseCase": "memory base pointer registers"
+    }
+]
