@@ -1,17 +1,12 @@
 ﻿@page "/help"
 @inject IJSRuntime JSRuntime;
 @using InstructionSetProject.Backend.StaticFrontend;
+@using System.Text.Json;
 
 <style>
     table, th, td {
       border: 1px solid black;
       align-content: center;
-    }
-
-    th {
-        background: darkgray;
-        border: 2px solid black;
-        font-size: 20px;
     }
 
     table {
@@ -49,6 +44,23 @@
     ::-webkit-scrollbar {
         display: none;
     }
+
+    th {
+        background: darkgray;
+        border: 2px solid black;
+        font-size: 20px;
+        @(FrontendVariables.darkMode ? "background-color: #32353b" : "background-color: #989ba3");
+    }
+
+    td {
+        border: 1px solid black;
+        @(FrontendVariables.darkMode ? "background-color: #737378" : "background-color: #e1e4eb");
+    }
+
+    tr {
+        border: 1px solid black;
+        @(FrontendVariables.darkMode ? "background-color: #737378" : "background-color: #e1e4eb");
+    }
 </style>
 
 
@@ -62,206 +74,51 @@
     <div>
         <label class="helpLabel">Addressing Modes</label>
         <table class="helpTable" style="width:60%">
-          <tr>
-            <th>Name</th>
-            <th>Letters</th>
-            <th>Binary</th>
-            <th>Treatment</th>
-            <th>Notes</th>
-          </tr>
-          <tr>
-            <td>immediate direct</td>
-            <td>id</td>
-            <td>0000</td>
-            <td>Mem[operand]</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>immediate indirect</td>
-            <td>in</td>
-            <td>0001</td>
-            <td>Mem[Mem[operand]]</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>register direct</td>
-            <td>rd</td>
-            <td>0010</td>
-            <td>Mem[register operand]</td>
-            <td>Can only accept integer registers<br />
-                (cannot have a floating-point address)</td>
-          </tr>
-          <tr>
-            <td>register indirect</td>
-            <td>rn</td>
-            <td>0011</td>
-            <td>Mem[Mem[register operand]]</td>
-            <td>Can only accept integer registers<br />
-                (cannot have a floating-point address)</td>
-          </tr>
-          <tr>
-            <td>indexed direct</td>
-            <td>xd</td>
-            <td>0100</td>
-            <td>Mem[r7 + operand]</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>indexed indirect</td>
-            <td>xn</td>
-            <td>0101</td>
-            <td>Mem[Mem[r7 + operand]]</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>indexed offset</td>
-            <td>xo</td>
-            <td>0110</td>
-            <td>Mem[Mem[r7] + operand]</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>indexed deferred</td>
-            <td>xf</td>
-            <td>0111</td>
-            <td>Mem[Mem[operand] + r7]</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>stack direct</td>
-            <td>sd</td>
-            <td>1000</td>
-            <td>Mem[SP + operand]</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>stack indirect</td>
-            <td>sn</td>
-            <td>1001</td>
-            <td>Mem[Mem[SP + operand]]</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>stack offset</td>
-            <td>so</td>
-            <td>1010</td>
-            <td>Mem[Mem[SP] + operand]</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>stack deferred</td>
-            <td>sf</td>
-            <td>1011</td>
-            <td>Mem[SP + Mem[operand]]</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>stack indexed direct</td>
-            <td>sxd</td>
-            <td>1100</td>
-            <td>Mem[SP + r7 + operand]</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>stack indexed indirect</td>
-            <td>sxn</td>
-            <td>1101</td>
-            <td>Mem[Mem[SP + r7 + operand]]</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>stack indexed offset</td>
-            <td>sxo</td>
-            <td>1110</td>
-            <td>Mem[Mem[SP + r7] + operand]</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>stack indexed deferred</td>
-            <td>sxf</td>
-            <td>1111</td>
-            <td>Mem[Mem[SP + operand] + r7]</td>
-            <td></td>
-          </tr>
+            <tr>
+                <th>Name</th>
+                <th>Letters</th>
+                <th>Binary</th>
+                <th>Treatment</th>
+                <th>Notes</th>
+            </tr>
+            @for (int i = 0; i < addressMode?.Length; i++)
+            {
+                <tr>
+                    <td>@addressMode[i].Name</td>
+                    <td>@addressMode[i].Letters</td>
+                    <td>@addressMode[i].Binary</td>
+                    <td>@addressMode[i].Treatment</td>
+                    <td>@addressMode[i].Notes</td>
+                </tr>
+            }
         </table>
+        
     </div>
 
     <div>
         <label class="helpLabel">Registers</label>
         <table class="helpTable" style="width:60%">
-          <tr>
-            <th colspan=2>Accessible</th>
-          </tr>
+            <tr>
+                <th colspan=2>Accessible</th>
+            </tr>
           <tr>
             <th>Reg</th>
             <th>Use Case</th>
           </tr>
-          <tr>
-            <td>r0</td>
-            <td>cannot be assigned to, hardcoded zero</td>
-          </tr>
-          <tr>
-            <td>r1</td>
-            <td>general purpose</td>
-          </tr>
-          <tr>
-            <td>r2</td>
-            <td>general purpose</td>
-          </tr>
-          <tr>
-            <td>r3</td>
-            <td>general purpose</td>
-          </tr>
-          <tr>
-            <td>r4</td>
-            <td>general purpose</td>
-          </tr>
-          <tr>
-            <td>r5</td>
-            <td>general purpose</td>
-          </tr>
-          <tr>
-            <td>r6</td>
-            <td>general purpose</td>
-          </tr>
-          <tr>
-            <td>r7</td>
-            <td>general purpose</td>
-          </tr>
-          <tr height="25px">
-          </tr>
-          <tr>
-            <td>f0</td>
-            <td>cannot be assigned to, hardcoded zero</td>
-          </tr>
-          <tr>
-            <td>f1</td>
-            <td>general purpose</td>
-          </tr>
-          <tr>
-            <td>f2</td>
-            <td>general purpose</td>
-          </tr>
-          <tr>
-            <td>f3</td>
-            <td>general purpose</td>
-          </tr>
-          <tr>
-            <td>f4</td>
-            <td>general purpose</td>
-          </tr>
-          <tr>
-            <td>f5</td>
-            <td>general purpose</td>
-          </tr>
-          <tr>
-            <td>f6</td>
-            <td>general purpose</td>
-          </tr>
-          <tr>
-            <td>f7</td>
-            <td>general purpose</td>
-          </tr>
+          @for (int i = 0; i < 17; i++)
+            {
+                if(registerTable[i].Reg == null)
+                {
+                    <tr style="height: 25px"></tr>
+                }
+                else
+                {
+                    <tr>
+                        <td>@registerTable[i].Reg</td>
+                        <td>@registerTable[i].UseCase</td>
+                    </tr>
+                }
+            }
           <tr>
             <th colspan=2>Inaccessible</th>
           </tr>
@@ -269,22 +126,13 @@
             <th>Reg</th>
             <th>Use Case</th>
           </tr>
-          <tr>
-            <td>IP</td>
-            <td>instruction pointer</td>
-          </tr>
-          <tr>
-            <td>SP</td>
-            <td>stack pointer</td>
-          </tr>
-          <tr>
-            <td>FL</td>
-            <td>flags registers</td>
-          </tr>
-          <tr>
-            <td>MBP</td>
-            <td>memory base pointer registers</td>
-          </tr>
+          @for (int i = 19; i <= 22; i++)
+            {
+                <tr>
+                    <td>@registerTable[i].Reg</td>
+                    <td>@registerTable[i].UseCase</td>
+                </tr>
+            }
         </table>
     </div>
 
@@ -295,35 +143,13 @@
             <th>Legend</th>
             <th>Definition</th>
           </tr>
-          <tr>
-            <td>0,1</td>
-            <td>set bits, not changed per instruction</td>
-          </tr>
-          <tr>
-            <td>o</td>
-            <td>operand bits, encode each instruction</td>
-          </tr>
-          <tr>
-            <td>c</td>
-            <td>bits to encode conditions, such as address modes and jump conditions</td>
-          </tr>
-           <tr>
-            <td>i</td>
-            <td>bits to encode immediates</td>
-          </tr>
-          <tr>
-            <td>r</td>
-            <td>primary register, often destination register</td>
-          </tr>
-          <tr>
-            <td>s</td>
-            <td>secondary register, often source 1</td>
-          </tr>
-          <tr>
-            <td>t</td>
-            <td>tertiary register, often source 2</td>
-          </tr>
-         
+          @for (int i = 0; i < instrTypeLegend?.Length; i++)
+            {
+                <tr>
+                    <td>@instrTypeLegend[i].Legend</td>
+                    <td>@instrTypeLegend[i].Definition</td>
+                </tr>
+            }
         </table>
 
         <br />
@@ -335,60 +161,22 @@
             <th>Encoding</th>
             <th>Purpose</th>
           </tr>
-          <tr>
-            <td>00 0</td>
-            <td>r2-type</td>
-            <td>000o oooo ooss srrr</td>
-            <td>Involves 2 Integer Registers</td>
-          </tr>
-          <tr>
-            <td>00 1</td>
-            <td>f2-type</td>
-            <td>001o oooo ooss srrr</td>
-            <td>Involves 2 Floating Point Registers</td>
-          </tr>
-          <tr style="height: 20px">
-          </tr>
-          <tr>
-            <td>01 0</td>
-            <td>r3-type</td>
-            <td>010o ooot ttss srrr</td>
-            <td>Involves 3 Integer Registers</td>
-          </tr>
-          <tr>
-            <td>01 1</td>
-            <td>f3-type</td>
-            <td>011o ooot ttss srrr</td>
-            <td>Involves 3 Floating Point Registers</td>
-          </tr>
-          <tr style="height: 20px">
-          </tr>
-           <tr>
-            <td>10 0</td>
-            <td>rs-type²</td>
-            <td>100o ooii iiss srrr</td>
-            <td>See note. Involves 2 Integer Registers and a Small immediate (1-16)</td>
-          </tr>
-          <tr>
-            <td>10 1</td>
-            <td>fs-type²</td>
-            <td>101o ooii iiss srrr</td>
-            <td>See note. Involves 2 Floating Point Registers and a Small immediate (1-16)</td>
-          </tr>
-          <tr style="height: 20px">
-          </tr>
-           <tr>
-            <td>11 0</td>
-            <td>rm-type¹</td>
-            <td>110o oooo occc crrr | iiii iiii iiii iiii</td>
-            <td>See note. 1 or 2 Registers with large immediate, possibly with addressing mode</td>
-          </tr>
-          <tr>
-            <td>11 1</td>
-            <td>fm-type¹</td>
-            <td>111o oooo occc crrr | iiii iiii iiii iiii</td>
-            <td>See note. 1 or 2 Registers with large immediate, possibly with addressing mode</td>
-          </tr>
+          @for (int i = 0; i < instrType?.Length; i++)
+            {
+                if(instrType[i].Name == null)
+                {
+                    <tr style="height: 25px"></tr>
+                }
+                else
+                {
+                    <tr>
+                        <td>@instrType[i].Type</td>
+                        <td>@instrType[i].Name</td>
+                        <td>@instrType[i].Encoding</td>
+                        <td>@instrType[i].Purpose</td>
+                    </tr>
+                }
+            }
           <tr>
               <th colspan=4>Notes</th>
           </tr>
@@ -416,1229 +204,61 @@
             <th>Example</th>
             <th>Notes</th>
           </tr>
-          <tr>
-            <td>Halt Program</td>
-            <td>HLT</td>
-            <td>r2</td>
-            <td>0000 0000 00.. ....</td>
-            <td>HLT</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>No Operation</td>
-            <td>NOP</td>
-            <td>r2</td>
-            <td>0000 0000 01.. ....</td>
-            <td>NOP</td>
-            <td></td>
-          </tr>
-          <tr style="height: 20px">
-          </tr>
-          <tr>
-            <td>Call Procedure</td>
-            <td>CAL</td>
-            <td>rm</td>
-            <td>1101 0000 0... ....</td>
-            <td>CAL proc</td>
-            <td>Push IP; Load IP with proc; Jump</td>
-          </tr>
-          <tr>
-            <td>Return from Procedure</td>
-            <td>RET</td>
-            <td>r2</td>
-            <td>0000 0000 11.. ....</td>
-            <td>RET</td>
-            <td>Pop IP; Jump</td>
-          </tr>
-          <tr style="height: 25px">
-          </tr>
-          <tr>
-            <th colspan=6>Memory Management Instructions</th>
-          </tr>
-          <tr>
-            <th>Name</th>
-            <th>Mnemonic</th>
-            <th>Type</th>
-            <th>Op Code</th>
-            <th>Example</th>
-            <th>Notes</th>
-          </tr>
-          <tr>
-            <td>Load Word</td>
-            <td>LDW</td>
-            <td>rm</td>
-            <td>1100 0000 0ccc crrr</td>
-            <td>LDW r1, 15, id</td>
-            <td></td>
-          </tr>
-           <tr>
-            <td>Load Low Byte</td>
-            <td>LDL</td>
-            <td>rm</td>
-            <td>1100 0000 1ccc crrr</td>
-            <td>LDL r1, 15, id</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>Load High Byte</td>
-            <td>LDH</td>
-            <td>rm</td>
-            <td>1100 0001 0ccc crrr</td>
-            <td>LDH r1, 15, id</td>
-            <td></td>
-          </tr>
-          <tr style="height: 20px">
-          </tr>
-          <tr>
-            <td>Store Word</td>
-            <td>STW</td>
-            <td>rm</td>
-            <td>1100 0001 1ccc crrr</td>
-            <td>STW r1, 15, id</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>Store Low Byte</td>
-            <td>STL</td>
-            <td>rm</td>
-            <td>1100 0010 0ccc crrr</td>
-            <td>STL r1, 15, id</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>Store High Byte</td>
-            <td>STH</td>
-            <td>rm</td>
-            <td>1100 0010 1ccc crrr</td>
-            <td>STH r1, 15, id</td>
-            <td></td>
-          </tr>
-          <tr style="height: 20px">
-          </tr>
-          <tr>
-            <td>Load Float</td>
-            <td>LDF</td>
-            <td>fm</td>
-            <td>1110 0000 0ccc crrr</td>
-            <td>LDF f1, 15, id</td>
-            <td>Opcode matches LDW except type bits</td>
-        </tr>
-        <tr>
-            <td>Store Float</td>
-            <td>STF</td>
-            <td>fm</td>
-            <td>1110 0001 1ccc crrr</td>
-            <td>STF f1, 15, id</td>
-            <td>Opcode matches STW except type bits</td>
-        </tr>
-        <tr style="height: 20px">
-          </tr>
-        <tr>
-            <td>Load Effective Address</td>
-            <td>LEA</td>
-            <td>rm</td>
-            <td>1100 0011 0... .rrr</td>
-            <td>LEA r1, label</td>
-            <td>r1 = address that label is mapped to</td>
-        </tr>
-        <tr style="height: 20px">
-          </tr>
-        <tr>
-            <td>Set Memory Base Pointer</td>
-            <td>SMP</td>
-            <td>rm</td>
-            <td>1101 0000 0... ....</td>
-            <td>SMP ABAB</td>
-            <td></td>
-        </tr>
-        <tr style="height: 20px">
-          </tr>
-        <tr>
-            <td>Push Word</td>
-            <td>PSW</td>
-            <td>r2</td>
-            <td>0000 0001 00.. .rrr</td>
-            <td>PSW r1</td>
-            <td>Stack pointer auto adjusted</td>
-        </tr>
-        <tr>
-            <td>Push Low Byte</td>
-            <td>PSL</td>
-            <td>r2</td>
-            <td>0000 0001 01.. .rrr</td>
-            <td>PSL r1</td>
-            <td>Stack pointer auto adjusted</td>
-        </tr>
-        <tr>
-            <td>Push High Byte</td>
-            <td>PSH</td>
-            <td>r2</td>
-            <td>0000 0001 10.. .rrr</td>
-            <td>PSH r1</td>
-            <td>Stack pointer auto adjusted</td>
-        </tr>
-        <tr style="height: 20px">
-          </tr>
-        <tr>
-            <td>Pop Word</td>
-            <td>PPW</td>
-            <td>r2</td>
-            <td>0000 0001 11.. .rrr</td>
-            <td>PPW r1</td>
-            <td>Stack pointer auto adjusted</td>
-        </tr>
-        <tr>
-            <td>Pop Low Word</td>
-            <td>PPL</td>
-            <td>r2</td>
-            <td>0000 0010 00.. .rrr</td>
-            <td>PPL r1</td>
-            <td>Stack pointer auto adjusted</td>
-        </tr>
-        <tr>
-            <td>Pop High Word</td>
-            <td>PPH</td>
-            <td>r2</td>
-            <td>0000 0010 01.. .rrr</td>
-            <td>PPH r1</td>
-            <td>Stack pointer auto adjusted</td>
-        </tr>
-        <tr style="height: 20px">
-          </tr>
-        <tr>
-            <td>Push Float</td>
-            <td>PSF</td>
-            <td>f2</td>
-            <td>0010 0001 00.. .rrr</td>
-            <td>PSF f1</td>
-            <td>Opcode matches PSW except type bits</td>
-        </tr>
-        <tr>
-            <td>Pop Float</td>
-            <td>PPF</td>
-            <td>f2</td>
-            <td>0010 0001 11.. .rrr</td>
-            <td>PPF f1</td>
-            <td>Opcode matches PPW except type bits</td>
-        </tr>
-        <tr style="height: 25px">
-          </tr>
-        <tr>
-            <th colspan=6>Register Management Instructions</th>
-          </tr>
-          <tr>
-            <th>Name</th>
-            <th>Mnemonic</th>
-            <th>Type</th>
-            <th>Op Code</th>
-            <th>Example</th>
-            <th>Notes</th>
-          </tr>
-        <tr>
-            <td>Copy into Reg, from Reg</td>
-            <td>CRR</td>
-            <td>r2</td>
-            <td>/* Use MOV */</td>
-            <td>CRR r1, r2</td>
-            <td>Converts to 'MOV r1, r2'</td>
-        </tr>
-        <tr>
-            <td>Copy into Float, from Float</td>
-            <td>CFF</td>
-            <td>f2</td>
-            <td>/* Use MOV */</td>
-            <td>CFF r1, r2</td>
-            <td>Converts to 'MOV f1, f2'</td>
-        </tr>
-        <tr>
-            <td>Copy into Reg, from Float</td>
-            <td>CRF</td>
-            <td>r2</td>
-            <td>0000 0010 10tt tsss</td>
-            <td>CRF r1, f1</td>
-            <td>Truncates to integer</td>
-        </tr>
-        <tr>
-            <td>Copy into Float, from Reg</td>
-            <td>CFR¹</td>
-            <td>f2</td>
-            <td>0010 0010 10tt tsss</td>
-            <td>CFR f1, r1</td>
-            <td>Opcode matches CRF except type bits. See note.</td>
-        </tr>
-        <tr style="height: 20px">
-          </tr>
-        <tr>
-            <td>Exchange Registers</td>
-            <td>XCH</td>
-            <td>r2/f2</td>
-            <td>00?0 0010 11tt tsss</td>
-            <td>XCH r1, r2</td>
-            <td>Swaps contents of both registers</td>
-        </tr>
-        <tr style="height: 20px">
-          </tr>
-        <tr>
-            <td>Extend low byte into word</td>
-            <td>EXT</td>
-            <td>r2</td>
-            <td>0000 0011 00tt tsss</td>
-            <td>EXT r1, r2</td>
-            <td>Sign extends r2&lt;8..0&gt; into r1</td>
-        </tr>
-        <tr style="height: 25px">
-          </tr>
-          <tr>
-           <th colspan=6>Pure Register Instructions</th>
-          </tr>
-          <tr>
-            <th>Name</th>
-            <th>Mnemonic</th>
-            <th>Type</th>
-            <th>Op Code</th>
-            <th>Example</th>
-            <th>Notes</th>
-          </tr>
-        <tr>
-            <td>Add</td>
-            <td>ADD</td>
-            <td>r3/f3</td>
-            <td>01?0 000t ttss srrr</td>
-            <td>ADD r1, r2, r3</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Add with Carry</td>
-            <td>ADC</td>
-            <td>r3/f3</td>
-            <td>01?0 001t ttss srrr</td>
-            <td>ADC r1, r2, r3</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Sub</td>
-            <td>SUB</td>
-            <td>r3/f3</td>
-            <td>01?0 010t ttss srrr</td>
-            <td>SUB r1, r2, r3</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Sub with Carry</td>
-            <td>SBB</td>
-            <td>r3/f3</td>
-            <td>01?0 011t ttss srrr</td>
-            <td>SBB r1, r2, r3</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Multiply</td>
-            <td>MUL²</td>
-            <td>r3/f3</td>
-            <td>01?0 100t ttss srrr</td>
-            <td>MUL r1, r2, r3</td>
-            <td>See note.</td>
-        </tr>
-        <tr>
-            <td>Divide</td>
-            <td>DIV²</td>
-            <td>r3/f3</td>
-            <td>01?0 101t ttss srrr</td>
-            <td>DIV r1, r2, r3</td>
-            <td>See note.</td>
-        </tr>
-        <tr style="height: 20px">
-          </tr>
-        <tr>
-            <td>Negate</td>
-            <td>NEG</td>
-            <td>r2/f2</td>
-            <td>00?0 0011 01tt tsss</td>
-            <td>NEG r1, r2</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Bitwise Not</td>
-            <td>NOT</td>
-            <td>r2</td>
-            <td>0000 0011 10tt tsss</td>
-            <td>NOT r1, r2</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Bitwise And</td>
-            <td>AND</td>
-            <td>r3</td>
-            <td>0100 110t ttss srrr</td>
-            <td>AND r1, r2, r3</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Bitwise Or</td>
-            <td>ORR</td>
-            <td>r3</td>
-            <td>0100 111t ttss srrr</td>
-            <td>ORR r1, r2, r3</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Bitwise Xor</td>
-            <td>XOR</td>
-            <td>r3</td>
-            <td>0101 000t ttss srrr</td>
-            <td>XOR r1, r2, r3</td>
-            <td></td>
-        </tr>
-        <tr style="height: 20px">
-          </tr>
-        <tr>
-            <td>Arith. Shift Left</td>
-            <td>ASL</td>
-            <td>r3</td>
-            <td>0101 001t ttss srrr</td>
-            <td>ASL r1, r2, r3</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Arith. Shift Right</td>
-            <td>ASR</td>
-            <td>r3</td>
-            <td>0101 010t ttss srrr</td>
-            <td>ASR r1, r2, r3</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Logic Shift Left</td>
-            <td>LSL</td>
-            <td>r3</td>
-            <td>/* Use ASL */</td>
-            <td>LSL r1, r2, r3</td>
-            <td>Converts to 'ASL r1, r2, r3'</td>
-        </tr>
-        <tr>
-            <td>Logic Shift Right</td>
-            <td>LSR</td>
-            <td>r3</td>
-            <td>0101 011t ttss srrr</td>
-            <td>LSR r1, r2, r3</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Rotate Left</td>
-            <td>RTL</td>
-            <td>r3</td>
-            <td>0101 100t ttss srrr</td>
-            <td>RTL r1, r2, r3</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Rotate Right</td>
-            <td>RTR</td>
-            <td>r3</td>
-            <td>0101 101t ttss srrr</td>
-            <td>RTR r1, r2, r3</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Rotate with Carry Left</td>
-            <td>RCL</td>
-            <td>r3</td>
-            <td>0101 110t ttss srrr</td>
-            <td>RCL r1, r2, r3</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Rotate with Carry Right</td>
-            <td>RCR</td>
-            <td>r3</td>
-            <td>0101 111t ttss srrr</td>
-            <td>RCR r1, r2, r3</td>
-            <td></td>
-        </tr>
-        <tr style="height: 20px">
-          </tr>
-        <tr>
-            <td>Floor</td>
-            <td>FLR</td>
-            <td>f2</td>
-            <td>0010 0000 00tt tsss</td>
-            <td>FLR f1, f2</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Ceiling</td>
-            <td>CEL</td>
-            <td>f2</td>
-            <td>0010 0000 01tt tsss</td>
-            <td>CEL f1, f2</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Round</td>
-            <td>RND</td>
-            <td>f2</td>
-            <td>0010 0000 10tt tsss</td>
-            <td>RND f1, f2</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Absolute Value</td>
-            <td>ABS³</td>
-            <td>r2/f2</td>
-            <td>00?0 0011 11tt tsss</td>
-            <td>ABS f1, f2</td>
-            <td>See Note.</td>
-        </tr>
-        <tr style="height: 20px">
-          </tr>
-        <tr>
-            <td>Bit Scan Forward</td>
-            <td>BSF</td>
-            <td>r2</td>
-            <td>0000 0100 00tt tsss</td>
-            <td>BSF r1, r2</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Bit Scan Reverse</td>
-            <td>BSR</td>
-            <td>r2</td>
-            <td>0000 0100 01tt tsss</td>
-            <td>BSR r1, r2</td>
-            <td></td>
-        </tr>
-        <tr style="height: 25px">
-          </tr>
-          <tr>
-           <th colspan=6>Small Immediate Mathematics</th>
-          </tr>
-          <tr>
-            <th>Name</th>
-            <th>Mnemonic</th>
-            <th>Type</th>
-            <th>Op Code</th>
-            <th>Example</th>
-            <th>Notes</th>
-          </tr>
-        <tr>
-            <td>Increment</td>
-            <td>INC</td>
-            <td>rs</td>
-            <td>1000 00ii iiss srrr</td>
-            <td>INC r1, r2</td>
-            <td>Defaults to adding 1: r1 = r2 + 1</td>
-        </tr>
-        <tr>
-            <td>Decrement</td>
-            <td>DEC</td>
-            <td>rs</td>
-            <td>1000 01ii iiss srrr</td>
-            <td>DEC r1, r2, 4</td>
-            <td>Can specify amount. r1 = r2 - 4</td>
-        </tr>
-        <tr style="height: 20px">
-          </tr>
-        <tr>
-            <td>Shift Arith. Left</td>
-            <td>SAL</td>
-            <td>rs</td>
-            <td>1000 10ii iiss srrr</td>
-            <td>SAL r1, r2</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Shift Arith. Right</td>
-            <td>SAR</td>
-            <td>rs</td>
-            <td>1000 11ii iiss srrr</td>
-            <td>SAR r1, r2</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Shift Logic Left</td>
-            <td>SLL</td>
-            <td>rs</td>
-            <td>/* Use SAL */</td>
-            <td>SLL r1, r2</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Shift Logic Right</td>
-            <td>SLR</td>
-            <td>rs</td>
-            <td>1001 00ii iiss srrr</td>
-            <td>SLR r1, r2, 4</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Rotate Left</td>
-            <td>RTL</td>
-            <td>rs</td>
-            <td>1001 01ii iiss srrr</td>
-            <td>RTL r1, r2</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Rotate Right</td>
-            <td>RTR</td>
-            <td>rs</td>
-            <td>1001 10ii iiss srrr</td>
-            <td>RTR r1, r2, 4</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Rotate with Carry Left</td>
-            <td>RCL</td>
-            <td>rs</td>
-            <td>1001 11ii iiss srrr</td>
-            <td>RCL r1, r2</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Rotate with Carry Right</td>
-            <td>RCR</td>
-            <td>rs</td>
-            <td>1010 00ii iiss srrr</td>
-            <td>RCR r1, r2, 4</td>
-            <td></td>
-        </tr>
-        <tr style="height: 25px">
-          </tr>
-          <tr>
-           <th colspan=6>Large Immediate Mathematics</th>
-          </tr>
-          <tr>
-            <th>Name</th>
-            <th>Mnemonic</th>
-            <th>Type</th>
-            <th>Op Code</th>
-            <th>Example</th>
-            <th>Notes</th>
-          </tr>
-        <tr>
-            <td>Add Immediate</td>
-            <td>ADI</td>
-            <td>rm/fm</td>
-            <td>11?0 0011 1.cc crrr</td>
-            <td>ADI r1, r2, 1024</td>
-            <td>'cccc' here would be '0010' to encode r2</td>
-        </tr>
-        <tr>
-            <td>Subtract Immediate</td>
-            <td>SBI</td>
-            <td>rm/fm</td>
-            <td>11?0 0100 0.cc crrr</td>
-            <td>SBI r1, r2, 1024</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Add Immediate with Carry</td>
-            <td>AIC</td>
-            <td>rm/fm</td>
-            <td>11?0 0100 1.cc crrr</td>
-            <td>AIC r1, r2, 1024</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Subtract Immediate with Borrow</td>
-            <td>SIB</td>
-            <td>rm/fm</td>
-            <td>11?0 0101 0.cc crrr</td>
-            <td>SIB r1, r2, 1024</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>And Immediate</td>
-            <td>ANI</td>
-            <td>rm/fm</td>
-            <td>11?0 0101 1.cc crrr</td>
-            <td>ANI r1, r2, 1024</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Or Immediate</td>
-            <td>ORI</td>
-            <td>rm/fm</td>
-            <td>11?0 0110 0.cc crrr</td>
-            <td>ORI r1, r2, 1024</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Xor Immediate</td>
-            <td>XRI</td>
-            <td>rm/fm</td>
-            <td>11?0 0110 1.cc crrr</td>
-            <td>XRI r1, r2, 1024</td>
-            <td></td>
-        </tr>
-        <tr style="height: 25px">
-          </tr>
-          <tr>
-           <th colspan=6>Decision Making</th>
-          </tr>
-          <tr>
-            <th>Name</th>
-            <th>Mnemonic</th>
-            <th>Type</th>
-            <th>Op Code</th>
-            <th>Example</th>
-            <th>Notes</th>
-          </tr>
-        <tr>
-            <td>Compare</td>
-            <td>CMP</td>
-            <td>r2/f2</td>
-            <td>00?0 0100 10tt tsss</td>
-            <td>CMP r1, r2</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Test</td>
-            <td>TST</td>
-            <td>r2/f2</td>
-            <td>00?0 0100 11tt tsss</td>
-            <td>TST r1, r2</td>
-            <td></td>
-        </tr>
-        <tr style="height: 20px">
-          </tr>
-        <tr>
-            <td>Set Sign Flag</td>
-            <td>STS</td>
-            <td>r2</td>
-            <td>0000 0101 00.. ....</td>
-            <td>STS</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Clear Sign Flag</td>
-            <td>CLS</td>
-            <td>r2</td>
-            <td>0000 0101 01.. ....</td>
-            <td>CLS</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Set Parity Flag</td>
-            <td>STP</td>
-            <td>r2</td>
-            <td>0000 0101 10.. ....</td>
-            <td>STP</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Clear Parity Flag</td>
-            <td>CLP</td>
-            <td>r2</td>
-            <td>0000 0101 11.. ....</td>
-            <td>CLP</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Set Overflow Flag</td>
-            <td>STO</td>
-            <td>r2</td>
-            <td>0000 0110 00.. ....</td>
-            <td>STO</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Clear Overflow Flag</td>
-            <td>CLO</td>
-            <td>r2</td>
-            <td>0000 0110 01.. ....</td>
-            <td>CLO</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Set Carry Flag</td>
-            <td>STC</td>
-            <td>r2</td>
-            <td>0000 0110 10.. ....</td>
-            <td>STC</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Clear Carry Flag</td>
-            <td>CLC</td>
-            <td>r2</td>
-            <td>0000 0110 11.. ....</td>
-            <td>CLC</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Set Zero Flag</td>
-            <td>STZ</td>
-            <td>r2</td>
-            <td>0000 0111 00.. ....</td>
-            <td>STZ</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Clear Zero Flag</td>
-            <td>CLZ</td>
-            <td>r2</td>
-            <td>0000 0111 01.. ....</td>
-            <td>CLZ</td>
-            <td></td>
-        </tr>
-        <tr style="height: 20px">
-          </tr>
-        <tr>
-            <td>Load flags into low byte</td>
-            <td>LFL</td>
-            <td>r2</td>
-            <td>0000 0111 10.. .rrr</td>
-            <td>LFL r1</td>
-            <td>r1&lt;8..0&gt; = 000SPOCZ</td>
-        </tr>
-        <tr>
-            <td>Store low byte into flags</td>
-            <td>SFL</td>
-            <td>r2</td>
-            <td>0000 0111 11.. .rrr</td>
-            <td>SFL r1</td>
-            <td>000SPOCZ = r1&lt;8..0&gt;</td>
-        </tr>
-        <tr style="height: 20px">
-          </tr>
-        <tr>
-            <td>Move (Unconditional)</td>
-            <td>MOV</td>
-            <td>r2/f2</td>
-            <td>00?0 1000 00ss srrr</td>
-            <td>MOV r1, r2</td>
-            <td></td>
-        </tr>
-        <tr style="height: 20px">
-          </tr>
-        <tr>
-            <td>Move if Equal</td>
-            <td>MEQ</td>
-            <td>r2/f2</td>
-            <td>/*    Use MYZ    */</td>
-            <td>MEQ r1, r2</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Move if Not Equal</td>
-            <td>MNE</td>
-            <td>r2/f2</td>
-            <td>/*    Use MNZ    */</td>
-            <td>MNE r1, r2</td>
-            <td></td>
-        </tr>
-        <tr style="height: 20px">
-          </tr>
-        <tr>
-            <td>Move if Less Than</td>
-            <td>MLT</td>
-            <td>r2/f2</td>
-            <td>00?0 1000 01ss srrr</td>
-            <td>MLT r1, r2</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Move if Greater Than</td>
-            <td>MGT</td>
-            <td>r2/f2</td>
-            <td>00?0 1000 10ss srrr</td>
-            <td>MGT r1, r2</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Move if Less or Equal</td>
-            <td>MLE</td>
-            <td>r2/f2</td>
-            <td>00?0 1000 11ss srrr</td>
-            <td>MLE r1, r2</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Move if Greater or Equal</td>
-            <td>MGE</td>
-            <td>r2/f2</td>
-            <td>00?0 1001 00ss srrr</td>
-            <td>MGE r1, r2</td>
-            <td></td>
-        </tr>
-        <tr style="height: 20px">
-          </tr>
-        <tr>
-            <td>Move if Above Than</td>
-            <td>MAT</td>
-            <td>r2/f2</td>
-            <td>00?0 1001 01ss srrr</td>
-            <td>MAT r1, r2</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Move if Below Than</td>
-            <td>MBT</td>
-            <td>r2/f2</td>
-            <td>/*    Use MYC    */</td>
-            <td>MBT r1, r2</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Move if Above or Equal</td>
-            <td>MAE</td>
-            <td>r2/f2</td>
-            <td>/*    Use MNC    */</td>
-            <td>MAE r1, r2</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Move if Below or Equal</td>
-            <td>MBE</td>
-            <td>r2/f2</td>
-            <td>00?0 1001 10ss srrr</td>
-            <td>MBE r1, r2</td>
-            <td></td>
-        </tr>
-        <tr style="height: 20px">
-          </tr>
-        <tr>
-            <td>Move if (Yes) Sign Flag</td>
-            <td>MYS</td>
-            <td>r2/f2</td>
-            <td>00?0 1001 11ss srrr</td>
-            <td>MYS r1, r2</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Move if not (No) Sign Flag</td>
-            <td>MNS</td>
-            <td>r2/f2</td>
-            <td>00?0 1010 00ss srrr</td>
-            <td>MNS r1, r2</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Move if (Yes) Parity Flag</td>
-            <td>MYP</td>
-            <td>r2/f2</td>
-            <td>00?0 1010 01ss srrr</td>
-            <td>MYP r1, r2</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Move if not (No) Parity Flag</td>
-            <td>MNP</td>
-            <td>r2/f2</td>
-            <td>00?0 1010 10ss srrr</td>
-            <td>MNP r1, r2</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Move if (Yes) Overflow Flag</td>
-            <td>MYO</td>
-            <td>r2/f2</td>
-            <td>00?0 1010 11ss srrr</td>
-            <td>MYO r1, r2</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Move if not (No) Overflow Flag</td>
-            <td>MNO</td>
-            <td>r2/f2</td>
-            <td>00?0 1011 00ss srrr</td>
-            <td>MNO r1, r2</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Move if (Yes) Carry Flag</td>
-            <td>MYC</td>
-            <td>r2/f2</td>
-            <td>00?0 1011 01ss srrr</td>
-            <td>MYC r1, r2</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Move if not (No) Carry Flag</td>
-            <td>MNC</td>
-            <td>r2/f2</td>
-            <td>00?0 1011 10ss srrr</td>
-            <td>MNC r1, r2</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Move if (Yes) Zero Flag</td>
-            <td>MYZ</td>
-            <td>r2/f2</td>
-            <td>00?0 1011 11ss srrr</td>
-            <td>MYZ r1, r2</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Move if not (No) Zero Flag</td>
-            <td>MNZ</td>
-            <td>r2/f2</td>
-            <td>00?0 1100 00ss srrr</td>
-            <td>MNZ r1, r2</td>
-            <td></td>
-        </tr>
-        <tr style="height: 20px">
-          </tr>
-        <tr>
-            <td>Jump (Unconditional)</td>
-            <td>JMP</td>
-            <td>rm</td>
-            <td>11?0 01110.cc crrr</td>
-            <td>JMP Label</td>
-            <td></td>
-        </tr>
-        <tr style="height: 20px">
-          </tr>
-        <tr>
-            <td>Jump if Equal</td>
-            <td>JEQ⁴</td>
-            <td>rm/fm</td>
-            <td>/*    Use JYZ    */</td>
-            <td>JEQ r1, r2, Label</td>
-            <td>See note.</td>
-        </tr>
-        <tr>
-            <td>Jump if Not Equal</td>
-            <td>JNE⁴</td>
-            <td>rm/fm</td>
-            <td>/*    Use JNZ    */</td>
-            <td>JNE r1, r2, Label</td>
-            <td>See note.</td>
-        </tr>
-        <tr style="height: 20px">
-          </tr>
-        <tr>
-            <td>Jump if Less Than</td>
-            <td>JLT⁴ </td>
-            <td>rm/fm</td>
-            <td>11?0 0111 1.cc crrr</td>
-            <td>JLT r1, r2, Label</td>
-            <td>See note.</td>
-        </tr>
-        <tr>
-            <td>Jump if Greater Than</td>
-            <td>JGT⁴</td>
-            <td>rm/fm</td>
-            <td>11?0 1000 0.cc crrr</td>
-            <td>JGT r1, r2, Label</td>
-            <td>See note.</td>
-        </tr>
-        <tr>
-            <td>Jump if Less or Equal</td>
-            <td>JLE⁴</td>
-            <td>rm/fm</td>
-            <td>11?0 1000 1.cc crrr</td>
-            <td>JLE r1, r2, Label</td>
-            <td>See note.</td>
-        </tr>
-        <tr>
-            <td>Jump if Greater or Equal</td>
-            <td>JGE⁴</td>
-            <td>rm/fm</td>
-            <td>11?0 1001 0.cc crrr</td>
-            <td>JGE r1, r2, Label</td>
-            <td>See note.</td>
-        </tr>
-        <tr style="height: 20px">
-          </tr>
-        <tr>
-            <td>Jump if Above Than</td>
-            <td>JAT⁴</td>
-            <td>rm/fm</td>
-            <td>11?0 1001 1.cc crrr</td>
-            <td>JAT r1, r2, Label</td>
-            <td>See note.</td>
-        </tr>
-        <tr>
-            <td>Jump if Below Than</td>
-            <td>JBT⁴ </td>
-            <td>rm/fm</td>
-            <td>/*    Use JYC    */</td>
-            <td>JBT r1, r2, Label</td>
-            <td>See note.</td>
-        </tr>
-        <tr>
-            <td>Jump if Above or Equal</td>
-            <td>JAE⁴</td>
-            <td>rm/fm</td>
-            <td>/*    Use JNC    */</td>
-            <td>JAE r1, r2, Label</td>
-            <td>See note.</td>
-        </tr>
-        <tr>
-            <td>Jump if Below of Equal</td>
-            <td>JBE⁴</td>
-            <td>rm/fm</td>
-            <td>11?0 1010 0.cc crrr</td>
-            <td>JBE r1, r2, Label</td>
-            <td>See note.</td>
-        </tr>
-        <tr style="height: 20px">
-          </tr>
-        <tr>
-            <td>Jump if (Yes) Sign Flag</td>
-            <td>JYS⁴</td>
-            <td>rm/fm</td>
-            <td>11?0 1010 1.cc crrr</td>
-            <td>JYS r1, r2, Label</td>
-            <td>See note.</td>
-        </tr>
-        <tr>
-            <td>Jump if not (No) Sign Flag</td>
-            <td>JNS⁴</td>
-            <td>rm/fm</td>
-            <td>11?0 1011 0.cc crrr</td>
-            <td>JNS r1, r2, Label </td>
-            <td>See note.</td>
-        </tr>
-        <tr>
-            <td>Jump if (Yes) Parity Flag</td>
-            <td>JYP⁴</td>
-            <td>rm/fm</td>
-            <td>11?0 1011 1.cc crrr</td>
-            <td>JYP r1, r2, Label</td>
-            <td>See note.</td>
-        </tr>
-        <tr>
-            <td>Jump if not (No) Parity Flag</td>
-            <td>JNP⁴</td>
-            <td>rm/fm</td>
-            <td>11?0 1100 0.cc crrr</td>
-            <td>JNP r1, r2, Label</td>
-            <td>See note.</td>
-        </tr>
-        <tr>
-            <td>Jump if (Yes) Overflow Flag</td>
-            <td>JYO⁴</td>
-            <td>rm/fm</td>
-            <td>11?0 1100 1.cc crrr</td>
-            <td>JYO r1, r2, Label</td>
-            <td>See note.</td>
-        </tr>
-        <tr>
-            <td>Jump if not (No) Overflow Flag</td>
-            <td>JNO⁴</td>
-            <td>rm/fm</td>
-            <td>11?0 1101 0.cc crrr</td>
-            <td>JNO r1, r2, Label</td>
-            <td>See note.</td>
-        </tr>
-        <tr>
-            <td>Jump if (Yes) Carry Flag</td>
-            <td>JYC⁴</td>
-            <td>rm/fm</td>
-            <td>11?0 1101 1.cc crrr</td>
-            <td>JYC r1, r2, Label</td>
-            <td>See note.</td>
-        </tr>
-        <tr>
-            <td>Jump if not (No) Carry Flag</td>
-            <td>JNC⁴</td>
-            <td>rm/fm</td>
-            <td>11?0 1110 0.cc crrr</td>
-            <td>JNC r1, r2, Label</td>
-            <td>See note.</td>
-        </tr>
-        <tr>
-            <td>Jump if (Yes) Zero Flag</td>
-            <td>JYZ⁴</td>
-            <td>rm/fm</td>
-            <td>11?0 1110 1.cc crrr</td>
-            <td>JYZ r1, r2, Label</td>
-            <td>See note.</td>
-        </tr>
-        <tr>
-            <td>Jump if not (No) Zero Flag</td>
-            <td>JNZ⁴</td>
-            <td>rm/fm</td>
-            <td>11?0 1111 0.cc crrr</td>
-            <td>JNZ r1, r2, Label</td>
-            <td>See note.</td>
-        </tr>
-        <tr style="height: 20px">
-          </tr>
-        <tr>
-            <td>Loop</td>
-            <td>LOP⁵</td>
-            <td>rm</td>
-            <td>1100 1111 1.cc crrr</td>
-            <td>LOP r1, Label</td>
-            <td>See note.</td>
-        </tr>
-        <tr>
-            <th colspan=6>Notes</th>
-        </tr>
-        <tr>
-            <td colspan=6>¹ Note: CFR needs to econvert integer into floating point, but floating point cannot hold all values integer can. May throw errors.</td>
-        </tr>
-        <tr>
-            <td colspan=6>² Note: Muliplication and Division are complicated.<br /><br />
-
-        - <b>Muliplication: MUL r2, r3, r4</b><br />
-            Computes the value of r3 * r4. Stores the lower 16 bits in r2, and the upper 16 bits in the previous register, so r1.<br />
-            Using r1 as the destination discards those high bits, since r0 cannot be written to.
-            R0 cannot be picked as a destination<br /><br />
-
-            Signed and unsigned integer multiplication are different: set the sign bit to perform signed multiplication, clear it to perform unsigned.<br /><br />
-
-                Signed:     0xFFFF * 0xFFFF   =>   -1 * -1         =>            1   =>   0x00000001<br />
-                Unsigned:   0xFFFF * 0xFFFF   =>   65535 * 65535   =>   4294836225   =>   0xFFFE0001<br><br /><br />
-
-        - <b>Division: DIV r2, r3, r4</b><br />
-            Computes the value of r3 / r4. Stores the result in r2, and the remainder in the previous register, so r1.<br />
-            Using r1 as the destination discards the remainder, since r0 cannot be written to.
-            R0 cannot be picked as a destination<br /><br />
-
-            Signed and unsigned integer division are different: set the sign bit to perform signed division, clear it to perform unsigned.<br /><br />
-
-                Signed:<br />
-                    Non-integer results are truncated towards 0.<br />
-                    The remainder always has the same sign as the dividend (left-hand side).<br />
-                    The absolute value of the remainder is always smaller than the absolute value of the divisor (right-hand side).<br /><br />
-
-                    0x0005 / 0x0003   =>   +5 / +3   =>   +1.67 r +2   =>   +1 r +2<br />
-                    0xFFFB / 0x0003   =>   -5 / +3   =>   -1.67 r -2   =>   -1 r -2<br />
-                    0x0005 / 0xFFFD   =>   +5 / -3   =>   -1.67 r +2   =>   -1 r +2<br />
-                    0xFFFB / 0xFFFD   =>   -5 / -3   =>   +1.67 r -2   =>   +1 r -2<br /><br />
-
-                Unsigned:<br />
-                    Just signed division but only with positive operands<br /><br />
-
-                    0x0005 / 0x0003   =>   +    5 / +    3   =>   +    1.67 r +    2   =>   +    1 r +2<br />
-                    0xFFFB / 0x0003   =>   +65531 / +    3   =>   +21843.67 r +    2   =>   +21843 r +2<br />
-                    0x0005 / 0xFFFD   =>   +    5 / +65533   =>   +    0.00 r +    5   =>   +    0 r +5<br />
-                    0xFFFB / 0xFFFD   =>   +65531 / +65533   =>   +    0.00 r +65531   =>   +    0 r +65531</td>
-        </tr>
-         <tr>
-            <td colspan=6>³ Note: ABS - there are more negative numbers than there are positive numbers (because of zero).<br /> So
-                ABS(0x8000) throws an error. NEG(0x8000) = 0x8000, so no problems there. There is no positive
-                counterpart to 0x8000 in signed notation.</td>
-        </tr>
-        <tr>
-            <td colspan=6>⁴ Note: All jumps use the two given registers to determine whether they should take the jump or not.<br /> The second register
-                is subtracted from the first (as in a CMP instruction) and the resulting flags are considered.<br /><br />
-
-        - WARNING: The jump instruction does not update the flags register. It uses temporary flags to determine whether to jump.<br /><br />
-
-        - If the two given registers are BOTH r0 or BOTH f0, then there is no point checking. Instead, to improve functionality,<br />
-            the jump will consider the actual flags register (but not change it!) when determining whether to take the jump.</td>
-        </tr>
-         <tr>
-            <td colspan=6>⁵ Note: LOP r1, Label<br /><br />
-
-        - Pseudocode: r1 = r1 - 1; if (r1 != 0) { jump to label }<br /><br />
-
-        - WARNING: The LOP instruction does not update the flags register. It uses temporary flags to determine whether to jump.</td>
-        </tr>
-          
+          @for (int i = 0; i < instrs?.Length; i++)
+            {
+                if(instrs[i].Name == null)
+                {
+                    <tr style="height: 25px"></tr>
+                }
+                else if(instrs[i].Name == "Notes" || instrs[i].Name == "Decision Making" || instrs[i].Name == "Large Immediate Mathematics" || instrs[i].Name == "Small Immediate Mathematics" || instrs[i].Name == "Pure Register Instructions" || instrs[i].Name == "Register Management Instructions" || instrs[i].Name == "Memory Management Instructions" || instrs[i].Name == "Process Control Instructions")
+                {
+                    <tr>
+                        <th colspan="6">@instrs[i].Name</th>
+                    </tr>
+                }
+                else if(instrs[i].Mnemonic == null)
+                {
+                    <tr>
+                        <td colspan="6">@instrs[i].Name</td>
+                    </tr>
+                }
+                else if (instrs[i].Name == "Name")
+                {
+                    <tr>
+                        <th>Name</th>
+                        <th>Mnemonic</th>
+                        <th>Type</th>
+                        <th>Op Code</th>
+                        <th>Example</th>
+                        <th>Notes</th>
+                      </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td>@instrs[i].Name</td>
+                        <td>@instrs[i].Mnemonic</td>
+                        <td>@instrs[i].Type</td>
+                        <td>@instrs[i].OpCode</td>
+                        <td>@instrs[i].Example</td>
+                        <td>@instrs[i].Notes</td>
+                    </tr>
+                }
+            }
         </table>
+        <br />
     </div>
 </div>
 
 
 @code {
     bool darkModeHelpPage = FrontendVariables.darkMode;
+    int numAddressingModes = 16;
+    AddressingModes[]? addressMode;
+    RegistersTable[]? registerTable;
+    InstructionTypeLegend[]? instrTypeLegend;
+    InstructionType[]? instrType;
+    Instructions[]? instrs;
 
     protected override async Task OnAfterRenderAsync (bool firstRender)
     {
@@ -1648,5 +268,67 @@
             FrontendVariables.darkModeHelpPage = darkModeHelpPage;
             FrontendVariables.darkModeHelpChanged = true;
         }
+    }
+
+    public struct AddressingModes
+    {
+        public string Name {get; set; }
+        public string Letters { get; set; }
+        public string Binary { get; set; }
+        public string Treatment { get; set; }
+        public string Notes { get; set; }
+    }
+
+    public struct RegistersTable
+    {
+        public string Reg {get; set; }
+        public string UseCase { get; set; }
+    }
+
+    public struct InstructionTypeLegend
+    {
+        public string Legend {get; set; }
+        public string Definition { get; set; }
+    }
+
+    public struct InstructionType
+    {
+        public string Type {get; set; }
+        public string Name { get; set; }
+        public string Encoding { get; set; }
+        public string Purpose { get; set; }
+    }
+
+    public struct Instructions
+    {
+        public string Name {get; set; }
+        public string Mnemonic { get; set; }
+        public string Type { get; set; }
+        public string OpCode { get; set; }
+        public string Example { get; set; }
+        public string Notes { get; set; }
+    }
+
+    protected override void OnInitialized()
+    {
+        string filename = "Config Files/AddressingModes.json";
+        string jsonString = File.ReadAllText(filename);
+        addressMode = JsonSerializer.Deserialize<AddressingModes[]>(jsonString);
+
+        filename = "Config Files/registers.json";
+        jsonString = File.ReadAllText(filename);
+        registerTable = JsonSerializer.Deserialize<RegistersTable[]>(jsonString);
+
+        filename = "Config Files/TypesOfInstructionsLegend.json";
+        jsonString = File.ReadAllText(filename);
+        instrTypeLegend = JsonSerializer.Deserialize<InstructionTypeLegend[]>(jsonString);
+
+        filename = "Config Files/TypesOfInstructionsType.json";
+        jsonString = File.ReadAllText(filename);
+        instrType = JsonSerializer.Deserialize<InstructionType[]>(jsonString);
+
+        filename = "Config Files/instructions.json";
+        jsonString = File.ReadAllText(filename);
+        instrs = JsonSerializer.Deserialize<Instructions[]>(jsonString);
     }
 }

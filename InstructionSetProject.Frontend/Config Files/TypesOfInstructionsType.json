@@ -1,0 +1,53 @@
+﻿[
+    {
+        "Type": "00 0",
+        "Name": "r2-type",
+        "Encoding": "000o oooo ooss srrr",
+        "Purpose": "Involves 2 Integer Registers"
+    },
+    {
+        "Type": "00 1",
+        "Name": "f2-type",
+        "Encoding": "001o oooo ooss srrr",
+        "Purpose": "Involves 2 Floating Point Registers"
+    },
+    {},
+    {
+        "Type": "01 0",
+        "Name": "r3-type",
+        "Encoding": "010o ooot ttss srrr",
+        "Purpose": "Involves 3 Integer Registers"
+    },
+    {
+        "Type": "01 1",
+        "Name": "f3-type",
+        "Encoding": "011o ooot ttss srrr",
+        "Purpose": "Involves 3 Floating Point Registers"
+    },
+    {},
+    {
+        "Type": "10 0",
+        "Name": "rs-type²",
+        "Encoding": "100o ooii iiss srrr",
+        "Purpose": "See note. Involves 2 Integer Registers and a Small immediate (1-16)"
+    },
+    {
+        "Type": "10 1",
+        "Name": "fs-type²",
+        "Encoding": "101o ooii iiss srrr",
+        "Purpose": "See note. Involves 2 Floating Point Registers and a Small immediate (1-16)"
+    },
+    {},
+    {
+        "Type": "11 0",
+        "Name": "rm-type¹",
+        "Encoding": "110o oooo occc crrr | iiii iiii iiii iiii",
+        "Purpose": "See note. 1 or 2 Registers with large immediate, possibly with addressing mode"
+    },
+    {
+        "Type": "11 1",
+        "Name": "fm-type¹",
+        "Encoding": "111o oooo occc crrr | iiii iiii iiii iiii",
+        "Purpose": "See note. 1 or 2 Registers with large immediate, possibly with addressing mode"
+    }
+]

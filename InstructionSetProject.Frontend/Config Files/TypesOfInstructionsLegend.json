@@ -1,0 +1,30 @@
+﻿[
+    {
+        "Legend": "0,1",
+        "Definition": "set bits, not changed per instruction"
+    },
+    {
+        "Legend": "o",
+        "Definition": "operand bits, encode each instruction"
+    },
+    {
+        "Legend": "c",
+        "Definition": "bits to encode conditions, such as address modes and jump conditions"
+    },
+    {
+        "Legend": "i",
+        "Definition": "bits to encode immediates"
+    },
+    {
+        "Legend": "r",
+        "Definition": "primary register, often destination register"
+    },
+    {
+        "Legend": "s",
+        "Definition": "secondary register, often source 1"
+    },
+    {
+        "Legend": "t",
+        "Definition": "tertiary register, often source 2"
+    }
+]

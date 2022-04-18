@@ -117,7 +117,7 @@
 
     .modalDivEx2 {
         position: absolute;
-        top: 55%;
+        top: 70%;
         transform: translate(85px, -50%);
     }
 
@@ -143,10 +143,72 @@
         transform: translateY(10px);
     }
 
+    .e-grid .e-groupdroparea.e-grouped {
+        @(FrontendVariables.darkMode ? "background-color: #212121" : "");
+    }
+
+    .e-grid .e-groupdroparea.e-grouped {
+        padding: 9px 0 10px;
+    }
+
+    .e-grid .e-groupheadercell {
+        @(FrontendVariables.darkMode ? "background-color: #424242; border-color: #616161; border-radius: 12px; color: #fff;" : "background-color: white; border-color: darkgray; border-radius: 12px; color: black;");
+    }
+
+    .e-grid .e-gridheader {
+        @(FrontendVariables.darkMode ? "background-color: #303030; border-bottom-color: #616161; border-top-color: #616161; color: rgba(255, 255, 255, 0.7);" : "background-color: white; border-bottom-color: darkgray; border-top-color: darkgray; color: black;");
+    }
+
+    .e-grid .e-headercell, .e-grid .e-detailheadercell {
+        @(FrontendVariables.darkMode ? "background-color: #303030; border-color: #616161;" : "");
+    }
+
+    .e-grid .e-grouptopleftcell {
+        @(FrontendVariables.darkMode ? "background-color: #303030; border-color: #616161;" : "");
+    }
+
+    .e-grid .e-content {
+        @(FrontendVariables.darkMode ? "background-color: #303030;" : "");
+    }
+
+    .e-grid .e-table {
+        @(FrontendVariables.darkMode ? "background-color: #303030;" : "");
+    }
+
+    .e-grid .e-groupcaption, .e-grid .e-indentcell, .e-grid .e-recordplusexpand, .e-grid .e-recordpluscollapse {
+        @(FrontendVariables.darkMode ? "background-color: #424242; color: #fff;" : "");
+    }
+
+    .e-grid .e-rowcell:not(.e-editedbatchcell):not(.e-updatedtd), .e-grid .e-detailrowcollapse:not(.e-editedbatchcell):not(.e-updatedtd), .e-grid .e-detailrowexpand:not(.e-editedbatchcell):not(.e-updatedtd), .e-grid .e-gridcontent .e-rowdragdrop:not(.e-editedbatchcell):not(.e-updatedtd), .e-grid .e-gridheader .e-rowdragdrop:not(.e-editedbatchcell):not(.e-updatedtd), .e-grid .e-emptyrow:not(.e-editedbatchcell):not(.e-updatedtd) {
+        @(FrontendVariables.darkMode ? "color: rgba(255, 255, 255, 0.87);" : "");
+    }
+
+    .e-grid .e-rowcell, .e-grid .e-groupcaption, .e-grid .e-indentcell, .e-grid .e-recordplusexpand, .e-grid .e-recordpluscollapse, .e-grid .e-rowdragdropcell, .e-grid .e-detailrowcollapse, .e-grid .e-detailrowexpand, .e-grid .e-detailindentcell, .e-grid .e-detailcell {
+        @(FrontendVariables.darkMode ? "border-color: #616161;" : "");
+    }
+
+    .e-grid .e-rowcell {
+        @(FrontendVariables.darkMode ? "color:  rgba(255, 255, 255, 0.87) !important;" : "color: black;");
+    }
+
+    .e-grid .e-groupdroparea {
+        @(FrontendVariables.darkMode ? "background-color: #212121; border-top-color: #616161; color: rgba(255, 255, 255, 0.7);" : "");
+    }
+
+    .e-dlg-header, .e-dlg-header * {
+        @(FrontendVariables.darkMode ? "color: rgba(255, 255, 255, 0.87);" : " color: black;");
+    }
+
+    .e-dlg-header select {
+        @(FrontendVariables.darkMode ? 
+        "color: rgba(255, 255, 255, 0.87); background-color: #424242; font-size: 16px; font-weight: 500;" 
+        : 
+        "color: black; background-color: white; font-size: 16px; font-weight: 500;");
+    }
 </style>
 
 <Modal @bind-Open="IsModalOpened" Close="OnClose">
-    <form class="modalForm" method="dialog" style="width: 400px; height: 500px; align-content: flex-start">
+    <form class="modalForm" method="dialog" style="width: 400px; height: 600px; align-content: flex-start">
         <div class="modalDivEx">
             <span style="font-size: 24px">Settings</span>
         </div>
@@ -187,6 +249,15 @@
             </label>
         </div>
 
+        <div style="width: 100%; transform: translateY(220px)">
+            <label style="width: 80%; margin-left: 12%">Clock Delay: @sliderValue ms</label>
+             <div style="width: 80%; margin-left: 10%">
+                 <SfSlider @bind-Value="@sliderValue" Step="500" Min="0" Max="5000">
+                    <SliderTicks Placement="Placement.After" ShowSmallTicks="true" LargeStep="1000" SmallStep="500"></SliderTicks>
+                    <SliderTooltip IsVisible="true" ShowOn="TooltipShowOn.Always" Placement="TooltipPlacement.Before"></SliderTooltip>
+                </SfSlider>
+            </div>
+        </div>
 
          <button class="modalExBtn" value="cancel">Close</button>
     </form>
@@ -201,12 +272,14 @@
                     <ToolbarItem PrefixIcon="e-icons e-chevron-right-fill" Text="Run" Type="ItemType.Button" OnClick="runCodeAsync" TooltipText="Run the code"></ToolbarItem>
                     <ToolbarItem PrefixIcon="e-icons e-properties-1" Text="Debug" TooltipText="Start debugging the code" OnClick="Debug"></ToolbarItem>
                     <ToolbarItem Type="ItemType.Separator"></ToolbarItem>
-                    <ToolbarItem PrefixIcon="e-icons e-clock" Text="Clock Tick" OnClick="ClockTick" TooltipText="Perform on clock tick" Disabled="@(StaticMode ? (SPEx == null || SPEx.IsExecutionFinished()) : (DPEx == null || DPEx.IsExecutionFinished()))"></ToolbarItem>
+                    <ToolbarItem PrefixIcon="e-icons e-clock" Text="Clock Tick" OnClick="ClockPress" TooltipText="Perform on clock tick" Disabled="@(StaticMode ? (SPEx == null || SPEx.IsExecutionFinished()) : (DPEx == null || DPEx.IsExecutionFinished()))"></ToolbarItem>
                     <ToolbarItem PrefixIcon="e-icons e-text-wrap" Text="Step" OnClick="step" TooltipText="Step through each line of code upon debugging" Disabled="@(StaticMode ? (SPEx == null || SPEx.IsExecutionFinished()) : (DPEx == null || DPEx.IsExecutionFinished()))"></ToolbarItem>
                     <ToolbarItem PrefixIcon="e-icons e-check" Text="Continue" OnClick="Continue" TooltipText="Continue through the rest of the program" Disabled="@(StaticMode ? (SPEx == null || SPEx.IsExecutionFinished()) : (DPEx == null || DPEx.IsExecutionFinished()))"></ToolbarItem>
                     <ToolbarItem PrefixIcon="e-icons e-bullet-3" Text="Stop" OnClick="Stop" TooltipText="Stop the program" Disabled="@(StaticMode ? (SPEx == null || SPEx.IsExecutionFinished()) : (DPEx == null || DPEx.IsExecutionFinished()))"></ToolbarItem>
                     <ToolbarItem Type="ItemType.Separator"></ToolbarItem>
                     <ToolbarItem Text="DataPath" TooltipText="Show the data path of instructions" Disabled="@ShowButton" OnClick="OnClicked"></ToolbarItem>
+                    <ToolbarItem Type="ItemType.Separator"></ToolbarItem>
+                    <ToolbarItem Text="Cache" TooltipText="Show the cache" Disabled="@ShowButton" OnClick="OnClickedCache"></ToolbarItem>
                     <ToolbarItem Type="ItemType.Separator"></ToolbarItem>
                     <ToolbarItem Text="Settings" TooltipText="Executor Settings" OnClick="e => IsModalOpened = true" Align="ItemAlign.Right" CssClass="e-sizing" Disabled="@(StaticMode ? (SPEx != null && !SPEx.IsExecutionFinished()) : (DPEx != null && !DPEx.IsExecutionFinished()))"></ToolbarItem>
                 </ToolbarItems> 
@@ -254,6 +327,47 @@
                 <DialogTemplates>
                     <Header>EMPTY SOURCE CODE ERROR</Header>
                     <Content>Your source code cannot build if there is no code there to build! Add some code first then try again.</Content>
+                </DialogTemplates>
+                <DialogEvents Closed="@errorClose"></DialogEvents>
+            </SfDialog>
+
+            <SfDialog Target="#target" Width="580px" Height="700px" AllowDragging="true" EnableResize="false" ShowCloseIcon="true" @bind-Visible="ShowCache">
+                <DialogTemplates>
+                    <Header><span style="font-size: 28px">Cache</span><br />
+                        <label for="cacheChoice">Choose cache level to display:</label><br />
+                        <select @bind="SelectedCache" id="cacheChoice">
+                            <option value="L1" selected>L1</option>
+                            <option value="L2">L2</option>
+                        </select><br>
+                        
+                    </Header>
+                    <Content>
+                        @if(SelectedCache.Equals("L1"))
+                        {
+                            <Syncfusion.Blazor.Buttons.SfButton Content="Expand/Collapse All" OnClick="expandL1Cache" style="width: 30%; margin-left: 35%; margin-top: 5px"></Syncfusion.Blazor.Buttons.SfButton>
+                            <SfGrid @ref="L1CacheGridObject" DataSource="@L1CacheSource" AllowGrouping="true" >
+                                <GridGroupSettings Columns="@GroupedColumns" ></GridGroupSettings>
+                                <GridColumns>
+                                    <GridColumn Field=@nameof(InstructionCacheL1.Index) IsPrimaryKey="true" HeaderText="Index" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Left" Width="50"></GridColumn>
+                                    <GridColumn Field=@nameof(InstructionCacheL1.Tag) HeaderText="Tag" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="100"></GridColumn>
+                                    <GridColumn Field=@nameof(InstructionCacheL1.DataAtAddress) HeaderText="Data" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="120"></GridColumn>
+                                </GridColumns>
+                            </SfGrid>
+                        }
+                        else
+                        {
+                            <Syncfusion.Blazor.Buttons.SfButton Content="Expand/Collapse All" OnClick="expandL2Cache" style="width: 30%; margin-left: 35%; margin-top: 5px"></Syncfusion.Blazor.Buttons.SfButton>
+                            <SfGrid @ref="L2CacheGridObject" DataSource="@L2CacheSource" AllowGrouping="true">
+                                <GridGroupSettings Columns="@GroupedColumns"></GridGroupSettings>
+                                <GridColumns>
+                                    <GridColumn Field=@nameof(InstructionCacheL1.Index) IsPrimaryKey="true" HeaderText="Index" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Left" Width="50"></GridColumn>
+                                    <GridColumn Field=@nameof(InstructionCacheL1.Tag) HeaderText="Tag" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="100"></GridColumn>
+                                    <GridColumn Field=@nameof(InstructionCacheL1.DataAtAddress) HeaderText="Data" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="120"></GridColumn>
+                                </GridColumns>
+                            </SfGrid>
+                        }
+
+                    </Content>
                 </DialogTemplates>
                 <DialogEvents Closed="@errorClose"></DialogEvents>
             </SfDialog>

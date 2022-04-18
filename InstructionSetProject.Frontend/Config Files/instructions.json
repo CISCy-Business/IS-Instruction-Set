@@ -1,0 +1,1058 @@
+﻿[
+  {
+    "Name": "Halt Program",
+    "Mnemonic": "HLT",
+    "Type": "r2",
+    "OpCode": "0000 0000 00.. ....",
+    "Example": "HLT"
+  },
+  {
+    "Name": "No Operation",
+    "Mnemonic": "NOP",
+    "Type": "r2",
+    "OpCode": "0000 0000 01.. ....",
+    "Example": "NOP"
+  },
+  {},
+  {
+    "Name": "Call Procedure",
+    "Mnemonic": "CAL",
+    "Type": "rm",
+    "OpCode": "1101 0000 0... ....",
+    "Example": "CAL proc",
+    "Notes": "Push IP; Load IP with proc; Jump"
+  },
+  {
+    "Name": "Return from Procedure",
+    "Mnemonic": "RET",
+    "Type": "r2",
+    "OpCode": "0000 0000 11.. ....",
+    "Example": "RET",
+    "Notes": "Pop IP; Jump"
+  },
+  {},
+  {
+    "Name": "Memory Management Instructions"
+  },
+  {
+    "Name": "Name",
+    "Mnemonic": "Mnemonic",
+    "Type": "Type",
+    "OpCode": "OpCode",
+    "Example": "Example",
+    "Notes": "Notes"
+  },
+  {
+    "Name": "Load Word",
+    "Mnemonic": "LDW",
+    "Type": "rm",
+    "OpCode": "1100 0000 0ccc crrr",
+    "Example": "LDW r1, 15, id"
+  },
+  {
+    "Name": "Load Low Byte",
+    "Mnemonic": "LDL",
+    "Type": "rm",
+    "OpCode": "1100 0000 1ccc crrr",
+    "Example": "LDL r1, 15, id"
+  },
+  {
+    "Name": "Load High Byte",
+    "Mnemonic": "LDH",
+    "Type": "rm",
+    "OpCode": "1100 0001 0ccc crrr",
+    "Example": "LDH r1, 15, id"
+  },
+  {},
+  {
+    "Name": "Store Word",
+    "Mnemonic": "STW",
+    "Type": "rm",
+    "OpCode": "1100 0001 1ccc crrr",
+    "Example": "STW r1, 15, id"
+  },
+  {
+    "Name": "Store Low Byte",
+    "Mnemonic": "STL",
+    "Type": "rm",
+    "OpCode": "1100 0010 0ccc crrr",
+    "Example": "STL r1, 15, id"
+  },
+  {
+    "Name": "Store High Byte",
+    "Mnemonic": "STH",
+    "Type": "rm",
+    "OpCode": "1100 0010 1ccc crrr",
+    "Example": "STH r1, 15, id"
+  },
+  {},
+  {
+    "Name": "Load Float",
+    "Mnemonic": "LDF",
+    "Type": "fm",
+    "OpCode": "1110 0000 0ccc crrr",
+    "Example": "LDF f1, 15, id",
+    "Notes": "Opcode matches LDW except type bits"
+  },
+  {
+    "Name": "Store Float",
+    "Mnemonic": "STF",
+    "Type": "fm",
+    "OpCode": "1110 0001 1ccc crrr",
+    "Example": "STF f1, 15, id",
+    "Notes": "Opcode matches STW except type bits"
+  },
+  {},
+  {
+    "Name": "Load Effective Address",
+    "Mnemonic": "LEA",
+    "Type": "rm",
+    "OpCode": "1100 0011 0... .rrr",
+    "Example": "LEA r1, label",
+    "Notes": "r1 = address that label is mapped to"
+  },
+  {},
+  {
+    "Name": "Set Memory Base Pointer",
+    "Mnemonic": "SMP",
+    "Type": "rm",
+    "OpCode": "1101 0000 0... ....",
+    "Example": "SMP ABAB"
+  },
+  {},
+  {
+    "Name": "Push Word",
+    "Mnemonic": "PSW",
+    "Type": "r2",
+    "OpCode": "0000 0001 00.. .rrr",
+    "Example": "PSW r1",
+    "Notes": "Stack pointer auto adjusted"
+  },
+  {
+    "Name": "Push Low Byte",
+    "Mnemonic": "PSL",
+    "Type": "r2",
+    "OpCode": "0000 0001 01.. .rrr",
+    "Example": "PSL r1",
+    "Notes": "Stack pointer auto adjusted"
+  },
+  {
+    "Name": "Push High Byte",
+    "Mnemonic": "PSH",
+    "Type": "r2",
+    "OpCode": "0000 0001 10.. .rrr",
+    "Example": "PSH r1",
+    "Notes": "Stack pointer auto adjusted"
+  },
+  {},
+  {
+    "Name": "Pop Word",
+    "Mnemonic": "PPW",
+    "Type": "r2",
+    "OpCode": "0000 0001 11.. .rrr",
+    "Example": "PPW r1",
+    "Notes": "Stack pointer auto adjusted"
+  },
+  {
+    "Name": "Pop Low Word",
+    "Mnemonic": "PPL",
+    "Type": "r2",
+    "OpCode": "0000 0010 00.. .rrr",
+    "Example": "PPL r1",
+    "Notes": "Stack pointer auto adjusted"
+  },
+  {
+    "Name": "Pop High Word",
+    "Mnemonic": "PPH",
+    "Type": "r2",
+    "OpCode": "0000 0010 01.. .rrr",
+    "Example": "PPH r1",
+    "Notes": "Stack pointer auto adjusted"
+  },
+  {},
+  {
+    "Name": "Push Float",
+    "Mnemonic": "PSF",
+    "Type": "f2",
+    "OpCode": "0010 0001 00.. .rrr",
+    "Example": "PSF f1",
+    "Notes": "Opcode matches PSW except type bits"
+  },
+  {
+    "Name": "Pop Float",
+    "Mnemonic": "PPF",
+    "Type": "f2",
+    "OpCode": "0010 0001 11.. .rrr",
+    "Example": "PPF f1",
+    "Notes": "Opcode matches PPW except type bits"
+  },
+  {},
+  {
+    "Name": "Register Management Instructions"
+  },
+  {
+    "Name": "Name",
+    "Mnemonic": "Mnemonic",
+    "Type": "Type",
+    "OpCode": "OpCode",
+    "Example": "Example",
+    "Notes": "Notes"
+  },
+  {
+    "Name": "Copy into Reg, from Reg",
+    "Mnemonic": "CRR",
+    "Type": "r2",
+    "OpCode": "/* Use MOV */",
+    "Example": "CRR r1, r2",
+    "Notes": "Converts to 'MOV r1, r2'"
+  },
+  {
+    "Name": "Copy into Float, from Float",
+    "Mnemonic": "CFF",
+    "Type": "f2",
+    "OpCode": "/* Use MOV */",
+    "Example": "CFF r1, r2",
+    "Notes": "Converts to 'MOV f1, f2'"
+  },
+  {
+    "Name": "Copy into Reg, from Float",
+    "Mnemonic": "CRF",
+    "Type": "r2",
+    "OpCode": "0000 0010 10tt tsss",
+    "Example": "CRF r1, f1",
+    "Notes": "Truncates to integer"
+  },
+  {
+    "Name": "Copy into Float, from Reg",
+    "Mnemonic": "CFR¹",
+    "Type": "f2",
+    "OpCode": "0010 0010 10tt tsss",
+    "Example": "CFR f1, r1",
+    "Notes": "Opcode matches CRF except type bits. See note."
+  },
+  {},
+  {
+    "Name": "Exchange Registers",
+    "Mnemonic": "XCH",
+    "Type": "r2/f2",
+    "OpCode": "00?0 0010 11tt tsss",
+    "Example": "XCH r1, r2",
+    "Notes": "Swaps contents of both registers"
+  },
+  {},
+  {
+    "Name": "Extend low byte into word",
+    "Mnemonic": "EXT",
+    "Type": "r2",
+    "OpCode": "0000 0011 00tt tsss",
+    "Example": "EXT r1, r2",
+    "Notes": "Sign extends r2&lt;8..0&gt; into r1"
+  },
+  {},
+  {
+    "Name": "Pure Register Instructions"
+  },
+  {
+    "Name": "Name",
+    "Mnemonic": "Mnemonic",
+    "Type": "Type",
+    "OpCode": "OpCode",
+    "Example": "Example",
+    "Notes": "Notes"
+  },
+  {
+    "Name": "Add",
+    "Mnemonic": "ADD",
+    "Type": "r3/f3",
+    "OpCode": "01?0 000t ttss srrr",
+    "Example": "ADD r1, r2, r3"
+  },
+  {
+    "Name": "Add with Carry",
+    "Mnemonic": "ADC",
+    "Type": "r3/f3",
+    "OpCode": "01?0 001t ttss srrr",
+    "Example": "ADC r1, r2, r3"
+  },
+  {
+    "Name": "Sub",
+    "Mnemonic": "SUB",
+    "Type": "r3/f3",
+    "OpCode": "01?0 010t ttss srrr",
+    "Example": "SUB r1, r2, r3"
+  },
+  {
+    "Name": "Sub with Carry",
+    "Mnemonic": "SBB",
+    "Type": "r3/f3",
+    "OpCode": "01?0 011t ttss srrr",
+    "Example": "SBB r1, r2, r3"
+  },
+  {
+    "Name": "Multiply",
+    "Mnemonic": "MUL²",
+    "Type": "r3/f3",
+    "OpCode": "01?0 100t ttss srrr",
+    "Example": "MUL r1, r2, r3",
+    "Notes": "See note."
+  },
+  {
+    "Name": "Divide",
+    "Mnemonic": "DIV²",
+    "Type": "r3/f3",
+    "OpCode": "01?0 101t ttss srrr",
+    "Example": "DIV r1, r2, r3",
+    "Notes": "See note."
+  },
+  {},
+  {
+    "Name": "Negate",
+    "Mnemonic": "NEG",
+    "Type": "r2/f2",
+    "OpCode": "00?0 0011 01tt tsss",
+    "Example": "NEG r1, r2"
+  },
+  {
+    "Name": "Bitwise Not",
+    "Mnemonic": "NOT",
+    "Type": "r2",
+    "OpCode": "0000 0011 10tt tsss",
+    "Example": "NOT r1, r2"
+  },
+  {
+    "Name": "Bitwise And",
+    "Mnemonic": "AND",
+    "Type": "r3",
+    "OpCode": "0100 110t ttss srrr",
+    "Example": "AND r1, r2, r3"
+  },
+  {
+    "Name": "Bitwise Or",
+    "Mnemonic": "ORR",
+    "Type": "r3",
+    "OpCode": "0100 111t ttss srrr",
+    "Example": "ORR r1, r2, r3"
+  },
+  {
+    "Name": "Bitwise Xor",
+    "Mnemonic": "XOR",
+    "Type": "r3",
+    "OpCode": "0101 000t ttss srrr",
+    "Example": "XOR r1, r2, r3"
+  },
+  {},
+  {
+    "Name": "Arith. Shift Left",
+    "Mnemonic": "ASL",
+    "Type": "r3",
+    "OpCode": "0101 001t ttss srrr",
+    "Example": "ASL r1, r2, r3"
+  },
+  {
+    "Name": "Arith. Shift Right",
+    "Mnemonic": "ASR",
+    "Type": "r3",
+    "OpCode": "0101 010t ttss srrr",
+    "Example": "ASR r1, r2, r3"
+  },
+  {
+    "Name": "Logic Shift Left",
+    "Mnemonic": "LSL",
+    "Type": "r3",
+    "OpCode": "/* Use ASL */",
+    "Example": "LSL r1, r2, r3",
+    "Notes": "Converts to 'ASL r1, r2, r3'"
+  },
+  {
+    "Name": "Logic Shift Right",
+    "Mnemonic": "LSR",
+    "Type": "r3",
+    "OpCode": "0101 011t ttss srrr",
+    "Example": "LSR r1, r2, r3"
+  },
+  {
+    "Name": "Rotate Left",
+    "Mnemonic": "RTL",
+    "Type": "r3",
+    "OpCode": "0101 100t ttss srrr",
+    "Example": "RTL r1, r2, r3"
+  },
+  {
+    "Name": "Rotate Right",
+    "Mnemonic": "RTR",
+    "Type": "r3",
+    "OpCode": "0101 101t ttss srrr",
+    "Example": "RTR r1, r2, r3"
+  },
+  {
+    "Name": "Rotate with Carry Left",
+    "Mnemonic": "RCL",
+    "Type": "r3",
+    "OpCode": "0101 110t ttss srrr",
+    "Example": "RCL r1, r2, r3"
+  },
+  {
+    "Name": "Rotate with Carry Right",
+    "Mnemonic": "RCR",
+    "Type": "r3",
+    "OpCode": "0101 111t ttss srrr",
+    "Example": "RCR r1, r2, r3"
+  },
+  {},
+  {
+    "Name": "Floor",
+    "Mnemonic": "FLR",
+    "Type": "f2",
+    "OpCode": "0010 0000 00tt tsss",
+    "Example": "FLR f1, f2"
+  },
+  {
+    "Name": "Ceiling",
+    "Mnemonic": "CEL",
+    "Type": "f2",
+    "OpCode": "0010 0000 01tt tsss",
+    "Example": "CEL f1, f2"
+  },
+  {
+    "Name": "Round",
+    "Mnemonic": "RND",
+    "Type": "f2",
+    "OpCode": "0010 0000 10tt tsss",
+    "Example": "RND f1, f2"
+  },
+  {
+    "Name": "Absolute Value",
+    "Mnemonic": "ABS³",
+    "Type": "r2/f2",
+    "OpCode": "00?0 0011 11tt tsss",
+    "Example": "ABS f1, f2",
+    "Notes": "See Note."
+  },
+  {},
+  {
+    "Name": "Bit Scan Forward",
+    "Mnemonic": "BSF",
+    "Type": "r2",
+    "OpCode": "0000 0100 00tt tsss",
+    "Example": "BSF r1, r2"
+  },
+  {
+    "Name": "Bit Scan Reverse",
+    "Mnemonic": "BSR",
+    "Type": "r2",
+    "OpCode": "0000 0100 01tt tsss",
+    "Example": "BSR r1, r2"
+  },
+  {},
+  {
+    "Name": "Small Immediate Mathematics"
+  },
+  {
+    "Name": "Name",
+    "Mnemonic": "Mnemonic",
+    "Type": "Type",
+    "OpCode": "OpCode",
+    "Example": "Example",
+    "Notes": "Notes"
+  },
+  {
+    "Name": "Increment",
+    "Mnemonic": "INC",
+    "Type": "rs",
+    "OpCode": "1000 00ii iiss srrr",
+    "Example": "INC r1, r2",
+    "Notes": "Defaults to adding 1: r1 = r2 + 1"
+  },
+  {
+    "Name": "Decrement",
+    "Mnemonic": "DEC",
+    "Type": "rs",
+    "OpCode": "1000 01ii iiss srrr",
+    "Example": "DEC r1, r2, 4",
+    "Notes": "Can specify amount. r1 = r2 - 4"
+  },
+  {},
+  {
+    "Name": "Shift Arith. Left",
+    "Mnemonic": "SAL",
+    "Type": "rs",
+    "OpCode": "1000 10ii iiss srrr",
+    "Example": "SAL r1, r2"
+  },
+  {
+    "Name": "Shift Arith. Right",
+    "Mnemonic": "SAR",
+    "Type": "rs",
+    "OpCode": "1000 11ii iiss srrr",
+    "Example": "SAR r1, r2"
+  },
+  {
+    "Name": "Shift Logic Left",
+    "Mnemonic": "SLL",
+    "Type": "rs",
+    "OpCode": "/* Use SAL */",
+    "Example": "SLL r1, r2"
+  },
+  {
+    "Name": "Shift Logic Right",
+    "Mnemonic": "SLR",
+    "Type": "rs",
+    "OpCode": "1001 00ii iiss srrr",
+    "Example": "SLR r1, r2, 4"
+  },
+  {
+    "Name": "Rotate Left",
+    "Mnemonic": "RTL",
+    "Type": "rs",
+    "OpCode": "1001 01ii iiss srrr",
+    "Example": "RTL r1, r2"
+  },
+  {
+    "Name": "Rotate Right",
+    "Mnemonic": "RTR",
+    "Type": "rs",
+    "OpCode": "1001 10ii iiss srrr",
+    "Example": "RTR r1, r2, 4"
+  },
+  {
+    "Name": "Rotate with Carry Left",
+    "Mnemonic": "RCL",
+    "Type": "rs",
+    "OpCode": "1001 11ii iiss srrr",
+    "Example": "RCL r1, r2"
+  },
+  {
+    "Name": "Rotate with Carry Right",
+    "Mnemonic": "RCR",
+    "Type": "rs",
+    "OpCode": "1010 00ii iiss srrr",
+    "Example": "RCR r1, r2, 4"
+  },
+  {},
+  {
+    "Name": "Large Immediate Mathematics"
+  },
+  {
+    "Name": "Name",
+    "Mnemonic": "Mnemonic",
+    "Type": "Type",
+    "OpCode": "OpCode",
+    "Example": "Example",
+    "Notes": "Notes"
+  },
+  {
+    "Name": "Add Immediate",
+    "Mnemonic": "ADI",
+    "Type": "rm/fm",
+    "OpCode": "11?0 0011 1.cc crrr",
+    "Example": "ADI r1, r2, 1024",
+    "Notes": "'cccc' here would be '0010' to encode r2"
+  },
+  {
+    "Name": "Subtract Immediate",
+    "Mnemonic": "SBI",
+    "Type": "rm/fm",
+    "OpCode": "11?0 0100 0.cc crrr",
+    "Example": "SBI r1, r2, 1024"
+  },
+  {
+    "Name": "Add Immediate with Carry",
+    "Mnemonic": "AIC",
+    "Type": "rm/fm",
+    "OpCode": "11?0 0100 1.cc crrr",
+    "Example": "AIC r1, r2, 1024"
+  },
+  {
+    "Name": "Subtract Immediate with Borrow",
+    "Mnemonic": "SIB",
+    "Type": "rm/fm",
+    "OpCode": "11?0 0101 0.cc crrr",
+    "Example": "SIB r1, r2, 1024"
+  },
+  {
+    "Name": "And Immediate",
+    "Mnemonic": "ANI",
+    "Type": "rm/fm",
+    "OpCode": "11?0 0101 1.cc crrr",
+    "Example": "ANI r1, r2, 1024"
+  },
+  {
+    "Name": "Or Immediate",
+    "Mnemonic": "ORI",
+    "Type": "rm/fm",
+    "OpCode": "11?0 0110 0.cc crrr",
+    "Example": "ORI r1, r2, 1024"
+  },
+  {
+    "Name": "Xor Immediate",
+    "Mnemonic": "XRI",
+    "Type": "rm/fm",
+    "OpCode": "11?0 0110 1.cc crrr",
+    "Example": "XRI r1, r2, 1024"
+  },
+  {},
+  {
+    "Name": "Decision Making"
+  },
+  {
+    "Name": "Name",
+    "Mnemonic": "Mnemonic",
+    "Type": "Type",
+    "OpCode": "OpCode",
+    "Example": "Example",
+    "Notes": "Notes"
+  },
+  {
+    "Name": "Compare",
+    "Mnemonic": "CMP",
+    "Type": "r2/f2",
+    "OpCode": "00?0 0100 10tt tsss",
+    "Example": "CMP r1, r2"
+  },
+  {
+    "Name": "Test",
+    "Mnemonic": "TST",
+    "Type": "r2/f2",
+    "OpCode": "00?0 0100 11tt tsss",
+    "Example": "TST r1, r2"
+  },
+  {},
+  {
+    "Name": "Set Sign Flag",
+    "Mnemonic": "STS",
+    "Type": "r2",
+    "OpCode": "0000 0101 00.. ....",
+    "Example": "STS"
+  },
+  {
+    "Name": "Clear Sign Flag",
+    "Mnemonic": "CLS",
+    "Type": "r2",
+    "OpCode": "0000 0101 01.. ....",
+    "Example": "CLS"
+  },
+  {
+    "Name": "Set Parity Flag",
+    "Mnemonic": "STP",
+    "Type": "r2",
+    "OpCode": "0000 0101 10.. ....",
+    "Example": "STP"
+  },
+  {
+    "Name": "Clear Parity Flag",
+    "Mnemonic": "CLP",
+    "Type": "r2",
+    "OpCode": "0000 0101 11.. ....",
+    "Example": "CLP"
+  },
+  {
+    "Name": "Set Overflow Flag",
+    "Mnemonic": "STO",
+    "Type": "r2",
+    "OpCode": "0000 0110 00.. ....",
+    "Example": "STO"
+  },
+  {
+    "Name": "Clear Overflow Flag",
+    "Mnemonic": "CLO",
+    "Type": "r2",
+    "OpCode": "0000 0110 01.. ....",
+    "Example": "CLO"
+  },
+  {
+    "Name": "Set Carry Flag",
+    "Mnemonic": "STC",
+    "Type": "r2",
+    "OpCode": "0000 0110 10.. ....",
+    "Example": "STC"
+  },
+  {
+    "Name": "Clear Carry Flag",
+    "Mnemonic": "CLC",
+    "Type": "r2",
+    "OpCode": "0000 0110 11.. ....",
+    "Example": "CLC"
+  },
+  {
+    "Name": "Set Zero Flag",
+    "Mnemonic": "STZ",
+    "Type": "r2",
+    "OpCode": "0000 0111 00.. ....",
+    "Example": "STZ"
+  },
+  {
+    "Name": "Clear Zero Flag",
+    "Mnemonic": "CLZ",
+    "Type": "r2",
+    "OpCode": "0000 0111 01.. ....",
+    "Example": "CLZ"
+  },
+  {},
+  {
+    "Name": "Load flags into low byte",
+    "Mnemonic": "LFL",
+    "Type": "r2",
+    "OpCode": "0000 0111 10.. .rrr",
+    "Example": "LFL r1",
+    "Notes": "r1&lt;8..0&gt; = 000SPOCZ"
+  },
+  {
+    "Name": "Store low byte into flags",
+    "Mnemonic": "SFL",
+    "Type": "r2",
+    "OpCode": "0000 0111 11.. .rrr",
+    "Example": "SFL r1",
+    "Notes": "000SPOCZ = r1&lt;8..0&gt;"
+  },
+  {},
+  {
+    "Name": "Move (Unconditional)",
+    "Mnemonic": "MOV",
+    "Type": "r2/f2",
+    "OpCode": "00?0 1000 00ss srrr",
+    "Example": "MOV r1, r2"
+  },
+  {},
+  {
+    "Name": "Move if Equal",
+    "Mnemonic": "MEQ",
+    "Type": "r2/f2",
+    "OpCode": "/*    Use MYZ    */",
+    "Example": "MEQ r1, r2"
+  },
+  {
+    "Name": "Move if Not Equal",
+    "Mnemonic": "MNE",
+    "Type": "r2/f2",
+    "OpCode": "/*    Use MNZ    */",
+    "Example": "MNE r1, r2"
+  },
+  {},
+  {
+    "Name": "Move if Less Than",
+    "Mnemonic": "MLT",
+    "Type": "r2/f2",
+    "OpCode": "00?0 1000 01ss srrr",
+    "Example": "MLT r1, r2"
+  },
+  {
+    "Name": "Move if Greater Than",
+    "Mnemonic": "MGT",
+    "Type": "r2/f2",
+    "OpCode": "00?0 1000 10ss srrr",
+    "Example": "MGT r1, r2"
+  },
+  {
+    "Name": "Move if Less or Equal",
+    "Mnemonic": "MLE",
+    "Type": "r2/f2",
+    "OpCode": "00?0 1000 11ss srrr",
+    "Example": "MLE r1, r2"
+  },
+  {
+    "Name": "Move if Greater or Equal",
+    "Mnemonic": "MGE",
+    "Type": "r2/f2",
+    "OpCode": "00?0 1001 00ss srrr",
+    "Example": "MGE r1, r2"
+  },
+  {},
+  {
+    "Name": "Move if Above Than",
+    "Mnemonic": "MAT",
+    "Type": "r2/f2",
+    "OpCode": "00?0 1001 01ss srrr",
+    "Example": "MAT r1, r2"
+  },
+  {
+    "Name": "Move if Below Than",
+    "Mnemonic": "MBT",
+    "Type": "r2/f2",
+    "OpCode": "/*    Use MYC    */",
+    "Example": "MBT r1, r2"
+  },
+  {
+    "Name": "Move if Above or Equal",
+    "Mnemonic": "MAE",
+    "Type": "r2/f2",
+    "OpCode": "/*    Use MNC    */",
+    "Example": "MAE r1, r2"
+  },
+  {
+    "Name": "Move if Below or Equal",
+    "Mnemonic": "MBE",
+    "Type": "r2/f2",
+    "OpCode": "00?0 1001 10ss srrr",
+    "Example": "MBE r1, r2"
+  },
+  {},
+  {
+    "Name": "Move if (Yes) Sign Flag",
+    "Mnemonic": "MYS",
+    "Type": "r2/f2",
+    "OpCode": "00?0 1001 11ss srrr",
+    "Example": "MYS r1, r2"
+  },
+  {
+    "Name": "Move if not (No) Sign Flag",
+    "Mnemonic": "MNS",
+    "Type": "r2/f2",
+    "OpCode": "00?0 1010 00ss srrr",
+    "Example": "MNS r1, r2"
+  },
+  {
+    "Name": "Move if (Yes) Parity Flag",
+    "Mnemonic": "MYP",
+    "Type": "r2/f2",
+    "OpCode": "00?0 1010 01ss srrr",
+    "Example": "MYP r1, r2"
+  },
+  {
+    "Name": "Move if not (No) Parity Flag",
+    "Mnemonic": "MNP",
+    "Type": "r2/f2",
+    "OpCode": "00?0 1010 10ss srrr",
+    "Example": "MNP r1, r2"
+  },
+  {
+    "Name": "Move if (Yes) Overflow Flag",
+    "Mnemonic": "MYO",
+    "Type": "r2/f2",
+    "OpCode": "00?0 1010 11ss srrr",
+    "Example": "MYO r1, r2"
+  },
+  {
+    "Name": "Move if not (No) Overflow Flag",
+    "Mnemonic": "MNO",
+    "Type": "r2/f2",
+    "OpCode": "00?0 1011 00ss srrr",
+    "Example": "MNO r1, r2"
+  },
+  {
+    "Name": "Move if (Yes) Carry Flag",
+    "Mnemonic": "MYC",
+    "Type": "r2/f2",
+    "OpCode": "00?0 1011 01ss srrr",
+    "Example": "MYC r1, r2"
+  },
+  {
+    "Name": "Move if not (No) Carry Flag",
+    "Mnemonic": "MNC",
+    "Type": "r2/f2",
+    "OpCode": "00?0 1011 10ss srrr",
+    "Example": "MNC r1, r2"
+  },
+  {
+    "Name": "Move if (Yes) Zero Flag",
+    "Mnemonic": "MYZ",
+    "Type": "r2/f2",
+    "OpCode": "00?0 1011 11ss srrr",
+    "Example": "MYZ r1, r2"
+  },
+  {
+    "Name": "Move if not (No) Zero Flag",
+    "Mnemonic": "MNZ",
+    "Type": "r2/f2",
+    "OpCode": "00?0 1100 00ss srrr",
+    "Example": "MNZ r1, r2"
+  },
+  {},
+  {
+    "Name": "Jump (Unconditional)",
+    "Mnemonic": "JMP",
+    "Type": "rm",
+    "OpCode": "11?0 01110.cc crrr",
+    "Example": "JMP Label"
+  },
+  {},
+  {
+    "Name": "Jump if Equal",
+    "Mnemonic": "JEQ⁴",
+    "Type": "rm/fm",
+    "OpCode": "/*    Use JYZ    */",
+    "Example": "JEQ r1, r2, Label",
+    "Notes": "See note."
+  },
+  {
+    "Name": "Jump if Not Equal",
+    "Mnemonic": "JNE⁴",
+    "Type": "rm/fm",
+    "OpCode": "/*    Use JNZ    */",
+    "Example": "JNE r1, r2, Label",
+    "Notes": "See note."
+  },
+  {},
+  {
+    "Name": "Jump if Less Than",
+    "Mnemonic": "JLT⁴ ",
+    "Type": "rm/fm",
+    "OpCode": "11?0 0111 1.cc crrr",
+    "Example": "JLT r1, r2, Label",
+    "Notes": "See note."
+  },
+  {
+    "Name": "Jump if Greater Than",
+    "Mnemonic": "JGT⁴",
+    "Type": "rm/fm",
+    "OpCode": "11?0 1000 0.cc crrr",
+    "Example": "JGT r1, r2, Label",
+    "Notes": "See note."
+  },
+  {
+    "Name": "Jump if Less or Equal",
+    "Mnemonic": "JLE⁴",
+    "Type": "rm/fm",
+    "OpCode": "11?0 1000 1.cc crrr",
+    "Example": "JLE r1, r2, Label",
+    "Notes": "See note."
+  },
+  {
+    "Name": "Jump if Greater or Equal",
+    "Mnemonic": "JGE⁴",
+    "Type": "rm/fm",
+    "OpCode": "11?0 1001 0.cc crrr",
+    "Example": "JGE r1, r2, Label",
+    "Notes": "See note."
+  },
+  {},
+  {
+    "Name": "Jump if Above Than",
+    "Mnemonic": "JAT⁴",
+    "Type": "rm/fm",
+    "OpCode": "11?0 1001 1.cc crrr",
+    "Example": "JAT r1, r2, Label",
+    "Notes": "See note."
+  },
+  {
+    "Name": "Jump if Below Than",
+    "Mnemonic": "JBT⁴ ",
+    "Type": "rm/fm",
+    "OpCode": "/*    Use JYC    */",
+    "Example": "JBT r1, r2, Label",
+    "Notes": "See note."
+  },
+  {
+    "Name": "Jump if Above or Equal",
+    "Mnemonic": "JAE⁴",
+    "Type": "rm/fm",
+    "OpCode": "/*    Use JNC    */",
+    "Example": "JAE r1, r2, Label",
+    "Notes": "See note."
+  },
+  {
+    "Name": "Jump if Below of Equal",
+    "Mnemonic": "JBE⁴",
+    "Type": "rm/fm",
+    "OpCode": "11?0 1010 0.cc crrr",
+    "Example": "JBE r1, r2, Label",
+    "Notes": "See note."
+  },
+  {},
+  {
+    "Name": "Jump if (Yes) Sign Flag",
+    "Mnemonic": "JYS⁴",
+    "Type": "rm/fm",
+    "OpCode": "11?0 1010 1.cc crrr",
+    "Example": "JYS r1, r2, Label",
+    "Notes": "See note."
+  },
+  {
+    "Name": "Jump if not (No) Sign Flag",
+    "Mnemonic": "JNS⁴",
+    "Type": "rm/fm",
+    "OpCode": "11?0 1011 0.cc crrr",
+    "Example": "JNS r1, r2, Label ",
+    "Notes": "See note."
+  },
+  {
+    "Name": "Jump if (Yes) Parity Flag",
+    "Mnemonic": "JYP⁴",
+    "Type": "rm/fm",
+    "OpCode": "11?0 1011 1.cc crrr",
+    "Example": "JYP r1, r2, Label",
+    "Notes": "See note."
+  },
+  {
+    "Name": "Jump if not (No) Parity Flag",
+    "Mnemonic": "JNP⁴",
+    "Type": "rm/fm",
+    "OpCode": "11?0 1100 0.cc crrr",
+    "Example": "JNP r1, r2, Label",
+    "Notes": "See note."
+  },
+  {
+    "Name": "Jump if (Yes) Overflow Flag",
+    "Mnemonic": "JYO⁴",
+    "Type": "rm/fm",
+    "OpCode": "11?0 1100 1.cc crrr",
+    "Example": "JYO r1, r2, Label",
+    "Notes": "See note."
+  },
+  {
+    "Name": "Jump if not (No) Overflow Flag",
+    "Mnemonic": "JNO⁴",
+    "Type": "rm/fm",
+    "OpCode": "11?0 1101 0.cc crrr",
+    "Example": "JNO r1, r2, Label",
+    "Notes": "See note."
+  },
+  {
+    "Name": "Jump if (Yes) Carry Flag",
+    "Mnemonic": "JYC⁴",
+    "Type": "rm/fm",
+    "OpCode": "11?0 1101 1.cc crrr",
+    "Example": "JYC r1, r2, Label",
+    "Notes": "See note."
+  },
+  {
+    "Name": "Jump if not (No) Carry Flag",
+    "Mnemonic": "JNC⁴",
+    "Type": "rm/fm",
+    "OpCode": "11?0 1110 0.cc crrr",
+    "Example": "JNC r1, r2, Label",
+    "Notes": "See note."
+  },
+  {
+    "Name": "Jump if (Yes) Zero Flag",
+    "Mnemonic": "JYZ⁴",
+    "Type": "rm/fm",
+    "OpCode": "11?0 1110 1.cc crrr",
+    "Example": "JYZ r1, r2, Label",
+    "Notes": "See note."
+  },
+  {
+    "Name": "Jump if not (No) Zero Flag",
+    "Mnemonic": "JNZ⁴",
+    "Type": "rm/fm",
+    "OpCode": "11?0 1111 0.cc crrr",
+    "Example": "JNZ r1, r2, Label",
+    "Notes": "See note."
+  },
+  {},
+  {
+    "Name": "Loop",
+    "Mnemonic": "LOP⁵",
+    "Type": "rm",
+    "OpCode": "1100 1111 1.cc crrr",
+    "Example": "LOP r1, Label",
+    "Notes": "See note."
+  },
+  {
+    "Name": "Notes"
+  },
+  {
+    "Name": "¹ Note: CFR needs to econvert integer into floating point, but floating point cannot hold all values integer can. May throw errors."
+  },
+  {
+    "Name": "² Note: Muliplication and Division are complicated.\n\n        - Muliplication: MUL r2, r3, r4\n            Computes the value of r3 * r4. Stores the lower 16 bits in r2, and the upper 16 bits in the previous register, so r1.\n            Using r1 as the destination discards those high bits, since r0 cannot be written to.\n            R0 cannot be picked as a destination\n\n            Signed and unsigned integer multiplication are different: set the sign bit to perform signed multiplication, clear it to perform unsigned.\n\n                Signed:     0xFFFF * 0xFFFF   =>   -1 * -1         =>            1   =>   0x00000001\n                Unsigned:   0xFFFF * 0xFFFF   =>   65535 * 65535   =>   4294836225   =>   0xFFFE0001\n\n        - Division: DIV r2, r3, r4\n            Computes the value of r3 / r4. Stores the result in r2, and the remainder in the previous register, so r1.\n            Using r1 as the destination discards the remainder, since r0 cannot be written to.\n            R0 cannot be picked as a destination\n\n            Signed and unsigned integer division are different: set the sign bit to perform signed division, clear it to perform unsigned.\n\n                Signed:\n                    Non-integer results are truncated towards 0.\n                    The remainder always has the same sign as the dividend (left-hand side).\n                    The absolute value of the remainder is always smaller than the absolute value of the divisor (right-hand side).\n\n                    0x0005 / 0x0003   =>   +5 / +3   =>   +1.67 r +2   =>   +1 r +2\n                    0xFFFB / 0x0003   =>   -5 / +3   =>   -1.67 r -2   =>   -1 r -2\n                    0x0005 / 0xFFFD   =>   +5 / -3   =>   -1.67 r +2   =>   -1 r +2\n                    0xFFFB / 0xFFFD   =>   -5 / -3   =>   +1.67 r -2   =>   +1 r -2\n\n                Unsigned:\n                    Just signed division but only with positive operands\n\n                    0x0005 / 0x0003   =>   +    5 / +    3   =>   +    1.67 r +    2   =>   +    1 r +2\n                    0xFFFB / 0x0003   =>   +65531 / +    3   =>   +21843.67 r +    2   =>   +21843 r +2\n                    0x0005 / 0xFFFD   =>   +    5 / +65533   =>   +    0.00 r +    5   =>   +    0 r +5\n                    0xFFFB / 0xFFFD   =>   +65531 / +65533   =>   +    0.00 r +65531   =>   +    0 r +65531"
+  },
+  {
+    "Name": "³ Note: ABS - there are more negative numbers than there are positive numbers (because of zero). So\n                ABS(0x8000) throws an error. NEG(0x8000) = 0x8000, so no problems there. There is no positive\n                counterpart to 0x8000 in signed notation."
+  },
+  {
+    "Name": "⁴ Note: All jumps use the two given registers to determine whether they should take the jump or not. The second register\n                is subtracted from the first (as in a CMP instruction) and the resulting flags are considered.\n\n        - WARNING: The jump instruction does not update the flags register. It uses temporary flags to determine whether to jump.\n\n        - If the two given registers are BOTH r0 or BOTH f0, then there is no point checking. Instead, to improve functionality,\n            the jump will consider the actual flags register (but not change it!) when determining whether to take the jump."
+  },
+  {
+    "Name": "⁵ Note: LOP r1, Label\n\n        - Pseudocode: r1 = r1 - 1; if (r1 != 0) { jump to label }\n\n        - WARNING: The LOP instruction does not update the flags register. It uses temporary flags to determine whether to jump."
+  }
+]

@@ -1,6 +1,8 @@
 ﻿@inherits LayoutComponentBase
 @inject IJSRuntime JSRuntime
 @using InstructionSetProject.Backend.StaticFrontend;
+@using System.Text.Json;
+@inject NavigationManager UriHelper
 
 <style>
     body {
@@ -128,13 +130,9 @@
     }
 
     #topnav-right-help {
+        cursor: pointer;
         position: absolute;
         right: 140px;
-    }
-
-    #topnav-right-samples {
-        position: absolute;
-        right: 210px;
     }
 
     #footer {
@@ -255,6 +253,101 @@
     dialog {
         padding: 0px;
     }
+
+    .e-dlg-header-content {
+        text-align: center;
+        border-bottom: 1px solid #252526 !important;
+        @(FrontendVariables.darkMode ? "background-color: #2d2d2e" : "background-color: white");
+    }
+
+    .e-dlg-header {
+        transform: translateX(50px);
+        font-size: 24px !important;
+        @(FrontendVariables.darkMode ? "color: #DEB992" : "color: black");
+    }
+
+    .e-icon-dlg-close {
+        opacity: 1;
+        @(FrontendVariables.darkMode ? "color: white" : "color: black");
+    }
+
+    .e-icon-dlg-close:hover {
+        @(FrontendVariables.darkMode ? "color: gray" : "color: gray");
+    }
+
+    .e-dlg-content {
+        @(FrontendVariables.darkMode ? "background-color: #2d2d2e" : "background-color: white");
+        @(FrontendVariables.darkMode ? "color: #10A088" : "color: black");
+    }
+
+    .e-dialog .e-dlg-content {
+        padding: 0px;
+    }
+
+    .e-dialog .e-dlg-header-content+.e-dlg-content {
+        padding-top: 0px;
+    }
+
+    .helpModal {
+        @(FrontendVariables.darkMode ? "background-color: #2d2d2e" : "background-color: white");
+        @(FrontendVariables.darkMode ? "color: #DEB992" : "color: black");
+    }
+
+    .helpModalMenu {
+        @(FrontendVariables.darkMode ? "background-color: #3f3f42" : "background-color: white");
+        @(FrontendVariables.darkMode ? "color: #e3e3dc" : "color: black");
+    }
+
+    .helpModalInfo {
+        @(FrontendVariables.darkMode ? "background-color: #3f3f42" : "background-color: white");
+        @(FrontendVariables.darkMode ? "color: #e3e3dc" : "color: black");
+    }
+
+    .mainHelpUL {
+        list-style-type: none;
+        cursor: pointer;
+        margin-left: 10px;
+        padding: 0px;
+    }
+
+    #aboutUL {
+        list-style-type: none;
+        margin-left: 15px;
+        padding: 0px;
+    }
+
+    #helpUL {
+        list-style-type: none;
+        margin-left: 15px;
+        padding: 0px;
+    }
+
+    li:hover {
+         @(FrontendVariables.darkMode ? "color: #828285" : "color: #828285");
+    }
+
+    .nameList {
+        list-style-type: none;
+    }
+
+    .nameList:hover {
+        font-size: 14px !important;
+    }
+
+    th {
+        border: 2px solid black;
+        @(FrontendVariables.darkMode ? "background-color: #0a0b0d" : "background-color: #989ba3");
+    }
+
+    td {
+        border: 1px solid black;
+        @(FrontendVariables.darkMode ? "background-color: #32353b" : "background-color: #e1e4eb");
+    }
+
+    tr {
+        border: 1px solid black;
+        @(FrontendVariables.darkMode ? "background-color: #32353b" : "background-color: #e1e4eb");
+    }
 </style>
 
 <PageTitle>CISCy Business</PageTitle>
@@ -269,20 +362,17 @@
             <a class="nav-item nav-link" href="/disassembler"><h3>Disassembler</h3></a>
             <a class="nav-item nav-link" href="/assembler"><h3>Assembler</h3></a>
             <a class="nav-item nav-link" href="/executor"><h3>Executor</h3></a>
-            <div id="topnav-right-samples">
-                <a class="nav-item nav-link"  href="/samples"><h3>Samples</h3></a>
-            </div>
-            <div id="topnav-right-help">
-                <a class="nav-item nav-link"  href="/help"><h3>Help</h3></a>
+            <div id="topnav-right-help"
+                <a class="nav-item nav-link" @onclick="e => visible = true" ><h3>Help</h3></a>
             </div>
             <div id="topnav-right">
-                <a class="nav-item nav-link" @onclick="e => IsModalOpened = true" ><h3>Settings</h3></a>
+                <a class="nav-item nav-link" @onclick="e => IsSettingsModalOpened = true" ><h3>Settings</h3></a>
             </div>
         </div>
     </div>
  </nav>
 
-<Modal @bind-Open="IsModalOpened" Close="OnClose">
+<Modal @bind-Open="IsSettingsModalOpened" Close="OnClose">
     <form class="modalForm" method="dialog" style="width: 300px; height: 300px; align-content: flex-start">
         <div class="modalDiv">
             <span style="font-size: 24px">Settings</span>
@@ -298,6 +388,293 @@
     </form>
 </Modal>
 
+<SfDialog CssClass="helpModal" Width="800px" Height="600px" AllowDragging="true" EnableResize="false" ShowCloseIcon="true" @bind-Visible="visible">
+    <DialogTemplates>
+        <Header>Help and Samples Menu</Header>
+        <Content>
+           <div class="helpModalMenu" style="border: 2px solid #252526; border-top: none; width: 150px; height: 535px; overflow-y: scroll; position: absolute; margin-left: 0px; transform: translateX(-1px);">
+               <ul class="mainHelpUL">
+                   <li id="aboutLI" @onclick="toggleAboutLi">About <span class="float-end" style="transform: translateX(-10px)"><strong>@(aboutLiClicked ? '-' : '+')</strong></span></li>
+                   <ul id="aboutUL" style="@CSSAboutUL()">
+                       <li @onclick="toggleAboutUsInfo">About Us</li>
+                       <li @onclick="toggleWhyCreateThis">Why Create This</li>
+                   </ul>
+                   <li id="helpLI" @onclick="toggleHelpLi">Help <span class="float-end" style="transform: translateX(-10px)"><strong>@(helpLiClicked ? '-' : '+')</strong></span></li>
+                   <ul id="helpUL"style="@CSSHelpUL()">
+                       <li @onclick="toggleAddressingModes">Addressing Modes</li>
+                       <li @onclick="toggleRegisterTable">Registers</li>
+                       <li @onclick="toggleInstrTypes">Instr. Types</li>
+                       <li @onclick="toggleInstructionsTable">Instructions</li>
+                   </ul>
+                   <li>Samples</li>
+                   <ul>
+                       <li>Option 1</li>
+                       <li>Option 2</li>
+                       <li>Option 3</li>
+                       <li>Option 4</li>
+                       <li>Option 5</li>
+                   </ul>
+                   <li>Instructions</li>
+                   <ul>
+                       <li>R3 Type</li>
+                       <ul>
+                           <li>ADD</li>
+                           <li>SUB</li>
+                           <li>MUL</li>
+                           <li>DIV</li>
+                       </ul>
+                       <li>R2 Type</li>
+                       <ul>
+                           <li>ADI</li>
+                           <li>SBI</li>
+                       </ul>
+                   </ul>
+               </ul>
+           </div>
+
+           <div class="helpModalInfo" style="border: 2px solid #252526; border-left: none; border-top: none; width: 652px; height: 535px; overflow-y: scroll; position: absolute; margin-left: 148px;">
+               <div style="padding-left: 5px; padding-right: 5px; padding-top: 5px;">
+                   <div style="@CSSAboutUsDiv(); text-align: center">
+                       <h1 style="@(FrontendVariables.darkMode ? "color: #DEB992" : "color: black")">About Us</h1>
+                       <hr />
+                       <br />
+                       <h2 style="@(FrontendVariables.darkMode ? "color: #DEB992" : "color: black")">Who are we?</h2>
+                       <ul style="@(FrontendVariables.darkMode ? "color: #10A088" : "color: black"); transform: translateX(-22px)">
+                           <li class="nameList">Lucas Phillips (Senior) -> majority backend developer</li>
+                           <li class="nameList">Dante De La Riva (Senior) -> majority instruction set designer</li>
+                           <li class="nameList">Preston Cunningham (Junior) -> majority frontend developer</li>
+                       </ul>
+                       <br />
+                       <h2 style="@(FrontendVariables.darkMode ? "color: #DEB992" : "color: black")">How did we decide roles?</h2>
+                       <p style="@(FrontendVariables.darkMode ? "color: #10A088" : "color: black"); font-size: 16px;">
+                           The roles seen above kind of fell into place near the beginning of the project. We sat down for a team meeting
+                           and Dante had already gotten started on a very solid first iteration of the IS Instruction Set so he became the 
+                           main designer for the instruction set. Lucas said he would get started on some backend stuff to see about getting
+                           assembly and disassembly working. Lastly, Preston said he would start throwing together a web interface for the 
+                           assembler and disassembler. From there the roles stuck and did for the entirety of the project with small bits of work
+                           from each of us on other parts.
+                       </p>
+
+                   </div>
+
+                   <div style="@CSSWhyCreateThisDiv(); text-align: center">
+                       <h1 style="@(FrontendVariables.darkMode ? "color: #DEB992" : "color: black")">Why Did We Create This?</h1>
+                       <hr />
+                       <br />
+                       <h2 style="@(FrontendVariables.darkMode ? "color: #DEB992" : "color: black")">Reasons:</h2>
+                       <p style="@(FrontendVariables.darkMode ? "color: #10A088" : "color: black"); font-size: 16px;">
+                           We wanted to create a platform for college students or anyone else who has an interest in low level
+                           assembly languages to have a chance to get an introduction to a custom created one. This instruction set
+                           acts like many other assembly languages but has a lot of tools to help the user along with discovery and learning. 
+                       </p>
+                       <br />
+                       <p style="@(FrontendVariables.darkMode ? "color: #10A088" : "color: black"); font-size: 16px;">
+                           It may be an inconvenience for users to download and use a software to practice development using an assembly language
+                           or even have to go out and buy compatible hardware that can run assembly code directly. With our web based application, 
+                           it allows for easier accessibility whenever and where ever the user may be as long as you can connect to the web.
+                       </p>
+                       <br />
+                       <p style="@(FrontendVariables.darkMode ? "color: #10A088" : "color: black"); font-size: 16px;">
+                           The main reason this tool came into existence was as a semester project in our Computer Architecture class. The 3 of us
+                           were placed on a team together near the beginning of the semester and from there this project was born.
+                       </p>
+
+                   </div>
+
+                   <div style="@CSSAddressingModes(); text-align: center">
+                       <h1 style="@(FrontendVariables.darkMode ? "color: #DEB992" : "color: black")">Addressing Modes</h1>
+                       <hr />
+                       <span class="float-end"><button @onclick="OpenHelpPage" class="@(FrontendVariables.darkMode ? "btn-dark" : "btn-primary")">Open In Page</button></span>
+                       <table style="width:100%">
+                            <tr >
+                                <th>Name</th>
+                                <th>Letters</th>
+                                <th>Binary</th>
+                                <th>Treatment</th>
+                                <th>Notes</th>
+                            </tr>
+                            @for (int i = 0; i < addressMode?.Length; i++)
+                            {
+                                <tr>
+                                    <td>@addressMode[i].Name</td>
+                                    <td>@addressMode[i].Letters</td>
+                                    <td>@addressMode[i].Binary</td>
+                                    <td>@addressMode[i].Treatment</td>
+                                    <td>@addressMode[i].Notes</td>
+                                </tr>
+                            }
+                        </table>
+                        <br />
+                   </div>
+
+                   <div style="@CSSRegisterTable(); text-align: center">
+                       <h1 style="@(FrontendVariables.darkMode ? "color: #DEB992" : "color: black")">Registers</h1>
+                       <hr />
+                       <span class="float-end"><button @onclick="OpenHelpPage" class="@(FrontendVariables.darkMode ? "btn-dark" : "btn-primary")">Open In Page</button></span>
+                       <table class="helpTable" style="width:100%">
+                            <tr>
+                                <th colspan=2>Accessible</th>
+                            </tr>
+                          <tr>
+                            <th>Reg</th>
+                            <th>Use Case</th>
+                          </tr>
+                          @for (int i = 0; i < 17; i++)
+                            {
+                                if(registerTable[i].Reg == null)
+                                {
+                                    <tr style="height: 25px"></tr>
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td>@registerTable[i].Reg</td>
+                                        <td>@registerTable[i].UseCase</td>
+                                    </tr>
+                                }
+                            }
+                          <tr>
+                            <th colspan=2>Inaccessible</th>
+                          </tr>
+                          <tr>
+                            <th>Reg</th>
+                            <th>Use Case</th>
+                          </tr>
+                          @for (int i = 19; i <= 22; i++)
+                            {
+                                <tr>
+                                    <td>@registerTable[i].Reg</td>
+                                    <td>@registerTable[i].UseCase</td>
+                                </tr>
+                            }
+                        </table>
+                        <br />
+                   </div>
+
+                   <div style="@CSSInstrTypeTable(); text-align: center">
+                       <h1 style="@(FrontendVariables.darkMode ? "color: #DEB992" : "color: black")">Instruction Types</h1>
+                       <hr />
+                       <span class="float-end"><button @onclick="OpenHelpPage" class="@(FrontendVariables.darkMode ? "btn-dark" : "btn-primary")">Open In Page</button></span>
+                       <table class="helpTable" style="width:100%">
+                            <tr>
+                            <th>Legend</th>
+                            <th>Definition</th>
+                            </tr>
+                            @for (int i = 0; i < instrTypeLegend?.Length; i++)
+                            {
+                                <tr>
+                                    <td>@instrTypeLegend[i].Legend</td>
+                                    <td>@instrTypeLegend[i].Definition</td>
+                                </tr>
+                            }
+                        </table>
+
+                        <br />
+
+                        <table class="helpTable" style="width:100%">
+                            <tr>
+                            <th>Type</th>
+                            <th>Name</th>
+                            <th>Encoding</th>
+                            <th>Purpose</th>
+                            </tr>
+                            @for (int i = 0; i < instrType?.Length; i++)
+                            {
+                                if(instrType[i].Name == null)
+                                {
+                                    <tr style="height: 25px"></tr>
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td>@instrType[i].Type</td>
+                                        <td>@instrType[i].Name</td>
+                                        <td>@instrType[i].Encoding</td>
+                                        <td>@instrType[i].Purpose</td>
+                                    </tr>
+                                }
+                            }
+                            <tr>
+                                <th colspan=4>Notes</th>
+                            </tr>
+                            <tr>
+                                <td colspan=4>¹ Note: type will interpret the 'cccc' bits according to the opcode, either as addressing mode or as a second register</td>
+                            </tr>
+                            <tr>
+                                <td colspan=4>² Note: since encoding 0 is useless for the immediate in most instructions, '0000' encodes a 16. So the range of possible immediates is [1-16].</td>
+                            </tr>
+
+                        </table>
+                        <br />
+                   </div>
+
+                   <div style="@CSSInstructionsTable(); text-align: center">
+                       <h1 style="@(FrontendVariables.darkMode ? "color: #DEB992" : "color: black")">Instructions</h1>
+                       <hr />
+                       <span class="float-end"><button @onclick="OpenHelpPage" class="@(FrontendVariables.darkMode ? "btn-dark" : "btn-primary")">Open In Page</button></span>
+                       <table class="helpTable" style="width:100%">
+                            <tr>
+                                <th colspan=6>Process Control Instructions</th>
+                            </tr>
+                          <tr>
+                            <th>Name</th>
+                            <th>Mnemonic</th>
+                            <th>Type</th>
+                            <th>Op Code</th>
+                            <th>Example</th>
+                            <th>Notes</th>
+                          </tr>
+                          @for (int i = 0; i < instrs?.Length; i++)
+                            {
+                                if(instrs[i].Name == null)
+                                {
+                                    <tr style="height: 25px"></tr>
+                                }
+                                else if(instrs[i].Name == "Notes" || instrs[i].Name == "Decision Making" || instrs[i].Name == "Large Immediate Mathematics" || instrs[i].Name == "Small Immediate Mathematics" || instrs[i].Name == "Pure Register Instructions" || instrs[i].Name == "Register Management Instructions" || instrs[i].Name == "Memory Management Instructions" || instrs[i].Name == "Process Control Instructions")
+                                {
+                                    <tr>
+                                        <th colspan="6">@instrs[i].Name</th>
+                                    </tr>
+                                }
+                                else if(instrs[i].Mnemonic == null)
+                                {
+                                    <tr>
+                                        <td colspan="6">@instrs[i].Name</td>
+                                    </tr>
+                                }
+                                else if (instrs[i].Name == "Name")
+                                {
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Mnemonic</th>
+                                        <th>Type</th>
+                                        <th>Op Code</th>
+                                        <th>Example</th>
+                                        <th>Notes</th>
+                                      </tr>
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td>@instrs[i].Name</td>
+                                        <td>@instrs[i].Mnemonic</td>
+                                        <td>@instrs[i].Type</td>
+                                        <td>@instrs[i].OpCode</td>
+                                        <td>@instrs[i].Example</td>
+                                        <td>@instrs[i].Notes</td>
+                                    </tr>
+                                }
+                            }
+                        </table>
+                        <br />
+                   </div>
+               </div>
+           </div>
+        </Content>
+    </DialogTemplates>
+    <DialogEvents Closed="@Close"></DialogEvents>
+</SfDialog>
+
 
 
 <div class="main">
@@ -308,17 +685,196 @@
 
 @code {
 
-    public bool IsModalOpened { get; set; }
+    public bool IsSettingsModalOpened { get; set; }
+    public bool IsHelpModalOpened { get; set; }
     bool visible { get; set; } = false;
+
+
+    bool aboutLiClicked = false;
+    bool aboutUsInfo = true;
+    bool whyCreateThis = false;
+    bool helpLiClicked = false;
+    bool helpAddressingModes = false;
+    bool helpRegisterTable = false;
+    bool helpInstrTypeTable = false;
+    bool helpInstructionsTable = false;
+
+    AddressingModes[]? addressMode;
+    RegistersTable[]? registerTable;
+    InstructionTypeLegend[]? instrTypeLegend;
+    InstructionType[]? instrType;
+    Instructions[]? instrs;
+
+
+    void toggleAllMenus()
+    {
+        aboutUsInfo = false;
+        whyCreateThis = false;
+        helpAddressingModes = false;
+        helpRegisterTable = false;
+        helpInstrTypeTable = false;
+        helpInstructionsTable = false;
+    }
+
+
+    // About Section
+
+    void toggleAboutLi()
+    {
+        aboutLiClicked = !aboutLiClicked;
+    }
+
+    string CSSAboutUL() => aboutLiClicked ? "display: block" : "display: none";
+
+
+    void toggleAboutUsInfo()
+    {
+        toggleAllMenus();
+        aboutUsInfo = !aboutUsInfo;
+    }
+
+    string CSSAboutUsDiv() => aboutUsInfo ? "display: block" : "display: none";
+
+
+    void toggleWhyCreateThis()
+    {
+        toggleAllMenus();
+        whyCreateThis = !whyCreateThis;
+    }
+
+    string CSSWhyCreateThisDiv() => whyCreateThis ? "display: block" : "display: none";
+
+
+
+    // Help Section
+
+    void toggleHelpLi()
+    {
+        helpLiClicked = !helpLiClicked;
+    }
+
+    string CSSHelpUL() => helpLiClicked ? "display: block" : "display: none";
+
+
+    void toggleAddressingModes()
+    {
+        toggleAllMenus();
+        helpAddressingModes = !helpAddressingModes;
+    }
+
+    string CSSAddressingModes() => helpAddressingModes ? "display: block" : "display: none";
+
+    void toggleRegisterTable()
+    {
+        toggleAllMenus();
+        helpRegisterTable = !helpRegisterTable;
+    }
+
+    string CSSRegisterTable() => helpRegisterTable ? "display: block" : "display: none";
+
+    void toggleInstrTypes()
+    {
+        toggleAllMenus();
+        helpInstrTypeTable = !helpInstrTypeTable;
+    }
+
+    string CSSInstrTypeTable() => helpInstrTypeTable ? "display: block" : "display: none";
+
+    void toggleInstructionsTable()
+    {
+        toggleAllMenus();
+        helpInstructionsTable = !helpInstructionsTable;
+    }
+
+    string CSSInstructionsTable() => helpInstructionsTable ? "display: block" : "display: none";
+
+
+
+    public struct AddressingModes
+    {
+        public string Name {get; set; }
+        public string Letters { get; set; }
+        public string Binary { get; set; }
+        public string Treatment { get; set; }
+        public string Notes { get; set; }
+    }
+
+    public struct RegistersTable
+    {
+        public string Reg {get; set; }
+        public string UseCase { get; set; }
+    }
+
+    public struct InstructionTypeLegend
+    {
+        public string Legend {get; set; }
+        public string Definition { get; set; }
+    }
+
+    public struct InstructionType
+    {
+        public string Type {get; set; }
+        public string Name { get; set; }
+        public string Encoding { get; set; }
+        public string Purpose { get; set; }
+    }
+
+    public struct Instructions
+    {
+        public string Name {get; set; }
+        public string Mnemonic { get; set; }
+        public string Type { get; set; }
+        public string OpCode { get; set; }
+        public string Example { get; set; }
+        public string Notes { get; set; }
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        string filename = "Config Files/AddressingModes.json";
+        string jsonString = File.ReadAllText(filename);
+        addressMode = JsonSerializer.Deserialize<AddressingModes[]>(jsonString);
+
+        filename = "Config Files/registers.json";
+        jsonString = File.ReadAllText(filename);
+        registerTable = JsonSerializer.Deserialize<RegistersTable[]>(jsonString);
+
+        filename = "Config Files/TypesOfInstructionsLegend.json";
+        jsonString = File.ReadAllText(filename);
+        instrTypeLegend = JsonSerializer.Deserialize<InstructionTypeLegend[]>(jsonString);
+
+        filename = "Config Files/TypesOfInstructionsType.json";
+        jsonString = File.ReadAllText(filename);
+        instrType = JsonSerializer.Deserialize<InstructionType[]>(jsonString);
+
+        filename = "Config Files/instructions.json";
+        jsonString = File.ReadAllText(filename);
+        instrs = JsonSerializer.Deserialize<Instructions[]>(jsonString);
+        return Task.CompletedTask;
+    }
+
+
+
+    void OpenHelpPage()
+    {
+        visible = false;
+        UriHelper.NavigateTo("help");
+    }
+
 
     void toggleVisible ()
     {
         visible = !visible;
     }
 
+    private void Close(Object args)
+    {
+        this.visible = false;
+    }
+
     void OnClose(string value)
     {
-        
+
     }
 
     public async void toggleDarkMode ()

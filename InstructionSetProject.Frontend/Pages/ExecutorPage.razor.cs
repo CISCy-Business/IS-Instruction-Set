@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
 using Syncfusion.Blazor.Diagram;
+using Syncfusion.Blazor.Grids;
 using Syncfusion.Blazor.Popups;
 using DiagramSegments = Syncfusion.Blazor.Diagram.ConnectorSegmentType;
 
@@ -32,7 +33,11 @@ namespace InstructionSetProject.Frontend.Pages
         private int progCharCount = 0;
         bool isGranted = true;
         bool StaticMode = true;
+        int sliderValue = 0;
         List<char> memoryCharList = new List<char>();
+        public List<InstructionCacheL1>? L1CacheSource { get; set; }
+        public List<InstructionCacheL2>? L2CacheSource { get; set; }
+        public string[] GroupedColumns = new string[] { "Index" };
 
         protected override bool ShouldRender()
         {
@@ -106,6 +111,12 @@ namespace InstructionSetProject.Frontend.Pages
         private bool DynamicVisibility { get; set; } = false;
         private bool errorVis { get; set; } = false;
         private bool ShowButton { get; set; } = false;
+        private bool ShowCache { get; set; } = false;
+        private string SelectedCache { get; set; } = "L1";
+        private SfGrid<InstructionCacheL1>? L1CacheGridObject;
+        private SfGrid<InstructionCacheL2>? L2CacheGridObject;
+        private bool L1CacheExpandToggle = false;
+        private bool L2CacheExpandToggle = false;
         private ResizeDirection[] dialogResizeDirections { get; set; } = new ResizeDirection[] { ResizeDirection.All };
 
         public bool IsModalOpened { get; set; }
@@ -295,6 +306,7 @@ namespace InstructionSetProject.Frontend.Pages
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
+            UpdateCounters();
             if (darkModeExecutorPage == true)
             {
                 await JSRuntime.InvokeVoidAsync("toggleDarkModeJS", darkModeExecutorPage);
@@ -309,6 +321,10 @@ namespace InstructionSetProject.Frontend.Pages
             {
                 await JSRuntime.InvokeVoidAsync("autoSelectFirstTab");
             }
+            if (firstRender)
+            {
+                await _editor.SetValue("");
+            }
             debugRender = false;
         }
 
@@ -317,10 +333,13 @@ namespace InstructionSetProject.Frontend.Pages
             await JSRuntime.InvokeVoidAsync("handleKeyPress", SyntaxCode);
         }
 
-        protected override async Task OnInitializedAsync()
+        protected override Task OnInitializedAsync()
         {
+            L1CacheSource = InstructionCacheL1.GetL1CacheData().ToList();
+            L2CacheSource = InstructionCacheL2.GetL2CacheData().ToList();
             StartupMethod();
             Statistics();
+            return Task.CompletedTask;
         }
 
         void StartupMethod()
@@ -439,15 +458,36 @@ namespace InstructionSetProject.Frontend.Pages
 
         string DivCSS(IInstruction instr) => IsSelectedFetch(instr) ? "bg-fetch text-white" : (IsSelectedDecode(instr) ? "bg-decode text-white" : (IsSelectedExecute(instr) ? "bg-execute text-white" : (IsSelectedMemory(instr) ? "bg-memory text-white" : (IsSelectedWrite(instr) ? "bg-write text-white" : (FrontendVariables.darkMode ? "bg-dark-mode" : "bg-white")))));
 
+        async Task ClockPress()
+        {
+            if (sliderValue != 0)
+            {
+                while (sliderValue != 0 && (SPEx != null ? !SPEx.IsExecutionFinished() : false || DPEx != null ? !DPEx.IsExecutionFinished() : false))
+                {
+                    StateHasChanged();
+                    await Task.Delay(sliderValue);
+                    ClockTick();
+                }
+            }
+            else
+            {
+                ClockTick();
+            }
+        }
+
         void ClockTick()
         {
             debugRender = true;
             try
             {
                 if (StaticMode)
+                {
                     SPEx.ClockTick();
+                }
                 else
+                {
                     DPEx.ClockTick();
+                }
                 output = "";
             }
             catch (Exception ex)
@@ -464,6 +504,7 @@ namespace InstructionSetProject.Frontend.Pages
             ClearProgCount();
             ClearProgCharCount();
             clearMemoryCharList();
+
         }
 
         void step()
@@ -499,9 +540,13 @@ namespace InstructionSetProject.Frontend.Pages
             try
             {
                 if (StaticMode)
+                {
                     SPEx.Continue();
+                }
                 else
+                {
                     DPEx.Continue();
+                }
                 output = "";
             }
             catch (Exception ex)
@@ -2491,6 +2536,11 @@ namespace InstructionSetProject.Frontend.Pages
             }
         }
 
+        private void OnClickedCache()
+        {
+            ShowCache = !ShowCache;
+        }
+
         private void errorClose(Object args)
         {
             this.errorVis = false;
@@ -2499,7 +2549,101 @@ namespace InstructionSetProject.Frontend.Pages
 
 
 
+        // Cache Data
 
+        public class InstructionCacheL1
+        {
+            public string? Index { get; set; }
+            public string? Tag { get; set; }
+            public string? DataAtAddress { get; set; }
+
+            public static List<InstructionCacheL1> GetL1CacheData()
+            {
+                List<InstructionCacheL1> L1CacheData = new List<InstructionCacheL1>();
+                L1CacheData.Add(new InstructionCacheL1 { Index = "0x00", Tag = "0x00", DataAtAddress = "ADD r1, r2, r3" });
+                L1CacheData.Add(new InstructionCacheL1 { Index = "0x00", Tag = "0x01", DataAtAddress = "SUB r1, r2, r3" });
+                L1CacheData.Add(new InstructionCacheL1 { Index = "0x00", Tag = "0x02", DataAtAddress = "ADD r1, r2, r3" });
+                L1CacheData.Add(new InstructionCacheL1 { Index = "0x00", Tag = "0x03", DataAtAddress = "SUB r1, r2, r3" });
+                L1CacheData.Add(new InstructionCacheL1 { Index = "0x00", Tag = "0x04", DataAtAddress = "ADD r1, r2, r3" });
+                L1CacheData.Add(new InstructionCacheL1 { Index = "0x00", Tag = "0x05", DataAtAddress = "ADD r1, r2, r3" });
+                L1CacheData.Add(new InstructionCacheL1 { Index = "0x01", Tag = "0x00", DataAtAddress = "SUB r1, r2, r3" });
+                L1CacheData.Add(new InstructionCacheL1 { Index = "0x01", Tag = "0x01", DataAtAddress = "SUB r1, r2, r3" });
+                L1CacheData.Add(new InstructionCacheL1 { Index = "0x01", Tag = "0x02", DataAtAddress = "SUB r1, r2, r3" });
+                L1CacheData.Add(new InstructionCacheL1 { Index = "0x01", Tag = "0x03", DataAtAddress = "ADD r1, r2, r3" });
+                L1CacheData.Add(new InstructionCacheL1 { Index = "0x01", Tag = "0x04", DataAtAddress = "ADD r1, r2, r3" });
+                L1CacheData.Add(new InstructionCacheL1 { Index = "0x01", Tag = "0x05", DataAtAddress = "ADD r1, r2, r3" });
+
+
+                return L1CacheData;
+            }
+        }
+
+        public class InstructionCacheL2
+        {
+            public string? Index { get; set; }
+            public string? Tag { get; set; }
+            public string? DataAtAddress { get; set; }
+
+            public static List<InstructionCacheL2> GetL2CacheData()
+            {
+                List<InstructionCacheL2> L2CacheData = new List<InstructionCacheL2>();
+                L2CacheData.Add(new InstructionCacheL2 { Index = "0x00", Tag = "0x00", DataAtAddress = "ADD r1, r2, r3" });
+                L2CacheData.Add(new InstructionCacheL2 { Index = "0x00", Tag = "0x01", DataAtAddress = "SUB r1, r2, r3" });
+                L2CacheData.Add(new InstructionCacheL2 { Index = "0x00", Tag = "0x02", DataAtAddress = "ADD r1, r2, r3" });
+                L2CacheData.Add(new InstructionCacheL2 { Index = "0x00", Tag = "0x03", DataAtAddress = "SUB r1, r2, r3" });
+                L2CacheData.Add(new InstructionCacheL2 { Index = "0x00", Tag = "0x04", DataAtAddress = "ADD r1, r2, r3" });
+                L2CacheData.Add(new InstructionCacheL2 { Index = "0x00", Tag = "0x05", DataAtAddress = "ADD r1, r2, r3" });
+                L2CacheData.Add(new InstructionCacheL2 { Index = "0x01", Tag = "0x00", DataAtAddress = "SUB r1, r2, r3" });
+                L2CacheData.Add(new InstructionCacheL2 { Index = "0x01", Tag = "0x01", DataAtAddress = "SUB r1, r2, r3" });
+                L2CacheData.Add(new InstructionCacheL2 { Index = "0x01", Tag = "0x02", DataAtAddress = "SUB r1, r2, r3" });
+                L2CacheData.Add(new InstructionCacheL2 { Index = "0x01", Tag = "0x03", DataAtAddress = "ADD r1, r2, r3" });
+                L2CacheData.Add(new InstructionCacheL2 { Index = "0x01", Tag = "0x04", DataAtAddress = "ADD r1, r2, r3" });
+                L2CacheData.Add(new InstructionCacheL2 { Index = "0x01", Tag = "0x05", DataAtAddress = "ADD r1, r2, r3" });
+                L2CacheData.Add(new InstructionCacheL2 { Index = "0x02", Tag = "0x00", DataAtAddress = "ADD r1, r2, r3" });
+                L2CacheData.Add(new InstructionCacheL2 { Index = "0x02", Tag = "0x01", DataAtAddress = "ADD r1, r2, r3" });
+                L2CacheData.Add(new InstructionCacheL2 { Index = "0x02", Tag = "0x02", DataAtAddress = "ADD r1, r2, r3" });
+                L2CacheData.Add(new InstructionCacheL2 { Index = "0x02", Tag = "0x03", DataAtAddress = "ADD r1, r2, r3" });
+                L2CacheData.Add(new InstructionCacheL2 { Index = "0x02", Tag = "0x04", DataAtAddress = "ADD r1, r2, r3" });
+                L2CacheData.Add(new InstructionCacheL2 { Index = "0x02", Tag = "0x05", DataAtAddress = "ADD r1, r2, r3" });
+                L2CacheData.Add(new InstructionCacheL2 { Index = "0x03", Tag = "0x00", DataAtAddress = "ADD r1, r2, r3" });
+                L2CacheData.Add(new InstructionCacheL2 { Index = "0x03", Tag = "0x01", DataAtAddress = "ADD r1, r2, r3" });
+                L2CacheData.Add(new InstructionCacheL2 { Index = "0x03", Tag = "0x02", DataAtAddress = "ADD r1, r2, r3" });
+                L2CacheData.Add(new InstructionCacheL2 { Index = "0x03", Tag = "0x03", DataAtAddress = "ADD r1, r2, r3" });
+                L2CacheData.Add(new InstructionCacheL2 { Index = "0x03", Tag = "0x04", DataAtAddress = "ADD r1, r2, r3" });
+                L2CacheData.Add(new InstructionCacheL2 { Index = "0x03", Tag = "0x05", DataAtAddress = "ADD r1, r2, r3" });
+
+                return L2CacheData;
+            }
+        }
+
+        public void expandL1Cache()
+        {
+            if (L1CacheExpandToggle == false)
+            {
+                _ = L1CacheGridObject.CollapseAllGroupAsync();
+                L1CacheExpandToggle = true;
+            }
+            else
+            {
+                _ = L1CacheGridObject.ExpandAllGroupAsync();
+                L1CacheExpandToggle= false;
+            }
+            
+        }
+
+        public void expandL2Cache()
+        {
+            if (L2CacheExpandToggle == false)
+            {
+                _ = L2CacheGridObject.CollapseAllGroupAsync();
+                L2CacheExpandToggle = true;
+            }
+            else
+            {
+                _ = L2CacheGridObject.ExpandAllGroupAsync();
+                L2CacheExpandToggle = false;
+            }
+        }
 
 
 
