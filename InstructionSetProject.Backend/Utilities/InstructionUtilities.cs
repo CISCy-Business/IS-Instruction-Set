@@ -6,46 +6,32 @@ namespace InstructionSetProject.Backend.Utilities
     {
         public static InstructionType GetInstructionType(List<byte> machineCode)
         {
-            var firstByte = machineCode[0];
+            int firstThreeBits = machineCode[0] >> 5;
 
-            if (firstByte >> 5 == 0b000)
-                return InstructionType.R2;
-            if (firstByte >> 5 == 0b001)
-                return InstructionType.F2;
-            if (firstByte >> 5 == 0b010)
-                return InstructionType.R3;
-            if (firstByte >> 5 == 0b011)
-                return InstructionType.F3;
-            if (firstByte >> 5 == 0b100 || firstByte >> 5 == 0b101)
-                return InstructionType.Rs;
-            if (firstByte >> 5 == 0b110)
-                return InstructionType.Rm;
-            if (firstByte >> 5 == 0b111)
-                return InstructionType.Fm;
+            if (firstThreeBits == 5) // Both 4 and 5 are Rs types
+                firstThreeBits = 4;
 
-            throw new Exception("Instruction does not match any instruction type pattern.");
+            return (InstructionType)firstThreeBits;
         }
 
         public static List<byte> ConvertToByteArray(ushort value)
         {
-            var byteArray = new List<byte>();
-
-            byteArray.Add((byte)(value >> 8));
-            byteArray.Add((byte)(value & 0b1111_1111));
-
-            return byteArray;
+            return new List<byte>()
+            {
+                (byte)((value >> 8) & 0xFF), // First byte
+                (byte)((value >> 0) & 0xFF), // Second byte
+            };
         }
 
         public static List<byte> ConvertToByteArray(uint value)
         {
-            var byteArray = new List<byte>();
-
-            byteArray.Add((byte)(value >> 24));
-            byteArray.Add((byte)((value >> 16) & 0b1111_1111));
-            byteArray.Add((byte)((value >> 8) & 0b1111_1111));
-            byteArray.Add((byte)(value & 0b1111_1111));
-
-            return byteArray;
+            return new List<byte>()
+            {
+                (byte)((value >> 24) & 0xFF),
+                (byte)((value >> 16) & 0xFF),
+                (byte)((value >> 08) & 0xFF),
+                (byte)((value >> 00) & 0xFF),
+            };
         }
 
         public static ushort ConvertToUshort(List<byte> bytes)
@@ -53,10 +39,12 @@ namespace InstructionSetProject.Backend.Utilities
             if (bytes.Count != 2)
                 throw new Exception("Incorrect number of bytes for this instruction type");
 
-            ushort fullInstr = (ushort)(bytes[0] << 8);
-            fullInstr += bytes[1];
+            int fullInstr = 0;
+            
+            fullInstr += bytes[0] << 8;
+            fullInstr += bytes[1] << 0;
 
-            return fullInstr;
+            return (ushort)(fullInstr & 0xFFFF);
         }
 
         public static uint ConvertToUint(List<byte> bytes)
@@ -64,12 +52,14 @@ namespace InstructionSetProject.Backend.Utilities
             if (bytes.Count != 4)
                 throw new Exception("Incorrect number of bytes for this instruction type");
 
-            uint fullInstr = (uint)(bytes[0] << 24);
-            fullInstr += (uint)(bytes[1] << 16);
-            fullInstr += (uint)(bytes[2] << 8);
-            fullInstr += bytes[3];
+            int fullInstr = 0;
 
-            return fullInstr;
+            fullInstr += bytes[0] << 24;
+            fullInstr += bytes[1] << 16;
+            fullInstr += bytes[2] << 08;
+            fullInstr += bytes[3] << 00;
+
+            return (uint)fullInstr;
         }
 
         public static string GetMnemonic(string instruction)
@@ -80,49 +70,40 @@ namespace InstructionSetProject.Backend.Utilities
 
         public static bool IsFloatInstruction(string instruction)
         {
-            var tokens = instruction.Split(' ');
-            tokens = tokens.Select(token => token.TrimEnd(',')).ToArray();
+            var tokens = instruction.Split(" ,".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
             if (tokens.Length <= 1) return false;
 
-            if (tokens[1].StartsWith('f') || tokens[1].StartsWith('F')) return true;
+            // Check if first argument begins with an 'f'
+            if (Char.ToLower(tokens[1][0]) == 'f')
+                return true;
 
             return false;
         }
 
         public static ushort GetOpCode(ushort instruction)
         {
-            switch (instruction >> 13)
+            int firstThreeBits = instruction >> 13;
+
+            ushort bitwiseMask = (firstThreeBits) switch
             {
-                case 0b000:
-                    return (ushort)(R2Instruction.BitwiseMask & instruction);
-                case 0b001:
-                    return (ushort)(F2Instruction.BitwiseMask & instruction);
-                case 0b010:
-                    return (ushort)(R3Instruction.BitwiseMask & instruction);
-                case 0b011:
-                    return (ushort)(F3Instruction.BitwiseMask & instruction);
-                case 0b100:
-                case 0b101:
-                    return (ushort)(RsInstruction.BitwiseMask & instruction);
-                case 0b110:
-                    return (ushort)(RmInstruction.BitwiseMask & instruction);
-                case 0b111:
-                    return (ushort)(FmInstruction.BitwiseMask & instruction);
-                default:
-                    throw new Exception("Instruction does not match any instruction type pattern.");
-            }
+                0b000 => R2Instruction.BitwiseMask,
+                0b001 => F2Instruction.BitwiseMask,
+                0b010 => R3Instruction.BitwiseMask,
+                0b011 => F3Instruction.BitwiseMask,
+                0b100 => RsInstruction.BitwiseMask,
+                0b101 => RsInstruction.BitwiseMask,
+                0b110 => RmInstruction.BitwiseMask,
+                0b111 => FmInstruction.BitwiseMask,
+                _ => throw new Exception("Instruction does not match any instruction type pattern.")
+            };
+
+            return (ushort)(instruction & bitwiseMask);
         }
     }
 
     public enum InstructionType
     {
-        R2,
-        F2,
-        R3,
-        F3,
-        Rs,
-        Rm,
-        Fm
+        R2, F2, R3, F3, Rs, Rm, Fm
     }
 }
