@@ -322,6 +322,18 @@
         padding: 0px;
     }
 
+    #samplesUL {
+        list-style-type: none;
+        margin-left: 15px;
+        padding: 0px;
+    }
+
+    #otherSamplesUL {
+        list-style-type: none;
+        margin-left: 15px;
+        padding: 0px;
+    }
+
     li:hover {
          @(FrontendVariables.darkMode ? "color: #828285" : "color: #828285");
     }
@@ -362,7 +374,7 @@
             <a class="nav-item nav-link" href="/disassembler"><h3>Disassembler</h3></a>
             <a class="nav-item nav-link" href="/assembler"><h3>Assembler</h3></a>
             <a class="nav-item nav-link" href="/executor"><h3>Executor</h3></a>
-            <div id="topnav-right-help"
+            <div id="topnav-right-help">
                 <a class="nav-item nav-link" @onclick="e => visible = true" ><h3>Help</h3></a>
             </div>
             <div id="topnav-right">
@@ -406,27 +418,15 @@
                        <li @onclick="toggleInstrTypes">Instr. Types</li>
                        <li @onclick="toggleInstructionsTable">Instructions</li>
                    </ul>
-                   <li>Samples</li>
-                   <ul>
-                       <li>Option 1</li>
-                       <li>Option 2</li>
-                       <li>Option 3</li>
-                       <li>Option 4</li>
-                       <li>Option 5</li>
-                   </ul>
-                   <li>Instructions</li>
-                   <ul>
-                       <li>R3 Type</li>
-                       <ul>
-                           <li>ADD</li>
-                           <li>SUB</li>
-                           <li>MUL</li>
-                           <li>DIV</li>
-                       </ul>
-                       <li>R2 Type</li>
-                       <ul>
-                           <li>ADI</li>
-                           <li>SBI</li>
+                   <li id="samplesLI" @onclick="toggleSamplesLi">Samples <span class="float-end" style="transform: translateX(-10px)"><strong>@(samplesLiClicked ? '-' : '+')</strong></span></li>
+                   <ul id="samplesUL"style="@CSSSamplesUL()">
+                       <li @onclick="toggleAddSubSample">Add/Sub</li>
+                       <li @onclick="toggleLoadStoreSample">Load/Store</li>
+                       <li @onclick="toggleJumpSample">Jump</li>
+                       <li @onclick="togglePushPopSample">Push/Pop</li>
+                       <li id="otherSamplesLI" @onclick="toggleOtherSamplesLi">Other <span class="float-end" style="transform: translateX(-10px)"><strong>@(otherSamplesLiClicked ? '-' : '+')</strong></span></li>
+                       <ul id="otherSamplesUL"style="@CSSOtherSamplesUL()">
+                           <li @onclick="toggleSample1">Sample 1</li>
                        </ul>
                    </ul>
                </ul>
@@ -613,60 +613,245 @@
                        <hr />
                        <span class="float-end"><button @onclick="OpenHelpPage" class="@(FrontendVariables.darkMode ? "btn-dark" : "btn-primary")">Open In Page</button></span>
                        <table class="helpTable" style="width:100%">
-                            <tr>
-                                <th colspan=6>Process Control Instructions</th>
-                            </tr>
-                          <tr>
-                            <th>Name</th>
-                            <th>Mnemonic</th>
-                            <th>Type</th>
-                            <th>Op Code</th>
-                            <th>Example</th>
-                            <th>Notes</th>
-                          </tr>
-                          @for (int i = 0; i < instrs?.Length; i++)
-                            {
-                                if(instrs[i].Name == null)
-                                {
-                                    <tr style="height: 25px"></tr>
-                                }
-                                else if(instrs[i].Name == "Notes" || instrs[i].Name == "Decision Making" || instrs[i].Name == "Large Immediate Mathematics" || instrs[i].Name == "Small Immediate Mathematics" || instrs[i].Name == "Pure Register Instructions" || instrs[i].Name == "Register Management Instructions" || instrs[i].Name == "Memory Management Instructions" || instrs[i].Name == "Process Control Instructions")
-                                {
-                                    <tr>
-                                        <th colspan="6">@instrs[i].Name</th>
-                                    </tr>
-                                }
-                                else if(instrs[i].Mnemonic == null)
-                                {
-                                    <tr>
-                                        <td colspan="6">@instrs[i].Name</td>
-                                    </tr>
-                                }
-                                else if (instrs[i].Name == "Name")
-                                {
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Mnemonic</th>
-                                        <th>Type</th>
-                                        <th>Op Code</th>
-                                        <th>Example</th>
-                                        <th>Notes</th>
-                                      </tr>
-                                }
-                                else
-                                {
-                                    <tr>
-                                        <td>@instrs[i].Name</td>
-                                        <td>@instrs[i].Mnemonic</td>
-                                        <td>@instrs[i].Type</td>
-                                        <td>@instrs[i].OpCode</td>
-                                        <td>@instrs[i].Example</td>
-                                        <td>@instrs[i].Notes</td>
-                                    </tr>
-                                }
-                            }
-                        </table>
-                        <br />
+                           <tr>
+                               <th colspan=6>Process Control Instructions</th>
+                           </tr>
+                           <tr>
+                               <th>Name</th>
+                               <th>Mnemonic</th>
+                               <th>Type</th>
+                               <th>Op Code</th>
+                               <th>Example</th>
+                               <th>Notes</th>
+                           </tr>
+                           @for (int i = 0; i < instrs?.Length; i++)
+                           {
+                               if(instrs[i].Name == null)
+                               {
+                                   <tr style="height: 25px"></tr>
+                               }
+                               else if(instrs[i].Name == "Notes" || instrs[i].Name == "Decision Making" || instrs[i].Name == "Large Immediate Mathematics" || instrs[i].Name == "Small Immediate Mathematics" || instrs[i].Name == "Pure Register Instructions" || instrs[i].Name == "Register Management Instructions" || instrs[i].Name == "Memory Management Instructions" || instrs[i].Name == "Process Control Instructions")
+                               {
+                                   <tr>
+                                       <th colspan="6">@instrs[i].Name</th>
+                                   </tr>
+                               }
+                               else if(instrs[i].Mnemonic == null)
+                               {
+                                   <tr>
+                                       <td colspan="6">@instrs[i].Name</td>
+                                   </tr>
+                               }
+                               else if (instrs[i].Name == "Name")
+                               {
+                                   <tr>
+                                       <th>Name</th>
+                                       <th>Mnemonic</th>
+                                       <th>Type</th>
+                                       <th>Op Code</th>
+                                       <th>Example</th>
+                                       <th>Notes</th>
+                                   </tr>
+                               }
+                               else
+                               {
+                                   <tr>
+                                       <td>@instrs[i].Name</td>
+                                       <td>@instrs[i].Mnemonic</td>
+                                       <td>@instrs[i].Type</td>
+                                       <td>@instrs[i].OpCode</td>
+                                       <td>@instrs[i].Example</td>
+                                       <td>@instrs[i].Notes</td>
+                                   </tr>
+                               }
+                           }
+                       </table>
+                       <br />
+                   </div>
+               
+                   <div style="@CSSAddSubSample(); text-align: center">
+                       <h1 style="@(FrontendVariables.darkMode ? "color: #DEB992" : "color: black")">Add and Sub</h1>
+                       <hr />
+                       <span class="float-end"><button @onclick="OpenSamplesPage" class="@(FrontendVariables.darkMode ? "btn-dark" : "btn-primary")">Open In Page</button></span><br />
+                       <div class="row">
+                           <div class="col-sm-1"></div>
+                           <div class="col-sm-4">
+                               <label class="sampleLabel" style="font-size: 16px; margin-left: 35px">Assembly Code</label><br />
+                               <textarea id="idLargeTestAssem1" class="sampleTextarea" style="height: 200px; @(FrontendVariables.darkMode ? "background-color: black; color: white" : "")" readonly>@samples[0].AssemblyText</textarea><br />
+                               <div class="sample_btns1">
+                                   <button class="btn btn-lg sampleBtn float-start @(FrontendVariables.darkMode ? "btn-dark" : "btn-primary")" style="width: 205px; font-size: 15px" @onclick="() => NavigateAssemblerSample(samples[0].AssemblyText)">Open Source</button>
+                                   <button @onclick="() => NavigateExecutorAssemblySample(samples[0].AssemblyText)" style="width: 205px; font-size: 15px; transform: translateX(50px)" type="button" class="btn btn-lg float-end sampleBtn @(FrontendVariables.darkMode ? "btn-dark" : "btn-primary")">Open Executor</button>
+                               </div>
+                           </div>
+                           <div class="col-sm-3"></div>
+                           <div class="col-sm-4">
+                               <label class="sampleLabel" style="font-size: 16px; margin-left: 35px">Machine Code</label><br />
+                               <textarea id="idLargeTestMach1" class="sampleTextarea" style="height: 200px; @(FrontendVariables.darkMode ? "background-color: black; color: white" : "")" readonly>@samples[0].MachineText</textarea>
+                               <div class="sample_btns2">
+                                   <button class="btn btn-lg sampleBtn float-start @(FrontendVariables.darkMode ? "btn-dark" : "btn-primary")" style="width: 205px; font-size: 15px" @onclick="() => NavigateDisassemblerSample(samples[0].MachineText)">Open Machine</button>
+                                   <button @onclick="() => NavigateExecutorMachineSample(samples[0].MachineText)" style="width: 205px; font-size: 15px; transform: translateX(50px)" type="button" class="btn btn-lg float-end sampleBtn @(FrontendVariables.darkMode ? "btn-dark" : "btn-primary")">Open Executor</button>
+                               </div>
+                           </div>
+                           <div class="col-sm-1"></div>
+                       </div>
+                       <div>
+                           <div class="row">
+                               <div class="col-sm-1"></div>
+                               <div class="col-sm-10">
+                                   <label class="sampleLabel" style="font-size: 18px"><strong>What does this code do?</strong></label>
+                                   <p class="sampleP" style="font-size: 16px">@samples[0].Description</p>
+                               </div>
+                               <div class="col-sm-1"></div>
+                           </div>
+                       </div>
+                   </div>
+                   
+                   <div style="@CSSLoadStoreSample(); text-align: center">
+                       <h1 style="@(FrontendVariables.darkMode ? "color: #DEB992" : "color: black")">Load and Store</h1>
+                       <hr />
+                       <span class="float-end"><button @onclick="OpenSamplesPage" class="@(FrontendVariables.darkMode ? "btn-dark" : "btn-primary")">Open In Page</button></span>
+                       <div class="row">
+                           <div class="col-sm-1"></div>
+                           <div class="col-sm-4">
+                               <label class="sampleLabel" style="font-size: 16px; margin-left: 35px">Assembly Code</label><br />
+                               <textarea id="idLargeTestAssem1" class="sampleTextarea" style="height: 200px; @(FrontendVariables.darkMode ? "background-color: black; color: white" : "")" readonly>@samples[1].AssemblyText</textarea><br />
+                               <div class="sample_btns1">
+                                   <button class="btn btn-lg sampleBtn float-start @(FrontendVariables.darkMode ? "btn-dark" : "btn-primary")" style="width: 205px; font-size: 15px" @onclick="() => NavigateAssemblerSample(samples[1].AssemblyText)">Open Source</button>
+                                   <button @onclick="() => NavigateExecutorAssemblySample(samples[1].AssemblyText)" style="width: 205px; font-size: 15px; transform: translateX(50px)" type="button" class="btn btn-lg float-end sampleBtn @(FrontendVariables.darkMode ? "btn-dark" : "btn-primary")">Open Executor</button>
+                               </div>
+                           </div>
+                           <div class="col-sm-3"></div>
+                           <div class="col-sm-4">
+                               <label class="sampleLabel" style="font-size: 16px; margin-left: 35px">Machine Code</label><br />
+                               <textarea id="idLargeTestMach1" class="sampleTextarea" style="height: 200px; @(FrontendVariables.darkMode ? "background-color: black; color: white" : "")" readonly>@samples[1].MachineText</textarea>
+                               <div class="sample_btns2">
+                                   <button class="btn btn-lg sampleBtn float-start @(FrontendVariables.darkMode ? "btn-dark" : "btn-primary")" style="width: 205px; font-size: 15px" @onclick="() => NavigateDisassemblerSample(samples[1].MachineText)">Open Machine</button>
+                                   <button @onclick="() => NavigateExecutorMachineSample(samples[1].MachineText)" style="width: 205px; font-size: 15px; transform: translateX(50px)" type="button" class="btn btn-lg float-end sampleBtn @(FrontendVariables.darkMode ? "btn-dark" : "btn-primary")">Open Executor</button>
+                               </div>
+                           </div>
+                           <div class="col-sm-1"></div>
+                       </div>
+                       <div>
+                           <div class="row">
+                               <div class="col-sm-1"></div>
+                               <div class="col-sm-10">
+                                   <label class="sampleLabel" style="font-size: 18px"><strong>What does this code do?</strong></label>
+                                   <p class="sampleP" style="font-size: 16px">@samples[1].Description</p>
+                               </div>
+                               <div class="col-sm-1"></div>
+                           </div>
+                       </div>
+                   </div>
+                   
+                   <div style="@CSSJumpSample(); text-align: center">
+                       <h1 style="@(FrontendVariables.darkMode ? "color: #DEB992" : "color: black")">Jump</h1>
+                       <hr />
+                       <span class="float-end"><button @onclick="OpenSamplesPage" class="@(FrontendVariables.darkMode ? "btn-dark" : "btn-primary")">Open In Page</button></span>
+                       <div class="row">
+                           <div class="col-sm-1"></div>
+                           <div class="col-sm-4">
+                               <label class="sampleLabel" style="font-size: 16px; margin-left: 35px">Assembly Code</label><br />
+                               <textarea id="idLargeTestAssem1" class="sampleTextarea" style="height: 200px; @(FrontendVariables.darkMode ? "background-color: black; color: white" : "")" readonly>@samples[2].AssemblyText</textarea><br />
+                               <div class="sample_btns1">
+                                   <button class="btn btn-lg sampleBtn float-start @(FrontendVariables.darkMode ? "btn-dark" : "btn-primary")" style="width: 205px; font-size: 15px" @onclick="() => NavigateAssemblerSample(samples[2].AssemblyText)">Open Source</button>
+                                   <button @onclick="() => NavigateExecutorAssemblySample(samples[2].AssemblyText)" style="width: 205px; font-size: 15px; transform: translateX(50px)" type="button" class="btn btn-lg float-end sampleBtn @(FrontendVariables.darkMode ? "btn-dark" : "btn-primary")">Open Executor</button>
+                               </div>
+                           </div>
+                           <div class="col-sm-3"></div>
+                           <div class="col-sm-4">
+                               <label class="sampleLabel" style="font-size: 16px; margin-left: 35px">Machine Code</label><br />
+                               <textarea id="idLargeTestMach1" class="sampleTextarea" style="height: 200px; @(FrontendVariables.darkMode ? "background-color: black; color: white" : "")" readonly>@samples[2].MachineText</textarea>
+                               <div class="sample_btns2">
+                                   <button class="btn btn-lg sampleBtn float-start @(FrontendVariables.darkMode ? "btn-dark" : "btn-primary")" style="width: 205px; font-size: 15px" @onclick="() => NavigateDisassemblerSample(samples[2].MachineText)">Open Machine</button>
+                                   <button @onclick="() => NavigateExecutorMachineSample(samples[2].MachineText)" style="width: 205px; font-size: 15px; transform: translateX(50px)" type="button" class="btn btn-lg float-end sampleBtn @(FrontendVariables.darkMode ? "btn-dark" : "btn-primary")">Open Executor</button>
+                               </div>
+                           </div>
+                           <div class="col-sm-1"></div>
+                       </div>
+                       <div>
+                           <div class="row">
+                               <div class="col-sm-1"></div>
+                               <div class="col-sm-10">
+                                   <label class="sampleLabel" style="font-size: 18px"><strong>What does this code do?</strong></label>
+                                   <p class="sampleP" style="font-size: 16px">@samples[2].Description</p>
+                               </div>
+                               <div class="col-sm-1"></div>
+                           </div>
+                       </div>
+                   </div>
+                   
+                   <div style="@CSSPushPopSample(); text-align: center">
+                       <h1 style="@(FrontendVariables.darkMode ? "color: #DEB992" : "color: black")">Push and Pop</h1>
+                       <hr />
+                       <span class="float-end"><button @onclick="OpenSamplesPage" class="@(FrontendVariables.darkMode ? "btn-dark" : "btn-primary")">Open In Page</button></span>
+                       <div class="row">
+                           <div class="col-sm-1"></div>
+                           <div class="col-sm-4">
+                               <label class="sampleLabel" style="font-size: 16px; margin-left: 35px">Assembly Code</label><br />
+                               <textarea id="idLargeTestAssem1" class="sampleTextarea" style="height: 200px; @(FrontendVariables.darkMode ? "background-color: black; color: white" : "")" readonly>@samples[3].AssemblyText</textarea><br />
+                               <div class="sample_btns1">
+                                   <button class="btn btn-lg sampleBtn float-start @(FrontendVariables.darkMode ? "btn-dark" : "btn-primary")" style="width: 205px; font-size: 15px" @onclick="() => NavigateAssemblerSample(samples[3].AssemblyText)">Open Source</button>
+                                   <button @onclick="() => NavigateExecutorAssemblySample(samples[3].AssemblyText)" style="width: 205px; font-size: 15px; transform: translateX(50px)" type="button" class="btn btn-lg float-end sampleBtn @(FrontendVariables.darkMode ? "btn-dark" : "btn-primary")">Open Executor</button>
+                               </div>
+                           </div>
+                           <div class="col-sm-3"></div>
+                           <div class="col-sm-4">
+                               <label class="sampleLabel" style="font-size: 16px; margin-left: 35px">Machine Code</label><br />
+                               <textarea id="idLargeTestMach1" class="sampleTextarea" style="height: 200px; @(FrontendVariables.darkMode ? "background-color: black; color: white" : "")" readonly>@samples[3].MachineText</textarea>
+                               <div class="sample_btns2">
+                                   <button class="btn btn-lg sampleBtn float-start @(FrontendVariables.darkMode ? "btn-dark" : "btn-primary")" style="width: 205px; font-size: 15px" @onclick="() => NavigateDisassemblerSample(samples[3].MachineText)">Open Machine</button>
+                                   <button @onclick="() => NavigateExecutorMachineSample(samples[3].MachineText)" style="width: 205px; font-size: 15px; transform: translateX(50px)" type="button" class="btn btn-lg float-end sampleBtn @(FrontendVariables.darkMode ? "btn-dark" : "btn-primary")">Open Executor</button>
+                               </div>
+                           </div>
+                           <div class="col-sm-1"></div>
+                       </div>
+                       <div>
+                           <div class="row">
+                               <div class="col-sm-1"></div>
+                               <div class="col-sm-10">
+                                   <label class="sampleLabel" style="font-size: 18px"><strong>What does this code do?</strong></label>
+                                   <p class="sampleP" style="font-size: 16px">@samples[3].Description</p>
+                               </div>
+                               <div class="col-sm-1"></div>
+                           </div>
+                       </div>
+                   </div>
+                   
+                   <div style="@CSSSample1(); text-align: center">
+                       <h1 style="@(FrontendVariables.darkMode ? "color: #DEB992" : "color: black")">Sample 1</h1>
+                       <hr />
+                       <span class="float-end"><button @onclick="OpenSamplesPage" class="@(FrontendVariables.darkMode ? "btn-dark" : "btn-primary")">Open In Page</button></span>
+                       <div class="row">
+                           <div class="col-sm-1"></div>
+                           <div class="col-sm-4">
+                               <label class="sampleLabel" style="font-size: 16px; margin-left: 35px">Assembly Code</label><br />
+                               <textarea id="idLargeTestAssem1" class="sampleTextarea" style="height: 200px; @(FrontendVariables.darkMode ? "background-color: black; color: white" : "")" readonly>@samples[4].AssemblyText</textarea><br />
+                               <div class="sample_btns1">
+                                   <button class="btn btn-lg sampleBtn float-start @(FrontendVariables.darkMode ? "btn-dark" : "btn-primary")" style="width: 205px; font-size: 15px" @onclick="() => NavigateAssemblerSample(samples[4].AssemblyText)">Open Source</button>
+                                   <button @onclick="() => NavigateExecutorAssemblySample(samples[4].AssemblyText)" style="width: 205px; font-size: 15px; transform: translateX(50px)" type="button" class="btn btn-lg float-end sampleBtn @(FrontendVariables.darkMode ? "btn-dark" : "btn-primary")">Open Executor</button>
+                               </div>
+                           </div>
+                           <div class="col-sm-3"></div>
+                           <div class="col-sm-4">
+                               <label class="sampleLabel" style="font-size: 16px; margin-left: 35px">Machine Code</label><br />
+                               <textarea id="idLargeTestMach1" class="sampleTextarea" style="height: 200px; @(FrontendVariables.darkMode ? "background-color: black; color: white" : "")" readonly>@samples[4].MachineText</textarea>
+                               <div class="sample_btns2">
+                                   <button class="btn btn-lg sampleBtn float-start @(FrontendVariables.darkMode ? "btn-dark" : "btn-primary")" style="width: 205px; font-size: 15px" @onclick="() => NavigateDisassemblerSample(samples[4].MachineText)">Open Machine</button>
+                                   <button @onclick="() => NavigateExecutorMachineSample(samples[4].MachineText)" style="width: 205px; font-size: 15px; transform: translateX(50px)" type="button" class="btn btn-lg float-end sampleBtn @(FrontendVariables.darkMode ? "btn-dark" : "btn-primary")">Open Executor</button>
+                               </div>
+                           </div>
+                           <div class="col-sm-1"></div>
+                       </div>
+                       <div>
+                           <div class="row">
+                               <div class="col-sm-1"></div>
+                               <div class="col-sm-10">
+                                   <label class="sampleLabel" style="font-size: 18px"><strong>What does this code do?</strong></label>
+                                   <p class="sampleP" style="font-size: 16px">@samples[4].Description</p>
+                               </div>
+                               <div class="col-sm-1"></div>
+                           </div>
+                       </div>
                    </div>
                </div>
            </div>
@@ -691,19 +876,27 @@
 
 
     bool aboutLiClicked = false;
-    bool aboutUsInfo = true;
+    bool aboutUsInfo = false;
     bool whyCreateThis = false;
     bool helpLiClicked = false;
     bool helpAddressingModes = false;
     bool helpRegisterTable = false;
     bool helpInstrTypeTable = false;
-    bool helpInstructionsTable = false;
+    bool helpInstructionsTable = true;
+    bool samplesLiClicked = false;
+    bool otherSamplesLiClicked = false;
+    bool addSubSample = false;
+    bool loadStoreSample = false;
+    bool jumpSample = false;
+    bool pushPopSample = false;
+    bool sample1 = false;
 
     AddressingModes[]? addressMode;
     RegistersTable[]? registerTable;
     InstructionTypeLegend[]? instrTypeLegend;
     InstructionType[]? instrType;
     Instructions[]? instrs;
+    Samples[]? samples;
 
 
     void toggleAllMenus()
@@ -714,6 +907,11 @@
         helpRegisterTable = false;
         helpInstrTypeTable = false;
         helpInstructionsTable = false;
+        addSubSample = false;
+        loadStoreSample = false;
+        jumpSample = false;
+        pushPopSample = false;
+        sample1 = false;
     }
 
 
@@ -789,6 +987,61 @@
     string CSSInstructionsTable() => helpInstructionsTable ? "display: block" : "display: none";
 
 
+    // Samples Section
+
+    void toggleSamplesLi()
+    {
+        samplesLiClicked = !samplesLiClicked;
+    }
+
+    string CSSSamplesUL() => samplesLiClicked ? "display: block" : "display: none";
+
+    void toggleAddSubSample()
+    {
+        toggleAllMenus();
+        addSubSample = !addSubSample;
+    }
+
+    string CSSAddSubSample() => addSubSample ? "display: block" : "display: none";
+
+    void toggleLoadStoreSample()
+    {
+        toggleAllMenus();
+        loadStoreSample = !loadStoreSample;
+    }
+
+    string CSSLoadStoreSample() => loadStoreSample ? "display: block" : "display: none";
+
+    void toggleJumpSample()
+    {
+        toggleAllMenus();
+        jumpSample = !jumpSample;
+    }
+
+    string CSSJumpSample() => jumpSample ? "display: block" : "display: none";
+
+    void togglePushPopSample()
+    {
+        toggleAllMenus();
+        pushPopSample = !pushPopSample;
+    }
+
+    string CSSPushPopSample() => pushPopSample ? "display: block" : "display: none";
+
+    void toggleOtherSamplesLi()
+    {
+        otherSamplesLiClicked = !otherSamplesLiClicked;
+    }
+
+    string CSSOtherSamplesUL() => otherSamplesLiClicked ? "display: block" : "display: none";
+
+    void toggleSample1()
+    {
+        toggleAllMenus();
+        sample1 = !sample1;
+    }
+
+    string CSSSample1() => sample1 ? "display: block" : "display: none";
 
     public struct AddressingModes
     {
@@ -829,6 +1082,13 @@
         public string Notes { get; set; }
     }
 
+    public struct Samples
+    {
+        public string AssemblyText {get; set; }
+        public string MachineText { get; set; }
+        public string Description { get; set; }
+    }
+
     protected override Task OnInitializedAsync()
     {
         string filename = "Config Files/AddressingModes.json";
@@ -850,15 +1110,49 @@
         filename = "Config Files/instructions.json";
         jsonString = File.ReadAllText(filename);
         instrs = JsonSerializer.Deserialize<Instructions[]>(jsonString);
+
+        filename = "Config Files/samples.json";
+        jsonString = File.ReadAllText(filename);
+        samples = JsonSerializer.Deserialize<Samples[]>(jsonString);
+
         return Task.CompletedTask;
     }
 
+    void NavigateAssemblerSample(string textToPush)
+    {
+        FrontendVariables.currentCodeAssembler = textToPush;
+        UriHelper.NavigateTo("assembler");
+    }
+
+    void NavigateDisassemblerSample(string textToPush)
+    {
+        FrontendVariables.currentCodeDisassembler = textToPush;
+        UriHelper.NavigateTo("disassembler");
+    }
+
+    void NavigateExecutorAssemblySample(string textToPush)
+    {
+        FrontendVariables.currentAssemblyCodeExecutor = textToPush;
+        UriHelper.NavigateTo("executor");
+    }
+
+    void NavigateExecutorMachineSample(string textToPush)
+    {
+        FrontendVariables.currentMachineCodeExecutor = textToPush;
+        UriHelper.NavigateTo("executor");
+    }
 
 
     void OpenHelpPage()
     {
         visible = false;
         UriHelper.NavigateTo("help");
+    }
+
+    void OpenSamplesPage()
+    {
+        visible = false;
+        UriHelper.NavigateTo("samples");
     }
 
 
@@ -883,6 +1177,3 @@
         await JSRuntime.InvokeVoidAsync("toggleDarkModeJS", FrontendVariables.darkMode, FrontendVariables.darkMode, FrontendVariables.darkMode, FrontendVariables.darkMode);
     }
 }
-
-
-

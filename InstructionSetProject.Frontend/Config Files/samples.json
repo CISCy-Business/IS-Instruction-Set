@@ -1,0 +1,28 @@
+[
+
+  {
+    "AssemblyText": "ADD r1, r2, r3\nSUB r4, r1, r5",
+    "MachineText": "40 D1 45 4C",
+    "Description": "This code contains 2 lines and starting from the first line ADD r1, r2, r3 it takes the values in r2 and r3 and adds them together and stores that output in r1. The second line containing SUB r1, r3, r5 takes the values located in r3 and r5 and subtracts the two values and the output is stored back into r1."
+  },
+  {
+    "AssemblyText": "LDW r1, r2, rd\nSTW r1, 1AB2, id",
+    "MachineText": "C0 11 00 02 C1 81 1A B2",
+    "Description": "This code contains 2 lines and starting from the first line LDW r1, r2, rd it takes the value located in r2 and goes to that point in memory and grabs what is there and stores it in r1. The second line containing STW r1, 1AB2, id takes the value located in r1 and stores it at the memory location of the label, in this case 1AB2."
+  },
+  {
+    "AssemblyText": "JEQ r1, r2, 0006\nXOR r1, r2, r3\nSTW r1, 001A, id",
+    "MachineText": "CE 91 00 06 50 D1 C1 81 00 1A",
+    "Description": "This code contains 3 lines and starting from the first line JEQ r1, r2, 0006 it jumps in execution to the address of the label given, in this case 0006 in the event that r1 and r2 are equal. Let us say r1 == 5 and r2 == 5, they are equal therefore we jump to address 0006. The second line containing XOR r1, r2, r3 does not get the chance to do anything in this example because as previously stated it is jumped over by the JEQ instruction. The third line STW r1, 001A, id is then executed storing r1 in memory location 001A."
+  },
+  {
+    "AssemblyText": "PSW r1\nPPW r1\nSTW r1, 01AA, id",
+    "MachineText": "01 01 01 C1 C1 81 01 AA",
+    "Description": "This code contains 4 lines and starting from the first line PSW r1 which takes r1 and pushes it onto the stack for use later or if r1 need to be used by another instruction right now. The second line containing  PPW r1 pops r1 off the stack by moving the stack to the memory location of r1. The third line STW r1, 01AA, id is then executed storing r1 in memory location 01AA. The final line HLT is used to end the execution of the program."
+  },
+  {
+    "AssemblyText": "# Load Registers with Immediates\nADI r1, r0, AA\nADI r2, r0, 1234\nADI r3, r0, CDCD\nADI r4, r0, DAD\nADI r5, r0, FFFF\nADI f1, f0, 4566\nADI f2, f0, 4099\n\nStartExecution:\n\t# Float16 5.4 (4566) + 2.3 (4099) = 7.7 (47B2)\n\t# Uses forwarding to avoid hazard with F2\n\tADD f3, f2, f1\n\n\t# Will skip jump on first pass, take jump on second\n\tJEQ r1, r6, EndExecution\n\n\t# Push R1 and R2 onto stack\n\tPSW r1\n\tPSW r2\n\n\t# Write some values to memory\n\tSTW r4, r3, rd\n\tSTW r5, CDCF, id\n\n\t# Set R6 so that we hit our second jump\n\tADD r6, r0, r1\n\n\t# Jump back to the start of execution\n\tJMP StartExecution\n\nEndExecution:\n\t# Swap the values pushed onto the stack\n\tPPW r1\n\tPPW r2\n\n\t# Swap the values loaded into memory\n\tLDW r5, r3, rd\n\tLDW r4, CDCF, id",
+    "MachineText": "C3 81 00 AA C3 82 12 34 C3 83 CD CD C3 84 0D AD C3 85 FF FF E3 81 45 66 E3 82 40 99 60 53 CE B1 00 34 01 01 01 02 C1 94 00 03 C1 85 CD CF 40 46 C7 00 00 1C 01 C1 01 C2 C0 15 00 03 C0 04 CD CF",
+    "Description": ""
+  }
+]

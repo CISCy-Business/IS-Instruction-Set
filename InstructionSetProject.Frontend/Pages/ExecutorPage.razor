@@ -143,6 +143,10 @@
         transform: translateY(10px);
     }
 
+    .e-grid.e-default .e-grouptopleftcell {
+        @(FrontendVariables.darkMode ? "border-color: #212121" : "border-color: white");
+    }
+
     .e-grid .e-groupdroparea.e-grouped {
         @(FrontendVariables.darkMode ? "background-color: #212121" : "");
     }
@@ -188,7 +192,7 @@
     }
 
     .e-grid .e-rowcell {
-        @(FrontendVariables.darkMode ? "color:  rgba(255, 255, 255, 0.87) !important;" : "color: black;");
+        @(FrontendVariables.darkMode ? "color: white !important;" : "color: black !important;");
     }
 
     .e-grid .e-groupdroparea {
@@ -204,6 +208,14 @@
         "color: rgba(255, 255, 255, 0.87); background-color: #424242; font-size: 16px; font-weight: 500;" 
         : 
         "color: black; background-color: white; font-size: 16px; font-weight: 500;");
+    }
+
+    .e-dialog {
+        @(FrontendVariables.darkMode ? "background-color: black" : "background-color: white");
+    }
+
+    .e-diagram {
+        @(FrontendVariables.darkMode ? "background-color: gray" : "background-color: white");
     }
 </style>
 
@@ -297,11 +309,11 @@
                             <SnapSettings Constraints=SnapConstraints.None>
                             </SnapSettings>
                         </SfDiagramComponent>
-                        <textarea style="height: 35px; width: 265px; margin-left: 35px; text-align: center" readonly>@fetchMnemonic</textarea>
-                        <textarea style="height: 35px; width: 257px; text-align: center" readonly>@decodeMnemonic</textarea>
-                        <textarea style="height: 35px; width: 237px; text-align: center" readonly>@executeMnemonic</textarea>
-                        <textarea style="height: 35px; width: 252px; text-align: center" readonly>@memoryMnemonic</textarea>
-                        <textarea style="height: 35px; width: 118px; text-align: center" readonly>@writeMnemonic</textarea>
+                        <textarea style="height: 35px; width: 265px; margin-left: 35px; text-align: center; @(FrontendVariables.darkMode ? "background-color: darkgray; color: white" : "background-color: white; color: black")" readonly>@fetchMnemonic</textarea>
+                        <textarea style="height: 35px; width: 257px; text-align: center; @(FrontendVariables.darkMode ? "background-color: darkgray; color: white" : "background-color: white; color: black")" readonly>@decodeMnemonic</textarea>
+                        <textarea style="height: 35px; width: 237px; text-align: center; @(FrontendVariables.darkMode ? "background-color: darkgray; color: white" : "background-color: white; color: black")" readonly>@executeMnemonic</textarea>
+                        <textarea style="height: 35px; width: 252px; text-align: center; @(FrontendVariables.darkMode ? "background-color: darkgray; color: white" : "background-color: white; color: black")" readonly>@memoryMnemonic</textarea>
+                        <textarea style="height: 35px; width: 118px; text-align: center; @(FrontendVariables.darkMode ? "background-color: darkgray; color: white" : "background-color: white; color: black")" readonly>@writeMnemonic</textarea>
                     </Content>
                 </DialogTemplates>
                 <DialogEvents Opened="@DialogOpen" Closed="@DialogClose"></DialogEvents>
