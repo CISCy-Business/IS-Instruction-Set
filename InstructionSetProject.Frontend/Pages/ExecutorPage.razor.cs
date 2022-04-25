@@ -853,6 +853,10 @@ namespace InstructionSetProject.Frontend.Pages
                 GetNodeByID(reorderBuffer5).Annotations[0].Content = "";
         }
 
+
+        string fillColor => FrontendVariables.darkMode ? "darkgray" : "white";
+
+
         private void InitDynamicDiagramModel()
         {
             NodeCollection = new DiagramObjectCollection<Node>();
@@ -1206,22 +1210,24 @@ namespace InstructionSetProject.Frontend.Pages
             int OperationBusNode1ItemWidth = OperationBusNodeItemWidth;
             int OperationBusNode1ItemHeight = OperationBusNodeItemHeight;
 
+            
+
             #endregion
 
             #region Nodes
-            CreateNode("ReorderBufferLabel", RBufferXOffset - (RBufferLabelXOffset), RBufferYOffset + 40, RBufferItemHeight * 5, RBufferItemHeight, -90, 0, ReorderBufferPorts2, FlowShapeType.Process, "Reorder Buffer", "white", "8,0", "black");
-            CreateNode(reorderBuffer1, RBufferXOffset, RBufferYOffset, RBufferItemWidth, RBufferItemHeight, 0, 0, ReorderBufferPorts1, FlowShapeType.Process, "RBuffer 1", "white", "8,0", "black");
-            CreateNode("ReorderBuffer2", RBufferXOffset, RBufferYOffset+20, RBufferItemWidth, RBufferItemHeight, 0, 0, ReorderBufferPorts2, FlowShapeType.Process, "RBuffer 2", "white", "8,0", "black");
-            CreateNode("ReorderBuffer3", RBufferXOffset, RBufferYOffset+40, RBufferItemWidth, RBufferItemHeight, 0, 0, ReorderBufferPorts2, FlowShapeType.Process, "RBuffer 3", "white", "8,0", "black");
-            CreateNode("ReorderBuffer4", RBufferXOffset, RBufferYOffset+60, RBufferItemWidth, RBufferItemHeight, 0, 0, ReorderBufferPorts2, FlowShapeType.Process, "RBuffer 4", "white", "8,0", "black");
-            CreateNode("ReorderBuffer5", RBufferXOffset, RBufferYOffset+80, RBufferItemWidth, RBufferItemHeight, 0, 0, ReorderBufferPorts1, FlowShapeType.Process, "RBuffer 5", "white", "8,0", "black");
+            CreateNode("ReorderBufferLabel", RBufferXOffset - (RBufferLabelXOffset), RBufferYOffset + 40, RBufferItemHeight * 5, RBufferItemHeight, -90, 0, ReorderBufferPorts2, FlowShapeType.Process, "Reorder Buffer", fillColor, "8,0", "black");
+            CreateNode(reorderBuffer1, RBufferXOffset, RBufferYOffset, RBufferItemWidth, RBufferItemHeight, 0, 0, ReorderBufferPorts1, FlowShapeType.Process, "RBuffer 1", fillColor, "8,0", "black");
+            CreateNode("ReorderBuffer2", RBufferXOffset, RBufferYOffset+20, RBufferItemWidth, RBufferItemHeight, 0, 0, ReorderBufferPorts2, FlowShapeType.Process, "RBuffer 2", fillColor, "8,0", "black");
+            CreateNode("ReorderBuffer3", RBufferXOffset, RBufferYOffset+40, RBufferItemWidth, RBufferItemHeight, 0, 0, ReorderBufferPorts2, FlowShapeType.Process, "RBuffer 3", fillColor, "8,0", "black");
+            CreateNode("ReorderBuffer4", RBufferXOffset, RBufferYOffset+60, RBufferItemWidth, RBufferItemHeight, 0, 0, ReorderBufferPorts2, FlowShapeType.Process, "RBuffer 4", fillColor, "8,0", "black");
+            CreateNode("ReorderBuffer5", RBufferXOffset, RBufferYOffset+80, RBufferItemWidth, RBufferItemHeight, 0, 0, ReorderBufferPorts1, FlowShapeType.Process, "RBuffer 5", fillColor, "8,0", "black");
 
-            CreateNode("InstrQueueLabel", InstrQueueXOffset - (InstrQueueLabelXOffset), InstrQueueYOffset + 40, InstrQueueItemHeight * 5, InstrQueueItemHeight, -90, 0, InstrQueuePorts2, FlowShapeType.Process, "Instr. Queue", "white", "8,0", "black");
-            CreateNode(instrQueue1, InstrQueueXOffset, InstrQueueYOffset, InstrQueueItemWidth, InstrQueueItemHeight, 0, 0, InstrQueuePorts1, FlowShapeType.Process, "IQueue 1", "white", "8,0", "black");
-            CreateNode("InstrQueue2", InstrQueueXOffset, InstrQueueYOffset + 20, InstrQueueItemWidth, InstrQueueItemHeight, 0, 0, InstrQueuePorts2, FlowShapeType.Process, "IQueue 2", "white", "8,0", "black");
-            CreateNode("InstrQueue3", InstrQueueXOffset, InstrQueueYOffset + 40, InstrQueueItemWidth, InstrQueueItemHeight, 0, 0, InstrQueuePorts2, FlowShapeType.Process, "IQueue 3", "white", "8,0", "black");
-            CreateNode("InstrQueue4", InstrQueueXOffset, InstrQueueYOffset + 60, InstrQueueItemWidth, InstrQueueItemHeight, 0, 0, InstrQueuePorts2, FlowShapeType.Process, "IQueue 4", "white", "8,0", "black");
-            CreateNode("InstrQueue5", InstrQueueXOffset, InstrQueueYOffset + 80, InstrQueueItemWidth, InstrQueueItemHeight, 0, 0, InstrQueuePorts1, FlowShapeType.Process, "IQueue 5", "white", "8,0", "black");
+            CreateNode("InstrQueueLabel", InstrQueueXOffset - (InstrQueueLabelXOffset), InstrQueueYOffset + 40, InstrQueueItemHeight * 5, InstrQueueItemHeight, -90, 0, InstrQueuePorts2, FlowShapeType.Process, "Instr. Queue", fillColor, "8,0", "black");
+            CreateNode(instrQueue1, InstrQueueXOffset, InstrQueueYOffset, InstrQueueItemWidth, InstrQueueItemHeight, 0, 0, InstrQueuePorts1, FlowShapeType.Process, "IQueue 1", fillColor, "8,0", "black");
+            CreateNode("InstrQueue2", InstrQueueXOffset, InstrQueueYOffset + 20, InstrQueueItemWidth, InstrQueueItemHeight, 0, 0, InstrQueuePorts2, FlowShapeType.Process, "IQueue 2", fillColor, "8,0", "black");
+            CreateNode("InstrQueue3", InstrQueueXOffset, InstrQueueYOffset + 40, InstrQueueItemWidth, InstrQueueItemHeight, 0, 0, InstrQueuePorts2, FlowShapeType.Process, "IQueue 3", fillColor, "8,0", "black");
+            CreateNode("InstrQueue4", InstrQueueXOffset, InstrQueueYOffset + 60, InstrQueueItemWidth, InstrQueueItemHeight, 0, 0, InstrQueuePorts2, FlowShapeType.Process, "IQueue 4", fillColor, "8,0", "black");
+            CreateNode("InstrQueue5", InstrQueueXOffset, InstrQueueYOffset + 80, InstrQueueItemWidth, InstrQueueItemHeight, 0, 0, InstrQueuePorts1, FlowShapeType.Process, "IQueue 5", fillColor, "8,0", "black");
 
             CreateNode("RegisterFile", RegFileXOffset, RegFileYOffset + 80, RegFileItemWidth, RegFileItemHeight, 0, 0, RegFilePorts1, FlowShapeType.Process, "I/F Register File", "darkgray", "8,0", "black");
 
@@ -1229,51 +1235,51 @@ namespace InstructionSetProject.Frontend.Pages
 
             CreateNode("AddressUnit", AddressUnitXOffset, AddressUnitYOffset, AddressUnitItemWidth, AddressUnitItemHeight, 0, 0, AddressUnitPorts, FlowShapeType.Process, "Address Unit", "darkgray", "8,0", "black");
 
-            CreateNode("LoadBufferLabel", LoadBufferXOffset - (LoadBufferLabelXOffset), LoadBufferYOffset + 40, LoadBufferItemHeight * 5, LoadBufferItemHeight, -90, 0, LoadBufferPorts2, FlowShapeType.Process, "Load Buffers", "white", "8,0", "black");
-            CreateNode("LoadBuffer1", LoadBufferXOffset, LoadBufferYOffset, LoadBufferItemWidth, LoadBufferItemHeight, 0, 0, LoadBufferPorts1, FlowShapeType.Process, "LoadBuff 1", "white", "8,0", "black");
-            CreateNode("LoadBuffer2", LoadBufferXOffset, LoadBufferYOffset + 20, LoadBufferItemWidth, LoadBufferItemHeight, 0, 0, LoadBufferPorts2, FlowShapeType.Process, "LoadBuff 2", "white", "8,0", "black");
-            CreateNode("LoadBuffer3", LoadBufferXOffset, LoadBufferYOffset + 40, LoadBufferItemWidth, LoadBufferItemHeight, 0, 0, LoadBufferPorts2, FlowShapeType.Process, "LoadBuff 3", "white", "8,0", "black");
-            CreateNode("LoadBuffer4", LoadBufferXOffset, LoadBufferYOffset + 60, LoadBufferItemWidth, LoadBufferItemHeight, 0, 0, LoadBufferPorts2, FlowShapeType.Process, "LoadBuff 4", "white", "8,0", "black");
-            CreateNode("LoadBuffer5", LoadBufferXOffset, LoadBufferYOffset + 80, LoadBufferItemWidth, LoadBufferItemHeight, 0, 0, LoadBufferPorts1, FlowShapeType.Process, "LoadBuff 5", "white", "8,0", "black");
+            CreateNode("LoadBufferLabel", LoadBufferXOffset - (LoadBufferLabelXOffset), LoadBufferYOffset + 40, LoadBufferItemHeight * 5, LoadBufferItemHeight, -90, 0, LoadBufferPorts2, FlowShapeType.Process, "Load Buffers", fillColor, "8,0", "black");
+            CreateNode("LoadBuffer1", LoadBufferXOffset, LoadBufferYOffset, LoadBufferItemWidth, LoadBufferItemHeight, 0, 0, LoadBufferPorts1, FlowShapeType.Process, "LoadBuff 1", fillColor, "8,0", "black");
+            CreateNode("LoadBuffer2", LoadBufferXOffset, LoadBufferYOffset + 20, LoadBufferItemWidth, LoadBufferItemHeight, 0, 0, LoadBufferPorts2, FlowShapeType.Process, "LoadBuff 2", fillColor, "8,0", "black");
+            CreateNode("LoadBuffer3", LoadBufferXOffset, LoadBufferYOffset + 40, LoadBufferItemWidth, LoadBufferItemHeight, 0, 0, LoadBufferPorts2, FlowShapeType.Process, "LoadBuff 3", fillColor, "8,0", "black");
+            CreateNode("LoadBuffer4", LoadBufferXOffset, LoadBufferYOffset + 60, LoadBufferItemWidth, LoadBufferItemHeight, 0, 0, LoadBufferPorts2, FlowShapeType.Process, "LoadBuff 4", fillColor, "8,0", "black");
+            CreateNode("LoadBuffer5", LoadBufferXOffset, LoadBufferYOffset + 80, LoadBufferItemWidth, LoadBufferItemHeight, 0, 0, LoadBufferPorts1, FlowShapeType.Process, "LoadBuff 5", fillColor, "8,0", "black");
 
             CreateNode("MemoryUnit", MemoryUnitXOffset, MemoryUnitYOffset, MemoryUnitItemWidth, MemoryUnitItemHeight, 0, 0, MemoryUnitPorts, FlowShapeType.Process, "Memory Unit", "darkgray", "8,0", "black");
 
-            CreateNode("ResStation1Label", Res1XOffset - (Res1LabelXOffset), Res1YOffset + 20, Res1ItemHeight * 3, Res1ItemHeight, -90, 0, Res1Ports2, FlowShapeType.Process, "Res 1", "white", "8,0", "black");
-            CreateNode("Res1OpBus1", Res1XOffset, Res1YOffset, Res1ItemWidth1, Res1ItemHeight, 0, 0, Res1Ports1, FlowShapeType.Process, "3", "white", "8,0", "black");
-            CreateNode("Res1OpBus2", Res1XOffset, Res1YOffset + 20, Res1ItemWidth1, Res1ItemHeight, 0, 0, Res1Ports2, FlowShapeType.Process, "2", "white", "8,0", "black");
-            CreateNode("Res1OpBus3", Res1XOffset, Res1YOffset + 40, Res1ItemWidth1, Res1ItemHeight, 0, 0, Res1Ports2, FlowShapeType.Process, "1", "white", "8,0", "black");
-            CreateNode("Res1DataBus1", Res1XOffset + (Res1ItemWidth1 + 15), Res1YOffset, Res1ItemWidth2, Res1ItemHeight, 0, 0, Res1Ports1, FlowShapeType.Process, "", "white", "8,0", "black");
-            CreateNode("Res1DataBus2", Res1XOffset + (Res1ItemWidth1 + 15), Res1YOffset + 20, Res1ItemWidth2, Res1ItemHeight, 0, 0, Res1Ports2, FlowShapeType.Process, "", "white", "8,0", "black");
-            CreateNode("Res1DataBus3", Res1XOffset + (Res1ItemWidth1 + 15), Res1YOffset + 40, Res1ItemWidth2, Res1ItemHeight, 0, 0, Res1Ports1, FlowShapeType.Process, "", "white", "8,0", "black");
-            CreateNode("Res1OperandBus1", Res1XOffset + (Res1ItemWidth2 + Res1ItemWidth1 + 20), Res1YOffset, Res1ItemWidth3, Res1ItemHeight, 0, 0, Res1Ports1, FlowShapeType.Process, "", "white", "8,0", "black");
-            CreateNode("Res1OperandBus2", Res1XOffset + (Res1ItemWidth2 + Res1ItemWidth1 + 20), Res1YOffset + 20, Res1ItemWidth3, Res1ItemHeight, 0, 0, Res1Ports2, FlowShapeType.Process, "", "white", "8,0", "black");
-            CreateNode("Res1OperandBus3", Res1XOffset + (Res1ItemWidth2 + Res1ItemWidth1 + 20), Res1YOffset + 40, Res1ItemWidth3, Res1ItemHeight, 0, 0, Res1Ports1, FlowShapeType.Process, "", "white", "8,0", "black");
+            CreateNode("ResStation1Label", Res1XOffset - (Res1LabelXOffset), Res1YOffset + 20, Res1ItemHeight * 3, Res1ItemHeight, -90, 0, Res1Ports2, FlowShapeType.Process, "Res 1", fillColor, "8,0", "black");
+            CreateNode("Res1OpBus1", Res1XOffset, Res1YOffset, Res1ItemWidth1, Res1ItemHeight, 0, 0, Res1Ports1, FlowShapeType.Process, "3", fillColor, "8,0", "black");
+            CreateNode("Res1OpBus2", Res1XOffset, Res1YOffset + 20, Res1ItemWidth1, Res1ItemHeight, 0, 0, Res1Ports2, FlowShapeType.Process, "2", fillColor, "8,0", "black");
+            CreateNode("Res1OpBus3", Res1XOffset, Res1YOffset + 40, Res1ItemWidth1, Res1ItemHeight, 0, 0, Res1Ports2, FlowShapeType.Process, "1", fillColor, "8,0", "black");
+            CreateNode("Res1DataBus1", Res1XOffset + (Res1ItemWidth1 + 15), Res1YOffset, Res1ItemWidth2, Res1ItemHeight, 0, 0, Res1Ports1, FlowShapeType.Process, "", fillColor, "8,0", "black");
+            CreateNode("Res1DataBus2", Res1XOffset + (Res1ItemWidth1 + 15), Res1YOffset + 20, Res1ItemWidth2, Res1ItemHeight, 0, 0, Res1Ports2, FlowShapeType.Process, "", fillColor, "8,0", "black");
+            CreateNode("Res1DataBus3", Res1XOffset + (Res1ItemWidth1 + 15), Res1YOffset + 40, Res1ItemWidth2, Res1ItemHeight, 0, 0, Res1Ports1, FlowShapeType.Process, "", fillColor, "8,0", "black");
+            CreateNode("Res1OperandBus1", Res1XOffset + (Res1ItemWidth2 + Res1ItemWidth1 + 20), Res1YOffset, Res1ItemWidth3, Res1ItemHeight, 0, 0, Res1Ports1, FlowShapeType.Process, "", fillColor, "8,0", "black");
+            CreateNode("Res1OperandBus2", Res1XOffset + (Res1ItemWidth2 + Res1ItemWidth1 + 20), Res1YOffset + 20, Res1ItemWidth3, Res1ItemHeight, 0, 0, Res1Ports2, FlowShapeType.Process, "", fillColor, "8,0", "black");
+            CreateNode("Res1OperandBus3", Res1XOffset + (Res1ItemWidth2 + Res1ItemWidth1 + 20), Res1YOffset + 40, Res1ItemWidth3, Res1ItemHeight, 0, 0, Res1Ports1, FlowShapeType.Process, "", fillColor, "8,0", "black");
 
             CreateNode("FPAdder", FPAdderXOffset, FPAdderYOffset, FPAdderItemWidth, FPAdderItemHeight, 0, 0, FPAdderPorts, FlowShapeType.Process, "FP Adder", "darkgray", "8,0", "black");
 
-            CreateNode("ResStation2Label", Res2XOffset - (Res2LabelXOffset), Res2YOffset + 20, Res2ItemHeight * 3, Res2ItemHeight, -90, 0, Res2Ports2, FlowShapeType.Process, "Res 2", "white", "8,0", "black");
-            CreateNode("Res2OpBus1", Res2XOffset, Res2YOffset, Res2ItemWidth1, Res2ItemHeight, 0, 0, Res2Ports1, FlowShapeType.Process, "3", "white", "8,0", "black");
-            CreateNode("Res2OpBus2", Res2XOffset, Res2YOffset + 20, Res2ItemWidth1, Res2ItemHeight, 0, 0, Res2Ports2, FlowShapeType.Process, "2", "white", "8,0", "black");
-            CreateNode("Res2OpBus3", Res2XOffset, Res2YOffset + 40, Res2ItemWidth1, Res2ItemHeight, 0, 0, Res2Ports2, FlowShapeType.Process, "1", "white", "8,0", "black");
-            CreateNode("Res2DataBus1", Res2XOffset + (Res2ItemWidth1 + 15), Res2YOffset, Res2ItemWidth2, Res2ItemHeight, 0, 0, Res2Ports1, FlowShapeType.Process, "", "white", "8,0", "black");
-            CreateNode("Res2DataBus2", Res2XOffset + (Res2ItemWidth1 + 15), Res2YOffset + 20, Res2ItemWidth2, Res2ItemHeight, 0, 0, Res2Ports2, FlowShapeType.Process, "", "white", "8,0", "black");
-            CreateNode("Res2DataBus3", Res2XOffset + (Res2ItemWidth1 + 15), Res2YOffset + 40, Res2ItemWidth2, Res2ItemHeight, 0, 0, Res2Ports1, FlowShapeType.Process, "", "white", "8,0", "black");
-            CreateNode("Res2OperandBus1", Res2XOffset + (Res2ItemWidth2 + Res2ItemWidth1 + 20), Res2YOffset, Res2ItemWidth3, Res2ItemHeight, 0, 0, Res2Ports1, FlowShapeType.Process, "", "white", "8,0", "black");
-            CreateNode("Res2OperandBus2", Res2XOffset + (Res2ItemWidth2 + Res2ItemWidth1 + 20), Res2YOffset + 20, Res2ItemWidth3, Res2ItemHeight, 0, 0, Res2Ports2, FlowShapeType.Process, "", "white", "8,0", "black");
-            CreateNode("Res2OperandBus3", Res2XOffset + (Res2ItemWidth2 + Res2ItemWidth1 + 20), Res2YOffset + 40, Res2ItemWidth3, Res2ItemHeight, 0, 0, Res2Ports1, FlowShapeType.Process, "", "white", "8,0", "black");
+            CreateNode("ResStation2Label", Res2XOffset - (Res2LabelXOffset), Res2YOffset + 20, Res2ItemHeight * 3, Res2ItemHeight, -90, 0, Res2Ports2, FlowShapeType.Process, "Res 2", fillColor, "8,0", "black");
+            CreateNode("Res2OpBus1", Res2XOffset, Res2YOffset, Res2ItemWidth1, Res2ItemHeight, 0, 0, Res2Ports1, FlowShapeType.Process, "3", fillColor, "8,0", "black");
+            CreateNode("Res2OpBus2", Res2XOffset, Res2YOffset + 20, Res2ItemWidth1, Res2ItemHeight, 0, 0, Res2Ports2, FlowShapeType.Process, "2", fillColor, "8,0", "black");
+            CreateNode("Res2OpBus3", Res2XOffset, Res2YOffset + 40, Res2ItemWidth1, Res2ItemHeight, 0, 0, Res2Ports2, FlowShapeType.Process, "1", fillColor, "8,0", "black");
+            CreateNode("Res2DataBus1", Res2XOffset + (Res2ItemWidth1 + 15), Res2YOffset, Res2ItemWidth2, Res2ItemHeight, 0, 0, Res2Ports1, FlowShapeType.Process, "", fillColor, "8,0", "black");
+            CreateNode("Res2DataBus2", Res2XOffset + (Res2ItemWidth1 + 15), Res2YOffset + 20, Res2ItemWidth2, Res2ItemHeight, 0, 0, Res2Ports2, FlowShapeType.Process, "", fillColor, "8,0", "black");
+            CreateNode("Res2DataBus3", Res2XOffset + (Res2ItemWidth1 + 15), Res2YOffset + 40, Res2ItemWidth2, Res2ItemHeight, 0, 0, Res2Ports1, FlowShapeType.Process, "", fillColor, "8,0", "black");
+            CreateNode("Res2OperandBus1", Res2XOffset + (Res2ItemWidth2 + Res2ItemWidth1 + 20), Res2YOffset, Res2ItemWidth3, Res2ItemHeight, 0, 0, Res2Ports1, FlowShapeType.Process, "", fillColor, "8,0", "black");
+            CreateNode("Res2OperandBus2", Res2XOffset + (Res2ItemWidth2 + Res2ItemWidth1 + 20), Res2YOffset + 20, Res2ItemWidth3, Res2ItemHeight, 0, 0, Res2Ports2, FlowShapeType.Process, "", fillColor, "8,0", "black");
+            CreateNode("Res2OperandBus3", Res2XOffset + (Res2ItemWidth2 + Res2ItemWidth1 + 20), Res2YOffset + 40, Res2ItemWidth3, Res2ItemHeight, 0, 0, Res2Ports1, FlowShapeType.Process, "", fillColor, "8,0", "black");
 
             CreateNode("FPMult", FPMultXOffset, FPMultYOffset, FPMultItemWidth, FPMultItemHeight, 0, 0, FPMultPorts, FlowShapeType.Process, "FP Multiplier", "darkgray", "8,0", "black");
 
-            CreateNode("ResStation3Label", Res3XOffset - (Res3LabelXOffset), Res3YOffset + 20, Res3ItemHeight * 3, Res3ItemHeight, -90, 0, Res3Ports2, FlowShapeType.Process, "Res 3", "white", "8,0", "black");
-            CreateNode("Res3OpBus1", Res3XOffset, Res3YOffset, Res3ItemWidth1, Res3ItemHeight, 0, 0, Res3Ports1, FlowShapeType.Process, "3", "white", "8,0", "black");
-            CreateNode("Res3OpBus2", Res3XOffset, Res3YOffset + 20, Res3ItemWidth1, Res3ItemHeight, 0, 0, Res3Ports2, FlowShapeType.Process, "2", "white", "8,0", "black");
-            CreateNode("Res3OpBus3", Res3XOffset, Res3YOffset + 40, Res3ItemWidth1, Res3ItemHeight, 0, 0, Res3Ports2, FlowShapeType.Process, "1", "white", "8,0", "black");
-            CreateNode("Res3DataBus1", Res3XOffset + (Res3ItemWidth1 + 15), Res3YOffset, Res3ItemWidth2, Res3ItemHeight, 0, 0, Res3Ports1, FlowShapeType.Process, "", "white", "8,0", "black");
-            CreateNode("Res3DataBus2", Res3XOffset + (Res3ItemWidth1 + 15), Res3YOffset + 20, Res3ItemWidth2, Res3ItemHeight, 0, 0, Res3Ports2, FlowShapeType.Process, "", "white", "8,0", "black");
-            CreateNode("Res3DataBus3", Res3XOffset + (Res3ItemWidth1 + 15), Res3YOffset + 40, Res3ItemWidth2, Res3ItemHeight, 0, 0, Res3Ports1, FlowShapeType.Process, "", "white", "8,0", "black");
-            CreateNode("Res3OperandBus1", Res3XOffset + (Res3ItemWidth2 + Res3ItemWidth1 + 20), Res3YOffset, Res3ItemWidth3, Res3ItemHeight, 0, 0, Res3Ports1, FlowShapeType.Process, "", "white", "8,0", "black");
-            CreateNode("Res3OperandBus2", Res3XOffset + (Res3ItemWidth2 + Res3ItemWidth1 + 20), Res3YOffset + 20, Res3ItemWidth3, Res3ItemHeight, 0, 0, Res3Ports2, FlowShapeType.Process, "", "white", "8,0", "black");
-            CreateNode("Res3OperandBus3", Res3XOffset + (Res3ItemWidth2 + Res3ItemWidth1 + 20), Res3YOffset + 40, Res3ItemWidth3, Res3ItemHeight, 0, 0, Res3Ports1, FlowShapeType.Process, "", "white", "8,0", "black");
+            CreateNode("ResStation3Label", Res3XOffset - (Res3LabelXOffset), Res3YOffset + 20, Res3ItemHeight * 3, Res3ItemHeight, -90, 0, Res3Ports2, FlowShapeType.Process, "Res 3", fillColor, "8,0", "black");
+            CreateNode("Res3OpBus1", Res3XOffset, Res3YOffset, Res3ItemWidth1, Res3ItemHeight, 0, 0, Res3Ports1, FlowShapeType.Process, "3", fillColor, "8,0", "black");
+            CreateNode("Res3OpBus2", Res3XOffset, Res3YOffset + 20, Res3ItemWidth1, Res3ItemHeight, 0, 0, Res3Ports2, FlowShapeType.Process, "2", fillColor, "8,0", "black");
+            CreateNode("Res3OpBus3", Res3XOffset, Res3YOffset + 40, Res3ItemWidth1, Res3ItemHeight, 0, 0, Res3Ports2, FlowShapeType.Process, "1", fillColor, "8,0", "black");
+            CreateNode("Res3DataBus1", Res3XOffset + (Res3ItemWidth1 + 15), Res3YOffset, Res3ItemWidth2, Res3ItemHeight, 0, 0, Res3Ports1, FlowShapeType.Process, "", fillColor, "8,0", "black");
+            CreateNode("Res3DataBus2", Res3XOffset + (Res3ItemWidth1 + 15), Res3YOffset + 20, Res3ItemWidth2, Res3ItemHeight, 0, 0, Res3Ports2, FlowShapeType.Process, "", fillColor, "8,0", "black");
+            CreateNode("Res3DataBus3", Res3XOffset + (Res3ItemWidth1 + 15), Res3YOffset + 40, Res3ItemWidth2, Res3ItemHeight, 0, 0, Res3Ports1, FlowShapeType.Process, "", fillColor, "8,0", "black");
+            CreateNode("Res3OperandBus1", Res3XOffset + (Res3ItemWidth2 + Res3ItemWidth1 + 20), Res3YOffset, Res3ItemWidth3, Res3ItemHeight, 0, 0, Res3Ports1, FlowShapeType.Process, "", fillColor, "8,0", "black");
+            CreateNode("Res3OperandBus2", Res3XOffset + (Res3ItemWidth2 + Res3ItemWidth1 + 20), Res3YOffset + 20, Res3ItemWidth3, Res3ItemHeight, 0, 0, Res3Ports2, FlowShapeType.Process, "", fillColor, "8,0", "black");
+            CreateNode("Res3OperandBus3", Res3XOffset + (Res3ItemWidth2 + Res3ItemWidth1 + 20), Res3YOffset + 40, Res3ItemWidth3, Res3ItemHeight, 0, 0, Res3Ports1, FlowShapeType.Process, "", fillColor, "8,0", "black");
 
             CreateNode("IntUnit", IntUnitXOffset, IntUnitYOffset, IntUnitItemWidth, IntUnitItemHeight, 0, 0, IntUnitPorts, FlowShapeType.Process, "Integer Unit", "darkgray", "8,0", "black");
 
@@ -1312,7 +1318,7 @@ namespace InstructionSetProject.Frontend.Pages
             CreateNode("OperationBusNode1", OperationBusNode1XOffset, OperationBusNode1YOffset, OperationBusNode1ItemWidth, OperationBusNode1ItemHeight, 0, 0, OperationBusPorts, FlowShapeType.Process, "", "black", "8,0", "black");
             
 
-            CreateNode("sizeNodeYX", 1170, 700, 1, 1, 0, 0, WinSizePorts, FlowShapeType.Process, "", "white", "8,0", "white");
+            CreateNode("sizeNodeYX", 1170, 700, 1, 1, 0, 0, WinSizePorts, FlowShapeType.Process, "", fillColor, "8,0", fillColor);
             #endregion
 
             #region Connectors
@@ -2039,12 +2045,12 @@ namespace InstructionSetProject.Frontend.Pages
 
             #region Nodes
             // Fetch Nodes
-            CreateNode("FetchMux", 60, 293, 60, 27, -90, 90, FetchMuxPorts, FlowShapeType.Terminator, "Mux", "white", "8,0", "black");
-            CreateNode("PC", 110, 293, 25, 55, 0, 0, PCPorts, FlowShapeType.Process, "PC", "white", "8,0", "black");
-            CreateNode("InstrMem", 200, 370, 100, 100, 0, 0, InstrMemPorts, FlowShapeType.Process, "Instruction Memory", "white", "8,0", "black");
-            CreateNode("AddPC", 205, 250, 75, 70, -90, 90, AddPCPorts, BasicShapeType.Trapezoid, "Add", "white", "8,0", "black");
+            CreateNode("FetchMux", 60, 293, 60, 27, -90, 90, FetchMuxPorts, FlowShapeType.Terminator, "Mux", fillColor, "8,0", "black");
+            CreateNode("PC", 110, 293, 25, 55, 0, 0, PCPorts, FlowShapeType.Process, "PC", fillColor, "8,0", "black");
+            CreateNode("InstrMem", 200, 370, 100, 100, 0, 0, InstrMemPorts, FlowShapeType.Process, "Instruction Memory", fillColor, "8,0", "black");
+            CreateNode("AddPC", 205, 250, 75, 70, -90, 90, AddPCPorts, BasicShapeType.Trapezoid, "Add", fillColor, "8,0", "black");
 
-            CreateNode("IFID", 300, 343, 30, 450, 0, -90, ifidPorts, FlowShapeType.Process, "IF/ID", "white", "8,0", "black", default, new DiagramPoint(.5, .1));
+            CreateNode("IFID", 300, 343, 30, 450, 0, -90, ifidPorts, FlowShapeType.Process, "IF/ID", fillColor, "8,0", "black", default, new DiagramPoint(.5, .1));
 
             // Decode Nodes
             rdReg = new ShapeAnnotation()
@@ -2055,47 +2061,47 @@ namespace InstructionSetProject.Frontend.Pages
                 Offset = new DiagramPoint(0.1, .71),
                 Style = new TextStyle() {Color = "red", FontSize = 9.0 }
             };
-            CreateNode("Registers", 450, 350, 100, 100, 0, 0, regPorts, FlowShapeType.Process, "Registers", "white", "8,0", "black", default, null, rdReg);
-            CreateNode("ImmGen", 470, 450, 40, 75, 0, 0, ImmGenPorts, BasicShapeType.Ellipse, "Imm Gen", "white", "8,0", "black");
-            CreateNode("Control", 480, 70, 45, 100, 0, 0, ControlPorts, BasicShapeType.Ellipse, "Control", "white", ControlDash, "black");
+            CreateNode("Registers", 450, 350, 100, 100, 0, 0, regPorts, FlowShapeType.Process, "Registers", fillColor, "8,0", "black", default, null, rdReg);
+            CreateNode("ImmGen", 470, 450, 40, 75, 0, 0, ImmGenPorts, BasicShapeType.Ellipse, "Imm Gen", fillColor, "8,0", "black");
+            CreateNode("Control", 480, 70, 45, 100, 0, 0, ControlPorts, BasicShapeType.Ellipse, "Control", fillColor, ControlDash, "black");
 
-            CreateNode("IDEX", 560, 343, 30, 450, 0, -90, idexPorts, FlowShapeType.Process, "ID/EX", "white", "8,0", "black", default, new DiagramPoint(.5, .1));
-            CreateNode("RW", 560, 33, 35, 15, 0, 0, RWPorts, FlowShapeType.Process, "RW", "white", ControlDash, "black");
-            CreateNode("MTR", 560, 48, 35, 15, 0, 0, MTRPorts, FlowShapeType.Process, "MTR", "white", ControlDash, "black");
-            CreateNode("MR", 560, 63, 35, 15, 0, 0, MRPorts, FlowShapeType.Process, "MR", "white", ControlDash, "black");
-            CreateNode("MW", 560, 78, 35, 15, 0, 0, MWPorts, FlowShapeType.Process, "MW", "white", ControlDash, "black");
-            CreateNode("PCS", 560, 93, 35, 15, 0, 0, PCSPorts, FlowShapeType.Process, "PCS", "white", ControlDash, "black");
-            CreateNode("ALUS", 560, 108, 35, 15, 0, 0, ALUSPorts, FlowShapeType.Process, "ALUS", "white", ControlDash, "black");
+            CreateNode("IDEX", 560, 343, 30, 450, 0, -90, idexPorts, FlowShapeType.Process, "ID/EX", fillColor, "8,0", "black", default, new DiagramPoint(.5, .1));
+            CreateNode("RW", 560, 33, 35, 15, 0, 0, RWPorts, FlowShapeType.Process, "RW", fillColor, ControlDash, "black");
+            CreateNode("MTR", 560, 48, 35, 15, 0, 0, MTRPorts, FlowShapeType.Process, "MTR", fillColor, ControlDash, "black");
+            CreateNode("MR", 560, 63, 35, 15, 0, 0, MRPorts, FlowShapeType.Process, "MR", fillColor, ControlDash, "black");
+            CreateNode("MW", 560, 78, 35, 15, 0, 0, MWPorts, FlowShapeType.Process, "MW", fillColor, ControlDash, "black");
+            CreateNode("PCS", 560, 93, 35, 15, 0, 0, PCSPorts, FlowShapeType.Process, "PCS", fillColor, ControlDash, "black");
+            CreateNode("ALUS", 560, 108, 35, 15, 0, 0, ALUSPorts, FlowShapeType.Process, "ALUS", fillColor, ControlDash, "black");
 
             // Execute Nodes
-            CreateNode("ExecuteMux", 632, 378, 60, 27, -90, 90, ExecuteMuxPorts, FlowShapeType.Terminator, "Mux", "white", "8,0", "black");
-            CreateNode("ALU", 710, 281, 75, 70, -90, 90, ALUPorts, BasicShapeType.Trapezoid, "ALU", "white", "8,0", "black");
-            //CreateNode("ALUControl", 640, 490, 45, 75, 0, 0, ImmGenPorts, BasicShapeType.Ellipse, "ALU Control", "white", ControlOpacity, "black");
+            CreateNode("ExecuteMux", 632, 378, 60, 27, -90, 90, ExecuteMuxPorts, FlowShapeType.Terminator, "Mux", fillColor, "8,0", "black");
+            CreateNode("ALU", 710, 281, 75, 70, -90, 90, ALUPorts, BasicShapeType.Trapezoid, "ALU", fillColor, "8,0", "black");
+            //CreateNode("ALUControl", 640, 490, 45, 75, 0, 0, ImmGenPorts, BasicShapeType.Ellipse, "ALU Control", fillColor, ControlOpacity, "black");
 
-            CreateNode("EXMEM", 800, 343, 30, 450, 0, -90, exmemPorts, FlowShapeType.Process, "EX/MEM", "white", "8,0", "black", default, new DiagramPoint(.5, .1));
-            CreateNode("RW1", 800, 48, 35, 15, 0, 0, RW1Ports, FlowShapeType.Process, "RW", "white", ControlDash, "black");
-            CreateNode("MTR1", 800, 63, 35, 15, 0, 0, MTR1Ports, FlowShapeType.Process, "MTR", "white", ControlDash, "black");
-            CreateNode("MR1", 800, 78, 35, 15, 0, 0, MR1Ports, FlowShapeType.Process, "MR", "white", ControlDash, "black");
-            CreateNode("MW1", 800, 93, 35, 15, 0, 0, MW1Ports, FlowShapeType.Process, "MW", "white", ControlDash, "black");
-            CreateNode("PCS1", 800, 108, 35, 15, 0, 0, PCS1Ports, FlowShapeType.Process, "PCS", "white", ControlDash, "black");
+            CreateNode("EXMEM", 800, 343, 30, 450, 0, -90, exmemPorts, FlowShapeType.Process, "EX/MEM", fillColor, "8,0", "black", default, new DiagramPoint(.5, .1));
+            CreateNode("RW1", 800, 48, 35, 15, 0, 0, RW1Ports, FlowShapeType.Process, "RW", fillColor, ControlDash, "black");
+            CreateNode("MTR1", 800, 63, 35, 15, 0, 0, MTR1Ports, FlowShapeType.Process, "MTR", fillColor, ControlDash, "black");
+            CreateNode("MR1", 800, 78, 35, 15, 0, 0, MR1Ports, FlowShapeType.Process, "MR", fillColor, ControlDash, "black");
+            CreateNode("MW1", 800, 93, 35, 15, 0, 0, MW1Ports, FlowShapeType.Process, "MW", fillColor, ControlDash, "black");
+            CreateNode("PCS1", 800, 108, 35, 15, 0, 0, PCS1Ports, FlowShapeType.Process, "PCS", fillColor, ControlDash, "black");
 
             // Memory Nodes
-            CreateNode("DataMem", 950, 319, 100, 100, 0, 0, dataMemPorts, FlowShapeType.Process, "Data Memory", "white", "8,0", "black");
-            CreateNode("CheckFlags", 880, 164, 75, 65, -90, 90, ChkFlgPorts, BasicShapeType.Trapezoid, "Check Flgs", "white", ControlDash, "black");
+            CreateNode("DataMem", 950, 319, 100, 100, 0, 0, dataMemPorts, FlowShapeType.Process, "Data Memory", fillColor, "8,0", "black");
+            CreateNode("CheckFlags", 880, 164, 75, 65, -90, 90, ChkFlgPorts, BasicShapeType.Trapezoid, "Check Flgs", fillColor, ControlDash, "black");
 
-            CreateNode("MEMWB", 1055, 343, 30, 450, 0, -90, memwbPorts, FlowShapeType.Process, "MEM/WB", "white", "8,0", "black", default, new DiagramPoint(.5, .1));
-            CreateNode("RW2", 1055, 93, 35, 15, 0, 0, RW2Ports, FlowShapeType.Process, "RW", "white", ControlDash, "black");
-            CreateNode("MTR2", 1055, 108, 35, 15, 0, 0, MTR2Ports, FlowShapeType.Process, "MTR", "white", ControlDash, "black");
+            CreateNode("MEMWB", 1055, 343, 30, 450, 0, -90, memwbPorts, FlowShapeType.Process, "MEM/WB", fillColor, "8,0", "black", default, new DiagramPoint(.5, .1));
+            CreateNode("RW2", 1055, 93, 35, 15, 0, 0, RW2Ports, FlowShapeType.Process, "RW", fillColor, ControlDash, "black");
+            CreateNode("MTR2", 1055, 108, 35, 15, 0, 0, MTR2Ports, FlowShapeType.Process, "MTR", fillColor, ControlDash, "black");
 
-            CreateNode("FlgReturn", 750, 10, 1, 1, 0, 0, FLRetPorts, FlowShapeType.Process, "", "white", "8,0", "black");
+            CreateNode("FlgReturn", 750, 10, 1, 1, 0, 0, FLRetPorts, FlowShapeType.Process, "", fillColor, "8,0", "black");
 
             // Write Nodes
-            CreateNode("WriteMux", 1125, 315, 60, 27, -90, 90, WriteMuxPorts, FlowShapeType.Terminator, "Mux", "white", "8,0", "black");
-            CreateNode("RdRegReturn", 750, 635, 1, 1, 0, 0, RdRegReturnPorts, FlowShapeType.Process, "", "white", "8,0", "black");
-            CreateNode("RWReturn", 750, 15, 1, 1, 0, 0, RWRetPorts, FlowShapeType.Process, "", "white", "8,0", "black");
+            CreateNode("WriteMux", 1125, 315, 60, 27, -90, 90, WriteMuxPorts, FlowShapeType.Terminator, "Mux", fillColor, "8,0", "black");
+            CreateNode("RdRegReturn", 750, 635, 1, 1, 0, 0, RdRegReturnPorts, FlowShapeType.Process, "", fillColor, "8,0", "black");
+            CreateNode("RWReturn", 750, 15, 1, 1, 0, 0, RWRetPorts, FlowShapeType.Process, "", fillColor, "8,0", "black");
 
             // Window Sizing Node
-            CreateNode("sizeNodeYX", 1170, 650, 1, 1, 0, 0, WinSizePorts, FlowShapeType.Process, "", "white", "8,0", "white");
+            CreateNode("sizeNodeYX", 1170, 650, 1, 1, 0, 0, WinSizePorts, FlowShapeType.Process, "", fillColor, "8,0", fillColor);
             #endregion
 
             #region Segments
