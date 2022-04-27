@@ -97,28 +97,28 @@
 
     .modalDivEx {
         position: absolute;
-        top: 10%;
-        transform: translate(160px, -50%);
+        top: 5%;
+        transform: translate(235px, -50%);
     }
 
     .modalDivEx1 {
         position: absolute;
-        top: 25%;
-        transform: translate(10px, -50%);
+        top: 15%;
+        transform: translate(130px, -50%);
     }
 
     .modalExBtn {
         position: absolute;
-        top: 90%;
-        transform: translate(180px, -50%);
+        top: 5%;
+        transform: translate(475px, -50%);
         background-color: #20639B;
         color: white;
     }
 
     .modalDivEx2 {
         position: absolute;
-        top: 70%;
-        transform: translate(85px, -50%);
+        top: 87%;
+        transform: translate(170px, -50%);
     }
 
     ::-webkit-scrollbar {
@@ -228,7 +228,7 @@
 </style>
 
 <Modal @bind-Open="IsModalOpened" Close="OnClose">
-    <form class="modalForm" method="dialog" style="width: 400px; height: 1000px; align-content: flex-start">
+    <form class="modalForm" method="dialog" style="width: 550px; height: 875px; align-content: flex-start">
         <div class="modalDivEx">
             <span style="font-size: 24px">Settings</span>
         </div>
@@ -269,8 +269,8 @@
             </label>
         </div>
 
-        <div style="width: 100%; transform: translateY(220px)">
-            <label style="width: 80%; margin-left: 12%">Clock Delay: @sliderValue ms</label>
+        <div style="width: 100%; transform: translateY(165px)">
+            <label style="width: 80%; margin-left: 25%">Clock Delay: @sliderValue ms</label>
             <div style="width: 80%; margin-left: 10%">
                 <SfSlider @bind-Value="@sliderValue" Step="500" Min="0" Max="5000">
                     <SliderTicks Placement="Placement.After" ShowSmallTicks="true" LargeStep="1000" SmallStep="500"></SliderTicks>
@@ -279,9 +279,46 @@
             </div>
         </div>
         
-        <div style="width: 100%; transform: translateY(500px)">
-            <label>Associativity:</label>
+        <div style="width: 100%; transform: translate(75px, 175px)">
+            <label style="font-size: 25px">L1 Associativity:</label>
             <input type="number" @bind="L1Associativity" />
+        </div>
+        
+        <div style="width: 100%; transform: translate(75px, 175px)">
+            <label style="font-size: 25px">L2 Associativity:</label>
+            <input type="number" @bind="L2Associativity" />
+        </div>
+        
+        <div style="width: 100%; transform: translate(101px, 175px)">
+            <label style="font-size: 25px">L1 Set Count:</label>
+            <input type="number" @bind="L1SetCount" />
+        </div>
+        
+        <div style="width: 100%; transform: translate(101px, 175px)">
+            <label style="font-size: 25px">L2 Set Count:</label>
+            <input type="number" @bind="L2SetCount" />
+        </div>
+        
+        <div style="width: 100%; transform: translate(143px, 175px)">
+            <label style="font-size: 25px">Line Size:</label>
+            <input type="number" @bind="CacheLineSize" />
+        </div>
+        
+        <div style="width: 100%; transform: translate(143px, 175px)">
+            <label style="font-size: 25px">Eviction Strat:</label>
+            <select @bind="CacheEvictionStrategy">
+                <option value="@(Backend.Execution.CacheEvictionStrategy.LRU)">LRU</option>
+                <option value="@(Backend.Execution.CacheEvictionStrategy.FIFO)">FIFO</option>
+                <option value="@(Backend.Execution.CacheEvictionStrategy.Random)">Random</option>
+            </select>
+        </div>
+        
+        <div style="width: 100%; transform: translate(143px, 165px)">
+            <label style="font-size: 25px">Write Strat:</label>
+            <select @bind="CacheWriteStrategy">
+                <option value="@(Backend.Execution.CacheWriteStrategy.WriteBack)">Write Back</option>
+                <option value="@(Backend.Execution.CacheWriteStrategy.WriteThrough)">Write Through</option>
+            </select>
         </div>
 
         <button class="modalExBtn" value="cancel">Close</button>
