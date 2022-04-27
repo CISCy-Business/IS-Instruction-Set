@@ -55,12 +55,16 @@ namespace InstructionSetProject.Backend.DynamicPipeline
 
             if (nextInstr.instruction.controlBits.MemRead)
             {
+                SetNumberOfCycles(nextInstr);
                 return loadBuffers.Dequeue();
             }
             if (nextInstr.instruction.controlBits.MemWrite)
             {
                 if (!nextInstr.StillHasDependencies())
+                {
+                    SetNumberOfCycles(nextInstr);
                     return loadBuffers.Dequeue();
+                }
             }
             else
             {
@@ -68,6 +72,38 @@ namespace InstructionSetProject.Backend.DynamicPipeline
             }
 
             return null;
+        }
+
+        private void SetNumberOfCycles(InstructionInFlight instr)
+        {
+            if (instr.instruction is LoadWord || instr.instruction is StoreWord)
+            {
+                var readTarget =
+                    (instr.instruction.addressingMode == 0b001_0000 || instr.instruction.addressingMode == 0b001_1000)
+                        ? (instr.instruction is LoadWord ? instr.lhsValue : instr.rhsValue)
+                        : instr.instruction.immediate;
+
+                if (readTarget == null || instr.instruction.addressingMode == null)
+                    throw new Exception("Null access values");
+
+                var rand = new Random();
+                var address =
+                    dataStructures.AddressResolver.GetAddress(readTarget ?? 0, instr.instruction.addressingMode ?? 0);
+                if (dataStructures.L1.GetCacheSet(address).IsDataPresent(address, 2))
+                {
+                    instr.cyclesRemainingInMemory = rand.Next(1, 5);
+                }
+
+                else if (dataStructures.L2.GetCacheSet(address).IsDataPresent(address, 2))
+                {
+                    instr.cyclesRemainingInMemory = rand.Next(20, 50);
+                }
+
+                else
+                {
+                    instr.cyclesRemainingInMemory = rand.Next(100, 500);
+                }
+            }
         }
 
         private ushort PerformMemRead(InstructionInFlight instr)
