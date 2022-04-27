@@ -108,6 +108,25 @@ namespace InstructionSetProject.Frontend.Pages
             }
         }
 
+        public int L1Associativity
+        {
+            get => _l1Associativity;
+            set
+            {
+                if (value < 1) return;
+                var difference = value - _l1Associativity;
+                if (_l1Associativity == 0)
+                {
+                    _l1Associativity = 2;
+                    return;
+                }
+                var realValue = Math.ILogB(_l1Associativity) + difference;
+                _l1Associativity = (int)Math.Pow(2, realValue);
+            }
+        }
+
+        private int _l1Associativity = 1;
+
         public string[] GroupedColumns = new string[] { "Index" };
 
         protected override bool ShouldRender()
