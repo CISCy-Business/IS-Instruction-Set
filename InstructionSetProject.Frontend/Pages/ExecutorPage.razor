@@ -360,9 +360,9 @@
                             <SfGrid @ref="L1CacheGridObject" DataSource="@L1CacheSource" AllowGrouping="true" >
                                 <GridGroupSettings Columns="@GroupedColumns" ></GridGroupSettings>
                                 <GridColumns>
-                                    <GridColumn Field=@nameof(InstructionCacheL1.Index) IsPrimaryKey="true" HeaderText="Index" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Left" Width="50"></GridColumn>
-                                    <GridColumn Field=@nameof(InstructionCacheL1.Tag) HeaderText="Tag" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="100"></GridColumn>
-                                    <GridColumn Field=@nameof(InstructionCacheL1.DataAtAddress) HeaderText="Data" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="120"></GridColumn>
+                                    <GridColumn Field=@nameof(CacheLineData.Index) IsPrimaryKey="true" HeaderText="Index" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Left" Width="50"></GridColumn>
+                                    <GridColumn Field=@nameof(CacheLineData.Tag) HeaderText="Tag" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="100"></GridColumn>
+                                    <GridColumn Field=@nameof(CacheLineData.Data) HeaderText="Data" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="120"></GridColumn>
                                 </GridColumns>
                             </SfGrid>
                         }
@@ -372,9 +372,9 @@
                             <SfGrid @ref="L2CacheGridObject" DataSource="@L2CacheSource" AllowGrouping="true">
                                 <GridGroupSettings Columns="@GroupedColumns"></GridGroupSettings>
                                 <GridColumns>
-                                    <GridColumn Field=@nameof(InstructionCacheL1.Index) IsPrimaryKey="true" HeaderText="Index" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Left" Width="50"></GridColumn>
-                                    <GridColumn Field=@nameof(InstructionCacheL1.Tag) HeaderText="Tag" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="100"></GridColumn>
-                                    <GridColumn Field=@nameof(InstructionCacheL1.DataAtAddress) HeaderText="Data" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="120"></GridColumn>
+                                    <GridColumn Field=@nameof(CacheLineData.Index) IsPrimaryKey="true" HeaderText="Index" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Left" Width="50"></GridColumn>
+                                    <GridColumn Field=@nameof(CacheLineData.Tag) HeaderText="Tag" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="100"></GridColumn>
+                                    <GridColumn Field=@nameof(CacheLineData.Data) HeaderText="Data" TextAlign="Syncfusion.Blazor.Grids.TextAlign.Right" Width="120"></GridColumn>
                                 </GridColumns>
                             </SfGrid>
                         }
