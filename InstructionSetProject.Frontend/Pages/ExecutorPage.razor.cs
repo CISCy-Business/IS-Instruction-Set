@@ -35,8 +35,79 @@ namespace InstructionSetProject.Frontend.Pages
         bool StaticMode = true;
         int sliderValue = 0;
         List<char> memoryCharList = new List<char>();
-        public List<InstructionCacheL1>? L1CacheSource { get; set; }
-        public List<InstructionCacheL2>? L2CacheSource { get; set; }
+
+        public List<CacheLineData> L1CacheSource
+        {
+            get
+            {
+                var cache = StaticMode ? SPEx != null ? SPEx.DataStructures.L1 : null
+                    : DPEx != null ? DPEx.dataStructures.L1 : null;
+                if (cache == null) return new List<CacheLineData>();
+                var data = new List<CacheLineData>();
+                
+                for (int i = 0; i < cache.Sets.Count; i++)
+                {
+                    var set = cache.Sets[i];
+                    for (int j = 0; j < set.Lines.Count; j++)
+                    {
+                        var line = set.Lines.ToArray()[j].Key;
+                        var offsetSize = Math.ILogB(cache.Config.LineSize);
+                        var indexSize = Math.ILogB(cache.Config.SetCount);
+                        var offsetMask = (1 << offsetSize) - 1;
+                        var indexMask = (1 << indexSize) - 1;
+                        if (line.Address == null)
+                        {
+                            data.Add(new CacheLineData("0x" + i.ToString("X2"), "0x" + 0.ToString("X2"), 0.ToString("X2")));
+                            continue;
+                        }
+                        var offset = (int)line.Address & offsetMask;
+                        var index = (int)(line.Address >> offsetSize) & indexMask;
+                        var tag = (int) (line.Address >> (offsetSize + indexSize));
+                        var lineData = String.Join(" ", line.Data.Select(entry => entry.ToString("X2")));
+                        data.Add(new CacheLineData("0x" + index.ToString("X2"), "0x" + tag.ToString("X2"), lineData));                        
+                    }
+                }
+
+                return data;
+            }
+        }
+
+        public List<CacheLineData> L2CacheSource
+        {
+            get
+            {
+                var cache = StaticMode ? SPEx != null ? SPEx.DataStructures.L2 : null
+                    : DPEx != null ? DPEx.dataStructures.L2 : null;
+                if (cache == null) return new List<CacheLineData>();
+                var data = new List<CacheLineData>();
+                
+                for (int i = 0; i < cache.Sets.Count; i++)
+                {
+                    var set = cache.Sets[i];
+                    for (int j = 0; j < set.Lines.Count; j++)
+                    {
+                        var line = set.Lines.ToArray()[j].Key;
+                        var offsetSize = Math.ILogB(cache.Config.LineSize);
+                        var indexSize = Math.ILogB(cache.Config.SetCount);
+                        var offsetMask = (1 << offsetSize) - 1;
+                        var indexMask = (1 << indexSize) - 1;
+                        if (line.Address == null)
+                        {
+                            data.Add(new CacheLineData("0x" + i.ToString("X2"), "0x" + 0.ToString("X2"), 0.ToString("X2")));
+                            continue;
+                        }
+                        var offset = (int)line.Address & offsetMask;
+                        var index = (int)(line.Address >> offsetSize) & indexMask;
+                        var tag = (int) (line.Address >> (offsetSize + indexSize));
+                        var lineData = String.Join(" ", line.Data.Select(entry => entry.ToString("X2")));
+                        data.Add(new CacheLineData("0x" + index.ToString("X2"), "0x" + tag.ToString("X2"), lineData));                        
+                    }
+                }
+
+                return data;
+            }
+        }
+
         public string[] GroupedColumns = new string[] { "Index" };
 
         protected override bool ShouldRender()
@@ -113,8 +184,8 @@ namespace InstructionSetProject.Frontend.Pages
         private bool ShowButton { get; set; } = false;
         private bool ShowCache { get; set; } = false;
         private string SelectedCache { get; set; } = "L1";
-        private SfGrid<InstructionCacheL1>? L1CacheGridObject;
-        private SfGrid<InstructionCacheL2>? L2CacheGridObject;
+        private SfGrid<CacheLineData>? L1CacheGridObject;
+        private SfGrid<CacheLineData>? L2CacheGridObject;
         private bool L1CacheExpandToggle = false;
         private bool L2CacheExpandToggle = false;
         private ResizeDirection[] dialogResizeDirections { get; set; } = new ResizeDirection[] { ResizeDirection.All };
@@ -335,8 +406,6 @@ namespace InstructionSetProject.Frontend.Pages
 
         protected override Task OnInitializedAsync()
         {
-            L1CacheSource = InstructionCacheL1.GetL1CacheData().ToList();
-            L2CacheSource = InstructionCacheL2.GetL2CacheData().ToList();
             StartupMethod();
             Statistics();
             return Task.CompletedTask;
@@ -378,12 +447,14 @@ namespace InstructionSetProject.Frontend.Pages
 
         async Task runCodeAsync()
         {
+            var l1Config = new CacheConfiguration(1, 8, 8, CacheEvictionStrategy.LRU, CacheWriteStrategy.WriteBack);
+            var l2Config = new CacheConfiguration(4, 8, 64, CacheEvictionStrategy.LRU, CacheWriteStrategy.WriteBack);
             try
             {
                 if (StaticMode)
-                    SPEx = StaticPipelineExecutor.Execute(await _editor.GetValue());
+                    SPEx = StaticPipelineExecutor.Execute(await _editor.GetValue(), l1Config, l2Config);
                 else
-                    DPEx = DynamicPipelineExecutor.Execute(await _editor.GetValue());
+                    DPEx = DynamicPipelineExecutor.Execute(await _editor.GetValue(), l1Config, l2Config);
 
                 output = "";
             }
@@ -414,12 +485,15 @@ namespace InstructionSetProject.Frontend.Pages
 
         async Task Debug()
         {
+            var l1Config = new CacheConfiguration(1, 8, 8, CacheEvictionStrategy.LRU, CacheWriteStrategy.WriteBack);
+            var l2Config = new CacheConfiguration(4, 8, 64, CacheEvictionStrategy.LRU, CacheWriteStrategy.WriteBack);
+
             try
             {
                 if (StaticMode)
-                    SPEx = StaticPipelineExecutor.Execute(await _editor.GetValue());
+                    SPEx = StaticPipelineExecutor.Execute(await _editor.GetValue(), l1Config, l2Config);
                 else
-                    DPEx = DynamicPipelineExecutor.Execute(await _editor.GetValue());
+                    DPEx = DynamicPipelineExecutor.Execute(await _editor.GetValue(), l1Config, l2Config);
                 output = "";
             }
             catch (Exception ex)
@@ -2573,6 +2647,8 @@ namespace InstructionSetProject.Frontend.Pages
 
 
         // Cache Data
+
+        public record CacheLineData(string Index, string Tag, string Data);
 
         public class InstructionCacheL1
         {

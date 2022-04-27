@@ -26,9 +26,9 @@ namespace InstructionSetProject.Backend.DynamicPipeline
         public InstructionInFlight? integerUnit { get; set; }
         public List<InstructionInFlight> commonDataBus { get; set; }
 
-        public DynamicPipelineExecution(InstructionList instrList)
+        public DynamicPipelineExecution(InstructionList instrList, CacheConfiguration l1Config, CacheConfiguration l2Config)
         {
-            dataStructures = new();
+            dataStructures = new(l1Config, l2Config);
             alu = new(dataStructures);
             machineCode = Assembler.Assemble(instrList);
             dataStructures.Memory.AddInstructionCode(machineCode);

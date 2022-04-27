@@ -77,7 +77,7 @@ namespace InstructionSetProject.Backend.DynamicPipeline
                 var readTarget = (instr.instruction.addressingMode == 0b001_0000 || instr.instruction.addressingMode == 0b001_1000) ? instr.lhsValue : instr.instruction.immediate;
                 if (readTarget == null || instr.instruction.addressingMode == null)
                     throw new Exception("Null read values");
-                return dataStructures.Memory.ReadUshort(readTarget ?? 0, instr.instruction.addressingMode ?? 0);
+                return dataStructures.L1.ReadUshort(dataStructures.AddressResolver.GetAddress(readTarget ?? 0, instr.instruction.addressingMode ?? 0));
             }
 
             if (instr.instruction is PopWord || instr.instruction is PopFloat)
