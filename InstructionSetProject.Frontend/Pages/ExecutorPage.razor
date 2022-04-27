@@ -191,6 +191,14 @@
         @(FrontendVariables.darkMode ? "border-color: #616161;" : "");
     }
 
+    .e-grid.e-gridhover tr[role='row']:not(.e-editedrow):hover .e-rowcell:not(.e-cellselectionbackground):not(.e-active):not(.e-updatedtd):not(.e-indentcell), .e-grid.e-gridhover tr[role='row']:hover .e-detailrowcollapse:not(.e-cellselectionbackground):not(.e-active):not(.e-updatedtd):not(.e-indentcell), .e-grid.e-gridhover tr[role='row']:hover .e-rowdragdrop:not(.e-cellselectionbackground):not(.e-active):not(.e-updatedtd):not(.e-indentcell), .e-grid.e-rtl .e-gridhover tr[role='row']:hover .e-rowdragdrop:not(.e-cellselectionbackground):not(.e-active):not(.e-updatedtd):not(.e-indentcell), .e-grid.e-gridhover tr[role='row']:hover .e-detailrowexpand:not(.e-cellselectionbackground):not(.e-active):not(.e-updatedtd):not(.e-indentcell) {
+        @(FrontendVariables.darkMode ? "background-color: dimgray; color: black !important;" : "");
+    }
+
+    .e-grid td.e-active {
+        @(FrontendVariables.darkMode ? "background: rgba(0,0,0,0.5);" : "");
+    }
+
     .e-grid .e-rowcell {
         @(FrontendVariables.darkMode ? "color: white !important;" : "color: black !important;");
     }
@@ -211,11 +219,11 @@
     }
 
     .e-dialog {
-        @(FrontendVariables.darkMode ? "background-color: black" : "background-color: white");
+        @(FrontendVariables.darkMode ? "background-color: #2D2D2E" : "background-color: white");
     }
 
     .e-diagram {
-        @(FrontendVariables.darkMode ? "background-color: gray" : "background-color: white");
+        @(FrontendVariables.darkMode ? "background-color: #424242" : "background-color: white");
     }
 </style>
 
@@ -381,7 +389,7 @@
 
                     </Content>
                 </DialogTemplates>
-                <DialogEvents Closed="@errorClose"></DialogEvents>
+                <DialogEvents Opened="@CacheOpen" Closed="@CacheClose"></DialogEvents>
             </SfDialog>
         </div>
         <div class="row">
