@@ -122,6 +122,7 @@ namespace InstructionSetProject.Frontend.Pages
                 }
                 var realValue = Math.ILogB(_l1Associativity) + difference;
                 _l1Associativity = (int)Math.Pow(2, realValue);
+                if (_l1Associativity > _l2Associativity) _l2Associativity = _l1Associativity;
             }
         }
         
