@@ -526,8 +526,8 @@ namespace InstructionSetProject.Frontend.Pages
 
         async Task runCodeAsync()
         {
-            var l1Config = new CacheConfiguration(1, 8, 8, CacheEvictionStrategy.FIFO, CacheWriteStrategy.WriteBack);
-            var l2Config = new CacheConfiguration(4, 8, 64, CacheEvictionStrategy.FIFO, CacheWriteStrategy.WriteBack);
+            var l1Config = new CacheConfiguration(L1Associativity, CacheLineSize, L1SetCount, CacheEvictionStrategy, CacheWriteStrategy);
+            var l2Config = new CacheConfiguration(L2Associativity, CacheLineSize, L2SetCount, CacheEvictionStrategy, CacheWriteStrategy);
             try
             {
                 if (StaticMode)
@@ -564,8 +564,8 @@ namespace InstructionSetProject.Frontend.Pages
 
         async Task Debug()
         {
-            var l1Config = new CacheConfiguration(1, 8, 8, CacheEvictionStrategy.FIFO, CacheWriteStrategy.WriteBack);
-            var l2Config = new CacheConfiguration(4, 8, 64, CacheEvictionStrategy.FIFO, CacheWriteStrategy.WriteBack);
+            var l1Config = new CacheConfiguration(L1Associativity, CacheLineSize, L1SetCount, CacheEvictionStrategy, CacheWriteStrategy);
+            var l2Config = new CacheConfiguration(L2Associativity, CacheLineSize, L2SetCount, CacheEvictionStrategy, CacheWriteStrategy);
 
             try
             {
