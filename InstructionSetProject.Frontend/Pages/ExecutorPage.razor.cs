@@ -172,7 +172,7 @@ namespace InstructionSetProject.Frontend.Pages
             get => _l2SetCount;
             set
             {
-                if (value < 4) return;
+                if (value < 1) return;
                 var difference = value - _l2SetCount;
                 var realValue = Math.ILogB(_l2SetCount) + difference;
                 _l2SetCount = (int) Math.Pow(2, realValue);
@@ -186,7 +186,7 @@ namespace InstructionSetProject.Frontend.Pages
         private int _l2Associativity = 4;
         private int _cacheLineSize = 8;
         private int _l1SetCount = 4;
-        private int _l2SetCount = 1;
+        private int _l2SetCount = 4;
 
         public string[] GroupedColumns = new string[] { "Index" };
 
