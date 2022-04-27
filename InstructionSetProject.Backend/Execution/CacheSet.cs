@@ -9,7 +9,7 @@ public class CacheSet
     private int lruIndex { get; set; } = 0;
 
     // Int value is used for LRU and FIFO tracking
-    public Dictionary<CacheLine, int> Lines { get; }
+    public Dictionary<CacheLine, int> Lines { get; private set; }
 
     public CacheSet(CacheConfiguration config)
     {
@@ -42,6 +42,7 @@ public class CacheSet
         line.Address = address;
         line.Data = data;
         line.IsValid = true;
+        Lines[line] = lruIndex++;
     }
 
     public byte[] GetLine(uint address)
@@ -53,6 +54,10 @@ public class CacheSet
     {
         var line = Lines.First(setIndex => setIndex.Key.Address == address).Key;
         line.Data = data;
+        if (EvictionStrategy == CacheEvictionStrategy.LRU)
+        {
+            Lines[line] = lruIndex++;
+        }
     }
 
     public bool IsDataPresent(uint address, int bytesToRead)
@@ -73,6 +78,10 @@ public class CacheSet
             throw new Exception("Cache line not found");
         
         setValue.Key.WriteUshort(address, writeValue);
+        if (EvictionStrategy == CacheEvictionStrategy.LRU)
+        {
+            Lines[setValue.Key] = lruIndex++;
+        }
     }
 
     public void WriteByte(uint address, byte writeValue)
@@ -82,6 +91,10 @@ public class CacheSet
             throw new Exception("Cache line not found");
         
         setValue.Key.WriteByte(address, writeValue);
+        if (EvictionStrategy == CacheEvictionStrategy.LRU)
+        {
+            Lines[setValue.Key] = lruIndex++;
+        }
     }
 
     public ushort ReadUshort(uint address)
@@ -90,6 +103,10 @@ public class CacheSet
         if (setValue.Equals(default(KeyValuePair<CacheLine, int>)))
             throw new Exception("Cache line not found");
 
+        if (EvictionStrategy == CacheEvictionStrategy.LRU)
+        {
+            Lines[setValue.Key] = lruIndex++;
+        }
         return setValue.Key.ReadUshort(address);
     }
     
@@ -99,6 +116,10 @@ public class CacheSet
         if (setValue.Equals(default(KeyValuePair<CacheLine, int>)))
             throw new Exception("Cache line not found");
 
+        if (EvictionStrategy == CacheEvictionStrategy.LRU)
+        {
+            Lines[setValue.Key] = lruIndex++;
+        }
         return setValue.Key.ReadByte(address);
     }
 

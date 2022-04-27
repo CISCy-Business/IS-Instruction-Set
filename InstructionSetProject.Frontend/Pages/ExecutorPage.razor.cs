@@ -108,6 +108,86 @@ namespace InstructionSetProject.Frontend.Pages
             }
         }
 
+        public int L1Associativity
+        {
+            get => _l1Associativity;
+            set
+            {
+                if (value < 1) return;
+                var difference = value - _l1Associativity;
+                if (_l1Associativity == 0)
+                {
+                    _l1Associativity = 2;
+                    return;
+                }
+                var realValue = Math.ILogB(_l1Associativity) + difference;
+                _l1Associativity = (int)Math.Pow(2, realValue);
+                if (_l1Associativity > _l2Associativity) _l2Associativity = _l1Associativity;
+            }
+        }
+        
+        public int L2Associativity
+        {
+            get => _l2Associativity;
+            set
+            {
+                if (value < 1 || value < _l1Associativity) return;
+                var difference = value - _l2Associativity;
+                if (_l2Associativity == 0)
+                {
+                    _l2Associativity = 2;
+                    return;
+                }
+                var realValue = Math.ILogB(_l2Associativity) + difference;
+                _l2Associativity = (int)Math.Pow(2, realValue);
+            }
+        }
+
+        public int CacheLineSize
+        {
+            get => _cacheLineSize;
+            set
+            {
+                if (value < 8) return;
+                var difference = value - _cacheLineSize;
+                var realValue = Math.ILogB(_cacheLineSize) + difference;
+                _cacheLineSize = (int)Math.Pow(2, realValue);
+            }
+        }
+
+        public int L1SetCount
+        {
+            get => _l1SetCount;
+            set
+            {
+                if (value < 4) return;
+                var difference = value - _l1SetCount;
+                var realValue = Math.ILogB(_l1SetCount) + difference;
+                _l1SetCount = (int) Math.Pow(2, realValue);
+            }
+        }
+        
+        public int L2SetCount
+        {
+            get => _l2SetCount;
+            set
+            {
+                if (value < 1) return;
+                var difference = value - _l2SetCount;
+                var realValue = Math.ILogB(_l2SetCount) + difference;
+                _l2SetCount = (int) Math.Pow(2, realValue);
+            }
+        }
+        
+        public CacheEvictionStrategy CacheEvictionStrategy { get; set; }
+        public CacheWriteStrategy CacheWriteStrategy { get; set; }
+
+        private int _l1Associativity = 1;
+        private int _l2Associativity = 4;
+        private int _cacheLineSize = 8;
+        private int _l1SetCount = 4;
+        private int _l2SetCount = 4;
+
         public string[] GroupedColumns = new string[] { "Index" };
 
         protected override bool ShouldRender()
@@ -447,8 +527,8 @@ namespace InstructionSetProject.Frontend.Pages
 
         async Task runCodeAsync()
         {
-            var l1Config = new CacheConfiguration(1, 8, 8, CacheEvictionStrategy.LRU, CacheWriteStrategy.WriteBack);
-            var l2Config = new CacheConfiguration(4, 8, 64, CacheEvictionStrategy.LRU, CacheWriteStrategy.WriteBack);
+            var l1Config = new CacheConfiguration(L1Associativity, CacheLineSize, L1SetCount, CacheEvictionStrategy, CacheWriteStrategy);
+            var l2Config = new CacheConfiguration(L2Associativity, CacheLineSize, L2SetCount, CacheEvictionStrategy, CacheWriteStrategy);
             try
             {
                 if (StaticMode)
@@ -485,8 +565,8 @@ namespace InstructionSetProject.Frontend.Pages
 
         async Task Debug()
         {
-            var l1Config = new CacheConfiguration(1, 8, 8, CacheEvictionStrategy.LRU, CacheWriteStrategy.WriteBack);
-            var l2Config = new CacheConfiguration(4, 8, 64, CacheEvictionStrategy.LRU, CacheWriteStrategy.WriteBack);
+            var l1Config = new CacheConfiguration(L1Associativity, CacheLineSize, L1SetCount, CacheEvictionStrategy, CacheWriteStrategy);
+            var l2Config = new CacheConfiguration(L2Associativity, CacheLineSize, L2SetCount, CacheEvictionStrategy, CacheWriteStrategy);
 
             try
             {

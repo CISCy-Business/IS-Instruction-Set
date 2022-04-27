@@ -185,9 +185,40 @@ namespace InstructionSetProject.Backend.StaticPipeline
             ExecuteMemory.Immediate = DecodeExecute.Immediate;
 
             _memoryStageOffset = _executeStageOffset;
-            CyclesRemainingInMemoryStage = instr.cyclesNeededInMemory;
+            SetCyclesRemainingInMemoryStage(instr);
             _executeStageOffset = -1;
             DecodeExecute = new();
+        }
+
+        private void SetCyclesRemainingInMemoryStage(IInstruction instr)
+        {
+            if (instr is LoadWord || instr is StoreWord)
+            {
+                if (ExecuteMemory.AluResult == null || instr.addressingMode == null)
+                    throw new Exception("Invalid memory access");
+
+                var rand = new Random();
+                var address =
+                    DataStructures.AddressResolver.GetAddress(ExecuteMemory.AluResult ?? 0, instr.addressingMode ?? 0);
+                if (DataStructures.L1.GetCacheSet(address).IsDataPresent(address, 2))
+                {
+                    CyclesRemainingInMemoryStage = rand.Next(1, 5);
+                }
+
+                else if (DataStructures.L2.GetCacheSet(address).IsDataPresent(address, 2))
+                {
+                    CyclesRemainingInMemoryStage = rand.Next(20, 50);
+                }
+
+                else
+                {
+                    CyclesRemainingInMemoryStage = rand.Next(100, 500);
+                }
+            }
+            else
+            {
+                CyclesRemainingInMemoryStage = instr.cyclesNeededInMemory;
+            }
         }
 
         private void MemoryAccess()

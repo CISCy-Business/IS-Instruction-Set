@@ -1,4 +1,4 @@
-﻿namespace InstructionSetProject.Backend.Execution;
+namespace InstructionSetProject.Backend.Execution;
 
 public class Cache : IMemoryLevel
 {
@@ -117,9 +117,9 @@ public class Cache : IMemoryLevel
     }
 }
 
-public record CacheConfiguration(uint Associativity = default, uint LineSize = default, uint LineCount = default, CacheEvictionStrategy EvictionStrategy = default, CacheWriteStrategy WriteStrategy = default) 
+public record CacheConfiguration(int Associativity = default, int LineSize = default, int SetCount = default, CacheEvictionStrategy EvictionStrategy = default, CacheWriteStrategy WriteStrategy = default) 
 {
-    public uint SetCount => LineCount / Associativity;
+    public int LineCount => SetCount * Associativity;
 }
 
 public enum CacheEvictionStrategy
