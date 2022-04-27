@@ -28,10 +28,16 @@ namespace InstructionSetProject.Backend.Execution
         public FlagsRegister Flags = new();
 
         public Memory Memory;
+        public Cache L1;
+        public Cache L2;
+        public AddressResolver AddressResolver;
 
-        public PipelineDataStructures()
+        public PipelineDataStructures(CacheConfiguration l1Config, CacheConfiguration l2Config)
         {
-            Memory = new(StackPointer, MemoryBasePointer, R7);
+            Memory = new(StackPointer, l1Config.LineSize);
+            L2 = new(l2Config, Memory);
+            L1 = new(l1Config, L2);
+            AddressResolver = new(StackPointer, MemoryBasePointer, R7, Memory);
         }
     }
 }

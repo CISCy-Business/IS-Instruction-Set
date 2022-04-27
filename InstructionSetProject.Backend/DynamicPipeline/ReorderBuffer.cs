@@ -94,7 +94,7 @@ namespace InstructionSetProject.Backend.DynamicPipeline
                 var writeTarget = (instr.instruction.addressingMode == 0b001_0000 || instr.instruction.addressingMode == 0b001_1000) ? instr.rhsValue : instr.instruction.immediate;
                 if (instr.lhsValue == null || instr.instruction.addressingMode == null || writeTarget == null)
                     throw new Exception("Null write values");
-                dataStructures.Memory.WriteUshort(writeTarget ?? 0, instr.lhsValue ?? 0, instr.instruction.addressingMode ?? 0);
+                dataStructures.L1.WriteUshort(dataStructures.AddressResolver.GetAddress(writeTarget ?? 0, instr.instruction.addressingMode ?? 0), instr.lhsValue ?? 0);
                 return;
             }
 

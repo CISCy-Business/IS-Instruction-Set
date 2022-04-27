@@ -35,9 +35,9 @@ namespace InstructionSetProject.Backend.StaticPipeline
 
         public IInstruction? nextInstructionToFinish => writingBackInstruction ?? (memoryInstruction ?? (executingInstruction ?? (decodingInstruction ?? (fetchingInstruction ?? null))));
 
-        public StaticPipelineExecution(InstructionList instrList)
+        public StaticPipelineExecution(InstructionList instrList, CacheConfiguration l1Config, CacheConfiguration l2Config)
         {
-            DataStructures = new();
+            DataStructures = new(l1Config, l2Config);
             Alu = new(DataStructures);
             InstrList = instrList;
             MachineCode = Assembler.Assemble(instrList);
@@ -289,7 +289,7 @@ namespace InstructionSetProject.Backend.StaticPipeline
             {
                 if (ExecuteMemory.AluResult == null || instr.addressingMode == null)
                     throw new Exception("Null read values");
-                return DataStructures.Memory.ReadUshort(ExecuteMemory.AluResult ?? 0, instr.addressingMode ?? 0);
+                return DataStructures.L1.ReadUshort(DataStructures.AddressResolver.GetAddress(ExecuteMemory.AluResult ?? 0, instr.addressingMode ?? 0));
             }
 
             if (instr is PopWord || instr is PopFloat)
@@ -306,7 +306,7 @@ namespace InstructionSetProject.Backend.StaticPipeline
             {
                 if (ExecuteMemory.AluResult == null || instr.addressingMode == null || ExecuteMemory.ReadData2 == null)
                     throw new Exception("Null write values");
-                DataStructures.Memory.WriteUshort(ExecuteMemory.AluResult ?? 0, ExecuteMemory.ReadData2 ?? 0, instr.addressingMode ?? 0);
+                DataStructures.L1.WriteUshort(DataStructures.AddressResolver.GetAddress(ExecuteMemory.AluResult ?? 0, instr.addressingMode ?? 0), ExecuteMemory.ReadData2 ?? 0);
                 return;
             }
 

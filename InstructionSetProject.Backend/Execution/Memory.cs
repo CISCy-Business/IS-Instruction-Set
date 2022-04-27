@@ -1,48 +1,54 @@
 ﻿namespace InstructionSetProject.Backend.Execution
 {
-    public class Memory
+    public class Memory: IMemoryLevel
     {
         public byte[] Bytes = new byte[1048576];
         private readonly Register<ushort> _stackPointer;
-        private readonly Register<ushort> _memoryBasePointer;
-        private readonly Register<ushort> _r7;
-
-        private const uint TwentyBitMask = 0b1111_1111_1111_1111_1111;
+        private int cacheLineSize { get; }
+        
         private const byte EightBitMask = 0b1111_1111;
 
-        public Memory(Register<ushort> stackPointer, Register<ushort> memoryBasePointer, Register<ushort> r7)
+        public Memory(Register<ushort> stackPointer, int cacheLineSize)
         {
             _stackPointer = stackPointer;
-            _memoryBasePointer = memoryBasePointer;
-            _r7 = r7;
+            this.cacheLineSize = cacheLineSize;
         }
 
-        public void WriteUshort(ushort inputValue, ushort writeValue, ushort addrMode)
+        public void WriteUshort(uint addr, ushort writeValue)
         {
-            var addr = GetAddress(inputValue, addrMode);
             Bytes[addr] = (byte) (writeValue >> 8);
             Bytes[addr + 1] = (byte) (writeValue & EightBitMask);
         }
 
-        public void WriteByte(ushort inputValue, byte writeValue, ushort addrMode)
+        public void WriteByte(uint addr, byte writeValue)
         {
-            var addr = GetAddress(inputValue, addrMode);
             Bytes[addr] = writeValue;
         }
 
-        public ushort ReadUshort(ushort inputValue, ushort addrMode)
+        public ushort ReadUshort(uint addr)
         {
-            var addr = GetAddress(inputValue, addrMode);
             var value = (ushort)(Bytes[addr] << 8);
             value += Bytes[addr + 1];
 
             return value;
         }
 
-        public byte ReadByte(ushort inputValue, ushort addrMode)
+        public byte ReadByte(uint addr)
         {
-            var addr = GetAddress(inputValue, addrMode);
             return Bytes[addr];
+        }
+
+        public byte[] LoadCacheLine(uint address)
+        {
+            return Bytes.Skip((int)address).Take(cacheLineSize).ToArray();
+        }
+
+        public void WriteLine(uint address, byte[] data)
+        {
+            for (int i = 0; i < data.Length; i++, address++)
+            {
+                Bytes[address] = data[i];
+            }
         }
 
         public void StackPushWord(ushort value)
@@ -76,78 +82,6 @@
         {
             _stackPointer.value++;
             return Bytes[_stackPointer.value];
-        }
-
-        private uint GetAddress(ushort inputValue, ushort addrMode)
-        {
-            switch (addrMode)
-            {
-                case 0b000_0000:
-                case 0b001_0000:
-                    return GetDirectAddress(inputValue);
-                case 0b000_1000:
-                case 0b001_1000:
-                    return GetIndirectAddress(inputValue);
-                case 0b010_0000:
-                    return GetDirectAddress((ushort)(inputValue + _r7.value));
-                case 0b010_1000:
-                    return GetIndirectAddress((ushort)(inputValue + _r7.value));
-                case 0b011_0000:
-                    return GetOffsetAddress(_r7.value, inputValue);
-                case 0b011_1000:
-                    return GetOffsetAddress(inputValue, _r7.value);
-                case 0b100_0000:
-                    return GetDirectAddress((ushort)(inputValue + _stackPointer.value));
-                case 0b100_1000:
-                    return GetIndirectAddress((ushort)(inputValue + _stackPointer.value));
-                case 0b101_0000:
-                    return GetOffsetAddress(_stackPointer.value, inputValue);
-                case 0b101_1000:
-                    return GetOffsetAddress(inputValue, _stackPointer.value);
-                case 0b110_0000:
-                    return GetDirectAddress((ushort)(inputValue + _r7.value + _stackPointer.value));
-                case 0b110_1000:
-                    return GetIndirectAddress((ushort)(inputValue + _r7.value + _stackPointer.value));
-                case 0b111_0000:
-                    return GetOffsetAddress((ushort)(_stackPointer.value + _r7.value), inputValue);
-                case 0b111_1000:
-                    return GetOffsetAddress((ushort)(_stackPointer.value + inputValue), _r7.value);
-                default:
-                    throw new Exception("Invalid addressing type");
-            }
-        }
-
-        private uint GetDirectAddress(ushort inputValue)
-        {
-            uint fullAddr = (uint)(_memoryBasePointer.value << 16);
-            fullAddr += inputValue;
-            return fullAddr & TwentyBitMask;
-        }
-
-        private uint GetIndirectAddress(ushort inputValue)
-        {
-            uint firstAddr = (uint) (_memoryBasePointer.value << 16);
-            firstAddr += inputValue;
-            
-            var fullAddr = (uint) (Bytes[firstAddr & TwentyBitMask] << 24);
-            fullAddr += (uint) (Bytes[(firstAddr + 1) & TwentyBitMask] << 16);
-            fullAddr += (uint)(Bytes[(firstAddr + 2) & TwentyBitMask] << 8);
-            fullAddr += Bytes[(firstAddr + 3) & TwentyBitMask];
-
-            return fullAddr;
-        }
-
-        private uint GetOffsetAddress(ushort firstMemAddr, ushort secondMemOffset)
-        {
-            uint firstAddr = (uint) (_memoryBasePointer.value << 16);
-            firstAddr += firstMemAddr;
-
-            var fullAddr = (uint)(Bytes[firstAddr & TwentyBitMask] << 24);
-            fullAddr += (uint)(Bytes[(firstAddr + 1) & TwentyBitMask] << 16);
-            fullAddr += (uint)(Bytes[(firstAddr + 2) & TwentyBitMask] << 8);
-            fullAddr += Bytes[(firstAddr + 3) & TwentyBitMask];
-
-            return fullAddr + secondMemOffset;
         }
 
         public byte[] GetBytesAtAddress(uint address)
