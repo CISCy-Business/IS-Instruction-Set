@@ -137,9 +137,9 @@ public class Cache : IMemoryLevel
     }
 }
 
-public record CacheConfiguration(int Associativity = default, int LineSize = default, int LineCount = default, CacheEvictionStrategy EvictionStrategy = default, CacheWriteStrategy WriteStrategy = default) 
+public record CacheConfiguration(int Associativity = default, int LineSize = default, int SetCount = default, CacheEvictionStrategy EvictionStrategy = default, CacheWriteStrategy WriteStrategy = default) 
 {
-    public int SetCount => LineCount / Associativity;
+    public int LineCount => SetCount * Associativity;
 }
 
 public enum CacheEvictionStrategy
