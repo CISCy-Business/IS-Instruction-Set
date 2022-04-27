@@ -2,8 +2,8 @@
 
 public class CacheSet
 {
-    public int Associativity { get; }
-    public int LineSize { get; }
+    public uint Associativity { get; }
+    public uint LineSize { get; }
     public CacheEvictionStrategy EvictionStrategy { get; }
     public CacheWriteStrategy WriteStrategy { get; }
     private int lruIndex { get; set; } = 0;
@@ -11,25 +11,24 @@ public class CacheSet
     // Int value is used for LRU and FIFO tracking
     public Dictionary<CacheLine, int> Lines { get; }
 
-    public CacheSet(int associativity, int lineSize, CacheEvictionStrategy evictionStrategy,
-        CacheWriteStrategy writeStrategy)
+    public CacheSet(CacheConfiguration config)
     {
-        Associativity = associativity;
-        LineSize = lineSize;
-        EvictionStrategy = evictionStrategy;
-        WriteStrategy = writeStrategy;
-        Lines = new Dictionary<CacheLine, int>(associativity);
-        for (int i = 0; i < associativity; i++)
+        Associativity = config.Associativity;
+        LineSize = config.LineSize;
+        EvictionStrategy = config.EvictionStrategy;
+        WriteStrategy = config.WriteStrategy;
+
+        Lines = new Dictionary<CacheLine, int>((int)Associativity);
+
+        for (int i = 0; i < Associativity; i++)
             Lines.Add(new CacheLine(LineSize), 0);
     }
 
     public bool IsFull()
     {
-        foreach (var (line, position) in Lines)
-        {
+        foreach ((CacheLine line, _) in Lines)
             if (line.IsValid == false)
                 return false;
-        }
 
         return true;
     }

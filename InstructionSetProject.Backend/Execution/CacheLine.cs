@@ -1,72 +1,92 @@
-﻿namespace InstructionSetProject.Backend.Execution;
+﻿
+namespace InstructionSetProject.Backend.Execution;
 
 public class CacheLine
 {
-    private int size { get; }
+    private byte[] _data;
     public bool IsValid { get; set; }
-    public uint? Address { get; set; }
-    public byte[] Data { get; set; }
+    public uint StartAddress { get; set; }
 
-    private uint? firstByte => Address;
-    private uint? lastByte => Address != null ? (uint)(Address + size) : null;
-
-    public CacheLine(int size)
+    public CacheLine(uint size)
     {
-        this.size = size;
         IsValid = false;
-        Address = null;
-        Data = new byte[size];
+        _data = new byte[size];
     }
 
-    public bool IsDataPresent(uint address, int bytesToRead)
+    public void LoadData(uint address, byte[] data)
     {
-        for (int i = 0; i < bytesToRead; i++)
-        {
-            if (address < firstByte || address > lastByte)
-                return false;
-            address++;
-        }
-
-        return true;
+        StartAddress = address;
+        WriteAll(data);
+        IsValid = true;
     }
 
-    public void WriteUshort(uint address, ushort writeValue)
+    public byte[] ReadAll()
     {
-        if (!IsDataPresent(address, 2))
-            throw new Exception("Data not found in cache line");
-        
-        var arrayOffset = address - Address ?? 0;
-        Data[arrayOffset] = (byte) (writeValue >> 8);
-        Data[arrayOffset + 1] = (byte) (writeValue & 0b1111_1111);
+        byte[] copy = new byte[_data.Length];
+        Array.Copy(_data, copy, _data.Length);
+        return copy;
     }
 
-    public void WriteByte(uint address, byte writeValue)
+    public void WriteAll(byte[] newData)
     {
-        if (!IsDataPresent(address, 2))
-            throw new Exception("Data not found in cache line");
-
-        var arrayOffset = Address - address ?? 0;
-        Data[arrayOffset] = writeValue;
+        Array.Copy(newData, _data, Math.Min(newData.Length, _data.Length));
     }
 
-    public ushort ReadUshort(uint address)
+    public byte? ReadByte(uint address)
     {
-        if (!IsDataPresent(address, 2))
-            throw new Exception("Data not found in cache line");
+        if (!IsValidAddress(address))
+            return null;
 
-        var arrayOffset = address - Address ?? 0;
-        var value = (ushort) (Data[arrayOffset] << 8);
-        value += Data[arrayOffset + 1];
+        return _data[CalcIndexFromAddress(address)];
+    }
+
+    public void WriteByte(uint address, byte value)
+    {
+        if (IsValidAddress(address))
+            _data[CalcIndexFromAddress(address)] = value;
+    }
+
+    public ushort? ReadUShort(uint address)
+    {
+        if (!IsValidAddress(address, 2))
+            return null;
+
+        uint index = CalcIndexFromAddress(address);
+        ushort value = 0;
+
+        value += (ushort)(_data[index + 0] << 8);
+        value += (ushort)(_data[index + 1] << 0);
 
         return value;
     }
 
-    public byte ReadByte(uint address)
+    public void WriteUShort(uint address, ushort value)
     {
-        if (!IsDataPresent(address, 1))
-            throw new Exception("Data not found in cache line");
+        if (!IsValidAddress(address, 2))
+            return;
 
-        var arrayOffset = address - Address ?? 0;
-        return Data[arrayOffset];
+        uint index = CalcIndexFromAddress(address);
+
+        _data[index + 0] = (byte)(value << 8);
+        _data[index + 1] = (byte)(value << 0);
+    }
+
+    public bool IsValidAddress(uint address, uint numBytesToRead = 1)
+    {
+        uint firstAddressAvailable = StartAddress;
+        uint lastAddressAvailable = StartAddress + (uint)_data.Length - 1;
+
+        uint firstAddressNeeded = address;
+        uint lastAddressNeeded = address + numBytesToRead - 1;
+
+        if (firstAddressNeeded < firstAddressAvailable || lastAddressNeeded > lastAddressAvailable)
+            return false;
+
+        return true;
+    }
+
+    private uint CalcIndexFromAddress(uint address)
+    {
+        return address - StartAddress;
     }
 }

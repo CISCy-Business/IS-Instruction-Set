@@ -2,64 +2,44 @@
 
 public class Cache : IMemoryLevel
 {
-    public CacheConfiguration Config { get; }
-    public List<CacheSet> Sets { get; }
-    private IMemoryLevel nextLevel { get; }
+    private CacheConfiguration _config;
+    private IMemoryLevel _nextMemoryLevel { get; private set; }
+    public List<CacheSet> Sets { get; private set; }
 
-    public Cache(CacheConfiguration config, IMemoryLevel nextLevel)
+    public Cache(CacheConfiguration config, IMemoryLevel nextMemoryLevel)
     {
-        Config = config;
-        this.nextLevel = nextLevel;
+        _config = config;
+        _nextMemoryLevel = nextMemoryLevel;
 
-        Sets = new List<CacheSet>();
-        for (int i = 0; i < Config.SetCount; i++)
-        {
-            Sets.Add(new CacheSet(config.Associativity, config.LineSize, config.EvictionStrategy, config.WriteStrategy));
-        }
+        Sets = new List<CacheSet>(_config.SetCount);
+
+        for (int i = 0; i < _config.SetCount; i++)
+            Sets.Add(new CacheSet(config));
     }
     
     public void WriteUshort(uint addr, ushort writeValue)
     {
         var set = GetCacheSet(addr);
-        if (set.IsDataPresent(addr, 2))
-        {
-            set.WriteUshort(addr, writeValue);
-            if (Config.WriteStrategy == CacheWriteStrategy.WriteThrough)
-            {
-                nextLevel.WriteUshort(addr, writeValue);
-            }
-            return;
-        }
 
-        LoadCacheLine(addr);
-        
+        if (!set.IsDataPresent(addr, 2))
+            LoadCacheLine(addr);
+
         set.WriteUshort(addr, writeValue);
-        if (Config.WriteStrategy == CacheWriteStrategy.WriteThrough)
-        {
-            nextLevel.WriteUshort(addr, writeValue);
-        }
+
+        if (_config.WriteStrategy == CacheWriteStrategy.WriteThrough)
+            _nextMemoryLevel.WriteUshort(addr, writeValue);
     }
 
     public void WriteByte(uint addr, byte writeValue)
     {
         var set = GetCacheSet(addr);
-        if (set.IsDataPresent(addr, 1))
-        {
-            set.WriteByte(addr, writeValue);
-            if (Config.WriteStrategy == CacheWriteStrategy.WriteThrough)
-            {
-                nextLevel.WriteByte(addr, writeValue);
-            }
-            return;
-        }
-
-        LoadCacheLine(addr);
+        if (!set.IsDataPresent(addr, 1))
+            LoadCacheLine(addr);
         
         set.WriteByte(addr, writeValue);
-        if (Config.WriteStrategy == CacheWriteStrategy.WriteThrough)
-        {
-            nextLevel.WriteByte(addr, writeValue);
-        }
+
+        if (_config.WriteStrategy == CacheWriteStrategy.WriteThrough)
+            _nextMemoryLevel.WriteByte(addr, writeValue);
     }
 
     public ushort ReadUshort(uint addr)
@@ -137,9 +117,9 @@ public class Cache : IMemoryLevel
     }
 }
 
-public record CacheConfiguration(int Associativity = default, int LineSize = default, int LineCount = default, CacheEvictionStrategy EvictionStrategy = default, CacheWriteStrategy WriteStrategy = default) 
+public record CacheConfiguration(uint Associativity = default, uint LineSize = default, uint LineCount = default, CacheEvictionStrategy EvictionStrategy = default, CacheWriteStrategy WriteStrategy = default) 
 {
-    public int SetCount => LineCount / Associativity;
+    public uint SetCount => LineCount / Associativity;
 }
 
 public enum CacheEvictionStrategy
